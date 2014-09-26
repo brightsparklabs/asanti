@@ -51,3 +51,6 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+# Gradle handles classpath
+.classpath
+
