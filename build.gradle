@@ -6,3 +6,11 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.guava:guava:18.0'
+    compile 'org.bouncycastle:bcprov-jdk16:1.45'
+}
