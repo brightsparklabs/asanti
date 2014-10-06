@@ -26,7 +26,7 @@ final ImmutableList<AsnData> allAsnData = AsnDecoder.readAsnBerFile(berFile);
 final AsnData asnData = allAsnData.first();
 
 // print raw tags
-asnData.getTags();
+asnData.getRawTags();
 /* returns elements:
     - "/1/0/1"
     - "/2/0/0"
@@ -45,9 +45,6 @@ final AsnSchema schema = AsnSchema.builder()
     .fromXsd(xsdFile)
     .build();
 final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema);
-
-decodedData.getPath();
-// returns "/"
 
 // all decoded tags
 decodedData.getTags();
@@ -73,39 +70,6 @@ decodedData.contains("/Body/Prefix/Text");      // returns true
 decodedData.contains("/Body/Suffix/Text");      // returns false
 decodedData.contains("/99/1/1");                // returns false
 decodedData.contains("/Car/Door/Material");     // returns false
-```
-
-##### Working with sub-structures
-
-```java
-// select a child structure
-final DecodedData bodyDecodedData = decodedData.getDecodedData("/Body");
-
-bodyDecodedData.getPath();
-// returns "/Body"
-
-// all decoded tags
-bodyDecodedData.getTags();
-/* returns elements:
-     - "/Body/LastModified/Date"
-     - "/Body/Prefix/Text"
-     - "/Body/Content/Text"
-*/
-
-// unmapped tags (i.e. tags which do not exist in schema)
-bodyDecodedData.getUnmappedTags();
-/* returns elements:
-     - "/Body/Content/99"
-*/
-
-// test presence of tags
-bodyDecodedData.contains("/Body/Prefix/Text");      // returns true
-bodyDecodedData.contains("/Prefix/Text");           // returns true (relative path supported)
-bodyDecodedData.contains("/Header/Published/Date"); // returns false
-bodyDecodedData.contains("/Header/Published");      // returns false
-bodyDecodedData.contains("/Body/Suffix/Text");      // returns false
-bodyDecodedData.contains("/99/1/1");                // returns false
-bodyDecodedData.contains("/Car/Door/Material");     // returns false
 ```
 
 ##### Working with `SET OF` and `SEQUENCE OF`
