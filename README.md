@@ -79,7 +79,7 @@ decodedData.contains("/Car/Door/Material");     // returns false
 
 ```java
 // select a child structure
-final DecodedData bodyDecodedData = decodedData.getChild("/Body");
+final DecodedData bodyDecodedData = decodedData.getDecodedData("/Body");
 
 bodyDecodedData.getPath();
 // returns "/Body"
@@ -118,7 +118,7 @@ bodyDecodedData.contains("/Car/Door/Material");     // returns false
 
 ```java
 // get data as most appropriate Java Object via explicit cast (requires knowledge of schema)
-final Timestamp date = (Timestamp) decodedData.getObject("/Header/Published/Date");
+final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Header/Published/Date");
 // returns bytes decoded as a Timestamp
 
 // get data as a printable string
@@ -150,12 +150,12 @@ final Timestamp timestamp = ByteDecoder.asGeneralizedTime(bytes);
 // default generator
 decodedData.getPrintableString("/Header/Published/Date");
 // returns "2010-04-13T14:07:57.712Z"
-final Timestamp date = (Timestamp) decodedData.getObject("/Header/Published/Date");
+final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Header/Published/Date");
 // returns bytes decoded as a Timestamp
 
 decodedData.getPrintableString("/Body/LastModified/Date");
 // returns "2014-04-13T14:07:57.712Z"
-final Timestamp date = (Timestamp) decodedData.getObject("/Body/LastModified/Date");
+final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Body/LastModified/Date");
 // returns bytes decoded as a Timestamp
 
 // use custom data generators
@@ -172,12 +172,12 @@ final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema, gen
 
 decodedData.getPrintableString("/Header/Published/Date");
 // returns "About 5 months ago"
-final Integer date = (Integer) decodedData.getObject("/Header/Published/Date");
+final Integer date = (Integer) decodedData.getDecodedObject("/Header/Published/Date");
 // returns bytes decoded as an Integer
 
 decodedData.getPrintableString("/Body/LastModified/Date");
 // returns "2014-04-13T14:07:58.712Z"
-final Timestamp date = (Timestamp) decodedData.getObject("/Body/LastModified/Date");
+final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Body/LastModified/Date");
 // returns bytes decoded as a Timestamp with offset of 1000 ms
 ```
 
