@@ -1,5 +1,6 @@
-/**
- *
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
  */
 package com.brightsparklabs.asanti.model;
 
@@ -39,7 +40,7 @@ public class AsnDataDefaultTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testGetTags()
+    public void testGetTags() throws Exception
     {
         AsnData instance = new AsnDataDefault(tagsToData);
         ImmutableSet<String> tags = instance.getTags();
@@ -85,7 +86,7 @@ public class AsnDataDefaultTest
     }
 
     @Test
-    public void testGetData()
+    public void testGetData() throws Exception
     {
         AsnData instance = new AsnDataDefault(tagsToData);
         ImmutableMap<String, byte[]> data = instance.getData();
