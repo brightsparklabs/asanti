@@ -29,6 +29,17 @@ public interface AsnData
     public ImmutableSet<String> getTags();
 
     /**
+     * Returns the data (bytes) associated with the specified tag
+     *
+     * @param tag
+     *            tag associated with the data
+     *
+     * @return data associated with the specified tag or an empty byte array if
+     *         the tag does not exist
+     */
+    public byte[] getData(String tag);
+
+    /**
      * Returns a mapping of all tags to the data (bytes) associated with them
      * E.g. "/1/1/1" => "[0x00, 0x01]", "3/1/2" => "[0x00, 0x01]"
      *

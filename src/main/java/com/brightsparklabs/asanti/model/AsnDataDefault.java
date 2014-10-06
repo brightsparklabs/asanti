@@ -37,6 +37,9 @@ public class AsnDataDefault implements AsnData
      *
      * @param tagsToData
      *            map of tags to data
+     *
+     * @throws NullPointerException
+     *             if parameters are {@code null}
      */
     public AsnDataDefault(Map<String, byte[]> tagsToData)
     {
@@ -52,6 +55,13 @@ public class AsnDataDefault implements AsnData
     public ImmutableSet<String> getTags()
     {
         return ImmutableSortedSet.copyOf(tagsToData.keySet());
+    }
+
+    @Override
+    public byte[] getData(String tag)
+    {
+        final byte[] result = tagsToData.get(tag);
+        return (result == null) ? new byte[0] : result;
     }
 
     @Override
