@@ -22,7 +22,7 @@ gradle eclipse
 
 ```java
 // parse an ASN BER/DER binary file
-final ImmutableList<AsnData> allAsnData = AsnDecoder.readAsnFile(berFile);
+final ImmutableList<AsnData> allAsnData = AsnDecoder.readAsnBerFile(berFile);
 final AsnData asnData = allAsnData.first();
 
 // print raw tags
