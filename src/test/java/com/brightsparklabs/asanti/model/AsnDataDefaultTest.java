@@ -40,6 +40,19 @@ public class AsnDataDefaultTest
     // -------------------------------------------------------------------------
 
     @Test
+    public void testAsnDataDefault() throws Exception
+    {
+        try
+        {
+            new AsnDataDefault(null);
+            fail("NullPointerException not thrown");
+        }
+        catch (NullPointerException ex)
+        {
+        }
+    }
+
+    @Test
     public void testGetTags() throws Exception
     {
         AsnData instance = new AsnDataDefault(tagsToData);
@@ -55,14 +68,6 @@ public class AsnDataDefaultTest
         tags = instance.getTags();
         assertEquals(tags.size(), 0);
 
-        try
-        {
-            instance = new AsnDataDefault(null);
-            fail("NullPointerException not thrown");
-        }
-        catch (NullPointerException ex)
-        {
-        }
     }
 
     @Test
