@@ -51,6 +51,9 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+# GFM Viewer plugin
+*.md.html
+
 # Gradle handles classpath
 .classpath
 
