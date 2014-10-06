@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * Default implementation of {@link AsnData}
@@ -50,7 +51,7 @@ public class AsnDataDefault implements AsnData
     @Override
     public ImmutableSet<String> getTags()
     {
-        return tagsToData.keySet();
+        return ImmutableSortedSet.copyOf(tagsToData.keySet());
     }
 
     @Override
