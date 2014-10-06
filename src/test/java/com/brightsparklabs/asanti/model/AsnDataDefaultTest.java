@@ -4,10 +4,7 @@
  */
 package com.brightsparklabs.asanti.model;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -53,10 +50,10 @@ public class AsnDataDefaultTest
     }
 
     @Test
-    public void testGetTags() throws Exception
+    public void testGetRawTags() throws Exception
     {
         AsnData instance = new AsnDataDefault(tagsToData);
-        ImmutableSet<String> tags = instance.getTags();
+        ImmutableSet<String> tags = instance.getRawTags();
         assertEquals(tags.size(), 5);
         assertTrue(tags.contains("/0/0/0"));
         assertTrue(tags.contains("/0/1/0"));
@@ -65,9 +62,8 @@ public class AsnDataDefaultTest
         assertTrue(tags.contains("/99/0"));
 
         instance = new AsnDataDefault(Maps.<String, byte[]> newHashMap());
-        tags = instance.getTags();
+        tags = instance.getRawTags();
         assertEquals(tags.size(), 0);
-
     }
 
     @Test

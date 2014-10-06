@@ -15,7 +15,6 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface AsnData
 {
-
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -26,18 +25,18 @@ public interface AsnData
      *
      * @return all tags in the data
      */
-    public ImmutableSet<String> getTags();
+    public ImmutableSet<String> getRawTags();
 
     /**
      * Returns the data (bytes) associated with the specified tag
      *
-     * @param tag
+     * @param rawTag
      *            tag associated with the data
      *
      * @return data associated with the specified tag or an empty byte array if
      *         the tag does not exist
      */
-    public byte[] getData(String tag);
+    public byte[] getData(String rawTag);
 
     /**
      * Returns a mapping of all tags to the data (bytes) associated with them

@@ -17,6 +17,7 @@ public interface DecodedAsnData
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
+
     /** null instance of interface */
     public static final DecodedAsnData NULL = new DecodedAsnDataNull();
 

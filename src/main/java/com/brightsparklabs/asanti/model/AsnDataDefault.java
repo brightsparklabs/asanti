@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.model;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 import java.util.Map;
 
@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableSortedSet;
  */
 public class AsnDataDefault implements AsnData
 {
-
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -52,15 +51,15 @@ public class AsnDataDefault implements AsnData
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<String> getTags()
+    public ImmutableSet<String> getRawTags()
     {
         return ImmutableSortedSet.copyOf(tagsToData.keySet());
     }
 
     @Override
-    public byte[] getData(String tag)
+    public byte[] getData(String rawTag)
     {
-        final byte[] result = tagsToData.get(tag);
+        final byte[] result = tagsToData.get(rawTag);
         return (result == null) ? new byte[0] : result;
     }
 
