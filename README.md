@@ -68,7 +68,11 @@ decodedData.contains("/Header/Published/Date"); // returns true
 decodedData.contains("/Header/Published");      // returns true
 decodedData.contains("/Body/Prefix/Text");      // returns true
 decodedData.contains("/Body/Suffix/Text");      // returns false
-decodedData.contains("/99/1/1");                // returns false
+decodedData.contains("/Body/Content/99");       // returns true
+decodedData.contains("/Body/Content/Text");     // returns true
+decodedData.contains("/Body/Content/Date");     // returns false
+decodedData.contains("/99/1/1");                // returns true
+decodedData.contains("/99/2/1");                // returns false
 decodedData.contains("/Car/Door/Material");     // returns false
 ```
 
