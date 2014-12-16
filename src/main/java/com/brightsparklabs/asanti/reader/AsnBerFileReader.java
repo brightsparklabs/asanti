@@ -124,8 +124,6 @@ public class AsnBerFileReader
         {
             processPrimitiveDerObject(derObject, prefix, tagsToData);
         }
-
-        // TODO: check/handle SetOf and SequenceOf elements
     }
 
     /**
@@ -146,15 +144,7 @@ public class AsnBerFileReader
     private static void processSequence(ASN1Sequence asnSequence, String prefix, Map<String, byte[]> tagsToData)
             throws IOException
     {
-        final Enumeration<?> enumeration = asnSequence.getObjects();
-
-        while (enumeration.hasMoreElements())
-        {
-            final Object obj = enumeration.nextElement();
-            final DERObject derObject = (obj instanceof DERObject) ? (DERObject) obj : ((DEREncodable) obj)
-                    .getDERObject();
-            processDerObject(derObject, prefix, tagsToData);
-        }
+        processElementsFromSequenceOrSet(asnSequence.getObjects(), prefix, tagsToData);
     }
 
     /**
@@ -174,20 +164,37 @@ public class AsnBerFileReader
      */
     private static void processSet(ASN1Set asnSet, String prefix, Map<String, byte[]> tagsToData) throws IOException
     {
-        final Enumeration<?> enumeration = asnSet.getObjects();
+        processElementsFromSequenceOrSet(asnSet.getObjects(), prefix, tagsToData);
+    }
 
-        while (enumeration.hasMoreElements())
+    /**
+     * Processes the elements found in an ASN.1 'Sequence' or ASN.1 'Set' stores the tags/data found in them
+     *
+     * @param elements
+     *            elements from the sequence or set
+     *
+     * @param prefix
+     *            prefix to prepend to any tags found
+     *
+     * @param tagsToData
+     *            storage for the tags/data found
+     *
+     * @throws IOException
+     *             if any errors occur reading from the file
+     */
+    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix, Map<String, byte[]> tagsToData)
+            throws IOException
+    {
+        int index = 0;
+        while (elements.hasMoreElements())
         {
-            final Object obj = enumeration.nextElement();
-
-            if (obj instanceof DERObject)
-            {
-                processDerObject((DERObject) obj, prefix, tagsToData);
-            }
-            else
-            {
-                processDerObject(((DEREncodable) obj).getDERObject(), prefix, tagsToData);
-            }
+            final Object obj = elements.nextElement();
+            final DERObject derObject = (obj instanceof DERObject) ? (DERObject) obj : ((DEREncodable) obj)
+                    .getDERObject();
+            // if object is not tagged, then include index in prefix
+            final String elementPrefix = (derObject instanceof ASN1TaggedObject) ? prefix : String.format("%s[%d]", prefix, index);
+            processDerObject(derObject, elementPrefix, tagsToData);
+            index++;
         }
     }
 
