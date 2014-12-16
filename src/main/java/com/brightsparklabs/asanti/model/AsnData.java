@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableSet;
 /**
  * Interface for modeling raw data (bytes) read from an ASN.1 binary file
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public interface AsnData
 {

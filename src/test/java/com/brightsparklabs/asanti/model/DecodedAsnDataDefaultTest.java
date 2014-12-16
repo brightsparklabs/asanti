@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -19,7 +20,7 @@ import com.google.common.collect.Maps;
 /**
  * Unit test
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public class DecodedAsnDataDefaultTest
 {
@@ -41,13 +42,13 @@ public class DecodedAsnDataDefaultTest
     {
         /** data to construct asnData from */
         final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]> builder()
-                .put("/1/0/1", "/1/0/1".getBytes())
-                .put("/2/0/0", "/2/0/0".getBytes())
-                .put("/2/1/1", "/2/1/1".getBytes())
-                .put("/2/2/1", "/2/2/1".getBytes())
-                .put("/3/0/1", "/3/0/1".getBytes())
-                .put("/2/2/99", "/2/2/99".getBytes())
-                .put("/99/1/1", "/99/1/1".getBytes())
+                .put("/1/0/1", "/1/0/1".getBytes(Charsets.UTF_8))
+                .put("/2/0/0", "/2/0/0".getBytes(Charsets.UTF_8))
+                .put("/2/1/1", "/2/1/1".getBytes(Charsets.UTF_8))
+                .put("/2/2/1", "/2/2/1".getBytes(Charsets.UTF_8))
+                .put("/3/0/1", "/3/0/1".getBytes(Charsets.UTF_8))
+                .put("/2/2/99", "/2/2/99".getBytes(Charsets.UTF_8))
+                .put("/99/1/1", "/99/1/1".getBytes(Charsets.UTF_8))
                 .build();
 
         /** asnData to construct instance from */
@@ -171,19 +172,19 @@ public class DecodedAsnDataDefaultTest
     @Test
     public void testGetBytes() throws Exception
     {
-        assertArrayEquals("/1/0/1".getBytes(), instance.getBytes("/Header/Published/Date"));
-        assertArrayEquals("/2/0/0".getBytes(), instance.getBytes("/Body/LastModified/Date"));
-        assertArrayEquals("/2/1/1".getBytes(), instance.getBytes("/Body/Prefix/Text"));
-        assertArrayEquals("/2/2/1".getBytes(), instance.getBytes("/Body/Content/Text"));
-        assertArrayEquals("/3/0/1".getBytes(), instance.getBytes("/Footer/Author/FirstName"));
-        assertArrayEquals("/2/2/99".getBytes(), instance.getBytes("/2/2/99"));
-        assertArrayEquals("/99/1/1".getBytes(), instance.getBytes("/99/1/1"));
-        assertArrayEquals("".getBytes(), instance.getBytes(""));
-        assertArrayEquals("".getBytes(), instance.getBytes("/0/0/0"));
+        assertArrayEquals("/1/0/1".getBytes(Charsets.UTF_8), instance.getBytes("/Header/Published/Date"));
+        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8), instance.getBytes("/Body/LastModified/Date"));
+        assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8), instance.getBytes("/Body/Prefix/Text"));
+        assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8), instance.getBytes("/Body/Content/Text"));
+        assertArrayEquals("/3/0/1".getBytes(Charsets.UTF_8), instance.getBytes("/Footer/Author/FirstName"));
+        assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8), instance.getBytes("/2/2/99"));
+        assertArrayEquals("/99/1/1".getBytes(Charsets.UTF_8), instance.getBytes("/99/1/1"));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes(""));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("/0/0/0"));
 
-        assertArrayEquals("".getBytes(), emptyInstance.getBytes(""));
-        assertArrayEquals("".getBytes(), emptyInstance.getBytes("/0/0/0"));
-        assertArrayEquals("".getBytes(), emptyInstance.getBytes("/Header/Published/Date"));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes(""));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes("/0/0/0"));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes("/Header/Published/Date"));
     }
 
     @Test

@@ -32,7 +32,7 @@ import com.google.common.collect.Maps;
 /**
  * Reads data from ASN.1 BER/DER binary files
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public class AsnBerFileReader
 {

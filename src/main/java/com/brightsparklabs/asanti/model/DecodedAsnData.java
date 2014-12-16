@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableSet;
 /**
  * Interface for modeling ASN.1 data which has been mapped against a schema
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public interface DecodedAsnData
 {

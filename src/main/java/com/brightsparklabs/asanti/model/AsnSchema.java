@@ -8,7 +8,7 @@ package com.brightsparklabs.asanti.model;
 /**
  * Interface for modeling an ASN.1 schema
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public interface AsnSchema
 {

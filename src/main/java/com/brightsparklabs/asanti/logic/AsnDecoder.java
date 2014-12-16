@@ -19,7 +19,7 @@ import com.google.common.io.BaseEncoding;
 /**
  * Logic for decoding tagged/application ASN.1 data
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public class AsnDecoder
 {

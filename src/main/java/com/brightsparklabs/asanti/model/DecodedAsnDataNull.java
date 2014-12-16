@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableSet;
 /**
  * Null instance of {@link DecodedAsnData}
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public class DecodedAsnDataNull implements DecodedAsnData
 {

@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -15,7 +16,7 @@ import com.google.common.collect.Maps;
 /**
  * Unit test
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public class AsnDataDefaultTest
 {
@@ -25,11 +26,11 @@ public class AsnDataDefaultTest
 
     /** default data to construct instance from */
     final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]> builder()
-            .put("/0/0/0", "/0/0/0".getBytes())
-            .put("/0/1/0", "/0/1/0".getBytes())
-            .put("/1/0/1", "/1/0/1".getBytes())
-            .put("/2/2/0", "/2/2/0".getBytes())
-            .put("/99/0", "/99/0".getBytes())
+            .put("/0/0/0", "/0/0/0".getBytes(Charsets.UTF_8))
+            .put("/0/1/0", "/0/1/0".getBytes(Charsets.UTF_8))
+            .put("/1/0/1", "/1/0/1".getBytes(Charsets.UTF_8))
+            .put("/2/2/0", "/2/2/0".getBytes(Charsets.UTF_8))
+            .put("/99/0", "/99/0".getBytes(Charsets.UTF_8))
             .build();
 
     // -------------------------------------------------------------------------
@@ -70,20 +71,20 @@ public class AsnDataDefaultTest
     public void testGetDataString() throws Exception
     {
         AsnData instance = new AsnDataDefault(tagsToData);
-        assertArrayEquals(instance.getData("/0/0/0"), "/0/0/0".getBytes());
-        assertArrayEquals(instance.getData("/0/1/0"), "/0/1/0".getBytes());
-        assertArrayEquals(instance.getData("/1/0/1"), "/1/0/1".getBytes());
-        assertArrayEquals(instance.getData("/2/2/0"), "/2/2/0".getBytes());
-        assertArrayEquals(instance.getData("/99/0"), "/99/0".getBytes());
-        assertArrayEquals(instance.getData("/fake/0"), "".getBytes());
+        assertArrayEquals(instance.getData("/0/0/0"), "/0/0/0".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/0/1/0"), "/0/1/0".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/1/0/1"), "/1/0/1".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/2/2/0"), "/2/2/0".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/99/0"), "/99/0".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/fake/0"), "".getBytes(Charsets.UTF_8));
 
         instance = new AsnDataDefault(Maps.<String, byte[]> newHashMap());
-        assertArrayEquals(instance.getData("/0/0/0"), "".getBytes());
-        assertArrayEquals(instance.getData("/0/1/0"), "".getBytes());
-        assertArrayEquals(instance.getData("/1/0/1"), "".getBytes());
-        assertArrayEquals(instance.getData("/2/2/0"), "".getBytes());
-        assertArrayEquals(instance.getData("/99/0"), "".getBytes());
-        assertArrayEquals(instance.getData("/fake/0"), "".getBytes());
+        assertArrayEquals(instance.getData("/0/0/0"), "".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/0/1/0"), "".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/1/0/1"), "".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/2/2/0"), "".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/99/0"), "".getBytes(Charsets.UTF_8));
+        assertArrayEquals(instance.getData("/fake/0"), "".getBytes(Charsets.UTF_8));
     }
 
     @Test
@@ -92,11 +93,11 @@ public class AsnDataDefaultTest
         AsnData instance = new AsnDataDefault(tagsToData);
         ImmutableMap<String, byte[]> data = instance.getData();
         assertEquals(data.size(), 5);
-        assertArrayEquals(data.get("/0/0/0"), "/0/0/0".getBytes());
-        assertArrayEquals(data.get("/0/1/0"), "/0/1/0".getBytes());
-        assertArrayEquals(data.get("/1/0/1"), "/1/0/1".getBytes());
-        assertArrayEquals(data.get("/2/2/0"), "/2/2/0".getBytes());
-        assertArrayEquals(data.get("/99/0"), "/99/0".getBytes());
+        assertArrayEquals(data.get("/0/0/0"), "/0/0/0".getBytes(Charsets.UTF_8));
+        assertArrayEquals(data.get("/0/1/0"), "/0/1/0".getBytes(Charsets.UTF_8));
+        assertArrayEquals(data.get("/1/0/1"), "/1/0/1".getBytes(Charsets.UTF_8));
+        assertArrayEquals(data.get("/2/2/0"), "/2/2/0".getBytes(Charsets.UTF_8));
+        assertArrayEquals(data.get("/99/0"), "/99/0".getBytes(Charsets.UTF_8));
 
         instance = new AsnDataDefault(Maps.<String, byte[]> newHashMap());
         data = instance.getData();

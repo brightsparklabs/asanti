@@ -5,6 +5,7 @@
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'findbugs'
 
 repositories {
     mavenCentral()
@@ -16,3 +17,10 @@ dependencies {
     testCompile 'junit:junit:4.+'
     testCompile "org.mockito:mockito-core:1.+"
 }
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+ }

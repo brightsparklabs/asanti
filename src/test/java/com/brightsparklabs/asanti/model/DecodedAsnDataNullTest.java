@@ -4,15 +4,14 @@
  */
 package com.brightsparklabs.asanti.model;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 /**
  * Unit test
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public class DecodedAsnDataNullTest
 {

@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableSortedSet;
 /**
  * Default implementation of {@link AsnData}
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public class AsnDataDefault implements AsnData
 {

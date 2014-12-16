@@ -19,7 +19,7 @@ import com.google.common.io.BaseEncoding;
 /**
  * Default implementation of {@link DecodedAsnData}
  *
- * @author brightSPARK Labs <enquire@brightsparklabs.com>
+ * @author brightSPARK Labs
  */
 public class DecodedAsnDataDefault implements DecodedAsnData
 {
