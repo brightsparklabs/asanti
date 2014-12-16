@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.regex.Pattern;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -37,11 +39,12 @@ public class DecodedAsnDataDefaultTest
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
+
     @BeforeClass
     public static void setUpBeforeClass()
     {
         /** data to construct asnData from */
-        final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]> builder()
+        final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]>builder()
                 .put("/1/0/1", "/1/0/1".getBytes(Charsets.UTF_8))
                 .put("/2/0/0", "/2/0/0".getBytes(Charsets.UTF_8))
                 .put("/2/1/1", "/2/1/1".getBytes(Charsets.UTF_8))
@@ -73,7 +76,7 @@ public class DecodedAsnDataDefaultTest
         instance = new DecodedAsnDataDefault(asnData, asnSchema);
 
         /** asnData to construct emptyInstance from */
-        final AsnData emptyAsnData = new AsnDataDefault(Maps.<String, byte[]> newHashMap());
+        final AsnData emptyAsnData = new AsnDataDefault(Maps.<String, byte[]>newHashMap());
         emptyInstance = new DecodedAsnDataDefault(emptyAsnData, asnSchema);
     }
 
@@ -188,6 +191,32 @@ public class DecodedAsnDataDefaultTest
     }
 
     @Test
+    public void testGetBytesMatching() throws Exception
+    {
+        Pattern regex = Pattern.compile("/Body/.+");
+        ImmutableMap<String, byte[]> result = instance.getBytesMatching(regex);
+        assertEquals(3, result.size());
+        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8), result.get("/Body/LastModified/Date"));
+        assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8), result.get("/Body/Prefix/Text"));
+        assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8), result.get("/Body/Content/Text"));
+        result = emptyInstance.getBytesMatching(regex);
+        assertEquals(0, result.size());
+
+        regex = Pattern.compile("/\\d+/2/\\d{2}");
+        result = instance.getBytesMatching(regex);
+        assertEquals(1, result.size());
+        assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8), result.get("/2/2/99"));
+        result = emptyInstance.getBytesMatching(regex);
+        assertEquals(0, result.size());
+
+        regex = Pattern.compile("/0/.+");
+        result = instance.getBytesMatching(regex);
+        assertEquals(0, result.size());
+        result = emptyInstance.getBytesMatching(regex);
+        assertEquals(0, result.size());
+    }
+
+    @Test
     public void testGetHexString() throws Exception
     {
         assertEquals("0x2F312F302F31", instance.getHexString("/Header/Published/Date"));
@@ -204,6 +233,32 @@ public class DecodedAsnDataDefaultTest
         assertEquals("0x", emptyInstance.getHexString(""));
         assertEquals("0x", emptyInstance.getHexString("/0/0/0"));
         assertEquals("0x", emptyInstance.getHexString("/Header/Published/Date"));
+    }
+
+    @Test
+    public void testGetHexStringsMatching() throws Exception
+    {
+        Pattern regex = Pattern.compile("/Bod[x-z]/.+");
+        ImmutableMap<String, String> result = instance.getHexStringsMatching(regex);
+        assertEquals(3, result.size());
+        assertEquals("0x2F322F302F30", result.get("/Body/LastModified/Date"));
+        assertEquals("0x2F322F312F31", result.get("/Body/Prefix/Text"));
+        assertEquals("0x2F322F322F31", result.get("/Body/Content/Text"));
+        result = emptyInstance.getHexStringsMatching(regex);
+        assertEquals(0, result.size());
+
+        regex = Pattern.compile("/\\d{2,4}/\\d/1");
+        result = instance.getHexStringsMatching(regex);
+        assertEquals(1, result.size());
+        assertEquals("0x2F39392F312F31", result.get("/99/1/1"));
+        result = emptyInstance.getHexStringsMatching(regex);
+        assertEquals(0, result.size());
+
+        regex = Pattern.compile("/Header/A.*");
+        result = instance.getHexStringsMatching(regex);
+        assertEquals(0, result.size());
+        result = emptyInstance.getHexStringsMatching(regex);
+        assertEquals(0, result.size());
     }
 
     @Test
@@ -225,6 +280,31 @@ public class DecodedAsnDataDefaultTest
     }
 
     @Test
+    public void testGetPrintableStringsMatching() throws Exception
+    {
+        Pattern regex = Pattern.compile(".+Text");
+        ImmutableMap<String, String> result = instance.getPrintableStringsMatching(regex);
+        assertEquals(2, result.size());
+        assertEquals("printableString", result.get("/Body/Prefix/Text"));
+        assertEquals("printableString", result.get("/Body/Content/Text"));
+        result = emptyInstance.getPrintableStringsMatching(regex);
+        assertEquals(0, result.size());
+
+        regex = Pattern.compile(".+/\\d{1}");
+        result = instance.getPrintableStringsMatching(regex);
+        assertEquals(1, result.size());
+        assertEquals("printableString", result.get("/99/1/1"));
+        result = emptyInstance.getPrintableStringsMatching(regex);
+        assertEquals(0, result.size());
+
+        regex = Pattern.compile(".*/A[^/]+");
+        result = instance.getPrintableStringsMatching(regex);
+        assertEquals(0, result.size());
+        result = emptyInstance.getPrintableStringsMatching(regex);
+        assertEquals(0, result.size());
+    }
+
+    @Test
     public void testGetDecodedObject() throws Exception
     {
         assertEquals("decodedObject", instance.getDecodedObject("/Header/Published/Date"));
@@ -240,5 +320,31 @@ public class DecodedAsnDataDefaultTest
         assertEquals("", emptyInstance.getDecodedObject(""));
         assertEquals("", emptyInstance.getDecodedObject("/0/0/0"));
         assertEquals("", emptyInstance.getDecodedObject("/Header/Published/Date"));
+    }
+
+    @Test
+    public void testGetDecodedObjectsMatching() throws Exception
+    {
+        Pattern regex = Pattern.compile(".+dy.+");
+        ImmutableMap<String, Object> result = instance.getDecodedObjectsMatching(regex);
+        assertEquals(3, result.size());
+        assertEquals("decodedObject", result.get("/Body/LastModified/Date"));
+        assertEquals("decodedObject", result.get("/Body/Prefix/Text"));
+        assertEquals("decodedObject", result.get("/Body/Content/Text"));
+        result = emptyInstance.getDecodedObjectsMatching(regex);
+        assertEquals(0, result.size());
+
+        regex = Pattern.compile("/9[0-9]/\\d+/\\d{1}");
+        result = instance.getDecodedObjectsMatching(regex);
+        assertEquals(1, result.size());
+        assertEquals("decodedObject", result.get("/99/1/1"));
+        result = emptyInstance.getDecodedObjectsMatching(regex);
+        assertEquals(0, result.size());
+
+        regex = Pattern.compile(".*/A[^/]+");
+        result = instance.getDecodedObjectsMatching(regex);
+        assertEquals(0, result.size());
+        result = emptyInstance.getDecodedObjectsMatching(regex);
+        assertEquals(0, result.size());
     }
 }

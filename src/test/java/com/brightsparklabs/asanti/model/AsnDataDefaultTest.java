@@ -68,39 +68,39 @@ public class AsnDataDefaultTest
     }
 
     @Test
-    public void testGetDataString() throws Exception
-    {
-        AsnData instance = new AsnDataDefault(tagsToData);
-        assertArrayEquals(instance.getData("/0/0/0"), "/0/0/0".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/0/1/0"), "/0/1/0".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/1/0/1"), "/1/0/1".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/2/2/0"), "/2/2/0".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/99/0"), "/99/0".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/fake/0"), "".getBytes(Charsets.UTF_8));
-
-        instance = new AsnDataDefault(Maps.<String, byte[]> newHashMap());
-        assertArrayEquals(instance.getData("/0/0/0"), "".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/0/1/0"), "".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/1/0/1"), "".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/2/2/0"), "".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/99/0"), "".getBytes(Charsets.UTF_8));
-        assertArrayEquals(instance.getData("/fake/0"), "".getBytes(Charsets.UTF_8));
-    }
+        public void testGetBytesString() throws Exception
+        {
+            AsnData instance = new AsnDataDefault(tagsToData);
+            assertArrayEquals(instance.getBytes("/0/0/0"), "/0/0/0".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/0/1/0"), "/0/1/0".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/1/0/1"), "/1/0/1".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/2/2/0"), "/2/2/0".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/99/0"), "/99/0".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/fake/0"), "".getBytes(Charsets.UTF_8));
+    
+            instance = new AsnDataDefault(Maps.<String, byte[]> newHashMap());
+            assertArrayEquals(instance.getBytes("/0/0/0"), "".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/0/1/0"), "".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/1/0/1"), "".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/2/2/0"), "".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/99/0"), "".getBytes(Charsets.UTF_8));
+            assertArrayEquals(instance.getBytes("/fake/0"), "".getBytes(Charsets.UTF_8));
+        }
 
     @Test
-    public void testGetData() throws Exception
-    {
-        AsnData instance = new AsnDataDefault(tagsToData);
-        ImmutableMap<String, byte[]> data = instance.getData();
-        assertEquals(data.size(), 5);
-        assertArrayEquals(data.get("/0/0/0"), "/0/0/0".getBytes(Charsets.UTF_8));
-        assertArrayEquals(data.get("/0/1/0"), "/0/1/0".getBytes(Charsets.UTF_8));
-        assertArrayEquals(data.get("/1/0/1"), "/1/0/1".getBytes(Charsets.UTF_8));
-        assertArrayEquals(data.get("/2/2/0"), "/2/2/0".getBytes(Charsets.UTF_8));
-        assertArrayEquals(data.get("/99/0"), "/99/0".getBytes(Charsets.UTF_8));
-
-        instance = new AsnDataDefault(Maps.<String, byte[]> newHashMap());
-        data = instance.getData();
-        assertTrue(data.size() == 0);
-    }
+        public void testGetBytes() throws Exception
+        {
+            AsnData instance = new AsnDataDefault(tagsToData);
+            ImmutableMap<String, byte[]> data = instance.getBytes();
+            assertEquals(data.size(), 5);
+            assertArrayEquals(data.get("/0/0/0"), "/0/0/0".getBytes(Charsets.UTF_8));
+            assertArrayEquals(data.get("/0/1/0"), "/0/1/0".getBytes(Charsets.UTF_8));
+            assertArrayEquals(data.get("/1/0/1"), "/1/0/1".getBytes(Charsets.UTF_8));
+            assertArrayEquals(data.get("/2/2/0"), "/2/2/0".getBytes(Charsets.UTF_8));
+            assertArrayEquals(data.get("/99/0"), "/99/0".getBytes(Charsets.UTF_8));
+    
+            instance = new AsnDataDefault(Maps.<String, byte[]> newHashMap());
+            data = instance.getBytes();
+            assertTrue(data.size() == 0);
+        }
 }

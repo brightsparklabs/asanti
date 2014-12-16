@@ -5,6 +5,9 @@
 
 package com.brightsparklabs.asanti.model;
 
+import java.util.regex.Pattern;
+
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -64,6 +67,18 @@ public interface DecodedAsnData
     public byte[] getBytes(String tag);
 
     /**
+     * Gets the data (bytes) from all tags matching the supplied regular
+     * expression
+     *
+     * @param regex
+     *            regular expression to match tags against
+     *
+     * @return data associated with the matching tags. Map is of form:
+     *         {@code tag => data}
+     */
+    public ImmutableMap<String, byte[]> getBytesMatching(Pattern regex);
+
+    /**
      * Gets the data (bytes) associated with the specified tag as a hex string
      *
      * @param tag
@@ -73,6 +88,18 @@ public interface DecodedAsnData
      *         or {@code "0x"} if the tag does not exist
      */
     public String getHexString(String tag);
+
+    /**
+     * Gets the data (bytes) from all tags matching the supplied regular
+     * expression as hex strings
+     *
+     * @param regex
+     *            regular expression to match tags against
+     *
+     * @return data associated with the matching tags. Map is of form:
+     *         {@code tag => data}
+     */
+    public ImmutableMap<String, String> getHexStringsMatching(Pattern regex);
 
     /**
      * Gets the data (bytes) associated with the specified tag as a printable
@@ -87,6 +114,18 @@ public interface DecodedAsnData
     public String getPrintableString(String tag);
 
     /**
+     * Gets the data (bytes) from all tags matching the supplied regular
+     * expression as printable strings
+     *
+     * @param regex
+     *            regular expression to match tags against
+     *
+     * @return data associated with the matching tags. Map is of form:
+     *         {@code tag => data}
+     */
+    public ImmutableMap<String, String> getPrintableStringsMatching(Pattern regex);
+
+    /**
      * Gets the data (bytes) associated with the specified tag as the decoded
      * Java object most appropriate to its type
      *
@@ -97,4 +136,16 @@ public interface DecodedAsnData
      *         the tag does not exist
      */
     public Object getDecodedObject(String tag);
+
+    /**
+     * Gets the data (bytes) from all tags matching the supplied regular
+     * expression as the decoded Java object most appropriate to its type
+     *
+     * @param regex
+     *            regular expression to match tags against
+     *
+     * @return data associated with the matching tags. Map is of form:
+     *         {@code tag => data}
+     */
+    public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex);
 }

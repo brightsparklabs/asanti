@@ -57,14 +57,14 @@ public class AsnDataDefault implements AsnData
     }
 
     @Override
-    public byte[] getData(String rawTag)
+    public byte[] getBytes(String rawTag)
     {
         final byte[] result = tagsToData.get(rawTag);
         return (result == null) ? new byte[0] : result;
     }
 
     @Override
-    public ImmutableMap<String, byte[]> getData()
+    public ImmutableMap<String, byte[]> getBytes()
     {
         return tagsToData;
     }

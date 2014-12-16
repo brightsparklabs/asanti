@@ -36,7 +36,7 @@ public interface AsnData
      * @return data associated with the specified tag or an empty byte array if
      *         the tag does not exist
      */
-    public byte[] getData(String rawTag);
+    public byte[] getBytes(String rawTag);
 
     /**
      * Returns a mapping of all tags to the data (bytes) associated with them
@@ -44,5 +44,5 @@ public interface AsnData
      *
      * @return mapping of all tags to their associated data
      */
-    public ImmutableMap<String, byte[]> getData();
+    public ImmutableMap<String, byte[]> getBytes();
 }

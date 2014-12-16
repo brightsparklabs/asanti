@@ -8,6 +8,7 @@ import static com.google.common.base.Preconditions.*;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -38,6 +39,9 @@ public class DecodedAsnDataDefault implements DecodedAsnData
 
     /** unmapped tags found in the data */
     private final ImmutableSet<String> unmappedTags;
+
+    /** names of all tags (decoded and unmapped) found in the data */
+    private final ImmutableSet<String> allTags;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -80,6 +84,10 @@ public class DecodedAsnDataDefault implements DecodedAsnData
         }
         this.decodedToRawTags = ImmutableMap.copyOf(decodedToRawTags);
         this.unmappedTags = ImmutableSortedSet.copyOf(unmappedTags);
+        this.allTags = ImmutableSet.<String>builder()
+                .addAll(decodedToRawTags.keySet())
+                .addAll(unmappedTags)
+                .build();
     }
 
     // -------------------------------------------------------------------------
@@ -113,8 +121,20 @@ public class DecodedAsnDataDefault implements DecodedAsnData
             // could not find tag, assume it is already raw tag
             rawTag = tag;
         }
-        final byte[] result = asnData.getData(rawTag);
+        final byte[] result = asnData.getBytes(rawTag);
         return (result == null) ? new byte[0] : result;
+    }
+
+    @Override
+    public ImmutableMap<String, byte[]> getBytesMatching(Pattern regex)
+    {
+        final Map<String, byte[]> result = Maps.newHashMap();
+        for (String tag : getMatchingTags(regex))
+        {
+            result.put(tag, getBytes(tag));
+        }
+
+        return ImmutableMap.copyOf(result);
     }
 
     @Override
@@ -125,6 +145,18 @@ public class DecodedAsnDataDefault implements DecodedAsnData
     }
 
     @Override
+    public ImmutableMap<String, String> getHexStringsMatching(Pattern regex)
+    {
+        final Map<String, String> result = Maps.newHashMap();
+        for (String tag : getMatchingTags(regex))
+        {
+            result.put(tag, getHexString(tag));
+        }
+
+        return ImmutableMap.copyOf(result);
+    }
+
+    @Override
     public String getPrintableString(String tag)
     {
         final byte[] bytes = getBytes(tag);
@@ -132,9 +164,61 @@ public class DecodedAsnDataDefault implements DecodedAsnData
     }
 
     @Override
+    public ImmutableMap<String, String> getPrintableStringsMatching(Pattern regex)
+    {
+        final Map<String, String> result = Maps.newHashMap();
+        for (String tag : getMatchingTags(regex))
+        {
+            result.put(tag, getPrintableString(tag));
+        }
+
+        return ImmutableMap.copyOf(result);
+    }
+
+    @Override
     public Object getDecodedObject(String tag)
     {
         final byte[] bytes = getBytes(tag);
         return asnSchema.getDecodedObject(tag, bytes);
+    }
+
+    @Override
+    public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex)
+    {
+        final Map<String, Object> result = Maps.newHashMap();
+        for (String tag : getMatchingTags(regex))
+        {
+            result.put(tag, getDecodedObject(tag));
+        }
+
+        return ImmutableMap.copyOf(result);
+    }
+
+    // -------------------------------------------------------------------------
+    // PRIVATE
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns all tags which match the supplied regular expression
+     *
+     * @param regex
+     *            regular expression to test tag names against
+     *
+     * @return all tags which match the supplied regular expression
+     */
+    private ImmutableSet<String> getMatchingTags(Pattern regex)
+    {
+        if (regex == null) { return ImmutableSet.<String>of(); }
+
+        final Set<String> tags = Sets.newHashSet();
+        for (String tag : allTags)
+        {
+            if (regex.matcher(tag).matches())
+            {
+                tags.add(tag);
+            }
+        }
+
+        return ImmutableSet.copyOf(tags);
     }
 }

@@ -51,7 +51,7 @@ public class AsnDecoder
             for (AsnData asnData : data)
             {
                 log.info("PDU[" + count + "]");
-                final Map<String, byte[]> tagsData = asnData.getData();
+                final Map<String, byte[]> tagsData = asnData.getBytes();
 
                 for (String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
                 {
