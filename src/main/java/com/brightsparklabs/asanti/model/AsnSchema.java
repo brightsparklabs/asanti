@@ -21,6 +21,9 @@ public interface AsnSchema
      * Returns the decoded tag for the supplied raw tag. E.g.
      * {@code getDecodedTag("/1/0/1")} => {@code "/Header/Published/Date"}
      *
+     * @param rawTag
+     *            raw tag to decode
+     *
      * @return the decoded tag or an empty string if it cannot be decoded
      */
     public String getDecodedTag(String rawTag);
@@ -28,6 +31,9 @@ public interface AsnSchema
     /**
      * Returns the raw tag for the supplied decoded tag. E.g.
      * {@code getRawTag("/Header/Published/Date")} => {@code "/1/0/1"}
+     *
+     * @param decodedTag
+     *            decoded tag to map back to raw tag
      *
      * @return the raw tag or an empty string if it cannot be determined
      */
@@ -40,6 +46,9 @@ public interface AsnSchema
      * @param tag
      *            tag associated with the data
      *
+     * @param data
+     *            data associated with the tag
+     *
      * @return data associated with the specified tag or an empty string if the
      *         tag does not exist or parameters are {@code null}
      */
@@ -51,6 +60,9 @@ public interface AsnSchema
      *
      * @param tag
      *            tag associated with the data
+     *
+     * @param data
+     *            data associated with the tag
      *
      * @return data associated with the specified tag or an empty byte array if
      *         the tag does not exist or parameters are {@code null}
