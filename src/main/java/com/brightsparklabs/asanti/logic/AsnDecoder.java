@@ -46,6 +46,8 @@ public class AsnDecoder
         {
             final String filename = args[0];
             final File asnFile = new File(filename);
+
+            //new AsnSchemaDefault(asnFile);
             final ImmutableList<AsnData> data = readAsnBerFile(asnFile);
             int count = 0;
             for (AsnData asnData : data)
