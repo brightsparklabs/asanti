@@ -6,6 +6,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'findbugs'
+apply plugin: 'java-library-distribution'
 
 repositories {
     mavenCentral()
@@ -24,3 +25,9 @@ tasks.withType(FindBugs) {
         html.enabled = true
     }
  }
+
+distributions {
+    main{
+        baseName = 'asanti'
+    }
+}
