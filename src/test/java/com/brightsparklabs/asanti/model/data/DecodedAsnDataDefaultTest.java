@@ -2,7 +2,7 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.model;
+package com.brightsparklabs.asanti.model.data;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;

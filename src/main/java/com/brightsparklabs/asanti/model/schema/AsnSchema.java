@@ -3,7 +3,7 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.model;
+package com.brightsparklabs.asanti.model.schema;
 
 /**
  * Interface for modeling an ASN.1 schema

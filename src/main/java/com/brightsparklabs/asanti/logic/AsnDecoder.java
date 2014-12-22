@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.brightsparklabs.asanti.model.AsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;

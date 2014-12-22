@@ -2,7 +2,7 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.model;
+package com.brightsparklabs.asanti.model.data;
 
 import java.util.regex.Pattern;
 

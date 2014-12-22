@@ -2,12 +2,14 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.model;
+package com.brightsparklabs.asanti.model.data;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsnDataDefault;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;

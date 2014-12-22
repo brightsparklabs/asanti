@@ -23,8 +23,8 @@ import org.bouncycastle.asn1.DEREncodable;
 import org.bouncycastle.asn1.DERObject;
 import org.bouncycastle.asn1.util.ASN1Dump;
 
-import com.brightsparklabs.asanti.model.AsnData;
-import com.brightsparklabs.asanti.model.AsnDataDefault;
+import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsnDataDefault;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
