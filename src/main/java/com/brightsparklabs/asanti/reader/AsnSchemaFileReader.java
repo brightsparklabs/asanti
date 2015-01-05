@@ -230,12 +230,11 @@ public class AsnSchemaFileReader
      */
     private void parseContent(Iterator<String> lineIterator) throws IOException
     {
-        String line;
         try
         {
             // skip past 'IMPORTS' and 'EXPORTS'
-            line = lineIterator.next();
-            if (line.startsWith("EXPORTS") || line.startsWith("IMPORTS"))
+            String line = lineIterator.next();
+            while (line.startsWith("EXPORTS") || line.startsWith("IMPORTS"))
             {
                 while (!";".equals(line))
                 {
