@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
+import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.io.BaseEncoding;
@@ -47,19 +48,25 @@ public class AsnDecoder
             final String filename = args[0];
             final File asnFile = new File(filename);
 
-            //new AsnSchemaDefault(asnFile);
-            final ImmutableList<AsnData> data = readAsnBerFile(asnFile);
-            int count = 0;
-            for (AsnData asnData : data)
+            if (filename.endsWith(".asn"))
             {
-                log.info("PDU[" + count + "]");
-                final Map<String, byte[]> tagsData = asnData.getBytes();
-
-                for (String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
+                AsnSchemaFileReader.read(asnFile);
+            }
+            else
+            {
+                final ImmutableList<AsnData> data = readAsnBerFile(asnFile);
+                int count = 0;
+                for (AsnData asnData : data)
                 {
-                    log.info("\t" + tag + ": 0x" + BaseEncoding.base16().encode(tagsData.get(tag)));
+                    log.info("PDU[" + count + "]");
+                    final Map<String, byte[]> tagsData = asnData.getBytes();
+
+                    for (String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
+                    {
+                        log.info("\t" + tag + ": 0x" + BaseEncoding.base16().encode(tagsData.get(tag)));
+                    }
+                    count++;
                 }
-                count++;
             }
         }
         catch (Exception ex)
