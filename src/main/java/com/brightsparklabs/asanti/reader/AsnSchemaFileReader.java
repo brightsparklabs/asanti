@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.reader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -20,6 +21,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaDefault;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
@@ -53,10 +55,28 @@ public class AsnSchemaFileReader
     private final static Pattern PATTERN_SEMICOLONS = Pattern.compile(";");
 
     /** pattern to match a type definition */
-    private final static Pattern PATTERN_TYPE_DEFINITION = Pattern.compile("^([A-Za-z0-9\\-](\\{[A-Za-z0-9\\-:, ]+\\})?)+ ?::=.+");
+    private final static Pattern PATTERN_TYPE_DEFINITION = Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+) ?::= ?(.+)");
+
+    /** pattern to match a SET/SEQUENCE type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_SET_OR_SEQUENCE = Pattern.compile("^(SEQUENCE|SET) ?\\{(.+)\\} ?(.*)$");
+
+    /** pattern to match a ENUMERATED type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_ENUMERATED = Pattern.compile("^ENUMERATED ?\\{(.+)\\}$");
+
+    /** pattern to match a CHOICE type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_CHOICE = Pattern.compile("^CHOICE ?\\{(.+)\\}(\\(.+\\))?$");
+
+    /** pattern to match a SET OF/SEQUENCE OF type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_SET_OF_OR_SEQUENCE_OF = Pattern.compile("^(SEQUENCE|SET)( .+)? OF ?(.+)$");
+
+    /** pattern to match a CLASS type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_CLASS = Pattern.compile("^CLASS ?\\{(.+)\\}$");
+
+    /** pattern to match a PRIMITIVE type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE = Pattern.compile("^(BIT STRING|GeneralizedTime|INTEGER|NumericString|OCTET STRING|UTF8String|VisibleString) ?(.*)$");
 
     /** pattern to match a value assignment */
-    private final static Pattern PATTERN_VALUE_ASSIGNMENT = Pattern.compile("^([A-Za-z0-9\\-](\\{[A-Za-z0-9\\-:, ]+\\})?)+( [A-Za-z0-9\\-]+)+ ?::=.+");
+    private final static Pattern PATTERN_VALUE_ASSIGNMENT = Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+( [A-Za-z0-9\\-]+)+) ?::= ?(.+)");
 
     /** error message if schema is missing header keywords */
     private static final String ERROR_MISSING_HEADERS = "Schema does not contain all expected module headers";
@@ -66,6 +86,10 @@ public class AsnSchemaFileReader
 
     /** error message if a type definition or value assignment is not found */
     private final static String ERROR_UNKNOWN_CONTENT = "Parser expected a type definition or value assignment but found: ";
+
+    // TODO add all primitives to error message
+    /** error message if an unknown ASN.1 built-in type is found */
+    private static final String ERROR_UNKNOWN_BUILT_IN_TYPE = "Parser expected a built-in type of SEQUENCE, SET, ENUMERATED, BIT STRING, GeneralizedTime, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString, SEQUENCE OF, SET OF, CHOICE or CLASS but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -186,12 +210,6 @@ public class AsnSchemaFileReader
         contents = PATTERN_SEMICOLONS.matcher(contents).replaceAll("\n;\n");
 
         final Iterable<String> lines = Splitter.on("\n").trimResults().omitEmptyStrings().split(contents);
-
-        for (String line : lines)
-        {
-            log.log(Level.FINE, "{0}", line);
-        }
-
         return lines.iterator();
     }
 
@@ -320,7 +338,6 @@ public class AsnSchemaFileReader
             }
 
             // read to the next definition or assignment
-            log.log(Level.FINER, "Reading new content: {0}", line);
             final StringBuilder builder = new StringBuilder();
             do
             {
@@ -335,30 +352,30 @@ public class AsnSchemaFileReader
             Matcher matcher = PATTERN_TYPE_DEFINITION.matcher(content);
             if (matcher.matches())
             {
-                parseTypeDefinition(content, moduleBuilder);
+                parseTypeDefinition(matcher, moduleBuilder);
+                continue;
             }
-            else
+
+            // check if content is a value assignment
+            matcher = PATTERN_VALUE_ASSIGNMENT.matcher(content);
+            if (matcher.matches())
             {
-                // check if content is a value assignment
-                matcher = PATTERN_VALUE_ASSIGNMENT.matcher(content);
-                if (matcher.matches())
-                {
-                    parseValueAssignment(content, moduleBuilder);
-                }
-                else
-                {
-                    final String error = ERROR_UNKNOWN_CONTENT + content;
-                    throw new IOException(error);
-                }
+                parseValueAssignment(matcher, moduleBuilder);
+                continue;
             }
+
+            // unknown content
+            final String error = ERROR_UNKNOWN_CONTENT + content;
+            throw new IOException(error);
         }
     }
 
     /**
      * Parses a type definition
      *
-     * @param typeDefinition
-     *            the entire type definition as a single line
+     * @param typeDefinitionMatcher
+     *            the matcher that identified the content as a type definition
+     *            (generated from {@link #PATTERN_TYPE_DEFINITION})
      *
      * @param moduleBuilder
      *            builder to use to construct module from the parsed information
@@ -366,16 +383,130 @@ public class AsnSchemaFileReader
      * @throws IOException
      *             if any errors occur while parsing the schema file
      */
-    private void parseTypeDefinition(String typeDefinition, AsnSchemaModule.Builder moduleBuilder)
+    private void parseTypeDefinition(Matcher typeDefinitionMatcher, AsnSchemaModule.Builder moduleBuilder)
+            throws IOException
     {
-        log.log(Level.INFO, "Found type definition: {0}", typeDefinition);
+        final String name = typeDefinitionMatcher.group(1);
+        final String value = typeDefinitionMatcher.group(4);
+        log.log(Level.FINE, "Found type definition: {0} = {1}", new Object[] { name, value });
+
+        // check if defining a SET or SEQUENCE
+        Matcher matcher = PATTERN_TYPE_DEFINITION_SET_OR_SEQUENCE.matcher(value);
+        if (matcher.matches())
+        {
+            final String asnBuiltinType = matcher.group(1);
+            final String items = matcher.group(2);
+            parseTypeDefinitionSetOrSequence(name, asnBuiltinType, items, moduleBuilder);
+            return;
+        }
+
+        // check if defining an ENUMERATED
+        matcher = PATTERN_TYPE_DEFINITION_ENUMERATED.matcher(value);
+        if (matcher.matches())
+        {
+            // TODO handle ENUMERATED
+            return;
+        }
+
+        // check if defining a PRIMITIVE
+        matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
+        if (matcher.matches())
+        {
+            // TODO handle *all* PRIMITIVEs
+            return;
+        }
+
+        // check if defining a CHOICE
+        matcher = PATTERN_TYPE_DEFINITION_CHOICE.matcher(value);
+        if (matcher.matches())
+        {
+            // TODO handle CHOICE
+            return;
+        }
+
+        // check if defining a SET OF or SEQUENCE OF
+        matcher = PATTERN_TYPE_DEFINITION_SET_OF_OR_SEQUENCE_OF.matcher(value);
+        if (matcher.matches())
+        {
+            // TODO handle SET OF or SEQUENCE OF
+            return;
+        }
+
+        // check if defining a CLASS
+        matcher = PATTERN_TYPE_DEFINITION_CLASS.matcher(value);
+        if (matcher.matches())
+        {
+            // TODO handle CLASS
+            return;
+        }
+
+        // unknown definition
+        final String error = ERROR_UNKNOWN_BUILT_IN_TYPE + typeDefinitionMatcher.group(0);
+        throw new IOException(error);
+    }
+
+    private void parseTypeDefinitionSetOrSequence(String name, String asnBuiltinType, String itemsString,
+            AsnSchemaModule.Builder moduleBuilder)
+    {
+        final ArrayList<String> items = Lists.newArrayList();
+        int begin = 0;
+        int bracketCount = 0;
+        final int length = itemsString.length();
+        for (int i = 0; i < length; i++)
+        {
+            if (i == (length - 1))
+            {
+                // at end of string
+                final String item = itemsString.substring(begin, length).trim();
+                if (!item.equals("..."))
+                {
+                    items.add(item);
+                }
+                break;
+            }
+
+            final char character = itemsString.charAt(i);
+            switch (character)
+            {
+                case '{':
+                case '(':
+                    bracketCount++;
+                    break;
+
+                case '}':
+                case ')':
+                    bracketCount--;
+                    break;
+
+                case ',':
+                    if (bracketCount == 0)
+                    {
+                        final String item = itemsString.substring(begin, i).trim();
+                        if (!item.equals("..."))
+                        {
+                            items.add(item);
+                        }
+                        begin = i + 1;
+                    }
+                    break;
+
+                default:
+            }
+        }
+
+        for (String item : items)
+        {
+            log.log(Level.FINER, "  - {0}", item);
+        }
+
     }
 
     /**
      * Parses a value assignment
      *
-     * @param valueAssignment
-     *            the entire value assignment as a single line
+     * @param valueAssignmentMatcher
+     *            the matcher that identified the content as a value assignment
+     *            (generated from {@link #PATTERN_VALUE_ASSIGNMENT})
      *
      * @param moduleBuilder
      *            builder to use to construct module from the parsed information
@@ -383,8 +514,10 @@ public class AsnSchemaFileReader
      * @throws IOException
      *             if any errors occur while parsing the schema file
      */
-    private void parseValueAssignment(String valueAssignment, AsnSchemaModule.Builder moduleBuilder)
+    private void parseValueAssignment(Matcher valueAssignmentMatcher, AsnSchemaModule.Builder moduleBuilder)
     {
-        log.log(Level.INFO, "Found value assignment: {0}", valueAssignment);
+        final String name = valueAssignmentMatcher.group(1);
+        final String value = valueAssignmentMatcher.group(5);
+        log.log(Level.FINE, "Found value assignment: {0} - {1}", new Object[] { name, value });
     }
 }
