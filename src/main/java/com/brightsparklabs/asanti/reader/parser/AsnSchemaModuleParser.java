@@ -59,6 +59,8 @@ public class AsnSchemaModuleParser
      * @param moduleText
      *            all text from module within the ASN.1 schema
      *
+     * @return an {@link AsnSchemaModule} representing the parsed data
+     *
      * @throws ParseException
      *             if any errors occur while parsing the module
      *
@@ -67,7 +69,7 @@ public class AsnSchemaModuleParser
     {
         final Iterator<String> iterator = moduleText.iterator();
         final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
-        parseModuleHeader(iterator, moduleBuilder);
+        parseHeader(iterator, moduleBuilder);
         parseContent(iterator, moduleBuilder);
         final AsnSchemaModule module = moduleBuilder.build();
         return module;
@@ -100,7 +102,7 @@ public class AsnSchemaModuleParser
      * @throws ParseException
      *             if any errors occur while parsing the schema
      */
-    private static void parseModuleHeader(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
+    private static void parseHeader(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
             throws ParseException
     {
         try

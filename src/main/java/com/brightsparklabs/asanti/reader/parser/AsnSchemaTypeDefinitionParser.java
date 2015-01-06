@@ -7,12 +7,14 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /**
@@ -27,7 +29,10 @@ public class AsnSchemaTypeDefinitionParser
     // -------------------------------------------------------------------------
 
     /** pattern to match a SET/SEQUENCE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SET_OR_SEQUENCE = Pattern.compile("^(SEQUENCE|SET) ?\\{(.+)\\} ?(.*)$");
+    private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE = Pattern.compile("^SEQUENCE ?\\{(.+)\\} ?(.*)$");
+
+    /** pattern to match a SET/SEQUENCE type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_SET = Pattern.compile("^SET ?\\{(.+)\\} ?(.*)$");
 
     /** pattern to match a ENUMERATED type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_ENUMERATED = Pattern.compile("^ENUMERATED ?\\{(.+)\\}$");
@@ -69,6 +74,8 @@ public class AsnSchemaTypeDefinitionParser
      *            the value of the defined type (i.e. the text on the right hand
      *            side of the {@code ::=})
      *
+     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
@@ -76,13 +83,20 @@ public class AsnSchemaTypeDefinitionParser
     {
         log.log(Level.FINE, "Found type definition: {0} = {1}", new Object[] { name, value });
 
-        // check if defining a SET or SEQUENCE
-        Matcher matcher = PATTERN_TYPE_DEFINITION_SET_OR_SEQUENCE.matcher(value);
+        // check if defining a SEQUENCE
+        Matcher matcher = PATTERN_TYPE_DEFINITION_SEQUENCE.matcher(value);
         if (matcher.matches())
         {
-            final String asnBuiltinType = matcher.group(1);
-            final String items = matcher.group(2);
-            return parseSetOrSequence(name, asnBuiltinType, items);
+            final String items = matcher.group(1);
+            return parseSequence(name, items);
+        }
+
+        // check if defining a SET
+        matcher = PATTERN_TYPE_DEFINITION_SET.matcher(value);
+        if (matcher.matches())
+        {
+            final String items = matcher.group(1);
+            return parseSet(name, items);
         }
 
         // check if defining an ENUMERATED
@@ -90,7 +104,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle ENUMERATED
-            return new AsnSchemaTypeDefinition();
+            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
         }
 
         // check if defining a PRIMITIVE
@@ -98,7 +112,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle *all* PRIMITIVEs
-            return new AsnSchemaTypeDefinition();
+            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
         }
 
         // check if defining a CHOICE
@@ -106,7 +120,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle CHOICE
-            return new AsnSchemaTypeDefinition();
+            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
         }
 
         // check if defining a SET OF or SEQUENCE OF
@@ -114,7 +128,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle SET OF or SEQUENCE OF
-            return new AsnSchemaTypeDefinition();
+            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
         }
 
         // check if defining a CLASS
@@ -122,12 +136,12 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle CLASS
-            return new AsnSchemaTypeDefinition();
+            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
         }
 
         // unknown definition
         final String error = ERROR_UNKNOWN_BUILT_IN_TYPE + name + " ::= " + value;
-        throw new ParseException(error, 0);
+        throw new ParseException(error, -1);
     }
 
     // -------------------------------------------------------------------------
@@ -140,24 +154,60 @@ public class AsnSchemaTypeDefinitionParser
      * @param name
      *            name of the defined type
      *
+     * @param itemsText
+     *            the items contained in the construct
+     *
+     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     */
+    private static AsnSchemaTypeDefinition parseSequence(String name, String itemsText)
+    {
+        final List<String> items = parseConstructItems(itemsText);
+        return new AsnSchemaTypeDefinition(items);
+    }
+
+    /**
+     * Parses a SET type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param itemsText
+     *            the items contained in the construct
+     *
+     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     */
+    private static AsnSchemaTypeDefinition parseSet(String name, String itemsText)
+    {
+        final List<String> items = parseConstructItems(itemsText);
+        return new AsnSchemaTypeDefinition(items);
+    }
+
+    /**
+     * Parses the items in a construct (SET/SEQUENCE)
+     *
+     * @param name
+     *            name of the defined type
+     *
      * @param asnBuiltinType
      *            ASN.1 built-in type of the defined type (SET or SEQUENCE)
      *
-     * @param itemsString
-     *            the items which comprise this SET/SEQUENCE
+     * @param itemsText
+     *            the items contained in the construct
+     *
+     * @return each item found in the construct
      */
-    private static AsnSchemaTypeDefinition parseSetOrSequence(String name, String asnBuiltinType, String itemsString)
+    private static List<String> parseConstructItems(String itemsText)
     {
         final ArrayList<String> items = Lists.newArrayList();
         int begin = 0;
         int bracketCount = 0;
-        final int length = itemsString.length();
+        final int length = itemsText.length();
         for (int i = 0; i < length; i++)
         {
             if (i == (length - 1))
             {
                 // at end of string
-                final String item = itemsString.substring(begin, length).trim();
+                final String item = itemsText.substring(begin, length).trim();
                 if (!item.equals("..."))
                 {
                     items.add(item);
@@ -165,7 +215,7 @@ public class AsnSchemaTypeDefinitionParser
                 break;
             }
 
-            final char character = itemsString.charAt(i);
+            final char character = itemsText.charAt(i);
             switch (character)
             {
                 case '{':
@@ -181,7 +231,7 @@ public class AsnSchemaTypeDefinitionParser
                 case ',':
                     if (bracketCount == 0)
                     {
-                        final String item = itemsString.substring(begin, i).trim();
+                        final String item = itemsText.substring(begin, i).trim();
                         if (!item.equals("..."))
                         {
                             items.add(item);
@@ -199,6 +249,6 @@ public class AsnSchemaTypeDefinitionParser
             log.log(Level.FINER, "  - {0}", item);
         }
 
-        return new AsnSchemaTypeDefinition();
+        return items;
     }
 }

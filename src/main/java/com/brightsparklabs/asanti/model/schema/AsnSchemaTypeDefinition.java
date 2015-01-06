@@ -26,6 +26,14 @@ public class AsnSchemaTypeDefinition
     // private final ImmutableMap<String, String> children;
 
     // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+    public AsnSchemaTypeDefinition(Iterable<String> items)
+    {
+        // TODO Auto-generated constructor stub
+    }
+
+    // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
