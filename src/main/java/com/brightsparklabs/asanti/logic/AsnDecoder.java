@@ -71,7 +71,8 @@ public class AsnDecoder
         }
         catch (Exception ex)
         {
-            log.severe("Could not parser file - " + ex.getMessage());
+            log.severe("Could not parse file - " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

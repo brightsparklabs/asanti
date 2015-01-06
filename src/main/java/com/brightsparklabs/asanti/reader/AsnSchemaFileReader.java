@@ -8,15 +8,19 @@ package com.brightsparklabs.asanti.reader;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaDefault;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
 /**
@@ -48,11 +52,20 @@ public class AsnSchemaFileReader
     /** pattern to match semicolons */
     private final static Pattern PATTERN_SEMICOLONS = Pattern.compile(";");
 
+    /** pattern to match a type definition */
+    private final static Pattern PATTERN_TYPE_DEFINITION = Pattern.compile("^([A-Za-z0-9\\-](\\{[A-Za-z0-9\\-:, ]+\\})?)+ ?::=.+");
+
+    /** pattern to match a value assignment */
+    private final static Pattern PATTERN_VALUE_ASSIGNMENT = Pattern.compile("^([A-Za-z0-9\\-](\\{[A-Za-z0-9\\-:, ]+\\})?)+( [A-Za-z0-9\\-]+)+ ?::=.+");
+
     /** error message if schema is missing header keywords */
     private static final String ERROR_MISSING_HEADERS = "Schema does not contain all expected module headers";
 
     /** error message if schema is missing content */
     private static final String ERROR_MISSING_CONTENT = "Schema does not contain any information within the 'BEGIN' and 'END' keywords";
+
+    /** error message if a type definition or value assignment is not found */
+    private final static String ERROR_UNKNOWN_CONTENT = "Parser expected a type definition or value assignment but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -71,7 +84,6 @@ public class AsnSchemaFileReader
      */
     private AsnSchemaFileReader()
     {
-        // private constructor
     }
 
     // -------------------------------------------------------------------------
@@ -112,11 +124,15 @@ public class AsnSchemaFileReader
     private AsnSchema parse(File asnSchemaFile) throws IOException
     {
         log.log(Level.FINE, "Parsing schema file: {0}", asnSchemaFile.getAbsolutePath());
+        final Map<String, AsnSchemaModule> modules = Maps.newHashMap();
         final Iterator<String> lineIterator = getLines(asnSchemaFile);
         while (lineIterator.hasNext())
         {
-            parseModuleHeader(lineIterator);
-            parseContent(lineIterator);
+            final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
+            parseModuleHeader(lineIterator, moduleBuilder);
+            parseContent(lineIterator, moduleBuilder);
+            final AsnSchemaModule module = moduleBuilder.build();
+            modules.put(module.getName(), module);
         }
 
         return new AsnSchemaDefault();
@@ -184,25 +200,34 @@ public class AsnSchemaFileReader
      * keyword.
      * <p>
      * Prior to calling this method, the iterator should be pointing at the
-     * first line in the schema.
+     * first line of the schema file, or the line containing 'END' of the
+     * previous module. I.e. calling {@code iterator.next()} will return the
+     * first line of a module within the schema.
      * <p>
      * After calling this method, the iterator will be pointing at the line
-     * following the 'BEGIN' keyword
+     * following the 'BEGIN' keyword. I.e. calling {@code iterator.next()} will
+     * return the line following the 'BEGIN' keyword.
      *
      * @param lineIterator
-     *            iterator pointing at the first line after the 'BEGIN' keyword
+     *            iterator pointing at the first line following the 'BEGIN'
+     *            keyword
+     *
+     * @param moduleBuilder
+     *            builder to use to construct module from the parsed information
      *
      * @throws IOException
      *             if any errors occur while parsing the schema file
      */
-    private void parseModuleHeader(Iterator<String> lineIterator) throws IOException
+    private void parseModuleHeader(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
+            throws IOException
     {
         try
         {
             final String moduleName = lineIterator.next().split(" ")[0];
             log.log(Level.INFO, "Found module: {0}", moduleName);
+            moduleBuilder.setName(moduleName);
 
-            // skip through to the BEGIN tag
+            // skip through to the BEGIN keyword
             for (String line = lineIterator.next(); !"BEGIN".equals(line); line = lineIterator.next())
             {
             }
@@ -217,22 +242,28 @@ public class AsnSchemaFileReader
      * Parses the data located between the 'BEGIN' and 'END' keywords.
      * <p>
      * Prior to calling this method, the iterator should be pointing at the line
-     * following the 'BEGIN' keyword.
+     * following the 'BEGIN' keyword.I.e. calling {@code iterator.next()} will
+     * return the line following the 'BEGIN' keyword.
      * <p>
      * After calling this method, the iterator will be pointing at the line
-     * following the 'END' keyword
+     * containing the 'END' keyword. I.e. calling {@code iterator.next()} will
+     * return the line following the 'END' keyword.
      *
      * @param lineIterator
-     *            iterator pointing at the first line after the 'BEGIN' keyword
+     *            iterator pointing at the first line following the 'BEGIN'
+     *            keyword
+     *
+     * @param moduleBuilder
+     *            builder to use to construct module from the parsed information
      *
      * @throws IOException
      *             if any errors occur while parsing the schema file
      */
-    private void parseContent(Iterator<String> lineIterator) throws IOException
+    private void parseContent(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder) throws IOException
     {
         try
         {
-            // skip past 'IMPORTS' and 'EXPORTS'
+            // skip past 'IMPORTS' and 'EXPORTS' keywords
             String line = lineIterator.next();
             while (line.startsWith("EXPORTS") || line.startsWith("IMPORTS"))
             {
@@ -242,13 +273,12 @@ public class AsnSchemaFileReader
                 }
                 line = lineIterator.next();
             }
+            parseTypeDefinitionsAndValueAssignments(line, lineIterator, moduleBuilder);
         }
         catch (NoSuchElementException ex)
         {
             throw new IOException(ERROR_MISSING_CONTENT);
         }
-
-        parseTypeDefinitionsAndValueAssignments(lineIterator);
     }
 
     /**
@@ -256,24 +286,105 @@ public class AsnSchemaFileReader
      * after the imports/exports and before the 'END' keyword.
      * <p>
      * Prior to calling this method, the iterator should be pointing at the line
-     * following all imports/exports.
+     * following all imports/exports. I.e. calling {@code iterator.next()} will
+     * return the line following the first type definition or value assignment.
      * <p>
      * After calling this method, the iterator will be pointing at the line
-     * following the 'END' keyword
+     * containing the 'END' keyword. I.e. calling {@code iterator.next()} will
+     * return the line following the 'END' keyword.
+     *
+     * @param firstLine
+     *            the first type definition or value assignment (i.e. the first
+     *            line following all imports/exports)
      *
      * @param lineIterator
-     *            iterator pointing at the first line after the 'BEGIN' keyword
+     *            iterator pointing at the first line following all
+     *            imports/exports
+     *
+     * @param moduleBuilder
+     *            builder to use to construct module from the parsed information
      *
      * @throws IOException
      *             if any errors occur while parsing the schema file
      */
-    private void parseTypeDefinitionsAndValueAssignments(Iterator<String> lineIterator)
+    private void parseTypeDefinitionsAndValueAssignments(String firstLine, Iterator<String> lineIterator,
+            AsnSchemaModule.Builder moduleBuilder) throws IOException
     {
-        String line = lineIterator.next();
+        String line = firstLine;
         while (!"END".equals(line))
         {
-            // TODO parse type definition or value assignment
-            line = lineIterator.next();
+            if (!line.contains("::="))
+            {
+                final String error = ERROR_UNKNOWN_CONTENT + line;
+                throw new IOException(error);
+            }
+
+            // read to the next definition or assignment
+            log.log(Level.FINER, "Reading new content: {0}", line);
+            final StringBuilder builder = new StringBuilder();
+            do
+            {
+                builder.append(line);
+                line = lineIterator.next();
+            } while (!line.contains("::=") && !"END".equals(line));
+
+            final String content = builder.toString();
+            log.log(Level.FINER, "Found content: {0}", content);
+
+            // check if content is a type definition
+            Matcher matcher = PATTERN_TYPE_DEFINITION.matcher(content);
+            if (matcher.matches())
+            {
+                parseTypeDefinition(content, moduleBuilder);
+            }
+            else
+            {
+                // check if content is a value assignment
+                matcher = PATTERN_VALUE_ASSIGNMENT.matcher(content);
+                if (matcher.matches())
+                {
+                    parseValueAssignment(content, moduleBuilder);
+                }
+                else
+                {
+                    final String error = ERROR_UNKNOWN_CONTENT + content;
+                    throw new IOException(error);
+                }
+            }
         }
+    }
+
+    /**
+     * Parses a type definition
+     *
+     * @param typeDefinition
+     *            the entire type definition as a single line
+     *
+     * @param moduleBuilder
+     *            builder to use to construct module from the parsed information
+     *
+     * @throws IOException
+     *             if any errors occur while parsing the schema file
+     */
+    private void parseTypeDefinition(String typeDefinition, AsnSchemaModule.Builder moduleBuilder)
+    {
+        log.log(Level.INFO, "Found type definition: {0}", typeDefinition);
+    }
+
+    /**
+     * Parses a value assignment
+     *
+     * @param valueAssignment
+     *            the entire value assignment as a single line
+     *
+     * @param moduleBuilder
+     *            builder to use to construct module from the parsed information
+     *
+     * @throws IOException
+     *             if any errors occur while parsing the schema file
+     */
+    private void parseValueAssignment(String valueAssignment, AsnSchemaModule.Builder moduleBuilder)
+    {
+        log.log(Level.INFO, "Found value assignment: {0}", valueAssignment);
     }
 }
