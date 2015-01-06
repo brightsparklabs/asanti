@@ -26,17 +26,6 @@ public class AsnSchemaTypeDefinition
     // private final ImmutableMap<String, String> children;
 
     // -------------------------------------------------------------------------
-    // CONSTRUCTION
-    // -------------------------------------------------------------------------
-    /**
-     * Private constructor. Use {@link #builder()} to construct an instance.
-     */
-    private AsnSchemaTypeDefinition()
-    {
-        // private constructor
-    }
-
-    // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
