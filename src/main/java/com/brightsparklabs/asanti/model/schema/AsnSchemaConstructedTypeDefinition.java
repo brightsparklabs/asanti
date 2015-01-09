@@ -5,6 +5,9 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -18,21 +21,70 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
 {
 
     // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+
+    /** class logger */
+    private static final Logger log = Logger.getLogger(AsnSchemaConstructedTypeDefinition.class.getName());
+
+    // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
+
+    /** mapping from raw tag to component type */
     private final ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
+
+    /** mapping from tag name to component type */
     private final ImmutableMap<String, AsnSchemaComponentType> tagNamesToComponentTypes;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
-    public AsnSchemaConstructedTypeDefinition(String name, AsnBuiltinType type, Iterable<String> items)
+    /**
+     * Default constructor.
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param type
+     *            the underlying ASN.1 type of the defined type
+     *
+     * @param componentTypes
+     *            the component types within this defined type
+     */
+    public AsnSchemaConstructedTypeDefinition(String name, AsnBuiltinType type,
+            Iterable<AsnSchemaComponentType> componentTypes)
     {
         super(name, type);
-        // TODO Auto-generated constructor stub
-        tagsToComponentTypes = ImmutableMap.of();
-        tagNamesToComponentTypes = ImmutableMap.of();
+
+        final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToTypesBuilder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, AsnSchemaComponentType> tagNamesToTypesBuilder = ImmutableMap.builder();
+
+        // next expected tag is used to generate tags for automatic tagging
+        // TODO ensure that generating for all missing tags is correct and safe
+        int nextExpectedTag = 0;
+
+        for (AsnSchemaComponentType componentType : componentTypes)
+        {
+            String tag = componentType.getTag();
+            if (tag == null)
+            {
+                tag = String.valueOf(nextExpectedTag);
+                log.log(Level.FINE,
+                        "Generated automatic tag [{0}] for {1}",
+                        new Object[] { tag, componentType.getTagName() });
+                nextExpectedTag++;
+            }
+            else
+            {
+                nextExpectedTag = Integer.parseInt(tag) + 1;
+            }
+            tagsToTypesBuilder.put(tag, componentType);
+            tagsToTypesBuilder.put(componentType.getTagName(), componentType);
+        }
+        tagsToComponentTypes = tagsToTypesBuilder.build();
+        tagNamesToComponentTypes = tagNamesToTypesBuilder.build();
     }
 
     // -------------------------------------------------------------------------
@@ -41,49 +93,7 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
     @Override
     public String getTypeName(String tag)
     {
-        return "";
-    }
-
-    // -------------------------------------------------------------------------
-    // PUBLIC METHODS
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaConstructedTypeItem
-    // -------------------------------------------------------------------------
-    /**
-     * An item within a 'constructed' (SET, SEQUENCE, SET OF, SEQUENCE OF,
-     * CHOICE or ENUMERATED) type definition
-     *
-     * @author brightSPARK Labs
-     */
-    public static class AsnSchemaComponentType
-    {
-        // ---------------------------------------------------------------------
-        // INSTANCE VARIABLES
-        // ---------------------------------------------------------------------
-
-        private final String tagName;
-
-        private final String tag;
-
-        private final String typeName;
-
-        private final AsnBuiltinType builtinType;
-
-        private final boolean isOptional;
-
-        // ---------------------------------------------------------------------
-        // CONSTRUCTION
-        // ---------------------------------------------------------------------
-        public AsnSchemaComponentType(String name, String tag, AsnBuiltinType builtinType, String typeName,
-                boolean isOptional)
-        {
-            this.tagName = name;
-            this.tag = tag;
-            this.builtinType = builtinType;
-            this.typeName = typeName;
-            this.isOptional = isOptional;
-        }
+        final AsnSchemaComponentType componentType = tagsToComponentTypes.get(tag);
+        return (componentType == null) ? "" : componentType.getTypeName();
     }
 }

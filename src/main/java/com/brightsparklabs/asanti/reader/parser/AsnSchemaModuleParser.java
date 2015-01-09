@@ -210,11 +210,11 @@ public class AsnSchemaModuleParser
             final StringBuilder builder = new StringBuilder();
             do
             {
-                builder.append(line);
+                builder.append(line).append(" ");
                 line = lineIterator.next();
             } while (!line.contains("::=") && !"END".equals(line));
 
-            final String content = builder.toString();
+            final String content = builder.toString().trim();
             log.log(Level.FINER, "Found content: {0}", content);
 
             // check if content is a type definition

@@ -5,13 +5,15 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaConstructedTypeDefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -26,31 +28,6 @@ public class AsnSchemaComponentTypeParser
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
-
-    /** pattern to match a SET/SEQUENCE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE = Pattern.compile("^SEQUENCE ?\\{(.+)\\} ?(.*)$");
-
-    /** pattern to match a SET/SEQUENCE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SET = Pattern.compile("^SET ?\\{(.+)\\} ?(.*)$");
-
-    /** pattern to match a ENUMERATED type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_ENUMERATED = Pattern.compile("^ENUMERATED ?\\{(.+)\\}$");
-
-    /** pattern to match a CHOICE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_CHOICE = Pattern.compile("^CHOICE ?\\{(.+)\\}(\\(.+\\))?$");
-
-    /** pattern to match a SET OF/SEQUENCE OF type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SET_OF_OR_SEQUENCE_OF = Pattern.compile("^(SEQUENCE|SET)( .+)? OF ?(.+)$");
-
-    /** pattern to match a CLASS type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_CLASS = Pattern.compile("^CLASS ?\\{(.+)\\}$");
-
-    /** pattern to match a PRIMITIVE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE = Pattern.compile("^(BIT STRING|GeneralizedTime|INTEGER|NumericString|OCTET STRING|UTF8String|VisibleString) ?(.*)$");
-
-    // TODO add all primitives to error message
-    /** error message if an unknown ASN.1 built-in type is found */
-    private static final String ERROR_UNKNOWN_BUILT_IN_TYPE = "Parser expected a built-in type of SEQUENCE, SET, ENUMERATED, BIT STRING, GeneralizedTime, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString, SEQUENCE OF, SET OF, CHOICE or CLASS but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -70,8 +47,11 @@ public class AsnSchemaComponentTypeParser
      *            the component types contained in the construct as a string
      *
      * @return each component type found in the construct
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the data
      */
-    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText)
+    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText) throws ParseException
     {
         final List<String> componentTypeLines = splitComponentTypesText(componentTypesText);
         final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
@@ -99,15 +79,19 @@ public class AsnSchemaComponentTypeParser
      */
     private static List<String> splitComponentTypesText(String componentTypesText)
     {
+        if(componentTypesText.startsWith(" invokeId InvokeId (CONSTRAINED BY {} ! RejectProblem:returnResult-unrecognizedInvocation) (CONSTRAINED BY {} ! RejectProblem:returnResult-resultResponseUnexpected), result"))
+        {
+            int i = 0;
+        }
         final ArrayList<String> items = Lists.newArrayList();
         int begin = 0;
         int bracketCount = 0;
         final int length = componentTypesText.length();
         for (int i = 0; i < length; i++)
         {
+            // check if at end of string
             if (i == (length - 1))
             {
-                // at end of string
                 final String item = componentTypesText.substring(begin, length).trim();
                 if (!item.equals("..."))
                 {
@@ -153,11 +137,35 @@ public class AsnSchemaComponentTypeParser
         return items;
     }
 
-    private static AsnSchemaComponentType parseComponentType(String componentTypeLine)
+    private static AsnSchemaComponentType parseComponentType(String componentTypeLine) throws ParseException
     {
+        final Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
+        if (matcher.matches()) { return parseComponentType(matcher); }
 
-        // TODO Auto-generated method stub
-        return null;
+        throw new ParseException("Could not match component type definition. Found: " + componentTypeLine, -1);
+
     }
 
+    private static AsnSchemaComponentType parseComponentType(Matcher matcher)
+    {
+
+        final String tagName = matcher.group(1);
+        final String tag = matcher.group(3);
+        final String constructOf = matcher.group(5);
+        final String constructOfConstraint = matcher.group(6);
+        final String typeName = matcher.group(7);
+        final String constraints = matcher.group(10);
+        final boolean isOptional = matcher.group(11) != null;
+        final String defaultValue = matcher.group(13);
+
+        final AsnSchemaComponentType componentType = new AsnSchemaComponentType(tagName, tag, typeName, isOptional);
+        return componentType;
+    }
+
+    /** pattern for matching component types */
+    private static final Pattern PATTERN_COMPONENT_TYPE = Pattern.compile("([a-zA-z0-9\\-]+) ?(\\[(\\d+)\\])? ?((SET|SEQUENCE)( SIZE \\(.+\\)) OF )?([a-zA-z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))? ?(OPTIONAL)?(DEFAULT (.+))?");
+
+    // TODO not entirely working, does not correctly group
+    // "partyInformation [9] SET SIZE (1..10) OF PartyInformation OPTIONAL"
+    private static final Pattern PATTERN_COMPONENT_TYPE_CONSTRUCT_OF = Pattern.compile("([a-zA-z0-9\\-]+) ?(\\[(\\d+)\\])? ?(SET|SEQUENCE)( SIZE .+)? OF ([a-zA-z0-9 ]+) ?(\\((.+)\\))? ?(OPTIONAL)?(DEFAULT (.+))?");
 }

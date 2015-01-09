@@ -26,7 +26,7 @@ public class AsnSchemaTypeDefinition<T>
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** null instance of interface */
+    /** null instance */
     public static final AsnSchemaTypeDefinitionNull NULL = new AsnSchemaTypeDefinitionNull();
 
     // -------------------------------------------------------------------------
@@ -45,6 +45,15 @@ public class AsnSchemaTypeDefinition<T>
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
+    /**
+     * Default constructor.
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param builtinType
+     *            the underlying ASN.1 type of the defined type
+     */
     public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType)
     {
         this.name = name;

@@ -6,17 +6,16 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaConstructedTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Logic for parsing a Type Definition form a module within an ASN.1 schema
@@ -40,7 +39,7 @@ public class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_ENUMERATED = Pattern.compile("^ENUMERATED ?\\{(.+)\\}$");
 
     /** pattern to match a CHOICE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_CHOICE = Pattern.compile("^CHOICE ?\\{(.+)\\}(\\(.+\\))?$");
+    private static final Pattern PATTERN_TYPE_DEFINITION_CHOICE = Pattern.compile("^CHOICE ?\\{(.+)\\} ?(\\(.+\\))?$");
 
     /** pattern to match a SET OF/SEQUENCE OF type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_SET_OF_OR_SEQUENCE_OF = Pattern.compile("^(SEQUENCE|SET)( .+)? OF ?(.+)$");
@@ -156,15 +155,21 @@ public class AsnSchemaTypeDefinitionParser
      * @param name
      *            name of the defined type
      *
-     * @param itemsText
-     *            the items contained in the construct
+     * @param componentTypesText
+     *            the component types contained in the construct as a string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AsnSchemaConstructedTypeDefinition} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
      */
-    private static AsnSchemaConstructedTypeDefinition parseSequence(String name, String itemsText)
+    private static AsnSchemaConstructedTypeDefinition parseSequence(String name, String componentTypesText)
+            throws ParseException
     {
-        final List<String> items = parseComponentTypes(itemsText);
-        return new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Sequence, items);
+        final ImmutableList<AsnSchemaComponentType> componentTypes = AsnSchemaComponentTypeParser.parse(componentTypesText);
+        final AsnSchemaConstructedTypeDefinition typeDefinition = new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Sequence, componentTypes);
+        return typeDefinition;
     }
 
     /**
@@ -173,78 +178,20 @@ public class AsnSchemaTypeDefinitionParser
      * @param name
      *            name of the defined type
      *
-     * @param itemsText
-     *            the items contained in the construct
-     *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
-     */
-    private static AsnSchemaConstructedTypeDefinition parseSet(String name, String itemsText)
-    {
-        final List<String> items = parseComponentTypes(itemsText);
-        return new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Set, items);
-    }
-
-    /**
-     * Parses the items in a construct
-     *
      * @param componentTypesText
      *            the component types contained in the construct as a string
      *
-     * @return each component type found in the construct
+     * @return an {@link AsnSchemaConstructedTypeDefinition} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
      */
-    private static List<String> parseComponentTypes(String componentTypesText)
+    private static AsnSchemaConstructedTypeDefinition parseSet(String name, String componentTypesText)
+            throws ParseException
     {
-        final ArrayList<String> items = Lists.newArrayList();
-        int begin = 0;
-        int bracketCount = 0;
-        final int length = componentTypesText.length();
-        for (int i = 0; i < length; i++)
-        {
-            if (i == (length - 1))
-            {
-                // at end of string
-                final String item = componentTypesText.substring(begin, length).trim();
-                if (!item.equals("..."))
-                {
-                    items.add(item);
-                }
-                break;
-            }
-
-            final char character = componentTypesText.charAt(i);
-            switch (character)
-            {
-                case '{':
-                case '(':
-                    bracketCount++;
-                    break;
-
-                case '}':
-                case ')':
-                    bracketCount--;
-                    break;
-
-                case ',':
-                    if (bracketCount == 0)
-                    {
-                        final String item = componentTypesText.substring(begin, i).trim();
-                        if (!item.equals("..."))
-                        {
-                            items.add(item);
-                        }
-                        begin = i + 1;
-                    }
-                    break;
-
-                default:
-            }
-        }
-
-        for (String item : items)
-        {
-            log.log(Level.FINER, "  - {0}", item);
-        }
-
-        return items;
+        final ImmutableList<AsnSchemaComponentType> componentTypes = AsnSchemaComponentTypeParser.parse(componentTypesText);
+        final AsnSchemaConstructedTypeDefinition typeDefinition = new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Set, componentTypes);
+        return typeDefinition;
     }
 }
