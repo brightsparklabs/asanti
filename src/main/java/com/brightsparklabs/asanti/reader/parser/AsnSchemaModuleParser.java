@@ -59,6 +59,10 @@ public class AsnSchemaModuleParser
      * @param moduleText
      *            all text from module within the ASN.1 schema
      *
+     * @param importResolver
+     *            resolver to use for resolving import statements within the
+     *            module
+     *
      * @return an {@link AsnSchemaModule} representing the parsed data
      *
      * @throws ParseException
@@ -219,7 +223,7 @@ public class AsnSchemaModuleParser
             {
                 final String name = matcher.group(1);
                 final String value = matcher.group(4);
-                final AsnSchemaTypeDefinition typeDefinition = AsnSchemaTypeDefinitionParser.parse(name, value);
+                final AsnSchemaTypeDefinition<?> typeDefinition = AsnSchemaTypeDefinitionParser.parse(name, value);
                 moduleBuilder.addType(typeDefinition);
                 continue;
             }

@@ -13,8 +13,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaConstructedTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /**
@@ -24,6 +25,7 @@ import com.google.common.collect.Lists;
  */
 public class AsnSchemaTypeDefinitionParser
 {
+
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
@@ -79,7 +81,7 @@ public class AsnSchemaTypeDefinitionParser
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    public static AsnSchemaTypeDefinition parse(String name, String value) throws ParseException
+    public static AsnSchemaTypeDefinition<?> parse(String name, String value) throws ParseException
     {
         log.log(Level.FINE, "Found type definition: {0} = {1}", new Object[] { name, value });
 
@@ -104,7 +106,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle ENUMERATED
-            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
+            return AsnSchemaTypeDefinition.NULL;
         }
 
         // check if defining a PRIMITIVE
@@ -112,7 +114,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle *all* PRIMITIVEs
-            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
+            return AsnSchemaTypeDefinition.NULL;
         }
 
         // check if defining a CHOICE
@@ -120,7 +122,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle CHOICE
-            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
+            return AsnSchemaTypeDefinition.NULL;
         }
 
         // check if defining a SET OF or SEQUENCE OF
@@ -128,7 +130,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle SET OF or SEQUENCE OF
-            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
+            return AsnSchemaTypeDefinition.NULL;
         }
 
         // check if defining a CLASS
@@ -136,7 +138,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle CLASS
-            return new AsnSchemaTypeDefinition(ImmutableList.<String>of());
+            return AsnSchemaTypeDefinition.NULL;
         }
 
         // unknown definition
@@ -159,10 +161,10 @@ public class AsnSchemaTypeDefinitionParser
      *
      * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
      */
-    private static AsnSchemaTypeDefinition parseSequence(String name, String itemsText)
+    private static AsnSchemaConstructedTypeDefinition parseSequence(String name, String itemsText)
     {
-        final List<String> items = parseConstructItems(itemsText);
-        return new AsnSchemaTypeDefinition(items);
+        final List<String> items = parseComponentTypes(itemsText);
+        return new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Sequence, items);
     }
 
     /**
@@ -176,38 +178,32 @@ public class AsnSchemaTypeDefinitionParser
      *
      * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
      */
-    private static AsnSchemaTypeDefinition parseSet(String name, String itemsText)
+    private static AsnSchemaConstructedTypeDefinition parseSet(String name, String itemsText)
     {
-        final List<String> items = parseConstructItems(itemsText);
-        return new AsnSchemaTypeDefinition(items);
+        final List<String> items = parseComponentTypes(itemsText);
+        return new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Set, items);
     }
 
     /**
-     * Parses the items in a construct (SET/SEQUENCE)
+     * Parses the items in a construct
      *
-     * @param name
-     *            name of the defined type
+     * @param componentTypesText
+     *            the component types contained in the construct as a string
      *
-     * @param asnBuiltinType
-     *            ASN.1 built-in type of the defined type (SET or SEQUENCE)
-     *
-     * @param itemsText
-     *            the items contained in the construct
-     *
-     * @return each item found in the construct
+     * @return each component type found in the construct
      */
-    private static List<String> parseConstructItems(String itemsText)
+    private static List<String> parseComponentTypes(String componentTypesText)
     {
         final ArrayList<String> items = Lists.newArrayList();
         int begin = 0;
         int bracketCount = 0;
-        final int length = itemsText.length();
+        final int length = componentTypesText.length();
         for (int i = 0; i < length; i++)
         {
             if (i == (length - 1))
             {
                 // at end of string
-                final String item = itemsText.substring(begin, length).trim();
+                final String item = componentTypesText.substring(begin, length).trim();
                 if (!item.equals("..."))
                 {
                     items.add(item);
@@ -215,7 +211,7 @@ public class AsnSchemaTypeDefinitionParser
                 break;
             }
 
-            final char character = itemsText.charAt(i);
+            final char character = componentTypesText.charAt(i);
             switch (character)
             {
                 case '{':
@@ -231,7 +227,7 @@ public class AsnSchemaTypeDefinitionParser
                 case ',':
                     if (bracketCount == 0)
                     {
-                        final String item = itemsText.substring(begin, i).trim();
+                        final String item = componentTypesText.substring(begin, i).trim();
                         if (!item.equals("..."))
                         {
                             items.add(item);

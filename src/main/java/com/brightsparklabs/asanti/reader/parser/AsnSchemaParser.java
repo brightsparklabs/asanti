@@ -66,9 +66,10 @@ public class AsnSchemaParser
      */
     public static AsnSchema parse(String asnSchema) throws ParseException
     {
-
         final Map<String, AsnSchemaModule> modules = Maps.newHashMap();
         final Iterator<String> lineIterator = getLines(asnSchema);
+
+        String primaryModule = null;
 
         // parse each module in the schema
         final List<String> moduleLines = Lists.newArrayList();
@@ -81,12 +82,17 @@ public class AsnSchemaParser
                 final AsnSchemaModule module = AsnSchemaModuleParser.parse(moduleLines);
                 modules.put(module.getName(), module);
                 moduleLines.clear();
+
+                if (primaryModule == null)
+                {
+                    primaryModule = module.getName();
+                }
             }
         }
 
         if (!moduleLines.isEmpty()) { throw new ParseException(ERROR_MISSING_END_KEYWORD, -1); }
 
-        return new AsnSchemaDefault();
+        return new AsnSchemaDefault(primaryModule, modules);
     }
 
     // -------------------------------------------------------------------------
