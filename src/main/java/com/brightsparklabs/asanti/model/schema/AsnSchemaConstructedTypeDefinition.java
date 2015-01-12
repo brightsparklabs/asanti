@@ -81,7 +81,7 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
                 nextExpectedTag = Integer.parseInt(tag) + 1;
             }
             tagsToTypesBuilder.put(tag, componentType);
-            tagsToTypesBuilder.put(componentType.getTagName(), componentType);
+            tagNamesToTypesBuilder.put(componentType.getTagName(), componentType);
         }
         tagsToComponentTypes = tagsToTypesBuilder.build();
         tagNamesToComponentTypes = tagNamesToTypesBuilder.build();
