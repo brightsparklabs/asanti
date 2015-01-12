@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface DecodedAsnData
 {
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -30,8 +31,8 @@ public interface DecodedAsnData
 
     /**
      * Returns all tags found in the ASN data as a set of XPath like strings.
-     * E.g. "/Header/Published/Date", "/Header/LastModfied/Date",
-     * "/Body/Prefix/Text"
+     * E.g. "/Document/header/published/date",
+     * "/Document/header/lastModfied/date", "/Document/body/prefix/text"
      *
      * @return all tags in the data
      */
@@ -39,7 +40,7 @@ public interface DecodedAsnData
 
     /**
      * Returns the tags from the data which could not be mapped using the
-     * schema. E.g. "/Body/Content/99", "/99/1/1"
+     * schema. E.g. "/Document/body/content/99", "/Document/99/1/1"
      *
      * @return all unmapped tags in the data
      */

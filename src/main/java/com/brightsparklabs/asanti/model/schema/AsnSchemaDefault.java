@@ -64,13 +64,13 @@ public class AsnSchemaDefault implements AsnSchema
     // -------------------------------------------------------------------------
 
     @Override
-    public String getDecodedTag(String rawTag)
+    public DecodeResult<String> getDecodedTag(String rawTag, String topLevelTypeName)
     {
-        return primaryModule.getDecodedTag(rawTag, modules);
+        return primaryModule.getDecodedTag(rawTag, topLevelTypeName, modules);
     }
 
     @Override
-    public String getRawTag(String decodedTag)
+    public DecodeResult<String> getRawTag(String decodedTag)
     {
         return primaryModule.getRawTag(decodedTag, modules);
     }

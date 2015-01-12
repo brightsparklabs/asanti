@@ -8,10 +8,12 @@ package com.brightsparklabs.asanti.logic;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.DecodeResult;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.google.common.collect.ImmutableList;
@@ -25,6 +27,7 @@ import com.google.common.io.BaseEncoding;
  */
 public class AsnDecoder
 {
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -52,20 +55,28 @@ public class AsnDecoder
             if (filename.endsWith(".asn"))
             {
                 final AsnSchema asnSchema = AsnSchemaFileReader.read(asnFile);
-                log.info("Decoded '/1/1/1' => " + asnSchema.getDecodedTag("/1/1/1"));
-                log.info("Decoded '/1/1/1/5' => " + asnSchema.getDecodedTag("/1/1/1/5"));
-                log.info("Decoded '/1/2/2' => " + asnSchema.getDecodedTag("/1/2/2"));
+                final ImmutableList<String> rawTags = ImmutableList.of("/1/1",
+                        "/1/1/5",
+                        "/2/3/2/3/0/1",
+                        "/2/0/2/2/1/18/0",
+                        "/1/3/0/0");
+                for (final String rawTag : rawTags)
+                {
+                    final DecodeResult<String> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
+                    log.log(Level.INFO, "Decode {0}; {1} => {2}", new Object[] {
+                            result.wasSuccessful() ? "successful" : "failed", rawTag, result.getDecodedData() });
+                }
             }
             else
             {
                 final ImmutableList<AsnData> data = readAsnBerFile(asnFile);
                 int count = 0;
-                for (AsnData asnData : data)
+                for (final AsnData asnData : data)
                 {
                     log.info("PDU[" + count + "]");
                     final Map<String, byte[]> tagsData = asnData.getBytes();
 
-                    for (String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
+                    for (final String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
                     {
                         log.info("\t" + tag + ": 0x" + BaseEncoding.base16().encode(tagsData.get(tag)));
                     }
@@ -73,7 +84,7 @@ public class AsnDecoder
                 }
             }
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             log.severe("Could not parse file - " + ex.getMessage());
             ex.printStackTrace();

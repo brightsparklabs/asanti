@@ -19,25 +19,30 @@ public interface AsnSchema
 
     /**
      * Returns the decoded tag for the supplied raw tag. E.g.
-     * {@code getDecodedTag("/1/0/1")} => {@code "/Header/Published/Date"}
+     * {@code getDecodedTag("/1/0/1", "Document")} =>
+     * {@code "/Document/header/published/date"}
      *
      * @param rawTag
      *            raw tag to decode
      *
-     * @return the decoded tag or an empty string if it cannot be decoded
+     * @param topLevelTypeName
+     *            the name of the top level type in this module from which to
+     *            begin decoding the raw tag
+     *
+     * @return the result of the decode attempt containing the decoded tag
      */
-    public String getDecodedTag(String rawTag);
+    public DecodeResult<String> getDecodedTag(String rawTag, String topLevelTypeName);
 
     /**
      * Returns the raw tag for the supplied decoded tag. E.g.
-     * {@code getRawTag("/Header/Published/Date")} => {@code "/1/0/1"}
+     * {@code getRawTag("/Document/header/published/date")} => {@code "/1/0/1"}
      *
      * @param decodedTag
      *            decoded tag to map back to raw tag
      *
-     * @return the raw tag or an empty string if it cannot be determined
+     * @return the result of the decode attempt containing the raw tag
      */
-    public String getRawTag(String decodedTag);
+    public DecodeResult<String> getRawTag(String decodedTag);
 
     /**
      * Gets the data (bytes) associated with the specified tag as a printable

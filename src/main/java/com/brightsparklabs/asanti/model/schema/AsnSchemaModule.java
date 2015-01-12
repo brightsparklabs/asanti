@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -44,9 +45,6 @@ public class AsnSchemaModule
     /** name of this module */
     private final String name;
 
-    /** name of the top level type defined in this module */
-    private final String topLevelTypeName;
-
     /** all types defined in this module */
     private final ImmutableMap<String, AsnSchemaTypeDefinition<?>> types;
 
@@ -62,16 +60,41 @@ public class AsnSchemaModule
 
     /**
      * Private constructor. Use {@link #builder()} to construct an instance.
+     *
+     * @param name
+     *            the name of this module
+     *
+     * @param types
+     *            the type definitions defined in this module
+     *
+     * @param imports
+     *            the imports defined in this module. This identifies the module
+     *            that an imported type comes from. Map is of format {typeName
+     *            => moduleName}
+     *
+     * @throws NullPointerException
+     *             if any of the parameters are {@code null}
+     *
+     * @throws IllegalArgumentException
+     *             if the name is blank
      */
-    private AsnSchemaModule(String name, String topLevelTypeName, Map<String, AsnSchemaTypeDefinition<?>> types,
-            Map<String, String> imports)
+    private AsnSchemaModule(String name, Map<String, AsnSchemaTypeDefinition<?>> types, Map<String, String> imports)
     {
+        Preconditions.checkNotNull(name);
+        Preconditions.checkArgument(!name.trim().isEmpty(), "A module from an ASN.1 schema must have a name");
+        Preconditions.checkNotNull(types);
+        Preconditions.checkNotNull(imports);
+
         this.name = name;
-        this.topLevelTypeName = topLevelTypeName;
         this.types = ImmutableMap.copyOf(types);
         this.imports = ImmutableMap.copyOf(imports);
     }
 
+    /**
+     * Returns a builder for constructing instances of {@link AsnSchemaModule}
+     *
+     * @return a builder for constructing instances of {@link AsnSchemaModule}
+     */
     public static Builder builder()
     {
         return new Builder();
@@ -98,24 +121,28 @@ public class AsnSchemaModule
      * @param rawTag
      *            raw tag to decode
      *
+     * @param topLevelTypeName
+     *            the name of the top level type in this module from which to
+     *            begin decoding the raw tag
+     *
      * @param allSchemaModules
      *            all modules which are present in the schema. These are used to
      *            resolve imports. Map is of form: {@code moduleName => module}
      *
      * @return the decoded tag or an empty string if it cannot be decoded
      */
-    public String getDecodedTag(String rawTag, ImmutableMap<String, AsnSchemaModule> allSchemaModules)
+    public DecodeResult<String> getDecodedTag(String rawTag, String topLevelTypeName,
+            ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final ArrayList<String> decodedTags = new ArrayList<>(tags.size());
 
         // map the first raw tag to the top level type
         String typeName = topLevelTypeName;
-        decodedTags.add(typeName);
         AsnSchemaTypeDefinition<?> type = types.get(typeName);
 
         // try to decode each tag
-        for (int i = 1; i < tags.size(); i++)
+        for (final String tag : tags)
         {
             if (type == null)
             {
@@ -124,7 +151,6 @@ public class AsnSchemaModule
                 break;
             }
 
-            final String tag = tags.get(i);
             final String tagName = type.getTagName(tag);
             typeName = type.getTypeName(tag);
             if (tagName.isEmpty() || typeName.isEmpty())
@@ -135,10 +161,14 @@ public class AsnSchemaModule
             type = types.get(typeName);
         }
 
-        // add any undecoded tags to end
+        // check if decode was successful
+        boolean decodeSuccessful = true;
         if (tags.size() != decodedTags.size())
         {
-            // could not decode, copy unknown tag into result
+            // could not decode
+            decodeSuccessful = false;
+
+            // copy unknown tags into result
             for (int i = decodedTags.size(); i < tags.size(); i++)
             {
                 final String unknownTag = tags.get(i);
@@ -146,7 +176,13 @@ public class AsnSchemaModule
             }
         }
 
-        return tagJoiner.join(decodedTags);
+        // prefix result with top level type
+        decodedTags.add(0, topLevelTypeName);
+        decodedTags.add(0, ""); // empty string prefixes just the separator
+        final String decodedData = tagJoiner.join(decodedTags);
+
+        final DecodeResult<String> result = DecodeResult.create(decodeSuccessful, decodedData);
+        return result;
     }
 
     /**
@@ -186,29 +222,6 @@ public class AsnSchemaModule
     }
 
     /**
-     * Returns the decoded tag for the supplied raw tag which resides under the
-     * specified type. E.g. {@code getDecodedTag("Header", "/0/1")} =>
-     * {@code "/Header/Published/Date"}
-     *
-     * @param containingType
-     *            name of the type which contains the raw tag
-     *
-     * @param rawTag
-     *            raw tag to decode
-     *
-     * @param allSchemaModules
-     *            all modules which are present in the schema. These are used to
-     *            resolve imports. Map is of form: {@code moduleName => module}
-     *
-     * @return the decoded tag or an empty string if it cannot be decoded
-     */
-    public String getDecodedTag(String containingType, String rawTag,
-            ImmutableMap<String, AsnSchemaModule> allSchemaModules)
-    {
-        return "";
-    }
-
-    /**
      * Returns the raw tag for the supplied decoded tag. E.g.
      * {@code getRawTag("/Header/Published/Date")} => {@code "/1/0/1"}
      *
@@ -221,9 +234,9 @@ public class AsnSchemaModule
      *
      * @return the raw tag or an empty string if it cannot be determined
      */
-    public String getRawTag(String decodedTag, ImmutableMap<String, AsnSchemaModule> allSchemaModules)
+    public DecodeResult<String> getRawTag(String decodedTag, ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
-        return "";
+        return DecodeResult.create(false, "");
     }
 
     // -------------------------------------------------------------------------
@@ -241,12 +254,6 @@ public class AsnSchemaModule
 
         /** name of this module */
         private String name = "";
-
-        /**
-         * name of the top level type defined in this module. Defaults to the
-         * first type added via {@link #addType(AsnSchemaTypeDefinition)}.
-         */
-        private String topLevelTypeName = "";
 
         /** name of the top level type defined in this module */
         private final Map<String, AsnSchemaTypeDefinition<?>> types = Maps.newHashMap();
@@ -288,23 +295,6 @@ public class AsnSchemaModule
         }
 
         /**
-         * Sets the top level type of this module to the supplied type name.
-         *
-         * If not called, then the top level type will default to the first type
-         * added by {@link #addType(AsnSchemaTypeDefinition)}.
-         *
-         * @param topLevelTypeName
-         *            name of the top level type in this module
-         *
-         * @return this builder
-         */
-        public Builder setTopLevelTypeName(String topLevelTypeName)
-        {
-            this.topLevelTypeName = topLevelTypeName;
-            return this;
-        }
-
-        /**
          * Stores a new type definition to this module. I.e. the specified type
          * definition is found in module.
          *
@@ -319,13 +309,6 @@ public class AsnSchemaModule
         public Builder addType(AsnSchemaTypeDefinition<?> type)
         {
             types.put(type.getName(), type);
-
-            // set top level type to first type added
-            if (topLevelTypeName.isEmpty())
-            {
-                topLevelTypeName = type.getName();
-            }
-
             return this;
         }
 
@@ -356,7 +339,7 @@ public class AsnSchemaModule
          */
         public AsnSchemaModule build()
         {
-            final AsnSchemaModule module = new AsnSchemaModule(name, topLevelTypeName, types, imports);
+            final AsnSchemaModule module = new AsnSchemaModule(name, types, imports);
             return module;
         }
     }
