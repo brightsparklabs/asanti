@@ -90,6 +90,7 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
+
     @Override
     public String getTypeName(String tag)
     {

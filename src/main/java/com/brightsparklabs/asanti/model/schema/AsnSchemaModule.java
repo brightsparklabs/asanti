@@ -77,6 +77,11 @@ public class AsnSchemaModule
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
+    /**
+     * Returns the name of this module
+     *
+     * @return the name of this module
+     */
     public String getName()
     {
         return name;
@@ -125,7 +130,21 @@ public class AsnSchemaModule
         return tagJoiner.join(decodedTags);
     }
 
-    private AsnSchemaTypeDefinition<?> getType(String typeName, ImmutableMap<String, AsnSchemaModule> allSchemaModules)
+    /**
+     * Returns the type definition associated with the specified type name
+     *
+     * @param typeName
+     *            name of the type
+     *
+     * @param allSchemaModules
+     *            all modules contained in the schema. This is used if a type
+     *            definition resides in a different module.
+     *
+     * @return the type definition associated with the specified type name or
+     *         {@link AsnSchemaTypeDefinition#NULL} if no type definition is
+     *         found
+     */
+    public AsnSchemaTypeDefinition<?> getType(String typeName, ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
         AsnSchemaTypeDefinition<?> type = types.get(typeName);
         if (type != null) { return type; }
@@ -196,41 +215,110 @@ public class AsnSchemaModule
      */
     public static class Builder
     {
-        private String name;
-        private String topLevelTypeName;
-        private final Map<String, AsnSchemaTypeDefinition<?>> types;
-        private final Map<String, String> imports;
 
+        // ---------------------------------------------------------------------
+        // INSTANCE VARIABLES
+        // ---------------------------------------------------------------------
+
+        /** name of this module */
+        private String name;
+
+        /** name of the top level type defined in this module */
+        private String topLevelTypeName;
+
+        /** name of the top level type defined in this module */
+        private final Map<String, AsnSchemaTypeDefinition<?>> types = Maps.newHashMap();
+
+        /**
+         * all types imported by this module. Map is of form {typeName =>
+         * importedModuleName}
+         */
+        private final Map<String, String> imports = Maps.newHashMap();
+
+        // ---------------------------------------------------------------------
+        // CONSTRUCTION
+        // ---------------------------------------------------------------------
+
+        /**
+         * Default constructor
+         */
         private Builder()
         {
-            types = Maps.newHashMap();
-            imports = Maps.newHashMap();
+            // private constructor
         }
 
+        // ---------------------------------------------------------------------
+        // PUBLIC METHODS
+        // ---------------------------------------------------------------------
+
+        /**
+         * Sets the name of the module
+         *
+         * @param name
+         *            name of the module
+         *
+         * @return this builder
+         */
         public Builder setName(String name)
         {
             this.name = name;
             return this;
         }
 
+        /**
+         * Sets the top level type of this module to the supplied type name
+         *
+         * @param topLevelTypeName
+         *            name of the top level type in this module
+         *
+         * @return this builder
+         */
         public Builder setTopLevelTypeName(String topLevelTypeName)
         {
             this.topLevelTypeName = topLevelTypeName;
             return this;
         }
 
+        /**
+         * Stores a new type definition to this module. I.e. the specified type
+         * definition is found in module.
+         *
+         * @param type
+         *            type definition to add
+         *
+         * @return this builder
+         */
         public Builder addType(AsnSchemaTypeDefinition<?> type)
         {
             types.put(type.getName(), type);
             return this;
         }
 
+        /**
+         * Adds a import statement mapping the specified type name to the
+         * supplied module
+         *
+         * @param typeName
+         *            name of the type which is imported
+         *
+         * @param moduleName
+         *            name of the module the type is imported from (i.e. module
+         *            it is defined in)
+         *
+         * @return this builder
+         */
         public Builder addImport(String typeName, String moduleName)
         {
             imports.put(typeName, moduleName);
             return this;
         }
 
+        /**
+         * Creates an instance of {@link AsnSchemaModule} from the information
+         * in this builder
+         *
+         * @return an instance of {@link AsnSchemaModule}
+         */
         public AsnSchemaModule build()
         {
             final AsnSchemaModule module = new AsnSchemaModule(name, topLevelTypeName, types, imports);
