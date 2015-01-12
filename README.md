@@ -52,63 +52,147 @@ asnData.getBytes("/50/0");
 
 ##### Decoding data against a schema
 
+Consider the following ASN.1 schema:
+
+```asn
+
+News-Protocol
+    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) news(99) modules(2) docs(1) }
+
+DEFINITIONS
+    AUTOMATIC TAGS ::=
+
+BEGIN
+
+    Document ::= SEQUENCE
+    {
+        header [1] Header,
+        body   [2] Body,
+        footer [3] Footer
+    }
+
+    Header ::= SEQUENCE
+    {
+        published [0] PublishedMetadata
+    }
+
+    Body ::= SEQUENCE
+    {
+        lastModified [0] ModificationMetadata,
+        prefix       [1] Section-Note OPTIONAL,
+        content      [2] Section-Main
+        suffix       [3] Section-Note OPTIONAL,
+    }
+
+    Footer ::= SEQUENCE
+    {
+        author      [0] Person
+    }
+
+    PublishedMetadata ::= SEQUENCE
+    {
+        date    [1] GeneralizedTime,
+        country [2] OCTET STRING OPTIONAL
+    }
+
+    ModificationMetadata ::= SEQUENCE
+    {
+        date       [0] Date,
+        modifiedBy [1] Person
+    }
+
+    Section-Note ::= SEQUENCE
+    {
+        text [1] OCTET STRING
+    }
+
+    Section-Main ::= SEQUENCE
+    {
+        text      [1] OCTET STRING OPTIONAL,
+        paragraph [2] SEQUENCE OF Paragraph
+    }
+
+    Person ::= SEQUENCE
+    {
+        firstName [1] OCTET STRING,
+        lastName  [2] OCTET STRING,
+        title     [3] ENUMERATED
+            { mr, mrs, ms, dr, rev } OPTIONAL
+    }
+
+    Paragraph ::=  SEQUENCE
+    {
+        title       [1] OCTET STRING,
+        contributor [2] Person OPTIONAL,
+        point       [3] SEQUENCE OF OCTET STRING
+    }
+END
+```
+
+Decoding data against the schema can be achieved via:
+
 ```java
-final AsnSchema schema = AsnSchema.builder()
-    .fromXsd(xsdFile)
-    .build();
-final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema);
+final AsnSchema schema = AsnSchemaParser.parse(schemaText);
+final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema, "Document");
 
 // all decoded tags
 decodedData.getTags();
 /* returns elements:
-    - "/Header/Published/Date"
-    - "/Header/Published/Country"
-    - "/Body/LastModified/Date"
-    - "/Body/Prefix/Text"
-    - "/Body/Content/Text"
-    - "/Footer/Author/FirstName"
+    - "/Document/header/published/date"
+    - "/Document/header/published/country"
+    - "/Document/body/lastModified/date"
+    - "/Document/body/prefix/text"
+    - "/Document/body/content/text"
+    - "/Document/footer/author/firstName"
 */
 
 // unmapped tags (i.e. tags which do not exist in schema)
 decodedData.getUnmappedTags();
 /* returns elements:
-    - "/Body/Content/99"
-    - "/99/1/1"
+    - "/Document/body/content/99"
+    - "/Document/99/1/1"
 */
 
-// test presence of tags
-decodedData.contains("/Header/Published/Date"); // returns true
-decodedData.contains("/Header/Published");      // returns false
-decodedData.contains("/Body/Prefix/Text");      // returns true
-decodedData.contains("/Body/Suffix/Text");      // returns false
-decodedData.contains("/Body/Content/99");       // returns true
-decodedData.contains("/Body/Content/Text");     // returns true
-decodedData.contains("/Body/Content/Date");     // returns false
-decodedData.contains("/99/1/1");                // returns true
-decodedData.contains("/99/2/1");                // returns false
-decodedData.contains("/Car/Door/Material");     // returns false
+// test presence of tags (fully decoded)
+decodedData.contains("/Document/header/published/date"); // returns true
+decodedData.contains("/Document/header/published/Date"); // returns false (incorrect capitalization)
+decodedData.contains("/Document/header/published");      // returns false ('published' is not a leaf node)
+decodedData.contains("/Document/body/prefix/text");      // returns true
+decodedData.contains("/Document/body/suffix/text");      // returns false (no 'suffix' node present)
+decodedData.contains("/Document/body/content/text");     // returns true
+
+// test presence of unmapped tags
+decodedData.contains("/Document/body/content/99");       // returns true
+decodedData.contains("/Document/99/1/1");                // returns true
+
+// test presence of non-existent tags
+decodedData.contains("/Document/body/content/date");     // returns false
+decodedData.contains("/Document/99/2/1");                // returns false
+decodedData.contains("/99/2/1");                         // returns false
+decodedData.contains("/Car/door/material");              // returns false
 ```
 
 ##### Extracting decoded data
 
 ```java
 // get data as most appropriate Java Object via explicit cast (requires knowledge of schema)
-final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Header/Published/Date");
+final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Document/header/published/date");
 // returns bytes decoded as a Timestamp
 
 // get data as a printable string
-decodedData.getPrintableString("/Header/Published/Date");
+decodedData.getPrintableString("/Document/header/published/date");
 // returns "2010-04-13T14:07:57.712Z"
 
 // get data as hex string
-decodedData.getHexString("/Header/Published/Date");
+decodedData.getHexString("/Document/header/published/date");
 // returns "0x32303130303431333134303735372E3731325A"
 
 // get the data as bytes
-final byte[] bytes = decodedData.getBytes("/Header/Published/Date");
+final byte[] bytes = decodedData.getBytes("/Document/header/published/date");
 /* returns:
-    [ 0x32, 0x30, 0x31, 0x30, 0x30, 0x34, 0x31, 0x33, 0x31, 0x34,
-      0x30, 0x37, 0x35, 0x37, 0x2E, 0x37, 0x31, 0x32, 0x5A ]
+    [ 0x32, 0x30, 0x31, 0x30, 0x30, 0x34, 0x31, 0x33,
+      0x31, 0x34, 0x30, 0x37, 0x35, 0x37, 0x2E, 0x37,
+      0x31, 0x32, 0x5A ]
 */
 
 // decode bytes as ASCII
@@ -123,20 +207,22 @@ final Timestamp timestamp = ByteDecoder.asGeneralizedTime(bytes);
 
 ```java
 // get data as hex strings from all matching tags
-decodedData.getHexStringsMatching("/Header/Published/.+");
+decodedData.getHexStringsMatching("/Document/header/published/.+");
 // returns map:
-    - "/Header/Published/Date" => "0x32303130303431333134303735372E3731325A"
-    - "/Header/Published/Country" => "0x4175737472616C6961"
+    - "/Document/header/published/date" => "0x32303130303431333134303735372E3731325A"
+    - "/Document/header/published/country" => "0x4175737472616C6961"
 
 // get group of bytes
-decodedData.getBytesMatching("/Header/Published/.+");
+decodedData.getBytesMatching("/Document/header/published/.+");
 /* returns map:
-    - "/Header/Published/Date" => [ 0x32, 0x30, 0x31, 0x30, 0x30, 0x34, 0x31,
-                                    0x33, 0x31, 0x34, 0x30, 0x37, 0x35, 0x37,
-                                    0x2E, 0x37, 0x31, 0x32, 0x5A ]
-    - "/Header/Published/Country" => [ 0x54, 0x68, 0x65, 0x20, 0x67, 0x72, 0x61,
-                                       0x73, 0x73, 0x20, 0x69, 0x73, 0x20, 0x67,
-                                       0x72, 0x65, 0x65, 0x6E, 0x2E ]
+    - "/Document/header/published/date" =>
+          [ 0x32, 0x30, 0x31, 0x30, 0x30, 0x34, 0x31, 0x33,
+            0x31, 0x34, 0x30, 0x37, 0x35, 0x37, 0x2E, 0x37,
+            0x31, 0x32, 0x5A ]
+    - "/Document/header/published/country" =>
+          [ 0x54, 0x68, 0x65, 0x20, 0x67, 0x72, 0x61, 0x73,
+            0x73, 0x20, 0x69, 0x73, 0x20, 0x67, 0x72, 0x65,
+            0x65, 0x6E, 0x2E ]
 */
 ```
 
@@ -150,14 +236,15 @@ final AsnData asnData = allAsnData.first();
 // print raw tags
 asnData.getRawTags();
 /* returns elements:
-    - "/1/0[0]/1"
-    - "/1/0[0]/2"
-    - "/1/0[1]/1"
-    - "/1/0[1]/3[0]"
-    - "/1/0[1]/3[1]"
-    - "/1/0[2]/1"
-    - "/1/0[2]/2"
-    - "/1/0[2]/3[0]"
+    - "/2/2/2[0]/1"
+    - "/2/2/2[0]/2/1"
+    - "/2/2/2[1]/1"
+    - "/2/2/2[1]/3[0]"
+    - "/2/2/2[1]/3[1]"
+    - "/2/2/2[2]/1"
+    - "/2/2/2[2]/2/1"
+    - "/2/2/2[2]/2/2"
+    - "/2/2/2[2]/3[0]"
 */
 
 // decode against schema
@@ -169,22 +256,23 @@ final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema);
 // all decoded tags
 decodedData.getTags();
 /* returns elements:
-    - "/Document/Paragraph[0]/Title"
-    - "/Document/Paragraph[0]/Contributor"
-    - "/Document/Paragraph[1]/Title"
-    - "/Document/Paragraph[1]/Point[0]"
-    - "/Document/Paragraph[1]/Point[1]"
-    - "/Document/Paragraph[2]/Title"
-    - "/Document/Paragraph[2]/Contributor"
-    - "/Document/Paragraph[2]/Point[0]"
+    - "/Document/body/content/paragraph[0]/title"
+    - "/Document/body/content/paragraph[0]/contributor/firstName"
+    - "/Document/body/content/paragraph[1]/title"
+    - "/Document/body/content/paragraph[1]/point[0]"
+    - "/Document/body/content/paragraph[1]/point[1]"
+    - "/Document/body/content/paragraph[2]/title"
+    - "/Document/body/content/paragraph[2]/contributor/firstName
+    - "/Document/body/content/paragraph[2]/contributor/lastName"
+    - "/Document/body/content/paragraph[2]/point[0]"
 */
 
 // get data as printable strings from all matching tags
 decodedData.getPrintableStringsMatching("/Document/Paragraph[.+]/Point[.+]");
 /* returns map:
-    - "/Document/Paragraph[1]/Point[0]" => "The sky is blue."
-    - "/Document/Paragraph[1]/Point[1]" => "The grass is green."
-    - "/Document/Paragraph[2]/Point[0]" => "The dog is brown."
+    - "/Document/body/content/paragraph[1]/point[0]" => "The sky is blue."
+    - "/Document/body/content/paragraph[1]/point[1]" => "The grass is green."
+    - "/Document/body/content/paragraph[2]/point[0]" => "The dog is brown."
 */
 ```
 
@@ -192,14 +280,14 @@ decodedData.getPrintableStringsMatching("/Document/Paragraph[.+]/Point[.+]");
 
 ```java
 // default generator
-decodedData.getPrintableString("/Header/Published/Date");
+decodedData.getPrintableString("/Document/header/published/date");
 // returns "2010-04-13T14:07:57.712Z"
-final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Header/Published/Date");
+final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Document/header/published/date");
 // returns bytes decoded as a Timestamp
 
-decodedData.getPrintableString("/Body/LastModified/Date");
+decodedData.getPrintableString("/Document/body/lastModified/date");
 // returns "2014-04-13T14:07:57.712Z"
-final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Body/LastModified/Date");
+final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Document/body/lastModified/date");
 // returns bytes decoded as a Timestamp
 
 // use custom data generators
@@ -207,21 +295,21 @@ final DataGenerator<Integer> relativeTimeGenerator = new RelativeTimeGenerator()
 final DataGenerator<Timestamp> offsetGenerator = new OffsetTimestampObjectGenerator(1000);
 
 final DataGenerators generators = DataGenerators.builder()
-    .withDataGenerator(relativeTimeGenerator, "/Header/Published/Date")
-    .withDataGenerator(relativeTimeGenerator, "/Header/Copyright/Date")
-    .withDataGenerator(offsetGenerator, "/Body/LastModified/Date")
+    .withDataGenerator(relativeTimeGenerator, "/Document/header/published/date")
+    .withDataGenerator(relativeTimeGenerator, "/Document/header/copyright/date")
+    .withDataGenerator(offsetGenerator, "/Document/body/lastModified/date")
     .build();
 
 final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema, generators);
 
-decodedData.getPrintableString("/Header/Published/Date");
+decodedData.getPrintableString("/Document/header/published/date");
 // returns "About 5 months ago"
-final Integer date = (Integer) decodedData.getDecodedObject("/Header/Published/Date");
+final Integer date = (Integer) decodedData.getDecodedObject("/Document/header/published/date");
 // returns bytes decoded as an Integer
 
-decodedData.getPrintableString("/Body/LastModified/Date");
+decodedData.getPrintableString("/Document/body/lastModified/date");
 // returns "2014-04-13T14:07:58.712Z"
-final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Body/LastModified/Date");
+final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Document/body/lastModified/date");
 // returns bytes decoded as a Timestamp with offset of 1000 ms
 ```
 
@@ -233,8 +321,8 @@ final ValidationResult result = validator.validate();
 final ValidationFailure failure = results.getFailures().first()
 
 failure.getType();     // returns MandatoryFieldMissing
-failure.getLocation(); // returns "/Header/Copyright/Date"
-failure.getMessage();  // returns "The field /Header/Copyright/Date cannot be empty"
+failure.getLocation(); // returns "Document/header/copyright/date"
+failure.getMessage();  // returns "The field /Document/header/copyright/date cannot be empty"
 ```
 
 ##### Adding custom validation rules
@@ -243,17 +331,17 @@ failure.getMessage();  // returns "The field /Header/Copyright/Date cannot be em
 final ValidationRule rule = new DateCutoffValidationRule("2014-01-01");
 
 final Validator customValidator = Validator.builder()
-    .withValidationRule(rule, "/Header/Published/Date")
-    .withValidationRule(rule, "/Header/Copyright/Date")
-    .withValidationRule(rule, "/Body/LastModified/Date")
+    .withValidationRule(rule, "/Document/header/published/date")
+    .withValidationRule(rule, "/Document/header/copyright/date")
+    .withValidationRule(rule, "/Document/body/lastModified/date")
     .build();
 
 final ValidationResult result = customValidator.validate();
 final ValidationFailure failure = results.getFailures().first()
 
 failure.getType();     // returns DateCutoffFailed
-failure.getLocation(); // returns "/Header/Published/Date"
-failure.getMessage();  // returns "The date in field /Header/Copyright/Date cannot be before 2014-01-01"
+failure.getLocation(); // returns "/Document/header/published/date"
+failure.getMessage();  // returns "The date in field /Document/header/copyright/date cannot be before 2014-01-01"
 ```
 
 ## Contributing
