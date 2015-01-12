@@ -51,8 +51,8 @@ public class AsnSchemaDefault implements AsnSchema
     {
         Preconditions.checkNotNull(primaryModule);
         Preconditions.checkNotNull(modules);
-        Preconditions.checkArgument(modules.isEmpty(), "A schema cannot contain no modules");
-        Preconditions.checkArgument(!modules.containsKey(primaryModule),
+        Preconditions.checkArgument(!modules.isEmpty(), "A schema cannot contain no modules");
+        Preconditions.checkArgument(modules.containsKey(primaryModule),
                 "The primary module must be contained in the schema's modules");
 
         this.primaryModule = modules.get(primaryModule);

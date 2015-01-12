@@ -30,10 +30,10 @@ public class AsnSchemaTypeDefinitionParser
     // -------------------------------------------------------------------------
 
     /** pattern to match a SET/SEQUENCE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE = Pattern.compile("^SEQUENCE ?\\{(.+)\\} ?(.*)$");
+    private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE = Pattern.compile("^SEQUENCE ?\\{(.+)\\} ?(\\(.+\\))?$");
 
     /** pattern to match a SET/SEQUENCE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SET = Pattern.compile("^SET ?\\{(.+)\\} ?(.*)$");
+    private static final Pattern PATTERN_TYPE_DEFINITION_SET = Pattern.compile("^SET ?\\{(.+)\\} ?(\\(.+\\))?$");
 
     /** pattern to match a ENUMERATED type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_ENUMERATED = Pattern.compile("^ENUMERATED ?\\{(.+)\\}$");
@@ -168,7 +168,8 @@ public class AsnSchemaTypeDefinitionParser
             throws ParseException
     {
         final ImmutableList<AsnSchemaComponentType> componentTypes = AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaConstructedTypeDefinition typeDefinition = new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Sequence, componentTypes);
+        final AsnSchemaConstructedTypeDefinition typeDefinition = new AsnSchemaConstructedTypeDefinition(name,
+                AsnBuiltinType.Sequence, componentTypes);
         return typeDefinition;
     }
 
@@ -191,7 +192,8 @@ public class AsnSchemaTypeDefinitionParser
             throws ParseException
     {
         final ImmutableList<AsnSchemaComponentType> componentTypes = AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaConstructedTypeDefinition typeDefinition = new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Set, componentTypes);
+        final AsnSchemaConstructedTypeDefinition typeDefinition = new AsnSchemaConstructedTypeDefinition(name,
+                AsnBuiltinType.Set, componentTypes);
         return typeDefinition;
     }
 }

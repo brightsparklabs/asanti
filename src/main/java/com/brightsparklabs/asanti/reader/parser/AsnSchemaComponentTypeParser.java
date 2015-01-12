@@ -29,6 +29,11 @@ public class AsnSchemaComponentTypeParser
     // CONSTANTS
     // -------------------------------------------------------------------------
 
+    // TODO not entirely working, does not correctly group
+    // "partyInformation [9] SET SIZE (1..10) OF PartyInformation OPTIONAL"
+    /** pattern for matching component types */
+    private static final Pattern PATTERN_COMPONENT_TYPE = Pattern.compile("([a-zA-z0-9\\-]+) ?(\\[(\\d+)\\])? ?((SET|SEQUENCE)( SIZE \\(.+\\)) OF )?([a-zA-z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))? ?(OPTIONAL)?(DEFAULT (.+))?");
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -41,10 +46,10 @@ public class AsnSchemaComponentTypeParser
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the items in a construct
+     * Parses the component types in a construct
      *
      * @param componentTypesText
-     *            the component types contained in the construct as a string
+     *            all component types contained in the construct as a string
      *
      * @return each component type found in the construct
      *
@@ -73,16 +78,12 @@ public class AsnSchemaComponentTypeParser
      * type definition.
      *
      * @param componentTypesText
-     *            the component types expressed as a single text block
+     *            all component types expressed as a single text block
      *
      * @return list of each component type found in the text
      */
     private static List<String> splitComponentTypesText(String componentTypesText)
     {
-        if(componentTypesText.startsWith(" invokeId InvokeId (CONSTRAINED BY {} ! RejectProblem:returnResult-unrecognizedInvocation) (CONSTRAINED BY {} ! RejectProblem:returnResult-resultResponseUnexpected), result"))
-        {
-            int i = 0;
-        }
         final ArrayList<String> items = Lists.newArrayList();
         int begin = 0;
         int bracketCount = 0;
@@ -137,35 +138,34 @@ public class AsnSchemaComponentTypeParser
         return items;
     }
 
+    /**
+     * Parses a single component type definition from a construct
+     *
+     * @param componentTypeLine
+     *            the component type definition
+     *
+     * @return an {@link AsnSchemaComponentType} representing the parsed text
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the data
+     */
     private static AsnSchemaComponentType parseComponentType(String componentTypeLine) throws ParseException
     {
         final Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
-        if (matcher.matches()) { return parseComponentType(matcher); }
 
-        throw new ParseException("Could not match component type definition. Found: " + componentTypeLine, -1);
-
-    }
-
-    private static AsnSchemaComponentType parseComponentType(Matcher matcher)
-    {
+        if (!matcher.matches()) { throw new ParseException("Could not match component type definition. Found: "
+                + componentTypeLine, -1); }
 
         final String tagName = matcher.group(1);
         final String tag = matcher.group(3);
-        final String constructOf = matcher.group(5);
-        final String constructOfConstraint = matcher.group(6);
+        // final String constructOf = matcher.group(5);
+        // final String constructOfConstraint = matcher.group(6);
         final String typeName = matcher.group(7);
-        final String constraints = matcher.group(10);
+        // final String constraints = matcher.group(10);
         final boolean isOptional = matcher.group(11) != null;
-        final String defaultValue = matcher.group(13);
+        // final String defaultValue = matcher.group(13);
 
         final AsnSchemaComponentType componentType = new AsnSchemaComponentType(tagName, tag, typeName, isOptional);
         return componentType;
     }
-
-    /** pattern for matching component types */
-    private static final Pattern PATTERN_COMPONENT_TYPE = Pattern.compile("([a-zA-z0-9\\-]+) ?(\\[(\\d+)\\])? ?((SET|SEQUENCE)( SIZE \\(.+\\)) OF )?([a-zA-z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))? ?(OPTIONAL)?(DEFAULT (.+))?");
-
-    // TODO not entirely working, does not correctly group
-    // "partyInformation [9] SET SIZE (1..10) OF PartyInformation OPTIONAL"
-    private static final Pattern PATTERN_COMPONENT_TYPE_CONSTRUCT_OF = Pattern.compile("([a-zA-z0-9\\-]+) ?(\\[(\\d+)\\])? ?(SET|SEQUENCE)( SIZE .+)? OF ([a-zA-z0-9 ]+) ?(\\((.+)\\))? ?(OPTIONAL)?(DEFAULT (.+))?");
 }
