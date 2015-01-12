@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.google.common.collect.ImmutableList;
@@ -50,7 +51,10 @@ public class AsnDecoder
 
             if (filename.endsWith(".asn"))
             {
-                AsnSchemaFileReader.read(asnFile);
+                final AsnSchema asnSchema = AsnSchemaFileReader.read(asnFile);
+                log.info("Decoded '/1/1/1' => " + asnSchema.getDecodedTag("/1/1/1"));
+                log.info("Decoded '/1/1/1/5' => " + asnSchema.getDecodedTag("/1/1/1/5"));
+                log.info("Decoded '/1/2/2' => " + asnSchema.getDecodedTag("/1/2/2"));
             }
             else
             {

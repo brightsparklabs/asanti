@@ -64,13 +64,53 @@ public class AsnSchemaTypeDefinition<T>
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
+    /**
+     * Returns the name of this type definition
+     *
+     * @return the name of this type definition
+     */
     public String getName()
     {
+        return name;
+    }
+
+    /**
+     * Returns the ASN.1 built-in type for this type definition
+     *
+     * @return the ASN.1 built-in type for this type definition
+     */
+    public AsnBuiltinType getBuiltinType()
+    {
+        return builtinType;
+    }
+
+    /**
+     * Returns the name of the specified tag
+     *
+     * @param tag
+     *            a tag within this construct
+     *
+     * @return name of the specified tag; or an empty string if tag is not
+     *         recognised.
+     */
+    public String getTagName(String tag)
+    {
+        // no constructs within base type definition
         return "";
     }
 
+    /**
+     * Returns the name of the type definition associated with the specified tag
+     *
+     * @param tag
+     *            a tag within this construct
+     *
+     * @return name of the type definition associated with the specified tag; or
+     *         an empty string if tag is not recognised.
+     */
     public String getTypeName(String tag)
     {
+        // no constructs within base type definition
         return "";
     }
 

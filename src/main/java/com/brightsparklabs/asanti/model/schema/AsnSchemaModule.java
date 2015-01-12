@@ -6,8 +6,9 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -27,8 +28,11 @@ public class AsnSchemaModule
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
+    /** class logger */
+    private static final Logger log = Logger.getLogger(AsnSchemaModule.class.getName());
+
     /** splitter for separating tag strings */
-    private static final Splitter tagSplitter = Splitter.on("/");
+    private static final Splitter tagSplitter = Splitter.on("/").omitEmptyStrings();
 
     /** splitter for creating tag strings */
     private static final Joiner tagJoiner = Joiner.on("/");
@@ -102,29 +106,44 @@ public class AsnSchemaModule
      */
     public String getDecodedTag(String rawTag, ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
-        final List<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
-        final List<String> decodedTags = new ArrayList<>(tags.size());
+        final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
+        final ArrayList<String> decodedTags = new ArrayList<>(tags.size());
 
         // map the first raw tag to the top level type
-        tags.remove(0);
         String typeName = topLevelTypeName;
         decodedTags.add(typeName);
         AsnSchemaTypeDefinition<?> type = types.get(typeName);
 
-        for (String tag : tags)
+        // try to decode each tag
+        for (int i = 1; i < tags.size(); i++)
         {
+            if (type == null)
+            {
+                log.log(Level.WARNING, "Could not resolve type definition \"{0}\" within module \"{1}\"", new Object[] {
+                        typeName, name });
+                break;
+            }
+
+            final String tag = tags.get(i);
+            final String tagName = type.getTagName(tag);
             typeName = type.getTypeName(tag);
-            if (typeName.isEmpty())
+            if (tagName.isEmpty() || typeName.isEmpty())
             {
                 break;
             }
-            decodedTags.add(typeName);
+            decodedTags.add(tagName);
             type = types.get(typeName);
         }
 
+        // add any undecoded tags to end
         if (tags.size() != decodedTags.size())
         {
-            // could not decode, copy raw tag into result
+            // could not decode, copy unknown tag into result
+            for (int i = decodedTags.size(); i < tags.size(); i++)
+            {
+                final String unknownTag = tags.get(i);
+                decodedTags.add(unknownTag);
+            }
         }
 
         return tagJoiner.join(decodedTags);
@@ -221,10 +240,13 @@ public class AsnSchemaModule
         // ---------------------------------------------------------------------
 
         /** name of this module */
-        private String name;
+        private String name = "";
 
-        /** name of the top level type defined in this module */
-        private String topLevelTypeName;
+        /**
+         * name of the top level type defined in this module. Defaults to the
+         * first type added via {@link #addType(AsnSchemaTypeDefinition)}.
+         */
+        private String topLevelTypeName = "";
 
         /** name of the top level type defined in this module */
         private final Map<String, AsnSchemaTypeDefinition<?>> types = Maps.newHashMap();
@@ -266,7 +288,10 @@ public class AsnSchemaModule
         }
 
         /**
-         * Sets the top level type of this module to the supplied type name
+         * Sets the top level type of this module to the supplied type name.
+         *
+         * If not called, then the top level type will default to the first type
+         * added by {@link #addType(AsnSchemaTypeDefinition)}.
          *
          * @param topLevelTypeName
          *            name of the top level type in this module
@@ -283,6 +308,9 @@ public class AsnSchemaModule
          * Stores a new type definition to this module. I.e. the specified type
          * definition is found in module.
          *
+         * If no top level type is set in this builder, it will default to the
+         * first type added using this method.
+         *
          * @param type
          *            type definition to add
          *
@@ -291,6 +319,13 @@ public class AsnSchemaModule
         public Builder addType(AsnSchemaTypeDefinition<?> type)
         {
             types.put(type.getName(), type);
+
+            // set top level type to first type added
+            if (topLevelTypeName.isEmpty())
+            {
+                topLevelTypeName = type.getName();
+            }
+
             return this;
         }
 

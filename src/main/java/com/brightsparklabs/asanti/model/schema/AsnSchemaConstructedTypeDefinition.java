@@ -92,6 +92,13 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
     // -------------------------------------------------------------------------
 
     @Override
+    public String getTagName(String tag)
+    {
+        final AsnSchemaComponentType componentType = tagsToComponentTypes.get(tag);
+        return (componentType == null) ? "" : componentType.getTagName();
+    }
+
+    @Override
     public String getTypeName(String tag)
     {
         final AsnSchemaComponentType componentType = tagsToComponentTypes.get(tag);
