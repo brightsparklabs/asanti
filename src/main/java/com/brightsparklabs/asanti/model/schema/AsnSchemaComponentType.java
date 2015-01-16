@@ -5,6 +5,8 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * An item within a 'constructed' (SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or
  * ENUMERATED) type definition
@@ -13,7 +15,6 @@ package com.brightsparklabs.asanti.model.schema;
  */
 public class AsnSchemaComponentType
 {
-
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -33,13 +34,45 @@ public class AsnSchemaComponentType
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
+
+    /**
+     * Default constructor.
+     *
+     * @param tagName
+     *            name of this component type (i.e. tag name)
+     *
+     * @param tag
+     *            tag of this component type. Will default to an empty string if
+     *            {@code null}
+     *
+     * @param typeName
+     *            type of this component type
+     *
+     * @param isOptional
+     *            whether this component type is optional
+     *
+     * @throws NullPointerException
+     *             if {@code tagName} or {@code typeName} are {@code null}
+     *
+     * @throws IllegalArgumentException
+     *             if {@code tagName} or {@code typeName} are blank
+     */
     public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional)
     {
+        checkNotNull(tagName);
+        checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
+        checkNotNull(typeName);
+        checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");
+
         this.tagName = tagName;
-        this.tag = tag;
+        this.tag = (tag == null) ? "" : tag;
         this.typeName = typeName;
         this.isOptional = isOptional;
     }
+
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
 
     /**
      * @return the name of the component type (i.e. tag name)

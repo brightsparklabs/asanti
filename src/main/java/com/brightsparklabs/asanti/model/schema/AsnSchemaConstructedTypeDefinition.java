@@ -5,11 +5,15 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * A 'constructed' (SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED)
@@ -17,9 +21,8 @@ import com.google.common.collect.ImmutableMap;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<ImmutableList>
+public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<ImmutableList<?>>
 {
-
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -27,15 +30,23 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
     /** class logger */
     private static final Logger log = Logger.getLogger(AsnSchemaConstructedTypeDefinition.class.getName());
 
+    /**
+     * built-in types which are considered 'constructed'. Currently: SET,
+     * SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED
+     */
+    public static final ImmutableSet<AsnBuiltinType> validTypes = ImmutableSet.of(AsnBuiltinType.Set,
+            AsnBuiltinType.Sequence,
+            AsnBuiltinType.SetOf,
+            AsnBuiltinType.SequenceOf,
+            AsnBuiltinType.Choice,
+            AsnBuiltinType.Enumerated);
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
     /** mapping from raw tag to component type */
     private final ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
-
-    /** mapping from tag name to component type */
-    private final ImmutableMap<String, AsnSchemaComponentType> tagNamesToComponentTypes;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -52,23 +63,33 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
      *
      * @param componentTypes
      *            the component types within this defined type
+     *
+     * @throws NullPointerException
+     *             if {@code name}, {@code type} or {@code componentTypes} are
+     *             {@code null}
+     *
+     * @throws IllegalArgumentException
+     *             if {@code name} is blank or {@code type} is not one of the
+     *             valid types defined in {@link #validTypes}
      */
     public AsnSchemaConstructedTypeDefinition(String name, AsnBuiltinType type,
             Iterable<AsnSchemaComponentType> componentTypes)
     {
         super(name, type);
+        checkArgument(validTypes.contains(type),
+                "Type must be either SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED");
+        checkNotNull(componentTypes);
 
-        final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToTypesBuilder = ImmutableMap.builder();
-        final ImmutableMap.Builder<String, AsnSchemaComponentType> tagNamesToTypesBuilder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder = ImmutableMap.builder();
 
         // next expected tag is used to generate tags for automatic tagging
         // TODO ensure that generating for all missing tags is correct and safe
         int nextExpectedTag = 0;
 
-        for (AsnSchemaComponentType componentType : componentTypes)
+        for (final AsnSchemaComponentType componentType : componentTypes)
         {
             String tag = componentType.getTag();
-            if (tag == null)
+            if (Strings.isNullOrEmpty(tag))
             {
                 tag = String.valueOf(nextExpectedTag);
                 log.log(Level.FINE,
@@ -80,11 +101,9 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
             {
                 nextExpectedTag = Integer.parseInt(tag) + 1;
             }
-            tagsToTypesBuilder.put(tag, componentType);
-            tagNamesToTypesBuilder.put(componentType.getTagName(), componentType);
+            tagsToComponentTypesBuilder.put(tag, componentType);
         }
-        tagsToComponentTypes = tagsToTypesBuilder.build();
-        tagNamesToComponentTypes = tagNamesToTypesBuilder.build();
+        tagsToComponentTypes = tagsToComponentTypesBuilder.build();
     }
 
     // -------------------------------------------------------------------------

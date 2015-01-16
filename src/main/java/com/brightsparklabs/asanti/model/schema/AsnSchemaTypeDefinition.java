@@ -5,6 +5,8 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.util.List;
 
 /**
@@ -21,7 +23,6 @@ import java.util.List;
  */
 public class AsnSchemaTypeDefinition<T>
 {
-
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -53,9 +54,19 @@ public class AsnSchemaTypeDefinition<T>
      *
      * @param builtinType
      *            the underlying ASN.1 type of the defined type
+     *
+     * @throws NullPointerException
+     *             if {@code name} or {@code builtinType} are {@code null}
+     *
+     * @throws IllegalArgumentException
+     *             if {@code name} is blank
      */
     public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType)
     {
+        checkNotNull(name);
+        checkArgument(!name.trim().isEmpty(), "Tag name must be specified");
+        checkNotNull(builtinType);
+
         this.name = name;
         this.builtinType = builtinType;
     }
