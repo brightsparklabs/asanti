@@ -28,19 +28,23 @@ public class AsnSchemaModuleParser
     // -------------------------------------------------------------------------
 
     /** pattern to match a type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION = Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+) ?::= ?(.+)");
+    private static final Pattern PATTERN_TYPE_DEFINITION =
+            Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+) ?::= ?(.+)");
 
     /** pattern to match a value assignment */
-    private static final Pattern PATTERN_VALUE_ASSIGNMENT = Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+( [A-Za-z0-9\\-]+)+) ?::= ?(.+)");
+    private static final Pattern PATTERN_VALUE_ASSIGNMENT =
+            Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+( [A-Za-z0-9\\-]+)+) ?::= ?(.+)");
 
     /** error message if schema is missing header keywords */
     private static final String ERROR_MISSING_HEADERS = "Schema does not contain all expected module headers";
 
     /** error message if schema is missing content */
-    private static final String ERROR_MISSING_CONTENT = "Schema does not contain any information within the 'BEGIN' and 'END' keywords";
+    private static final String ERROR_MISSING_CONTENT =
+            "Schema does not contain any information within the 'BEGIN' and 'END' keywords";
 
     /** error message if a type definition or value assignment is not found */
-    private static final String ERROR_UNKNOWN_CONTENT = "Parser expected a type definition or value assignment but found: ";
+    private static final String ERROR_UNKNOWN_CONTENT =
+            "Parser expected a type definition or value assignment but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -111,7 +115,8 @@ public class AsnSchemaModuleParser
     {
         try
         {
-            final String moduleName = lineIterator.next().split(" ")[0];
+            final String moduleName = lineIterator.next()
+                    .split(" ")[0];
             log.log(Level.INFO, "Found module: {0}", moduleName);
             moduleBuilder.setName(moduleName);
 
@@ -120,7 +125,7 @@ public class AsnSchemaModuleParser
             {
             }
         }
-        catch (NoSuchElementException ex)
+        catch (final NoSuchElementException ex)
         {
             throw new ParseException(ERROR_MISSING_HEADERS, -1);
         }
@@ -164,7 +169,7 @@ public class AsnSchemaModuleParser
             }
             parseTypeDefinitionsAndValueAssignments(line, lineIterator, moduleBuilder);
         }
-        catch (NoSuchElementException ex)
+        catch (final NoSuchElementException ex)
         {
             throw new ParseException(ERROR_MISSING_CONTENT, -1);
         }
@@ -210,11 +215,13 @@ public class AsnSchemaModuleParser
             final StringBuilder builder = new StringBuilder();
             do
             {
-                builder.append(line).append(" ");
+                builder.append(line)
+                        .append(" ");
                 line = lineIterator.next();
             } while (!line.contains("::=") && !"END".equals(line));
 
-            final String content = builder.toString().trim();
+            final String content = builder.toString()
+                    .trim();
             log.log(Level.FINER, "Found content: {0}", content);
 
             // check if content is a type definition
@@ -223,7 +230,7 @@ public class AsnSchemaModuleParser
             {
                 final String name = matcher.group(1);
                 final String value = matcher.group(4);
-                final AsnSchemaTypeDefinition<?> typeDefinition = AsnSchemaTypeDefinitionParser.parse(name, value);
+                final AsnSchemaTypeDefinition typeDefinition = AsnSchemaTypeDefinitionParser.parse(name, value);
                 moduleBuilder.addType(typeDefinition);
                 continue;
             }

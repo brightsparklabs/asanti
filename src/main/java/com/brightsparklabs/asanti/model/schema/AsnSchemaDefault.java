@@ -5,9 +5,10 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.util.Map;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -17,7 +18,6 @@ import com.google.common.collect.ImmutableMap;
  */
 public class AsnSchemaDefault implements AsnSchema
 {
-
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -49,11 +49,10 @@ public class AsnSchemaDefault implements AsnSchema
      */
     public AsnSchemaDefault(String primaryModule, Map<String, AsnSchemaModule> modules)
     {
-        Preconditions.checkNotNull(primaryModule);
-        Preconditions.checkNotNull(modules);
-        Preconditions.checkArgument(!modules.isEmpty(), "A schema cannot contain no modules");
-        Preconditions.checkArgument(modules.containsKey(primaryModule),
-                "The primary module must be contained in the schema's modules");
+        checkNotNull(primaryModule);
+        checkNotNull(modules);
+        checkArgument(!modules.isEmpty(), "A schema cannot contain no modules");
+        checkArgument(modules.containsKey(primaryModule), "The primary module must be contained in the schema's modules");
 
         this.primaryModule = modules.get(primaryModule);
         this.modules = ImmutableMap.copyOf(modules);
@@ -70,20 +69,16 @@ public class AsnSchemaDefault implements AsnSchema
     }
 
     @Override
-    public DecodeResult<String> getRawTag(String decodedTag)
-    {
-        return primaryModule.getRawTag(decodedTag, modules);
-    }
-
-    @Override
     public String getPrintableString(String tag, byte[] data)
     {
+        // TODO
         return "";
     }
 
     @Override
     public Object getDecodedObject(String tag, byte[] data)
     {
+        // TODO
         return "";
     }
 }

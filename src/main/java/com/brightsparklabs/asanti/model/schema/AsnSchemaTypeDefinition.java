@@ -7,21 +7,13 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
-import java.util.List;
-
 /**
  * A type definition from a within a module specification within an ASN.1
  * schema.
  *
  * @author brightSPARK Labs
- *
- * @param <T>
- *            the type of value which can be assigned to this type. For
- *            constructed types (SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or
- *            ENUMERATED) this is a {@link List}. For primitives this is the
- *            most appropriate Java type (Long, Double, String, etc)
  */
-public class AsnSchemaTypeDefinition<T>
+public class AsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -64,7 +56,8 @@ public class AsnSchemaTypeDefinition<T>
     public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType)
     {
         checkNotNull(name);
-        checkArgument(!name.trim().isEmpty(), "Tag name must be specified");
+        checkArgument(!name.trim()
+                .isEmpty(), "Tag name must be specified");
         checkNotNull(builtinType);
 
         this.name = name;
@@ -131,7 +124,7 @@ public class AsnSchemaTypeDefinition<T>
     /**
      * Null instance of {@link AsnSchemaTypeDefinition}
      */
-    public static class AsnSchemaTypeDefinitionNull extends AsnSchemaTypeDefinition<String>
+    public static class AsnSchemaTypeDefinitionNull extends AsnSchemaTypeDefinition
     {
 
         public AsnSchemaTypeDefinitionNull()

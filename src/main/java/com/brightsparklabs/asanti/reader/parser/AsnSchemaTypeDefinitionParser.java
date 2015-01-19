@@ -24,13 +24,13 @@ import com.google.common.collect.ImmutableList;
  */
 public class AsnSchemaTypeDefinitionParser
 {
-
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
 
     /** pattern to match a SET/SEQUENCE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE = Pattern.compile("^SEQUENCE ?\\{(.+)\\} ?(\\(.+\\))?$");
+    private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE =
+            Pattern.compile("^SEQUENCE ?\\{(.+)\\} ?(\\(.+\\))?$");
 
     /** pattern to match a SET/SEQUENCE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_SET = Pattern.compile("^SET ?\\{(.+)\\} ?(\\(.+\\))?$");
@@ -42,17 +42,20 @@ public class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_CHOICE = Pattern.compile("^CHOICE ?\\{(.+)\\} ?(\\(.+\\))?$");
 
     /** pattern to match a SET OF/SEQUENCE OF type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SET_OF_OR_SEQUENCE_OF = Pattern.compile("^(SEQUENCE|SET)( .+)? OF ?(.+)$");
+    private static final Pattern PATTERN_TYPE_DEFINITION_SET_OF_OR_SEQUENCE_OF =
+            Pattern.compile("^(SEQUENCE|SET)( .+)? OF ?(.+)$");
 
     /** pattern to match a CLASS type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_CLASS = Pattern.compile("^CLASS ?\\{(.+)\\}$");
 
     /** pattern to match a PRIMITIVE type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE = Pattern.compile("^(BIT STRING|GeneralizedTime|INTEGER|NumericString|OCTET STRING|UTF8String|VisibleString) ?(.*)$");
+    private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
+            Pattern.compile("^(BIT STRING|GeneralizedTime|INTEGER|NumericString|OCTET STRING|UTF8String|VisibleString) ?(.*)$");
 
     // TODO add all primitives to error message
     /** error message if an unknown ASN.1 built-in type is found */
-    private static final String ERROR_UNKNOWN_BUILT_IN_TYPE = "Parser expected a built-in type of SEQUENCE, SET, ENUMERATED, BIT STRING, GeneralizedTime, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString, SEQUENCE OF, SET OF, CHOICE or CLASS but found: ";
+    private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
+            "Parser expected a built-in type of SEQUENCE, SET, ENUMERATED, BIT STRING, GeneralizedTime, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString, SEQUENCE OF, SET OF, CHOICE or CLASS but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -80,7 +83,7 @@ public class AsnSchemaTypeDefinitionParser
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    public static AsnSchemaTypeDefinition<?> parse(String name, String value) throws ParseException
+    public static AsnSchemaTypeDefinition parse(String name, String value) throws ParseException
     {
         log.log(Level.FINE, "Found type definition: {0} = {1}", new Object[] { name, value });
 
@@ -167,9 +170,10 @@ public class AsnSchemaTypeDefinitionParser
     private static AsnSchemaConstructedTypeDefinition parseSequence(String name, String componentTypesText)
             throws ParseException
     {
-        final ImmutableList<AsnSchemaComponentType> componentTypes = AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaConstructedTypeDefinition typeDefinition = new AsnSchemaConstructedTypeDefinition(name,
-                AsnBuiltinType.Sequence, componentTypes);
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                AsnSchemaComponentTypeParser.parse(componentTypesText);
+        final AsnSchemaConstructedTypeDefinition typeDefinition =
+                new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Sequence, componentTypes);
         return typeDefinition;
     }
 
@@ -191,9 +195,10 @@ public class AsnSchemaTypeDefinitionParser
     private static AsnSchemaConstructedTypeDefinition parseSet(String name, String componentTypesText)
             throws ParseException
     {
-        final ImmutableList<AsnSchemaComponentType> componentTypes = AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaConstructedTypeDefinition typeDefinition = new AsnSchemaConstructedTypeDefinition(name,
-                AsnBuiltinType.Set, componentTypes);
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                AsnSchemaComponentTypeParser.parse(componentTypesText);
+        final AsnSchemaConstructedTypeDefinition typeDefinition =
+                new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Set, componentTypes);
         return typeDefinition;
     }
 }

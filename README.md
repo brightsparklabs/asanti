@@ -55,12 +55,16 @@ asnData.getBytes("/50/0");
 Consider the following ASN.1 schema:
 
 ```asn
-
-News-Protocol
-    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) news(99) modules(2) docs(1) }
+Document-PDU
+    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }
 
 DEFINITIONS
     AUTOMATIC TAGS ::=
+
+IMPORTS
+  Person
+    FROM People-Protocol
+    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
 
 BEGIN
 
@@ -108,9 +112,27 @@ BEGIN
 
     Section-Main ::= SEQUENCE
     {
-        text      [1] OCTET STRING OPTIONAL,
-        paragraph [2] SEQUENCE OF Paragraph
+        text       [1] OCTET STRING OPTIONAL,
+        paragraphs [2] SEQUENCE OF Paragraph
     }
+
+    Paragraph ::=  SEQUENCE
+    {
+        title        [1] OCTET STRING,
+        contributor  [2] Person OPTIONAL,
+        points       [3] SEQUENCE OF OCTET STRING
+    }
+END
+
+People-Protocol
+    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS
+    AUTOMATIC TAGS ::=
+
+BEGIN
+
+    People ::= SET OF Person
 
     Person ::= SEQUENCE
     {
@@ -118,13 +140,6 @@ BEGIN
         lastName  [2] OCTET STRING,
         title     [3] ENUMERATED
             { mr, mrs, ms, dr, rev } OPTIONAL
-    }
-
-    Paragraph ::=  SEQUENCE
-    {
-        title       [1] OCTET STRING,
-        contributor [2] Person OPTIONAL,
-        point       [3] SEQUENCE OF OCTET STRING
     }
 END
 ```

@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -21,7 +20,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<ImmutableList<?>>
+public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -34,12 +33,8 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
      * built-in types which are considered 'constructed'. Currently: SET,
      * SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED
      */
-    public static final ImmutableSet<AsnBuiltinType> validTypes = ImmutableSet.of(AsnBuiltinType.Set,
-            AsnBuiltinType.Sequence,
-            AsnBuiltinType.SetOf,
-            AsnBuiltinType.SequenceOf,
-            AsnBuiltinType.Choice,
-            AsnBuiltinType.Enumerated);
+    public static final ImmutableSet<AsnBuiltinType> validTypes =
+            ImmutableSet.of(AsnBuiltinType.Set, AsnBuiltinType.Sequence, AsnBuiltinType.SetOf, AsnBuiltinType.SequenceOf, AsnBuiltinType.Choice, AsnBuiltinType.Enumerated);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -76,8 +71,7 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
             Iterable<AsnSchemaComponentType> componentTypes)
     {
         super(name, type);
-        checkArgument(validTypes.contains(type),
-                "Type must be either SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED");
+        checkArgument(validTypes.contains(type), "Type must be either SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED");
         checkNotNull(componentTypes);
 
         final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder = ImmutableMap.builder();
@@ -92,9 +86,8 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition<
             if (Strings.isNullOrEmpty(tag))
             {
                 tag = String.valueOf(nextExpectedTag);
-                log.log(Level.FINE,
-                        "Generated automatic tag [{0}] for {1}",
-                        new Object[] { tag, componentType.getTagName() });
+                log.log(Level.FINE, "Generated automatic tag [{0}] for {1}", new Object[] { tag,
+                        componentType.getTagName() });
                 nextExpectedTag++;
             }
             else
