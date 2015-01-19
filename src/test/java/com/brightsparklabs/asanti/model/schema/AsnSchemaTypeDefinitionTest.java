@@ -5,7 +5,6 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
@@ -92,62 +91,5 @@ public class AsnSchemaTypeDefinitionTest
         assertEquals("", instance.getTypeName("0"));
         assertEquals("", instance.getTypeName("NAME"));
         assertEquals("", instance.getTypeName("SET"));
-    }
-
-    // -------------------------------------------------------------------------
-    // INTERNAL CLASS: MockedInstanceBuilder
-    // -------------------------------------------------------------------------
-
-    /**
-     * Builder for creating mocked instances of {@link AsnSchemaTypeDefinition}
-     *
-     * @author brightSPARK Labs
-     */
-    public static class MockAsnSchemaTypeDefinitionBuilder
-    {
-        final AsnSchemaTypeDefinition mockedInstance = mock(AsnSchemaTypeDefinition.class);
-
-        /**
-         * Default constructor
-         *
-         * @param name
-         * @param builtinType
-         */
-        public MockAsnSchemaTypeDefinitionBuilder(String name, AsnBuiltinType builtinType)
-        {
-            when(mockedInstance.getBuiltinType()).thenReturn(builtinType);
-            when(mockedInstance.getName()).thenReturn(name);
-        }
-
-        /**
-         * Add a component type to this definition
-         *
-         * @param tag
-         *            tag of the component type
-         *
-         * @param tagName
-         *            tag name of the component type
-         *
-         * @param typeName
-         *            type name of the component type
-         *
-         * @return this builder
-         */
-        public MockAsnSchemaTypeDefinitionBuilder addComponentType(String tag, String tagName, String typeName)
-        {
-            when(mockedInstance.getTagName(tag)).thenReturn(tagName);
-            when(mockedInstance.getTypeName(tag)).thenReturn(typeName);
-            return this;
-        }
-
-        /**
-         * Creates a mocked instance from the data in this builder
-         *
-         * @return a mocked instance of {@link AsnSchemaTypeDefinition}
-         */
-        public AsnSchemaTypeDefinition build()
-        {
-            return mockedInstance;
-        }
     }
 }

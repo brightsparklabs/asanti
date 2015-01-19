@@ -5,24 +5,22 @@
 package com.brightsparklabs.asanti.model.data;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.regex.Pattern;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.ArgumentMatcher;
 
+import com.brightsparklabs.asanti.mocks.MockAsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.DecodeResult;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 /**
- * Unit test
+ * Unit tests for public class {@link DecodedAsnDataDefault}
  *
  * @author brightSPARK Labs
  */
@@ -56,49 +54,15 @@ public class DecodedAsnDataDefaultTest
                 .put("/99/1/1", "/99/1/1".getBytes(Charsets.UTF_8))
                 .build();
 
-        /** asnData to construct instance from */
+        // create instance
         final AsnData asnData = new AsnDataDefault(tagsToData);
-
-        /** asnSchema to construct instance from */
-        final AsnSchema asnSchema = mock(AsnSchema.class);
-        when(asnSchema.getDecodedTag("/1/0/1", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/Header/Published/Date"));
-        when(asnSchema.getDecodedTag("/2/0/0", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/Body/LastModified/Date"));
-        when(asnSchema.getDecodedTag("/2/1/1", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/Body/Prefix/Text"));
-        when(asnSchema.getDecodedTag("/2/2/1", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/Body/Content/Text"));
-        when(asnSchema.getDecodedTag("/3/0/1", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/Footer/Author/FirstName"));
-        when(asnSchema.getDecodedTag("/2/2/99", "Document")).thenReturn(DecodeResult.create(false,
-                "/Document/Body/Content/99"));
-        when(asnSchema.getDecodedTag("/99/1/1", "Document")).thenReturn(DecodeResult.create(false, "/Document/99/1/1"));
-
-        final NonEmptyByteArrayMatcher nonEmptyByteArrayMatcher = new NonEmptyByteArrayMatcher();
-        when(asnSchema.getPrintableString(anyString(), any(byte[].class))).thenReturn("");
-        when(asnSchema.getPrintableString(anyString(), argThat(nonEmptyByteArrayMatcher))).thenReturn("printableString");
-        when(asnSchema.getDecodedObject(anyString(), any(byte[].class))).thenReturn("");
-        when(asnSchema.getDecodedObject(anyString(), argThat(nonEmptyByteArrayMatcher))).thenReturn("decodedObject");
-
+        final AsnSchema asnSchema = MockAsnSchema.getInstance();
         instance = new DecodedAsnDataDefault(asnData, asnSchema, "Document");
 
-        /** asnData to construct emptyInstance from */
+        // create empty instance
         final AsnData emptyAsnData = new AsnDataDefault(Maps.<String, byte[]>newHashMap());
         emptyInstance = new DecodedAsnDataDefault(emptyAsnData, asnSchema, "Document");
     }
-
-    /**
-     * Matches non-empty byte[] arguments
-     */
-    private static class NonEmptyByteArrayMatcher extends ArgumentMatcher<byte[]>
-    {
-        @Override
-        public boolean matches(Object item)
-        {
-            return ((byte[]) item).length > 0;
-        }
-    };
 
     // -------------------------------------------------------------------------
     // TESTS
@@ -115,7 +79,7 @@ public class DecodedAsnDataDefaultTest
             new DecodedAsnDataDefault(null, null, null);
             fail("NullPointerException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (final NullPointerException ex)
         {
         }
         try
@@ -123,7 +87,7 @@ public class DecodedAsnDataDefaultTest
             new DecodedAsnDataDefault(null, null, "Test");
             fail("NullPointerException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (final NullPointerException ex)
         {
         }
         try
@@ -131,7 +95,7 @@ public class DecodedAsnDataDefaultTest
             new DecodedAsnDataDefault(null, mockSchema, null);
             fail("NullPointerException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (final NullPointerException ex)
         {
         }
         try
@@ -139,7 +103,7 @@ public class DecodedAsnDataDefaultTest
             new DecodedAsnDataDefault(null, mockSchema, "Test");
             fail("NullPointerException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (final NullPointerException ex)
         {
         }
         try
@@ -147,7 +111,7 @@ public class DecodedAsnDataDefaultTest
             new DecodedAsnDataDefault(mockData, null, null);
             fail("NullPointerException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (final NullPointerException ex)
         {
         }
         try
@@ -155,7 +119,7 @@ public class DecodedAsnDataDefaultTest
             new DecodedAsnDataDefault(mockData, null, "Test");
             fail("NullPointerException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (final NullPointerException ex)
         {
         }
         try
@@ -163,7 +127,7 @@ public class DecodedAsnDataDefaultTest
             new DecodedAsnDataDefault(mockData, mockSchema, null);
             fail("NullPointerException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (final NullPointerException ex)
         {
         }
         try
@@ -171,7 +135,7 @@ public class DecodedAsnDataDefaultTest
             new DecodedAsnDataDefault(mockData, mockSchema, "");
             fail("IllegalArgumentException not thrown");
         }
-        catch (IllegalArgumentException ex)
+        catch (final IllegalArgumentException ex)
         {
         }
     }
@@ -181,11 +145,11 @@ public class DecodedAsnDataDefaultTest
     {
         ImmutableSet<String> tags = instance.getTags();
         assertEquals(tags.size(), 5);
-        assertTrue(tags.contains("/Document/Header/Published/Date"));
-        assertTrue(tags.contains("/Document/Body/LastModified/Date"));
-        assertTrue(tags.contains("/Document/Body/Prefix/Text"));
-        assertTrue(tags.contains("/Document/Body/Content/Text"));
-        assertTrue(tags.contains("/Document/Footer/Author/FirstName"));
+        assertTrue(tags.contains("/Document/header/published/date"));
+        assertTrue(tags.contains("/Document/body/lastModified/date"));
+        assertTrue(tags.contains("/Document/body/prefix/text"));
+        assertTrue(tags.contains("/Document/body/content/text"));
+        assertTrue(tags.contains("/Document/footer/author/firstName"));
 
         tags = emptyInstance.getTags();
         assertEquals(tags.size(), 0);
@@ -196,7 +160,7 @@ public class DecodedAsnDataDefaultTest
     {
         ImmutableSet<String> tags = instance.getUnmappedTags();
         assertEquals(tags.size(), 2);
-        assertTrue(tags.contains("/Document/Body/Content/99"));
+        assertTrue(tags.contains("/Document/body/content/99"));
         assertTrue(tags.contains("/Document/99/1/1"));
 
         tags = emptyInstance.getUnmappedTags();
@@ -206,14 +170,14 @@ public class DecodedAsnDataDefaultTest
     @Test
     public void testContains() throws Exception
     {
-        assertTrue(instance.contains("/Document/Header/Published/Date"));
-        assertTrue(instance.contains("/Document/Body/LastModified/Date"));
-        assertTrue(instance.contains("/Document/Body/Prefix/Text"));
-        assertTrue(instance.contains("/Document/Body/Content/Text"));
-        assertTrue(instance.contains("/Document/Footer/Author/FirstName"));
+        assertTrue(instance.contains("/Document/header/published/date"));
+        assertTrue(instance.contains("/Document/body/lastModified/date"));
+        assertTrue(instance.contains("/Document/body/prefix/text"));
+        assertTrue(instance.contains("/Document/body/content/text"));
+        assertTrue(instance.contains("/Document/footer/author/firstName"));
 
         // test unmapped tags
-        assertTrue(instance.contains("/Document/Body/Content/99"));
+        assertTrue(instance.contains("/Document/body/content/99"));
         assertTrue(instance.contains("/Document/99/1/1"));
 
         // test raw tags
@@ -226,20 +190,20 @@ public class DecodedAsnDataDefaultTest
 
         assertFalse(emptyInstance.contains(""));
         assertFalse(emptyInstance.contains("/Document/0/0/0"));
-        assertFalse(emptyInstance.contains("/Document/Header/Published/Date"));
+        assertFalse(emptyInstance.contains("/Document/header/published/date"));
     }
 
     @Test
     public void testGetBytes() throws Exception
     {
-        assertArrayEquals("/1/0/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/Header/Published/Date"));
-        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8), instance.getBytes("/Document/Body/LastModified/Date"));
-        assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/Body/Prefix/Text"));
-        assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/Body/Content/Text"));
-        assertArrayEquals("/3/0/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/Footer/Author/FirstName"));
+        assertArrayEquals("/1/0/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/header/published/date"));
+        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8), instance.getBytes("/Document/body/lastModified/date"));
+        assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/body/prefix/text"));
+        assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/body/content/text"));
+        assertArrayEquals("/3/0/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/footer/author/firstName"));
 
         // test unmapped tags
-        assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8), instance.getBytes("/Document/Body/Content/99"));
+        assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8), instance.getBytes("/Document/body/content/99"));
         assertArrayEquals("/99/1/1".getBytes(Charsets.UTF_8), instance.getBytes("/Document/99/1/1"));
 
         // test raw tags
@@ -253,19 +217,19 @@ public class DecodedAsnDataDefaultTest
 
         assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes(""));
         assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes("/Document/0/0/0"));
-        assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes("/Document/Header/Published/Date"));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes("/Document/header/published/date"));
     }
 
     @Test
     public void testGetBytesMatching() throws Exception
     {
-        Pattern regex = Pattern.compile("/Document/Body/.+");
+        Pattern regex = Pattern.compile("/Document/body/.+");
         ImmutableMap<String, byte[]> result = instance.getBytesMatching(regex);
         assertEquals(4, result.size());
-        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8), result.get("/Document/Body/LastModified/Date"));
-        assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8), result.get("/Document/Body/Prefix/Text"));
-        assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8), result.get("/Document/Body/Content/Text"));
-        assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8), result.get("/Document/Body/Content/99"));
+        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8), result.get("/Document/body/lastModified/date"));
+        assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8), result.get("/Document/body/prefix/text"));
+        assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8), result.get("/Document/body/content/text"));
+        assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8), result.get("/Document/body/content/99"));
         assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("/Document/2/2/99"));
         result = emptyInstance.getBytesMatching(regex);
         assertEquals(0, result.size());
@@ -287,14 +251,14 @@ public class DecodedAsnDataDefaultTest
     @Test
     public void testGetHexString() throws Exception
     {
-        assertEquals("0x2F312F302F31", instance.getHexString("/Document/Header/Published/Date"));
-        assertEquals("0x2F322F302F30", instance.getHexString("/Document/Body/LastModified/Date"));
-        assertEquals("0x2F322F312F31", instance.getHexString("/Document/Body/Prefix/Text"));
-        assertEquals("0x2F322F322F31", instance.getHexString("/Document/Body/Content/Text"));
-        assertEquals("0x2F332F302F31", instance.getHexString("/Document/Footer/Author/FirstName"));
+        assertEquals("0x2F312F302F31", instance.getHexString("/Document/header/published/date"));
+        assertEquals("0x2F322F302F30", instance.getHexString("/Document/body/lastModified/date"));
+        assertEquals("0x2F322F312F31", instance.getHexString("/Document/body/prefix/text"));
+        assertEquals("0x2F322F322F31", instance.getHexString("/Document/body/content/text"));
+        assertEquals("0x2F332F302F31", instance.getHexString("/Document/footer/author/firstName"));
 
         // test unmapped tags
-        assertEquals("0x2F322F322F3939", instance.getHexString("/Document/Body/Content/99"));
+        assertEquals("0x2F322F322F3939", instance.getHexString("/Document/body/content/99"));
         assertEquals("0x2F39392F312F31", instance.getHexString("/Document/99/1/1"));
 
         // test raw tags
@@ -308,19 +272,19 @@ public class DecodedAsnDataDefaultTest
 
         assertEquals("0x", emptyInstance.getHexString(""));
         assertEquals("0x", emptyInstance.getHexString("/Document/0/0/0"));
-        assertEquals("0x", emptyInstance.getHexString("/Document/Header/Published/Date"));
+        assertEquals("0x", emptyInstance.getHexString("/Document/header/published/date"));
     }
 
     @Test
     public void testGetHexStringsMatching() throws Exception
     {
-        Pattern regex = Pattern.compile("/Document/Bod[x-z]/.+");
+        Pattern regex = Pattern.compile("/Document/bod[x-z]/.+");
         ImmutableMap<String, String> result = instance.getHexStringsMatching(regex);
         assertEquals(4, result.size());
-        assertEquals("0x2F322F302F30", result.get("/Document/Body/LastModified/Date"));
-        assertEquals("0x2F322F312F31", result.get("/Document/Body/Prefix/Text"));
-        assertEquals("0x2F322F322F31", result.get("/Document/Body/Content/Text"));
-        assertEquals("0x2F322F322F3939", result.get("/Document/Body/Content/99"));
+        assertEquals("0x2F322F302F30", result.get("/Document/body/lastModified/date"));
+        assertEquals("0x2F322F312F31", result.get("/Document/body/prefix/text"));
+        assertEquals("0x2F322F322F31", result.get("/Document/body/content/text"));
+        assertEquals("0x2F322F322F3939", result.get("/Document/body/content/99"));
         result = emptyInstance.getHexStringsMatching(regex);
         assertEquals(0, result.size());
 
@@ -331,7 +295,7 @@ public class DecodedAsnDataDefaultTest
         result = emptyInstance.getHexStringsMatching(regex);
         assertEquals(0, result.size());
 
-        regex = Pattern.compile("/Document/Header/A.*");
+        regex = Pattern.compile("/Document/header/a.*");
         result = instance.getHexStringsMatching(regex);
         assertEquals(0, result.size());
         result = emptyInstance.getHexStringsMatching(regex);
@@ -341,14 +305,14 @@ public class DecodedAsnDataDefaultTest
     @Test
     public void testGetPrintableString() throws Exception
     {
-        assertEquals("printableString", instance.getPrintableString("/Document/Header/Published/Date"));
-        assertEquals("printableString", instance.getPrintableString("/Document/Body/LastModified/Date"));
-        assertEquals("printableString", instance.getPrintableString("/Document/Body/Prefix/Text"));
-        assertEquals("printableString", instance.getPrintableString("/Document/Body/Content/Text"));
-        assertEquals("printableString", instance.getPrintableString("/Document/Footer/Author/FirstName"));
+        assertEquals("printableString", instance.getPrintableString("/Document/header/published/date"));
+        assertEquals("printableString", instance.getPrintableString("/Document/body/lastModified/date"));
+        assertEquals("printableString", instance.getPrintableString("/Document/body/prefix/text"));
+        assertEquals("printableString", instance.getPrintableString("/Document/body/content/text"));
+        assertEquals("printableString", instance.getPrintableString("/Document/footer/author/firstName"));
 
         // test unmapped tags
-        assertEquals("printableString", instance.getPrintableString("/Document/Body/Content/99"));
+        assertEquals("printableString", instance.getPrintableString("/Document/body/content/99"));
         assertEquals("printableString", instance.getPrintableString("/Document/99/1/1"));
 
         // test raw tags
@@ -362,17 +326,17 @@ public class DecodedAsnDataDefaultTest
 
         assertEquals("", emptyInstance.getPrintableString(""));
         assertEquals("", emptyInstance.getPrintableString("/0/0/0"));
-        assertEquals("", emptyInstance.getPrintableString("/Document/Header/Published/Date"));
+        assertEquals("", emptyInstance.getPrintableString("/Document/header/published/date"));
     }
 
     @Test
     public void testGetPrintableStringsMatching() throws Exception
     {
-        Pattern regex = Pattern.compile(".+Text");
+        Pattern regex = Pattern.compile(".+text");
         ImmutableMap<String, String> result = instance.getPrintableStringsMatching(regex);
         assertEquals(2, result.size());
-        assertEquals("printableString", result.get("/Document/Body/Prefix/Text"));
-        assertEquals("printableString", result.get("/Document/Body/Content/Text"));
+        assertEquals("printableString", result.get("/Document/body/prefix/text"));
+        assertEquals("printableString", result.get("/Document/body/content/text"));
         result = emptyInstance.getPrintableStringsMatching(regex);
         assertEquals(0, result.size());
 
@@ -383,7 +347,7 @@ public class DecodedAsnDataDefaultTest
         result = emptyInstance.getPrintableStringsMatching(regex);
         assertEquals(0, result.size());
 
-        regex = Pattern.compile(".*/A[^/]+");
+        regex = Pattern.compile(".*/a[^/]+");
         result = instance.getPrintableStringsMatching(regex);
         assertEquals(0, result.size());
         result = emptyInstance.getPrintableStringsMatching(regex);
@@ -393,14 +357,14 @@ public class DecodedAsnDataDefaultTest
     @Test
     public void testGetDecodedObject() throws Exception
     {
-        assertEquals("decodedObject", instance.getDecodedObject("/Document/Header/Published/Date"));
-        assertEquals("decodedObject", instance.getDecodedObject("/Document/Body/LastModified/Date"));
-        assertEquals("decodedObject", instance.getDecodedObject("/Document/Body/Prefix/Text"));
-        assertEquals("decodedObject", instance.getDecodedObject("/Document/Body/Content/Text"));
-        assertEquals("decodedObject", instance.getDecodedObject("/Document/Footer/Author/FirstName"));
+        assertEquals("decodedObject", instance.getDecodedObject("/Document/header/published/date"));
+        assertEquals("decodedObject", instance.getDecodedObject("/Document/body/lastModified/date"));
+        assertEquals("decodedObject", instance.getDecodedObject("/Document/body/prefix/text"));
+        assertEquals("decodedObject", instance.getDecodedObject("/Document/body/content/text"));
+        assertEquals("decodedObject", instance.getDecodedObject("/Document/footer/author/firstName"));
 
         // test unmapped tags
-        assertEquals("decodedObject", instance.getDecodedObject("/Document/Body/Content/99"));
+        assertEquals("decodedObject", instance.getDecodedObject("/Document/body/content/99"));
         assertEquals("decodedObject", instance.getDecodedObject("/Document/99/1/1"));
 
         // test raw tags
@@ -413,7 +377,7 @@ public class DecodedAsnDataDefaultTest
 
         assertEquals("", emptyInstance.getDecodedObject(""));
         assertEquals("", emptyInstance.getDecodedObject("/Document/0/0/0"));
-        assertEquals("", emptyInstance.getDecodedObject("/Document/Header/Published/Date"));
+        assertEquals("", emptyInstance.getDecodedObject("/Document/header/published/date"));
     }
 
     @Test
@@ -422,10 +386,10 @@ public class DecodedAsnDataDefaultTest
         Pattern regex = Pattern.compile(".+dy.+");
         ImmutableMap<String, Object> result = instance.getDecodedObjectsMatching(regex);
         assertEquals(4, result.size());
-        assertEquals("decodedObject", result.get("/Document/Body/LastModified/Date"));
-        assertEquals("decodedObject", result.get("/Document/Body/Prefix/Text"));
-        assertEquals("decodedObject", result.get("/Document/Body/Content/Text"));
-        assertEquals("decodedObject", result.get("/Document/Body/Content/99"));
+        assertEquals("decodedObject", result.get("/Document/body/lastModified/date"));
+        assertEquals("decodedObject", result.get("/Document/body/prefix/text"));
+        assertEquals("decodedObject", result.get("/Document/body/content/text"));
+        assertEquals("decodedObject", result.get("/Document/body/content/99"));
         result = emptyInstance.getDecodedObjectsMatching(regex);
         assertEquals(0, result.size());
 

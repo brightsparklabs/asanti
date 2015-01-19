@@ -5,17 +5,19 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.brightsparklabs.asanti.mocks.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionTest.MockAsnSchemaTypeDefinitionBuilder;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+/**
+ * Unit tests for {@link AsnSchemaModule}
+ *
+ * @author brightSPARK Labs
+ */
 public class AsnSchemaModuleTest
 {
     // -------------------------------------------------------------------------
@@ -35,171 +37,8 @@ public class AsnSchemaModuleTest
     @BeforeClass
     public static void setUpBeforeClass()
     {
-        instance = createMockedAsnSchemaModuleForDocumentPdu();
-        final AsnSchemaModule peopleProtocolModule = createMockedAsnSchemaModuleForPeopleProtocol();
-        allSchemaModules = ImmutableMap.<String, AsnSchemaModule>builder()
-                .put(instance.getName(), instance)
-                .put(peopleProtocolModule.getName(), peopleProtocolModule)
-                .build();
-    }
-
-    // -------------------------------------------------------------------------
-    // MOCKS
-    // -------------------------------------------------------------------------
-
-    /**
-     * Creates a mock {@link AsnSchemaModule} instance conforming to the
-     * 'Document-PDU' module in the test schema
-     *
-     * @return mocked instance
-     */
-    public static AsnSchemaModule createMockedAsnSchemaModuleForDocumentPdu()
-    {
-        final Builder moduleBuilder = AsnSchemaModule.builder();
-        moduleBuilder.setName("Document-PDU")
-                .addImport("Person", "People-Protocol");
-        for (final AsnSchemaTypeDefinition typeDefinition : createMockedAsnSchemaTypeDefinitionsForDocumentPdu())
-        {
-            moduleBuilder.addType(typeDefinition);
-        }
-        return moduleBuilder.build();
-    }
-
-    /**
-     * Creates mock {@link AsnSchemaTypeDefinition} instances conforming to the
-     * 'Document-PDU' module in the test schema
-     *
-     * @return mock instances for use within the 'Document-PDU' module
-     */
-    private static ImmutableList<AsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForDocumentPdu()
-    {
-        final ImmutableList.Builder<AsnSchemaTypeDefinition> listBuilder = ImmutableList.builder();
-
-        // build Document
-        AsnSchemaTypeDefinition mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("Document", AsnBuiltinType.Sequence).addComponentType("1", "header", "Header")
-                        .addComponentType("2", "body", "Body")
-                        .addComponentType("3", "footer", "Footer")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build Header
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("Header", AsnBuiltinType.Sequence).addComponentType("0", "published", "PublishedMetadata")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build Body
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("Body", AsnBuiltinType.Sequence).addComponentType("0", "lastModified", "ModificationMetadata")
-                        .addComponentType("1", "prefix", "Section-Note")
-                        .addComponentType("2", "content", "Section-Main")
-                        .addComponentType("3", "suffix", "Section-Note")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build Footer
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("Footer", AsnBuiltinType.Sequence).addComponentType("0", "author", "Person")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build PublishedMetadata
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("PublishedMetadata", AsnBuiltinType.Sequence).addComponentType("1", "date", "GeneralizedTime")
-                        .addComponentType("2", "country", "OCTET STRING")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build PublishedMetadata
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("PublishedMetadata", AsnBuiltinType.Sequence).addComponentType("1", "date", "GeneralizedTime")
-                        .addComponentType("2", "country", "OCTET STRING")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build ModificationMetadata
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("ModificationMetadata", AsnBuiltinType.Sequence).addComponentType("0", "date", "GeneralizedTime")
-                        .addComponentType("1", "modifiedBy", "Person")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build Section-Note
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("Section-Note", AsnBuiltinType.Sequence).addComponentType("1", "text", "OCTET STRING")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build Section-Main
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("Section-Main", AsnBuiltinType.Sequence).addComponentType("1", "text", "OCTET STRING")
-                        .addComponentType("2", "paragraphs", "SEQUENCE OF Paragraph")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build Paragraph
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("Paragraph", AsnBuiltinType.Sequence).addComponentType("1", "title", "OCTET STRING")
-                        .addComponentType("2", "contributor", "Person")
-                        .addComponentType("3", "points", "SEQUENCE OF OCTET STRING")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        return listBuilder.build();
-    }
-
-    /**
-     * Creates a mock {@link AsnSchemaModule} instance conforming to the
-     * 'Document-PDU' module in the test schema
-     *
-     * @return mocked instance
-     */
-    @SuppressWarnings("unchecked")
-    // @SuppressWarnings required for any(ImmutableMap.class)
-    public static AsnSchemaModule createMockedAsnSchemaModuleForPeopleProtocol()
-    {
-        final AsnSchemaModule mockedInstance = mock(AsnSchemaModule.class);
-        when(mockedInstance.getName()).thenReturn("People-Protocol");
-
-        final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
-                createMockedAsnSchemaTypeDefinitionsForPeopleProtocol();
-        for (final AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
-        {
-            when(mockedInstance.getType(eq(typeDefinition.getName()), any(ImmutableMap.class))).thenReturn(typeDefinition);
-        }
-
-        when(mockedInstance.getDecodedTag(eq("1"), eq("Person"), any(ImmutableMap.class))).thenReturn(DecodeResult.create(true, "/Person/firstName"));
-        when(mockedInstance.getDecodedTag(eq("2"), eq("Person"), any(ImmutableMap.class))).thenReturn(DecodeResult.create(true, "/Person/lastName"));
-        when(mockedInstance.getDecodedTag(eq("3"), eq("Person"), any(ImmutableMap.class))).thenReturn(DecodeResult.create(true, "/Person/title"));
-
-        return mockedInstance;
-    }
-
-    /**
-     * Creates mock {@link AsnSchemaTypeDefinition} instances conforming to the
-     * 'People-Protocol' module in the test schema
-     *
-     * @return mock instances for use within the 'PeopleProtocol' module
-     */
-    private static ImmutableList<AsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForPeopleProtocol()
-    {
-        final ImmutableList.Builder<AsnSchemaTypeDefinition> listBuilder = ImmutableList.builder();
-
-        // build People
-        AsnSchemaTypeDefinition mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("People", AsnBuiltinType.SetOf).build();
-        listBuilder.add(mocktypeDefinition);
-
-        // build Person
-        mocktypeDefinition =
-                new MockAsnSchemaTypeDefinitionBuilder("Person", AsnBuiltinType.Sequence).addComponentType("1", "firstName", "OCTET STRING")
-                        .addComponentType("2", "lastName", "OCTET STRING")
-                        .addComponentType("3", "title", "ENUMERATED")
-                        .build();
-        listBuilder.add(mocktypeDefinition);
-
-        return listBuilder.build();
+        allSchemaModules = MockAsnSchemaModule.createMockedAsnSchemaModules();
+        instance = allSchemaModules.get("Document-PDU");
     }
 
     // -------------------------------------------------------------------------

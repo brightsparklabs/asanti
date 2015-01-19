@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.brightsparklabs.asanti.mocks.MockAsnSchemaModule;
 import com.google.common.collect.ImmutableMap;
 
 public class AsnSchemaDefaultTest
@@ -30,9 +31,7 @@ public class AsnSchemaDefaultTest
     @BeforeClass
     public static void setUpBeforeClass()
     {
-        final AsnSchemaModule documentPduModule = AsnSchemaModuleTest.createMockedAsnSchemaModuleForDocumentPdu();
-        final AsnSchemaModule peopleProtocolModule = AsnSchemaModuleTest.createMockedAsnSchemaModuleForPeopleProtocol();
-        modules = ImmutableMap.of("Document-PDU", documentPduModule, "People-Protocol", peopleProtocolModule);
+        modules = MockAsnSchemaModule.createMockedAsnSchemaModules();
         instance = new AsnSchemaDefault("Document-PDU", modules);
     }
 
