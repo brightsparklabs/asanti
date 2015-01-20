@@ -20,14 +20,14 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition
+public class AsnSchemaTypeDefinitionConstructed extends AsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaConstructedTypeDefinition.class.getName());
+    private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionConstructed.class.getName());
 
     /**
      * built-in types which are considered 'constructed'. Currently: SET,
@@ -67,7 +67,7 @@ public class AsnSchemaConstructedTypeDefinition extends AsnSchemaTypeDefinition
      *             if {@code name} is blank or {@code type} is not one of the
      *             valid types defined in {@link #validTypes}
      */
-    public AsnSchemaConstructedTypeDefinition(String name, AsnBuiltinType type,
+    public AsnSchemaTypeDefinitionConstructed(String name, AsnBuiltinType type,
             Iterable<AsnSchemaComponentType> componentTypes)
     {
         super(name, type);

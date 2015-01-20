@@ -11,7 +11,7 @@ package com.brightsparklabs.asanti.model.schema;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionChoice extends AsnSchemaConstructedTypeDefinition
+public class AsnSchemaTypeDefinitionChoice extends AsnSchemaTypeDefinitionConstructed
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION

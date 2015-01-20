@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaConstructedTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionConstructed;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.google.common.collect.ImmutableList;
@@ -162,19 +162,19 @@ public class AsnSchemaTypeDefinitionParser
      * @param componentTypesText
      *            the component types contained in the SEQUENCE as a string
      *
-     * @return an {@link AsnSchemaConstructedTypeDefinition} representing the
+     * @return an {@link AsnSchemaTypeDefinitionConstructed} representing the
      *         parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaConstructedTypeDefinition parseSequence(String name, String componentTypesText)
+    private static AsnSchemaTypeDefinitionConstructed parseSequence(String name, String componentTypesText)
             throws ParseException
     {
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaConstructedTypeDefinition typeDefinition =
-                new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Sequence, componentTypes);
+        final AsnSchemaTypeDefinitionConstructed typeDefinition =
+                new AsnSchemaTypeDefinitionConstructed(name, AsnBuiltinType.Sequence, componentTypes);
         return typeDefinition;
     }
 
@@ -187,19 +187,19 @@ public class AsnSchemaTypeDefinitionParser
      * @param componentTypesText
      *            the component types contained in the SET as a string
      *
-     * @return an {@link AsnSchemaConstructedTypeDefinition} representing the
+     * @return an {@link AsnSchemaTypeDefinitionConstructed} representing the
      *         parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaConstructedTypeDefinition parseSet(String name, String componentTypesText)
+    private static AsnSchemaTypeDefinitionConstructed parseSet(String name, String componentTypesText)
             throws ParseException
     {
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaConstructedTypeDefinition typeDefinition =
-                new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Set, componentTypes);
+        final AsnSchemaTypeDefinitionConstructed typeDefinition =
+                new AsnSchemaTypeDefinitionConstructed(name, AsnBuiltinType.Set, componentTypes);
         return typeDefinition;
     }
 
@@ -212,18 +212,18 @@ public class AsnSchemaTypeDefinitionParser
      * @param componentTypesText
      *            the component types contained in the CHOICE as a string
      *
-     * @return an {@link AsnSchemaConstructedTypeDefinition} representing the
+     * @return an {@link AsnSchemaTypeDefinitionConstructed} representing the
      *         parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaConstructedTypeDefinition parseChoice(String name, String componentTypesText)
+    private static AsnSchemaTypeDefinitionConstructed parseChoice(String name, String componentTypesText)
             throws ParseException
     {
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaConstructedTypeDefinition typeDefinition =
+        final AsnSchemaTypeDefinitionConstructed typeDefinition =
                 new AsnSchemaTypeDefinitionChoice(name, componentTypes);
         return typeDefinition;
     }

@@ -11,11 +11,11 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Unit tests for {@link AsnSchemaConstructedTypeDefinition}
+ * Unit tests for {@link AsnSchemaTypeDefinitionConstructed}
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaConstructedTypeDefinitionTest
+public class AsnSchemaTypeDefinitionConstructedTest
 {
     // -------------------------------------------------------------------------
     // FIXTURES
@@ -42,7 +42,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
         // test null
         try
         {
-            new AsnSchemaConstructedTypeDefinition(null, AsnBuiltinType.Null, componentTypes);
+            new AsnSchemaTypeDefinitionConstructed(null, AsnBuiltinType.Null, componentTypes);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -52,7 +52,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
         // test blank
         try
         {
-            new AsnSchemaConstructedTypeDefinition("", AsnBuiltinType.Set, componentTypes);
+            new AsnSchemaTypeDefinitionConstructed("", AsnBuiltinType.Set, componentTypes);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -60,7 +60,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
         }
         try
         {
-            new AsnSchemaConstructedTypeDefinition(" ", AsnBuiltinType.Set, componentTypes);
+            new AsnSchemaTypeDefinitionConstructed(" ", AsnBuiltinType.Set, componentTypes);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -74,7 +74,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
         // test null
         try
         {
-            new AsnSchemaConstructedTypeDefinition("NAME", null, componentTypes);
+            new AsnSchemaTypeDefinitionConstructed("NAME", null, componentTypes);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -84,11 +84,11 @@ public class AsnSchemaConstructedTypeDefinitionTest
         // test creation using all types
         for (final AsnBuiltinType type : AsnBuiltinType.values())
         {
-            if (AsnSchemaConstructedTypeDefinition.validTypes.contains(type))
+            if (AsnSchemaTypeDefinitionConstructed.validTypes.contains(type))
             {
                 try
                 {
-                    new AsnSchemaConstructedTypeDefinition("NAME", type, componentTypes);
+                    new AsnSchemaTypeDefinitionConstructed("NAME", type, componentTypes);
                 }
                 catch (final IllegalArgumentException ex)
                 {
@@ -99,7 +99,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
             {
                 try
                 {
-                    new AsnSchemaConstructedTypeDefinition("NAME", type, componentTypes);
+                    new AsnSchemaTypeDefinitionConstructed("NAME", type, componentTypes);
                     fail("IllegalAccessException not thrown");
                 }
                 catch (final IllegalArgumentException ex)
@@ -115,7 +115,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
         // test null
         try
         {
-            new AsnSchemaConstructedTypeDefinition("NAME", AsnBuiltinType.Set, null);
+            new AsnSchemaTypeDefinitionConstructed("NAME", AsnBuiltinType.Set, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -126,7 +126,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
     @Test
     public void testGetTagName() throws Exception
     {
-        AsnSchemaConstructedTypeDefinition instance = new AsnSchemaConstructedTypeDefinition("NAME",
+        AsnSchemaTypeDefinitionConstructed instance = new AsnSchemaTypeDefinitionConstructed("NAME",
                 AsnBuiltinType.Set, componentTypes);
         // test explicit tags
         assertEquals("TAG_1", instance.getTagName("1"));
@@ -144,7 +144,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
         assertEquals("", instance.getTagName(""));
 
         // test empty components
-        instance = new AsnSchemaConstructedTypeDefinition("NAME", AsnBuiltinType.Set, emptyComponentTypes);
+        instance = new AsnSchemaTypeDefinitionConstructed("NAME", AsnBuiltinType.Set, emptyComponentTypes);
         assertEquals("", instance.getTagName("1"));
         assertEquals("", instance.getTagName("2"));
         assertEquals("", instance.getTagName(null));
@@ -154,7 +154,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
     @Test
     public void testGetTypeName() throws Exception
     {
-        AsnSchemaConstructedTypeDefinition instance = new AsnSchemaConstructedTypeDefinition("NAME",
+        AsnSchemaTypeDefinitionConstructed instance = new AsnSchemaTypeDefinitionConstructed("NAME",
                 AsnBuiltinType.Set, componentTypes);
         // test explicit tags
         assertEquals("TYPE_1", instance.getTypeName("1"));
@@ -172,7 +172,7 @@ public class AsnSchemaConstructedTypeDefinitionTest
         assertEquals("", instance.getTypeName(""));
 
         // test empty components
-        instance = new AsnSchemaConstructedTypeDefinition("NAME", AsnBuiltinType.Set, emptyComponentTypes);
+        instance = new AsnSchemaTypeDefinitionConstructed("NAME", AsnBuiltinType.Set, emptyComponentTypes);
         assertEquals("", instance.getTypeName("1"));
         assertEquals("", instance.getTypeName("2"));
         assertEquals("", instance.getTypeName(null));
