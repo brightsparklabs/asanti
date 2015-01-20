@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.brightsparklabs.asanti.mocks.MockAsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -22,15 +23,19 @@ public class AsnSchemaTypeDefinitionConstructedTest
     // -------------------------------------------------------------------------
 
     /** an empty list of component types */
-    private static final ImmutableList<AsnSchemaComponentType> emptyComponentTypes = ImmutableList.<AsnSchemaComponentType>of();
+    private static final ImmutableList<AsnSchemaComponentType> emptyComponentTypes =
+            ImmutableList.<AsnSchemaComponentType>of();
 
     /** a valid list of component types */
-    private static final ImmutableList<AsnSchemaComponentType> componentTypes = ImmutableList.<AsnSchemaComponentType>of(new AsnSchemaComponentType(
-            "TAG_0", "", "TYPE_0", true), // automatic
-            new AsnSchemaComponentType("TAG_1", "1", "TYPE_1", true),
-            new AsnSchemaComponentType("TAG_4", "4", "TYPE_4", true),
-            new AsnSchemaComponentType("TAG_5", "", "TYPE_5", true), // automatic
-            new AsnSchemaComponentType("TAG_2", "2", "TYPE_2", true));
+    private static final ImmutableList<AsnSchemaComponentType> componentTypes =
+            ImmutableList.<AsnSchemaComponentType>of(MockAsnSchemaComponentType.createMockedInstance("TAG_0",
+                    "",
+                    "TYPE_0",
+                    true), // automatic
+                    MockAsnSchemaComponentType.createMockedInstance("TAG_1", "1", "TYPE_1", true),
+                    MockAsnSchemaComponentType.createMockedInstance("TAG_4", "4", "TYPE_4", true),
+                    MockAsnSchemaComponentType.createMockedInstance("TAG_5", "", "TYPE_5", true), // automatic
+                    MockAsnSchemaComponentType.createMockedInstance("TAG_2", "2", "TYPE_2", true));
 
     // -------------------------------------------------------------------------
     // TESTS
@@ -126,8 +131,8 @@ public class AsnSchemaTypeDefinitionConstructedTest
     @Test
     public void testGetTagName() throws Exception
     {
-        AsnSchemaTypeDefinitionConstructed instance = new AsnSchemaTypeDefinitionConstructed("NAME",
-                AsnBuiltinType.Set, componentTypes);
+        AsnSchemaTypeDefinitionConstructed instance =
+                new AsnSchemaTypeDefinitionConstructed("NAME", AsnBuiltinType.Set, componentTypes);
         // test explicit tags
         assertEquals("TAG_1", instance.getTagName("1"));
         assertEquals("TAG_4", instance.getTagName("4"));
@@ -154,8 +159,8 @@ public class AsnSchemaTypeDefinitionConstructedTest
     @Test
     public void testGetTypeName() throws Exception
     {
-        AsnSchemaTypeDefinitionConstructed instance = new AsnSchemaTypeDefinitionConstructed("NAME",
-                AsnBuiltinType.Set, componentTypes);
+        AsnSchemaTypeDefinitionConstructed instance =
+                new AsnSchemaTypeDefinitionConstructed("NAME", AsnBuiltinType.Set, componentTypes);
         // test explicit tags
         assertEquals("TYPE_1", instance.getTypeName("1"));
         assertEquals("TYPE_4", instance.getTypeName("4"));
