@@ -98,12 +98,15 @@ public class AsnSchemaModuleTest
                 .getDecodedData());
         assertEquals("/Document/body/lastModified/date", instance.getDecodedTag("2/0/0", "Document", allSchemaModules)
                 .getDecodedData());
-        assertEquals("/Document/body/lastModified/modifiedBy/firstName", instance.getDecodedTag("2/0/1/1", "Document", allSchemaModules)
-                .getDecodedData());
-        assertEquals("/Document/body/lastModified/modifiedBy/lastName", instance.getDecodedTag("2/0/1/2", "Document", allSchemaModules)
-                .getDecodedData());
-        assertEquals("/Document/body/lastModified/modifiedBy/title", instance.getDecodedTag("2/0/1/3", "Document", allSchemaModules)
-                .getDecodedData());
+        assertEquals("/Document/body/lastModified/modifiedBy/firstName",
+                instance.getDecodedTag("2/0/1/1", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/lastModified/modifiedBy/lastName",
+                instance.getDecodedTag("2/0/1/2", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/lastModified/modifiedBy/title",
+                instance.getDecodedTag("2/0/1/3", "Document", allSchemaModules)
+                        .getDecodedData());
         assertEquals("/Document/body/prefix/text", instance.getDecodedTag("2/1/1", "Document", allSchemaModules)
                 .getDecodedData());
         assertEquals("/Document/body/content/text", instance.getDecodedTag("2/2/1", "Document", allSchemaModules)
@@ -146,80 +149,9 @@ public class AsnSchemaModuleTest
                 .getDecodedData());
     }
 
-    @Test
-    public void testGetType() throws Exception
-    {
-        AsnSchemaTypeDefinition typeDefinition = testGetType("Document", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "1", "header", "Header");
-        checkTypeDefinition(typeDefinition, "2", "body", "Body");
-        checkTypeDefinition(typeDefinition, "3", "footer", "Footer");
-
-        typeDefinition = testGetType("Header", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "0", "published", "PublishedMetadata");
-
-        typeDefinition = testGetType("Body", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "0", "lastModified", "ModificationMetadata");
-        checkTypeDefinition(typeDefinition, "1", "prefix", "Section-Note");
-        checkTypeDefinition(typeDefinition, "2", "content", "Section-Main");
-        checkTypeDefinition(typeDefinition, "3", "suffix", "Section-Note");
-
-        typeDefinition = testGetType("Footer", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "0", "author", "Person");
-
-        typeDefinition = testGetType("PublishedMetadata", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "1", "date", "GeneralizedTime");
-        checkTypeDefinition(typeDefinition, "2", "country", "OCTET STRING");
-
-        typeDefinition = testGetType("ModificationMetadata", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "0", "date", "GeneralizedTime");
-        checkTypeDefinition(typeDefinition, "1", "modifiedBy", "Person");
-
-        typeDefinition = testGetType("Section-Note", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "1", "text", "OCTET STRING");
-
-        typeDefinition = testGetType("Section-Main", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "1", "text", "OCTET STRING");
-        checkTypeDefinition(typeDefinition, "2", "paragraphs", "SEQUENCE OF Paragraph");
-
-        typeDefinition = testGetType("Paragraph", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "1", "title", "OCTET STRING");
-        checkTypeDefinition(typeDefinition, "2", "contributor", "Person");
-        checkTypeDefinition(typeDefinition, "3", "points", "SEQUENCE OF OCTET STRING");
-
-        typeDefinition = testGetType("Person", AsnBuiltinType.Sequence);
-        checkTypeDefinition(typeDefinition, "1", "firstName", "OCTET STRING");
-        checkTypeDefinition(typeDefinition, "2", "lastName", "OCTET STRING");
-        checkTypeDefinition(typeDefinition, "3", "title", "ENUMERATED");
-
-        // 'People' was not imported so should not be found
-        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("People", allSchemaModules));
-    }
-
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
-
-    /**
-     * Utility method to test the object returned by calling
-     * {@link AsnSchemaModule#getType(String, ImmutableMap)} using the supplied
-     * name
-     *
-     * @param name
-     *            name of the {@link AsnSchemaTypeDefinition} to retrieved
-     *
-     * @param builtinType
-     *            expected ASN.1 built-in type of the retrieved
-     *            {@link AsnSchemaTypeDefinition}
-     *
-     * @return the retrieved {@link AsnSchemaTypeDefinition}
-     */
-    private AsnSchemaTypeDefinition testGetType(String name, AsnBuiltinType builtinType)
-    {
-        final AsnSchemaTypeDefinition typeDefinition = instance.getType(name, allSchemaModules);
-        assertEquals(name, typeDefinition.getName());
-        assertEquals(builtinType, typeDefinition.getBuiltinType());
-        return typeDefinition;
-    }
 
     /**
      * Utility method to test the values associated with a tag on a given

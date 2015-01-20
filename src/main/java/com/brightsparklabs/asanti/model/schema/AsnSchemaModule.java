@@ -8,6 +8,9 @@ package com.brightsparklabs.asanti.model.schema;
 import static com.google.common.base.Preconditions.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -138,31 +141,7 @@ public class AsnSchemaModule
             ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
-        final ArrayList<String> decodedTags = new ArrayList<>(tags.size());
-
-        // map the first raw tag to the top level type
-        String typeName = topLevelTypeName;
-        AsnSchemaTypeDefinition type = getType(typeName, allSchemaModules);
-
-        // try to decode each tag
-        for (final String tag : tags)
-        {
-            if (type == AsnSchemaTypeDefinition.NULL)
-            {
-                log.log(Level.WARNING, "Could not resolve type definition \"{0}\" within module \"{1}\"", new Object[] {
-                        typeName, name });
-                break;
-            }
-
-            final String tagName = type.getTagName(tag);
-            typeName = type.getTypeName(tag);
-            if (Strings.isNullOrEmpty(tagName) || Strings.isNullOrEmpty(typeName))
-            {
-                break;
-            }
-            decodedTags.add(tagName);
-            type = getType(typeName, allSchemaModules);
-        }
+        final List<String> decodedTags = decodeTags(tags.iterator(), topLevelTypeName, allSchemaModules);
 
         // check if decode was successful
         boolean decodeSuccessful = true;
@@ -188,40 +167,79 @@ public class AsnSchemaModule
         return result;
     }
 
+    // -------------------------------------------------------------------------
+    // PRIVATE METHODS
+    // -------------------------------------------------------------------------
+
+    private List<String> decodeTags(Iterator<String> rawTags, String containingTypeName,
+            ImmutableMap<String, AsnSchemaModule> allSchemaModules)
+    {
+        final List<String> decodedTags = Lists.newArrayList();
+        String typeName = containingTypeName;
+
+        while (rawTags.hasNext())
+        {
+            final AsnSchemaTypeDefinition type = getType(typeName);
+            if (type == AsnSchemaTypeDefinition.NULL)
+            {
+                final List<String> importedTags = decodeUsingImportedModule(rawTags, typeName, allSchemaModules);
+                decodedTags.addAll(importedTags);
+                break;
+            }
+
+            final String tag = rawTags.next();
+            final String tagName = type.getTagName(tag);
+            typeName = type.getTypeName(tag);
+            if (Strings.isNullOrEmpty(tagName) || Strings.isNullOrEmpty(typeName))
+            {
+                break;
+            }
+            decodedTags.add(tagName);
+        }
+
+        return decodedTags;
+    }
+
     /**
      * Returns the type definition associated with the specified type name
      *
      * @param typeName
      *            name of the type
      *
-     * @param allSchemaModules
-     *            all modules contained in the schema. This is used if a type
-     *            definition resides in a different module.
-     *
      * @return the type definition associated with the specified type name or
      *         {@link AsnSchemaTypeDefinition#NULL} if no type definition is
      *         found
      */
-    public AsnSchemaTypeDefinition getType(String typeName, ImmutableMap<String, AsnSchemaModule> allSchemaModules)
+    private AsnSchemaTypeDefinition getType(String typeName)
     {
-        AsnSchemaTypeDefinition type = types.get(typeName);
-        if (type != null) { return type; }
+        final AsnSchemaTypeDefinition type = types.get(typeName);
+        return type != null ? type : AsnSchemaTypeDefinition.NULL;
+    }
 
+    private List<String> decodeUsingImportedModule(Iterator<String> rawTags, String typeName,
+            ImmutableMap<String, AsnSchemaModule> allSchemaModules)
+    {
         // not found locally, check if it is from an import
-        final String importedModule = imports.get(typeName);
-        if (importedModule != null)
+        final String importedModuleName = imports.get(typeName);
+        if (importedModuleName == null)
         {
-            final AsnSchemaModule module = allSchemaModules.get(importedModule);
-            // ensure we do not recursively look into the current module
-            if (module != null && !module.equals(this))
-            {
-                type = module.getType(typeName, allSchemaModules);
-                if (type != null) { return type; }
-            }
+            log.log(Level.WARNING,
+                    "Could not resolve type definition \"{0}\". It is is not defined or imported in module \"{1}\"",
+                    new Object[] { typeName, name });
+            return Collections.<String>emptyList();
         }
 
-        // cannot resolve the type name
-        return AsnSchemaTypeDefinition.NULL;
+        final AsnSchemaModule importedModule = allSchemaModules.get(importedModuleName);
+        // ensure we do not recursively look into the current module
+        if (importedModule == null || importedModule.equals(this))
+        {
+            log.log(Level.WARNING,
+                    "Could not resolve type definition \"{0}\". Type is imported from an unknown module \"{1}\"",
+                    new Object[] { typeName, name });
+            return Collections.<String>emptyList();
+        }
+
+        return importedModule.decodeTags(rawTags, typeName, allSchemaModules);
     }
 
     // -------------------------------------------------------------------------
