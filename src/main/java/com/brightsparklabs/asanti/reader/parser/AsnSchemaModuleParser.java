@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Logic for parsing a module within an ASN.1 schema
@@ -78,7 +79,7 @@ public class AsnSchemaModuleParser
         final Iterator<String> iterator = moduleText.iterator();
         final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
         parseHeader(iterator, moduleBuilder);
-        parseContent(iterator, moduleBuilder);
+        parseBody(iterator, moduleBuilder);
         final AsnSchemaModule module = moduleBuilder.build();
         return module;
     }
@@ -152,27 +153,87 @@ public class AsnSchemaModuleParser
      * @throws ParseException
      *             if any errors occur while parsing the schema
      */
-    private static void parseContent(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
+    private static void parseBody(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
             throws ParseException
     {
         try
         {
-            // skip past 'IMPORTS' and 'EXPORTS' keywords
-            String line = lineIterator.next();
-            while (line.startsWith("EXPORTS") || line.startsWith("IMPORTS"))
-            {
-                while (!";".equals(line))
-                {
-                    line = lineIterator.next();
-                }
-                line = lineIterator.next();
-            }
-            parseTypeDefinitionsAndValueAssignments(line, lineIterator, moduleBuilder);
+            final String lastLineRead = parseImportsAndExports(lineIterator, moduleBuilder);
+            parseTypeDefinitionsAndValueAssignments(lastLineRead, lineIterator, moduleBuilder);
         }
         catch (final NoSuchElementException ex)
         {
             throw new ParseException(ERROR_MISSING_CONTENT, -1);
         }
+    }
+
+    /**
+     * Parses the data located between the 'BEGIN' and 'END' keywords.
+     * <p>
+     * Prior to calling this method, the iterator should be pointing at the line
+     * following the 'BEGIN' keyword.I.e. calling {@code iterator.next()} will
+     * return the line following the 'BEGIN' keyword.
+     * <p>
+     * After calling this method, the iterator will be pointing at the line
+     * containing the 'END' keyword. I.e. calling {@code iterator.next()} will
+     * return the line following the 'END' keyword.
+     *
+     *
+     * @param lineIterator
+     *            iterator pointing at the first line following the 'BEGIN'
+     *            keyword
+     *
+     * @param moduleBuilder
+     *            builder to use to construct module from the parsed information
+     *
+     * @return
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the schema
+     *
+     * @throws NoSuchElementException
+     *             if there is data missing
+     */
+    private static String parseImportsAndExports(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
+            throws ParseException, NoSuchElementException
+    {
+        String line = lineIterator.next();
+
+        while (true)
+        {
+            if (line.startsWith("EXPORTS"))
+            {
+                // skip past all exports
+                while (!";".equals(line) || line.startsWith("IMPORTS"))
+                {
+                    line = lineIterator.next();
+                }
+            }
+            else if (line.startsWith("IMPORTS"))
+            {
+                final StringBuilder builder = new StringBuilder();
+                while (!";".equals(line) || line.startsWith("EXPORTS"))
+                {
+                    line = lineIterator.next();
+                    builder.append(line)
+                            .append(" ");
+                }
+                final ImmutableMap<String, String> imports = AsnSchemaImportsParser.parse(builder.toString());
+                moduleBuilder.addImports(imports);
+            }
+            else
+            {
+                // reached end of import/exports
+                if (";".equals(line))
+                {
+                    // skip the semi-colon
+                    line = lineIterator.next();
+                }
+                break;
+            }
+        }
+
+        return line;
     }
 
     /**

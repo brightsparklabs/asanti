@@ -318,6 +318,22 @@ public class AsnSchemaModule
         }
 
         /**
+         * Adds all the imports from the supplied map
+         *
+         * @param imports
+         *            the imports defined in this module. This identifies the
+         *            module that an imported type comes from. Map is of format
+         *            {typeName => moduleName}
+         *
+         * @return this builder
+         */
+        public Builder addImports(Map<String, String> imports)
+        {
+            this.imports.putAll(imports);
+            return this;
+        }
+
+        /**
          * Creates an instance of {@link AsnSchemaModule} from the information
          * in this builder
          *
