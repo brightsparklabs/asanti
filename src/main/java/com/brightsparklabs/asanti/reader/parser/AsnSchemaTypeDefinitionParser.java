@@ -15,6 +15,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaConstructedTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -103,6 +104,14 @@ public class AsnSchemaTypeDefinitionParser
             return parseSet(name, items);
         }
 
+        // check if defining a CHOICE
+        matcher = PATTERN_TYPE_DEFINITION_CHOICE.matcher(value);
+        if (matcher.matches())
+        {
+            final String items = matcher.group(1);
+            return parseChoice(name, items);
+        }
+
         // check if defining an ENUMERATED
         matcher = PATTERN_TYPE_DEFINITION_ENUMERATED.matcher(value);
         if (matcher.matches())
@@ -116,14 +125,6 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle *all* PRIMITIVEs
-            return AsnSchemaTypeDefinition.NULL;
-        }
-
-        // check if defining a CHOICE
-        matcher = PATTERN_TYPE_DEFINITION_CHOICE.matcher(value);
-        if (matcher.matches())
-        {
-            // TODO handle CHOICE
             return AsnSchemaTypeDefinition.NULL;
         }
 
@@ -153,13 +154,13 @@ public class AsnSchemaTypeDefinitionParser
     // -------------------------------------------------------------------------
 
     /**
-     * Parses a SET/SEQUENCE type definition
+     * Parses a SEQUENCE type definition
      *
      * @param name
      *            name of the defined type
      *
      * @param componentTypesText
-     *            the component types contained in the construct as a string
+     *            the component types contained in the SEQUENCE as a string
      *
      * @return an {@link AsnSchemaConstructedTypeDefinition} representing the
      *         parsed data
@@ -184,7 +185,7 @@ public class AsnSchemaTypeDefinitionParser
      *            name of the defined type
      *
      * @param componentTypesText
-     *            the component types contained in the construct as a string
+     *            the component types contained in the SET as a string
      *
      * @return an {@link AsnSchemaConstructedTypeDefinition} representing the
      *         parsed data
@@ -199,6 +200,31 @@ public class AsnSchemaTypeDefinitionParser
                 AsnSchemaComponentTypeParser.parse(componentTypesText);
         final AsnSchemaConstructedTypeDefinition typeDefinition =
                 new AsnSchemaConstructedTypeDefinition(name, AsnBuiltinType.Set, componentTypes);
+        return typeDefinition;
+    }
+
+    /**
+     * Parses a CHOICE type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param componentTypesText
+     *            the component types contained in the CHOICE as a string
+     *
+     * @return an {@link AsnSchemaConstructedTypeDefinition} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaConstructedTypeDefinition parseChoice(String name, String componentTypesText)
+            throws ParseException
+    {
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                AsnSchemaComponentTypeParser.parse(componentTypesText);
+        final AsnSchemaConstructedTypeDefinition typeDefinition =
+                new AsnSchemaTypeDefinitionChoice(name, componentTypes);
         return typeDefinition;
     }
 }
