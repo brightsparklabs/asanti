@@ -15,7 +15,9 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -42,9 +44,11 @@ public class AsnSchemaTypeDefinitionParser
     /** pattern to match a CHOICE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_CHOICE = Pattern.compile("^CHOICE ?\\{(.+)\\} ?(\\(.+\\))?$");
 
-    /** pattern to match a SET OF/SEQUENCE OF type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_SET_OF_OR_SEQUENCE_OF =
-            Pattern.compile("^(SEQUENCE|SET)( .+)? OF ?(.+)$");
+    /** pattern to match a SEQUENCE OF type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE_OF = Pattern.compile("^SEQUENCE( .+)? OF (.+)$");
+
+    /** pattern to match a SET OF type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_SET_OF = Pattern.compile("^SET( .+)? OF (.+)$");
 
     /** pattern to match a CLASS type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_CLASS = Pattern.compile("^CLASS ?\\{(.+)\\}$");
@@ -128,12 +132,22 @@ public class AsnSchemaTypeDefinitionParser
             return AsnSchemaTypeDefinition.NULL;
         }
 
-        // check if defining a SET OF or SEQUENCE OF
-        matcher = PATTERN_TYPE_DEFINITION_SET_OF_OR_SEQUENCE_OF.matcher(value);
+        // check if defining a SEQUENCE OF
+        matcher = PATTERN_TYPE_DEFINITION_SEQUENCE_OF.matcher(value);
         if (matcher.matches())
         {
-            // TODO handle SET OF or SEQUENCE OF
-            return AsnSchemaTypeDefinition.NULL;
+            final String contraints = matcher.group(1);
+            final String elementTypeName = matcher.group(2);
+            return parseSequenceOf(name, elementTypeName, contraints);
+        }
+
+        // check if defining a SET OF
+        matcher = PATTERN_TYPE_DEFINITION_SET_OF.matcher(value);
+        if (matcher.matches())
+        {
+            final String contraints = matcher.group(1);
+            final String elementTypeName = matcher.group(2);
+            return parseSetOf(name, elementTypeName, contraints);
         }
 
         // check if defining a CLASS
@@ -222,6 +236,66 @@ public class AsnSchemaTypeDefinitionParser
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(componentTypesText);
         final AsnSchemaTypeDefinitionChoice typeDefinition = new AsnSchemaTypeDefinitionChoice(name, componentTypes);
+        return typeDefinition;
+    }
+
+    /**
+     * Parses a SEQUENCE OF type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param elementTypeName
+     *            the name of the type for the elements in this SEQUENCE OF.
+     *            E.g. for {@code SEQUENCE OF OCTET STRING}, this would be
+     *            {@code OCTET STRING}
+     *
+     * @param constraints
+     *            the constraints on the SEQUENCE OF. E.g for
+     *            {@code SEQUENCE (SIZE (1..100) OF OCTET STRING} this would be
+     *            {@code (SIZE (1..100)}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionSequenceOf} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionSequenceOf parseSequenceOf(String name, String elementTypeName,
+            String constraints) throws ParseException
+    {
+        final AsnSchemaTypeDefinitionSequenceOf typeDefinition =
+                new AsnSchemaTypeDefinitionSequenceOf(name, elementTypeName, constraints);
+        return typeDefinition;
+    }
+
+    /**
+     * Parses a SET OF type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param elementTypeName
+     *            the name of the type for the elements in this SET OF. E.g. for
+     *            {@code SET OF OCTET STRING}, this would be
+     *            {@code OCTET STRING}
+     *
+     * @param constraints
+     *            the constraints on the SET OF. E.g for
+     *            {@code SET (SIZE (1..100) OF OCTET STRING} this would be
+     *            {@code (SIZE (1..100)}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionSetOf} representing the parsed
+     *         data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionSetOf parseSetOf(String name, String elementTypeName, String constraints)
+            throws ParseException
+    {
+        final AsnSchemaTypeDefinitionSetOf typeDefinition =
+                new AsnSchemaTypeDefinitionSetOf(name, elementTypeName, constraints);
         return typeDefinition;
     }
 }

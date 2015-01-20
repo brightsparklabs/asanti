@@ -24,15 +24,20 @@ import com.google.common.collect.Lists;
  */
 public class AsnSchemaComponentTypeParser
 {
-
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    // TODO not entirely working, does not correctly group
-    // "partyInformation [9] SET SIZE (1..10) OF PartyInformation OPTIONAL"
-    /** pattern for matching component types */
-    private static final Pattern PATTERN_COMPONENT_TYPE = Pattern.compile("([a-zA-z0-9\\-]+) ?(\\[(\\d+)\\])? ?((SET|SEQUENCE)( SIZE \\(.+\\)) OF )?([a-zA-z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))? ?(OPTIONAL)?(DEFAULT (.+))?");
+    /** pattern to break text into: tag name, tag, type, optional/default */
+    private static final Pattern PATTERN_COMPONENT_TYPE =
+            Pattern.compile("([a-zA-z0-9\\-]+) ?(\\[(\\d+)\\])? ?(.+?) ?((OPTIONAL)|(DEFAULT ([a-zA-z0-9\\-]+)))?$");
+
+    /**
+     * pattern to break the raw type string into: set/sequence of, construct
+     * constraints, type name, type definition, type constraints
+     */
+    private static final Pattern PATTERN_RAW_TYPE =
+            Pattern.compile("(((SET)|(SEQUENCE))( SIZE ?\\((.+)\\))? OF )?([a-zA-z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -60,7 +65,7 @@ public class AsnSchemaComponentTypeParser
     {
         final List<String> componentTypeLines = splitComponentTypesText(componentTypesText);
         final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
-        for (String componentTypeLine : componentTypeLines)
+        for (final String componentTypeLine : componentTypeLines)
         {
             final AsnSchemaComponentType componentType = parseComponentType(componentTypeLine);
             builder.add(componentType);
@@ -93,7 +98,8 @@ public class AsnSchemaComponentTypeParser
             // check if at end of string
             if (i == (length - 1))
             {
-                final String item = componentTypesText.substring(begin, length).trim();
+                final String item = componentTypesText.substring(begin, length)
+                        .trim();
                 if (!item.equals("..."))
                 {
                     items.add(item);
@@ -117,7 +123,8 @@ public class AsnSchemaComponentTypeParser
                 case ',':
                     if (bracketCount == 0)
                     {
-                        final String item = componentTypesText.substring(begin, i).trim();
+                        final String item = componentTypesText.substring(begin, i)
+                                .trim();
                         if (!item.equals("..."))
                         {
                             items.add(item);
@@ -130,7 +137,7 @@ public class AsnSchemaComponentTypeParser
             }
         }
 
-        for (String item : items)
+        for (final String item : items)
         {
             log.log(Level.FINER, "  - {0}", item);
         }
@@ -151,21 +158,32 @@ public class AsnSchemaComponentTypeParser
      */
     private static AsnSchemaComponentType parseComponentType(String componentTypeLine) throws ParseException
     {
-        final Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
-
-        if (!matcher.matches()) { throw new ParseException("Could not match component type definition. Found: "
-                + componentTypeLine, -1); }
+        Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
+        if (!matcher.matches())
+        {
+            final String error = "Could not match component type definition. Found: " + componentTypeLine;
+            throw new ParseException(error, -1);
+        }
 
         final String tagName = matcher.group(1);
         final String tag = matcher.group(3);
-        // final String constructOf = matcher.group(5);
+        final String rawType = matcher.group(4);
+        final boolean isOptional = matcher.group(6) != null;
+        // final String defaultValue = matcher.group(8);
+
+        matcher = PATTERN_RAW_TYPE.matcher(rawType);
+        if (!matcher.matches())
+        {
+            final String error = "Could not match type within component type definition. Found: " + rawType;
+            throw new ParseException(error, -1);
+        }
+
+        // final boolean isSetOf = matcher.group(3) != null;
+        // final boolean isSequenceof = matcher.group(4) != null;
         // final String constructOfConstraint = matcher.group(6);
         final String typeName = matcher.group(7);
         // final String constraints = matcher.group(10);
-        final boolean isOptional = matcher.group(11) != null;
-        // final String defaultValue = matcher.group(13);
 
-        final AsnSchemaComponentType componentType = new AsnSchemaComponentType(tagName, tag, typeName, isOptional);
-        return componentType;
+        return new AsnSchemaComponentType(tagName, tag, typeName, isOptional);
     }
 }
