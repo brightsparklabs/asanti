@@ -122,7 +122,8 @@ public class AsnSchemaModule
 
     /**
      * Returns the decoded tag for the supplied raw tag. E.g.
-     * {@code getDecodedTag("/1/0/1")} => {@code "/Header/Published/Date"}
+     * {@code getDecodedTag("/1/0/1", "Document", schemas)} =>
+     * {@code "/Document/Header/Published/Date"}
      *
      * @param rawTag
      *            raw tag to decode
@@ -171,6 +172,29 @@ public class AsnSchemaModule
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
 
+    /**
+     * Returns the decoded tags for the supplied raw tags
+     *
+     * @param rawTags
+     *            raw tags to decode. This should be an iterable in the order of
+     *            the tags. E.g. The raw tag {code "/1/0/1"} should be provided
+     *            as an iterator of {code ["1", "0", "1"]}
+     *
+     * @param containingTypeName
+     *            the type in this module from which to begin decoding the raw
+     *            tag. E.g. {@code "Document"} will start decoding the raw tags
+     *            from the type definition named {@code Document}
+     *
+     * @param allSchemaModules
+     *            all modules which are present in the schema. These are used to
+     *            resolve imports. Map is of form: {@code moduleName => module}
+     *
+     * @return a list of all decoded tags. If a raw tag could not be decoded
+     *         then processing stops. E.g. for the raw tags {code "1", "0" "1",
+     *         "99", "98"}, if the {@code "99"} raw tag cannot be decoded, then
+     *         a list containing the decoded tags for only the first three raw
+     *         tags is returned (e.g. {@code ["Header", "Published", "Date"]})
+     */
     private List<String> decodeTags(Iterator<String> rawTags, String containingTypeName,
             ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
@@ -182,6 +206,7 @@ public class AsnSchemaModule
             final AsnSchemaTypeDefinition type = getType(typeName);
             if (type == AsnSchemaTypeDefinition.NULL)
             {
+                // type is not defined locally, decode via imports
                 final List<String> importedTags = decodeUsingImportedModule(rawTags, typeName, allSchemaModules);
                 decodedTags.addAll(importedTags);
                 break;
@@ -192,6 +217,7 @@ public class AsnSchemaModule
             typeName = type.getTypeName(tag);
             if (Strings.isNullOrEmpty(tagName) || Strings.isNullOrEmpty(typeName))
             {
+                // unknown tag
                 break;
             }
             decodedTags.add(tagName);
@@ -204,7 +230,7 @@ public class AsnSchemaModule
      * Returns the type definition associated with the specified type name
      *
      * @param typeName
-     *            name of the type
+     *            name of the type. E.g. {@code "Document"}
      *
      * @return the type definition associated with the specified type name or
      *         {@link AsnSchemaTypeDefinition#NULL} if no type definition is
@@ -216,6 +242,31 @@ public class AsnSchemaModule
         return type != null ? type : AsnSchemaTypeDefinition.NULL;
     }
 
+    /**
+     * Returns the decoded tags for the supplied raw tags using an imported
+     * module.
+     *
+     * @param rawTags
+     *            raw tags to decode. This should be an iterable in the order of
+     *            the tags. E.g. The raw tag {code "/1/0/1"} should be provided
+     *            as an iterator of {code ["1", "0", "1"]}
+     *
+     * @param typeName
+     *            the type in the <b>imported</b> module from which to begin
+     *            decoding the raw tag. E.g. {@code "People"} will start
+     *            decoding the raw tags from the type definition named
+     *            {@code People}
+     *
+     * @param allSchemaModules
+     *            all modules which are present in the schema. These are used to
+     *            resolve imports. Map is of form: {@code moduleName => module}
+     *
+     * @return a list of all decoded tags. If a raw tag could not be decoded
+     *         then processing stops. E.g. for the raw tags {code "1", "0" "1",
+     *         "99", "98"}, if the {@code "99"} raw tag cannot be decoded, then
+     *         a list containing the decoded tags for only the first three raw
+     *         tags is returned (e.g. {@code ["Header", "Published", "Date"]})
+     */
     private List<String> decodeUsingImportedModule(Iterator<String> rawTags, String typeName,
             ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
