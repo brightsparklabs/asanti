@@ -12,8 +12,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaEnumeratedOption;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
@@ -120,8 +122,8 @@ public class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_ENUMERATED.matcher(value);
         if (matcher.matches())
         {
-            // TODO handle ENUMERATED
-            return AsnSchemaTypeDefinition.NULL;
+            final String items = matcher.group(1);
+            return parseEnumerated(name, items);
         }
 
         // check if defining a PRIMITIVE
@@ -129,6 +131,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle *all* PRIMITIVEs
+            log.warning("Type Definitions for PRIMITIVES not yet supported");
             return AsnSchemaTypeDefinition.NULL;
         }
 
@@ -155,6 +158,7 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO handle CLASS
+            log.warning("Type Definitions for CLASS not yet supported");
             return AsnSchemaTypeDefinition.NULL;
         }
 
@@ -296,6 +300,34 @@ public class AsnSchemaTypeDefinitionParser
     {
         final AsnSchemaTypeDefinitionSetOf typeDefinition =
                 new AsnSchemaTypeDefinitionSetOf(name, elementTypeName, constraints);
+        return typeDefinition;
+    }
+
+    /**
+     * Parses an ENUMERATED type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param enumeratedOptionsText
+     *            the enumerated definition text as a string. This is the text
+     *            between the curly braces following the word ENUMERATED. E.g.
+     *            for <code>ENUMERATED { north(0), south(1) }</code> this is
+     *            {@code "north(0), south(1)"}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionEnumerated} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionEnumerated parseEnumerated(String name, String enumeratedOptionsText)
+            throws ParseException
+    {
+        final ImmutableList<AsnSchemaEnumeratedOption> enumeratedOptions =
+                AsnSchemaEnumeratedParser.parse(enumeratedOptionsText);
+        final AsnSchemaTypeDefinitionEnumerated typeDefinition =
+                new AsnSchemaTypeDefinitionEnumerated(name, enumeratedOptions);
         return typeDefinition;
     }
 }

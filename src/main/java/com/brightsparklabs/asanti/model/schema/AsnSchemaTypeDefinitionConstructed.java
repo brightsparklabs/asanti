@@ -33,14 +33,13 @@ public class AsnSchemaTypeDefinitionConstructed extends AsnSchemaTypeDefinition
 
     /**
      * built-in types which are considered 'constructed'. Currently: SET,
-     * SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED
+     * SEQUENCE, SET OF, SEQUENCE OF or CHOICE
      */
     public static final ImmutableSet<AsnBuiltinType> validTypes = ImmutableSet.of(AsnBuiltinType.Set,
             AsnBuiltinType.Sequence,
             AsnBuiltinType.SetOf,
             AsnBuiltinType.SequenceOf,
-            AsnBuiltinType.Choice,
-            AsnBuiltinType.Enumerated);
+            AsnBuiltinType.Choice);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -77,8 +76,7 @@ public class AsnSchemaTypeDefinitionConstructed extends AsnSchemaTypeDefinition
             Iterable<AsnSchemaComponentType> componentTypes)
     {
         super(name, type);
-        checkArgument(validTypes.contains(type),
-                "Type must be either SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED");
+        checkArgument(validTypes.contains(type), "Type must be either SET, SEQUENCE, SET OF, SEQUENCE OF or CHOICE");
         checkNotNull(componentTypes);
 
         final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder = ImmutableMap.builder();
