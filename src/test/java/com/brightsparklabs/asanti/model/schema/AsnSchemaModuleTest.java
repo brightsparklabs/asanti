@@ -111,67 +111,49 @@ public class AsnSchemaModuleTest
                 .getDecodedData());
         assertEquals("/Document/body/content/text", instance.getDecodedTag("2/2/1", "Document", allSchemaModules)
                 .getDecodedData());
-        // TODO support SET OF and SEQUENCE OF
-        // assertEquals("/Document/body/content/paragraphs/title",
-        // instance.getDecodedTag("2/2/2/1", "Document", allSchemaModules)
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/contributor/firstName",
-        // instance.getDecodedTag("2/2/2/2/1", "Document", allSchemaModules)
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/contributor/lastName",
-        // instance.getDecodedTag("2/2/2/2/2", "Document", allSchemaModules)
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/contributor/title",
-        // instance.getDecodedTag("2/2/2/2/3", "Document", allSchemaModules)
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/points",
-        // instance.getDecodedTag("2/2/2/3", "Document", allSchemaModules)
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/points[0]",
-        // instance.getDecodedTag("2/2/2/3[0]", "Document", allSchemaModules));
-        // assertEquals("/Document/body/content/paragraphs[99]/title",
-        // instance.getDecodedTag("2/2/2[99]/1", "Document", allSchemaModules));
-        // assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
-        // instance.getDecodedTag("2/2/2[99]/2/1", "Document",
-        // allSchemaModules));
-        // assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
-        // instance.getDecodedTag("2/2/2[99]/2/2", "Document",
-        // allSchemaModules));
-        // assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
-        // instance.getDecodedTag("2/2/2[99]/2/3", "Document",
-        // allSchemaModules));
-        // assertEquals("/Document/body/content/paragraphs[99]/points",
-        // instance.getDecodedTag("2/2/2[99]/3", "Document", allSchemaModules));
-        // assertEquals("/Document/body/content/paragraphs[99]/points[99]",
-        // instance.getDecodedTag("2/2/2[99]/3[99]", "Document",
-        // allSchemaModules));
+        assertEquals("/Document/body/content/paragraphs/title",
+                instance.getDecodedTag("2/2/2/1", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/title",
+                instance.getDecodedTag("2/2/2[0]/1", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[1]/title",
+                instance.getDecodedTag("2/2/2[1]/1", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
+                instance.getDecodedTag("2/2/2[0]/2/1", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
+                instance.getDecodedTag("2/2/2[0]/2/2", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
+                instance.getDecodedTag("2/2/2[0]/2/3", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/points",
+                instance.getDecodedTag("2/2/2[0]/3", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/points[0]",
+                instance.getDecodedTag("2/2/2[0]/3[0]", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/title",
+                instance.getDecodedTag("2/2/2[99]/1", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
+                instance.getDecodedTag("2/2/2[99]/2/1", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
+                instance.getDecodedTag("2/2/2[99]/2/2", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
+                instance.getDecodedTag("2/2/2[99]/2/3", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/points",
+                instance.getDecodedTag("2/2/2[99]/3", "Document", allSchemaModules)
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/points[99]",
+                instance.getDecodedTag("2/2/2[99]/3[99]", "Document", allSchemaModules)
+                        .getDecodedData());
         assertEquals("/Document/body/suffix/text", instance.getDecodedTag("2/3/1", "Document", allSchemaModules)
                 .getDecodedData());
-    }
-
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
-
-    /**
-     * Utility method to test the values associated with a tag on a given
-     * {@link AsnSchemaTypeDefinition}
-     *
-     * @param typeDefinition
-     *            {@link AsnSchemaTypeDefinition} to interrogate
-     *
-     * @param tag
-     *            tag to retrieve
-     *
-     * @param tagName
-     *            expected tag name associated with tag
-     *
-     * @param typeName
-     *            expected type name associated with tag
-     */
-    private void checkTypeDefinition(AsnSchemaTypeDefinition typeDefinition, String tag, String tagName, String typeName)
-    {
-        assertEquals(tagName, typeDefinition.getTagName(tag));
-        assertEquals(typeName, typeDefinition.getTypeName(tag));
     }
 }

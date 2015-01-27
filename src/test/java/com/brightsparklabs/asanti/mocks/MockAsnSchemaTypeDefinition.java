@@ -4,7 +4,11 @@
  */
 package com.brightsparklabs.asanti.mocks;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
+
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
@@ -118,7 +122,7 @@ public class MockAsnSchemaTypeDefinition
         // build Section-Main
         mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("Section-Main", AsnBuiltinType.Sequence)
                 .addComponentType("1", "text", "OCTET STRING")
-                .addComponentType("2", "paragraphs", "SEQUENCE OF Paragraph")
+                .addSeqeunceOfComponentType("2", "paragraphs", "SEQUENCE OF Paragraph")
                 .build();
         listBuilder.add(mocktypeDefinition);
 
@@ -126,7 +130,7 @@ public class MockAsnSchemaTypeDefinition
         mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("Paragraph", AsnBuiltinType.Sequence)
                 .addComponentType("1", "title", "OCTET STRING")
                 .addComponentType("2", "contributor", "Person")
-                .addComponentType("3", "points", "SEQUENCE OF OCTET STRING")
+                .addSeqeunceOfComponentType("3", "points", "SEQUENCE OF OCTET STRING")
                 .build();
         listBuilder.add(mocktypeDefinition);
 
@@ -224,6 +228,48 @@ public class MockAsnSchemaTypeDefinition
         }
 
         /**
+         * Add a SEQUENCE OF component type to this definition
+         *
+         * @param tag
+         *            tag of the component type
+         *
+         * @param tagName
+         *            tag name of the component type
+         *
+         * @param typeName
+         *            type name of the SEQUENCE OF component type E.g.
+         *            {@code "SEQUENCE OF Paragraph"}
+         *
+         * @return this builder
+         */
+        public MockAsnSchemaTypeDefinitionBuilder addSeqeunceOfComponentType(String tag, String tagName, String typeName)
+        {
+            final String elementTypeName = typeName.replace("SEQUENCE OF ", "");
+            return addCollectionOfComponentType(tag, tagName, elementTypeName);
+        }
+
+        /**
+         * Add a SET OF component type to this definition
+         *
+         * @param tag
+         *            tag of the component type
+         *
+         * @param tagName
+         *            tag name of the component type
+         *
+         * @param typeName
+         *            type name of the SET OF component type E.g.
+         *            {@code "SET OF Person"}
+         *
+         * @return this builder
+         */
+        public MockAsnSchemaTypeDefinitionBuilder addSetOfComponentType(String tag, String tagName, String typeName)
+        {
+            final String elementTypeName = typeName.replace("SET OF ", "");
+            return addCollectionOfComponentType(tag, tagName, elementTypeName);
+        }
+
+        /**
          * Creates a mocked instance from the data in this builder
          *
          * @return a mocked instance of {@link AsnSchemaTypeDefinition}
@@ -231,6 +277,49 @@ public class MockAsnSchemaTypeDefinition
         public AsnSchemaTypeDefinition build()
         {
             return mockedInstance;
+        }
+
+        // ---------------------------------------------------------------------
+        // PUBLIC METHODS
+        // ---------------------------------------------------------------------
+
+        /**
+         * Add a collection of (SEQUENCE OF/SET OF) component type to this
+         * definition
+         *
+         * @param tag
+         *            tag of the component type
+         *
+         * @param tagName
+         *            tag name of the component type
+         *
+         * @param elementTypeName
+         *            type name of the SEQUENCE OF or SET OF element type E.g.
+         *            for {@code "SET OF Person"} this would be {@code "Person"}
+         *
+         * @return this builder
+         */
+        private MockAsnSchemaTypeDefinitionBuilder addCollectionOfComponentType(String tag, final String tagName,
+                String elementTypeName)
+        {
+            // handle without index supplied
+            when(mockedInstance.getTagName(tag)).thenReturn(tagName);
+            when(mockedInstance.getTypeName(tag)).thenReturn(elementTypeName);
+
+            // handle with index supplied
+            final String regex = tag + "\\[\\d+\\]";
+            when(mockedInstance.getTagName(matches(regex))).thenAnswer(new Answer<String>()
+            {
+                @Override
+                public String answer(InvocationOnMock invocation) throws Throwable
+                {
+                    final String rawTag = (String) invocation.getArguments()[0];
+                    final String tagIndex = rawTag.replaceFirst(".+(\\[.+\\])", "$1");
+                    return tagName + tagIndex;
+                }
+            });
+            when(mockedInstance.getTypeName(matches(regex))).thenReturn(elementTypeName);
+            return this;
         }
     }
 }
