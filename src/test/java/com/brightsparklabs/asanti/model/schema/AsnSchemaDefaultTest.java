@@ -115,43 +115,42 @@ public class AsnSchemaDefaultTest
                 .getDecodedData());
         assertEquals("/Document/body/content/text", instance.getDecodedTag("2/2/1", "Document")
                 .getDecodedData());
-        // TODO support SET OF and SEQUENCE OF
-        // assertEquals("/Document/body/content/paragraphs/title",
-        // instance.getDecodedTag("2/2/2/1", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/contributor/firstName",
-        // instance.getDecodedTag("2/2/2/2/1", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/contributor/lastName",
-        // instance.getDecodedTag("2/2/2/2/2", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/contributor/title",
-        // instance.getDecodedTag("2/2/2/2/3", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/points",
-        // instance.getDecodedTag("2/2/2/3", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs/points[0]",
-        // instance.getDecodedTag("2/2/2/3[0]", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs[99]/title",
-        // instance.getDecodedTag("2/2/2[99]/1", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
-        // instance.getDecodedTag("2/2/2[99]/2/1", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
-        // instance.getDecodedTag("2/2/2[99]/2/2", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
-        // instance.getDecodedTag("2/2/2[99]/2/3", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs[99]/points",
-        // instance.getDecodedTag("2/2/2[99]/3", "Document")
-        // .getDecodedData());
-        // assertEquals("/Document/body/content/paragraphs[99]/points[99]",
-        // instance.getDecodedTag("2/2/2[99]/3[99]", "Document")
-        // .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs/title", instance.getDecodedTag("2/2/2/1", "Document")
+                .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/title", instance.getDecodedTag("2/2/2[0]/1", "Document")
+                .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[1]/title", instance.getDecodedTag("2/2/2[1]/1", "Document")
+                .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
+                instance.getDecodedTag("2/2/2[0]/2/1", "Document")
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
+                instance.getDecodedTag("2/2/2[0]/2/2", "Document")
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
+                instance.getDecodedTag("2/2/2[0]/2/3", "Document")
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/points", instance.getDecodedTag("2/2/2[0]/3", "Document")
+                .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[0]/points[0]",
+                instance.getDecodedTag("2/2/2[0]/3[0]", "Document")
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/title", instance.getDecodedTag("2/2/2[99]/1", "Document")
+                .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
+                instance.getDecodedTag("2/2/2[99]/2/1", "Document")
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
+                instance.getDecodedTag("2/2/2[99]/2/2", "Document")
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
+                instance.getDecodedTag("2/2/2[99]/2/3", "Document")
+                        .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/points", instance.getDecodedTag("2/2/2[99]/3", "Document")
+                .getDecodedData());
+        assertEquals("/Document/body/content/paragraphs[99]/points[99]",
+                instance.getDecodedTag("2/2/2[99]/3[99]", "Document")
+                        .getDecodedData());
         assertEquals("/Document/body/suffix/text", instance.getDecodedTag("2/3/1", "Document")
                 .getDecodedData());
 
