@@ -148,6 +148,15 @@ public class AsnSchemaTypeDefinitionConstructedTest
         // test empty
         assertEquals("", instance.getTagName(""));
 
+        // test indexes
+        assertEquals("TAG_1[0]", instance.getTagName("1[0]"));
+        assertEquals("TAG_4[3]", instance.getTagName("4[3]"));
+        assertEquals("TAG_2[1]", instance.getTagName("2[1]"));
+        assertEquals("TAG_0[6]", instance.getTagName("0[6]"));
+        assertEquals("TAG_5[4]", instance.getTagName("5[4]"));
+        assertEquals("", instance.getTagName("3[0]"));
+        assertEquals("", instance.getTagName("6[0]"));
+
         // test empty components
         instance = new AsnSchemaTypeDefinitionConstructed("NAME", AsnBuiltinType.Set, emptyComponentTypes);
         assertEquals("", instance.getTagName("1"));
@@ -175,6 +184,15 @@ public class AsnSchemaTypeDefinitionConstructedTest
         assertEquals("", instance.getTypeName(null));
         // test empty
         assertEquals("", instance.getTypeName(""));
+
+        // test indexes
+        assertEquals("TYPE_1", instance.getTypeName("1[0]"));
+        assertEquals("TYPE_4", instance.getTypeName("4[3]"));
+        assertEquals("TYPE_2", instance.getTypeName("2[1]"));
+        assertEquals("TYPE_0", instance.getTypeName("0[6]"));
+        assertEquals("TYPE_5", instance.getTypeName("5[4]"));
+        assertEquals("", instance.getTypeName("3[0]"));
+        assertEquals("", instance.getTypeName("6[0]"));
 
         // test empty components
         instance = new AsnSchemaTypeDefinitionConstructed("NAME", AsnBuiltinType.Set, emptyComponentTypes);
