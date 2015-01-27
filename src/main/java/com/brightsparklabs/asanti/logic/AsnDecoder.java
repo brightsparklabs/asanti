@@ -18,6 +18,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodeResult;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.io.BaseEncoding;
@@ -122,7 +123,7 @@ public class AsnDecoder
         }
 
         log.info("User testing:");
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, Charsets.UTF_8));
         while (true)
         {
             System.out.print("\tEnter raw tag: ");
