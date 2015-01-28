@@ -139,7 +139,14 @@ BEGIN
         firstName [1] OCTET STRING,
         lastName  [2] OCTET STRING,
         title     [3] ENUMERATED
-            { mr, mrs, ms, dr, rev } OPTIONAL
+            { mr, mrs, ms, dr, rev } OPTIONAL,
+        gender OPTIONAL
+    }
+
+    Gender ::= ENUMERATED
+    {
+        male(0),
+        female(1)
     }
 END
 ```

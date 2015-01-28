@@ -203,6 +203,12 @@ public class AsnSchemaModule
 
         while (rawTags.hasNext())
         {
+            if (Strings.isNullOrEmpty(typeName))
+            {
+                // no type to delve into
+                break;
+            }
+
             final AsnSchemaTypeDefinition type = getType(typeName);
             if (type == AsnSchemaTypeDefinition.NULL)
             {
@@ -214,13 +220,13 @@ public class AsnSchemaModule
 
             final String tag = rawTags.next();
             final String tagName = type.getTagName(tag);
-            typeName = type.getTypeName(tag);
-            if (Strings.isNullOrEmpty(tagName) || Strings.isNullOrEmpty(typeName))
+            if (Strings.isNullOrEmpty(tagName))
             {
                 // unknown tag
                 break;
             }
             decodedTags.add(tagName);
+            typeName = type.getTypeName(tag);
         }
 
         return decodedTags;

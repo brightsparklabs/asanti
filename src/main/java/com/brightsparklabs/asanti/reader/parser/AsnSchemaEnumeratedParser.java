@@ -25,7 +25,7 @@ public class AsnSchemaEnumeratedParser
     // -------------------------------------------------------------------------
 
     /** pattern to break text into: tag name, tag */
-    private static final Pattern PATTERN_ENUMERATED_OPTION = Pattern.compile("([^\\(]+)(\\(.+\\))?$");
+    private static final Pattern PATTERN_ENUMERATED_OPTION = Pattern.compile("([^\\(]+)(\\((.+)\\))?$");
 
     /** splitter which splits strings on commas */
     private static final Splitter COMMA_SPLITTER = Splitter.on(",")
@@ -52,11 +52,19 @@ public class AsnSchemaEnumeratedParser
      */
     public static ImmutableList<AsnSchemaEnumeratedOption> parse(String enumeratedOptionsText) throws ParseException
     {
+        final ImmutableList.Builder<AsnSchemaEnumeratedOption> builder = ImmutableList.builder();
+        if (enumeratedOptionsText == null) { return builder.build(); }
+
         final Iterable<String> lines = COMMA_SPLITTER.split(enumeratedOptionsText);
 
-        final ImmutableList.Builder<AsnSchemaEnumeratedOption> builder = ImmutableList.builder();
         for (final String optionLine : lines)
         {
+            if ("...".equals(optionLine))
+            {
+                // ignore extension markers
+                continue;
+            }
+
             final AsnSchemaEnumeratedOption option = parseEnumeratedOption(optionLine);
             builder.add(option);
         }
@@ -83,12 +91,14 @@ public class AsnSchemaEnumeratedParser
         final Matcher matcher = PATTERN_ENUMERATED_OPTION.matcher(optionLine);
         if (!matcher.matches())
         {
-            final String error = "Could not match ENMUMERATED option definition. Found: " + optionLine;
+            final String error =
+                    "Could not match ENUMERATED option definition. Expected: optionName(optionNumber), found: "
+                            + optionLine;
             throw new ParseException(error, -1);
         }
 
         final String tagName = matcher.group(1);
-        final String tag = matcher.group(2);
+        final String tag = matcher.group(3);
         return new AsnSchemaEnumeratedOption(tagName, tag);
     }
 }

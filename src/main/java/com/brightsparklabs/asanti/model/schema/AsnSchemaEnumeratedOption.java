@@ -8,7 +8,7 @@ package com.brightsparklabs.asanti.model.schema;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * An item within an ENUMERATED definition
+ * An option within an ENUMERATED definition
  *
  * @author brightSPARK Labs
  */
@@ -50,8 +50,8 @@ public class AsnSchemaEnumeratedOption
         checkArgument(!tagName.trim()
                 .isEmpty(), "Tag name must be specified");
 
-        this.tagName = tagName;
-        this.tag = (tag == null) ? "" : tag;
+        this.tagName = tagName.trim();
+        this.tag = (tag == null) ? "" : tag.trim();
     }
 
     // -------------------------------------------------------------------------
@@ -59,7 +59,9 @@ public class AsnSchemaEnumeratedOption
     // -------------------------------------------------------------------------
 
     /**
-     * @return the name of the component type (i.e. tag name)
+     * Returns the name of this option
+     *
+     * @return the name of this option (i.e. tag name)
      */
     public String getTagName()
     {
@@ -67,7 +69,9 @@ public class AsnSchemaEnumeratedOption
     }
 
     /**
-     * @return the tag of this component type
+     * Returns the tag of this option
+     *
+     * @return the tag of this option
      */
     public String getTag()
     {
