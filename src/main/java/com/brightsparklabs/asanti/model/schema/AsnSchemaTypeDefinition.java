@@ -34,6 +34,9 @@ public class AsnSchemaTypeDefinition
      */
     private final AsnBuiltinType builtinType;
 
+    /** the constraints on the type */
+    private final String constraints;
+
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -47,21 +50,58 @@ public class AsnSchemaTypeDefinition
      * @param builtinType
      *            the underlying ASN.1 type of the defined type
      *
+     * @param constraints
+     *            The constraints on the type. Use {@code null} if no
+     *            constraints.
+     *            <p>
+     *            Example 1<br>
+     *            For {@code SET (SIZE (1..100) OF OCTET STRING (SIZE (10))}
+     *            this would be {@code (SIZE (10)}.
+     *            <p>
+     *            Example 2<br>
+     *            For {@code INTEGER (1..256)} this would be {@code (1..256)}.
+     *
      * @throws NullPointerException
      *             if {@code name} or {@code builtinType} are {@code null}
      *
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType)
+    public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType, String constraints)
     {
         checkNotNull(name);
         checkArgument(!name.trim()
                 .isEmpty(), "Tag name must be specified");
         checkNotNull(builtinType);
 
-        this.name = name;
+        this.name = name.trim();
         this.builtinType = builtinType;
+        this.constraints = (constraints == null) ? "" : constraints.trim();
+    }
+
+    /**
+     * Constructor for types with no constraints.
+     *
+     * @deprecated Use
+     *             {@link #AsnSchemaTypeDefinition(String, AsnBuiltinType, String)}
+     *             instead
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param builtinType
+     *            the underlying ASN.1 type of the defined type
+     *
+     * @throws NullPointerException
+     *             if {@code name} or {@code builtinType} are {@code null}
+     *
+     * @throws IllegalArgumentException
+     *             if {@code name} is blank
+     */
+    @Deprecated
+    public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType)
+    {
+        this(name, builtinType, null);
     }
 
     // -------------------------------------------------------------------------
@@ -124,10 +164,10 @@ public class AsnSchemaTypeDefinition
     /**
      * Null instance of {@link AsnSchemaTypeDefinition}
      */
-    public static class AsnSchemaTypeDefinitionNull extends AsnSchemaTypeDefinition
+    private static class AsnSchemaTypeDefinitionNull extends AsnSchemaTypeDefinition
     {
 
-        public AsnSchemaTypeDefinitionNull()
+        private AsnSchemaTypeDefinitionNull()
         {
             super("NULL", AsnBuiltinType.Null);
         }

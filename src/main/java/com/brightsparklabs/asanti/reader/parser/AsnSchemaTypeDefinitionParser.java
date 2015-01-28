@@ -130,9 +130,9 @@ public class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
         if (matcher.matches())
         {
-            // TODO handle *all* PRIMITIVEs
-            log.warning("Type Definitions for PRIMITIVES not yet supported");
-            return AsnSchemaTypeDefinition.NULL;
+            final String builtinType = matcher.group(1);
+            final String constraints = matcher.group(2);
+            return AsnSchemaTypeDefinitionPrimitiveParser.parse(builtinType, name, constraints);
         }
 
         // check if defining a SEQUENCE OF
