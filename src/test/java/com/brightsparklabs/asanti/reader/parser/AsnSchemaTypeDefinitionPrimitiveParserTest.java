@@ -6,8 +6,6 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import static org.junit.Assert.*;
 
-import java.text.ParseException;
-
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -25,25 +23,12 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testParse() throws Exception
-    {
-        try
-        {
-            AsnSchemaTypeDefinitionPrimitiveParser.parse("TEST_NAME", "", "TEST_CONSTRAINTS");
-            fail("ParseException not thrown");
-        }
-        catch (final ParseException ex)
-        {
-        }
-    }
-
-    @Test
-    public void testParse_OctetString() throws Exception
+    public void testParseOctetString() throws Exception
     {
         // null name
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parse(null, "OCTET STRING", "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parseOctetString(null, "TEST_CONSTRAINTS");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -53,7 +38,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         // blank name
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parse("", "OCTET STRING", "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parseOctetString("", "TEST_CONSTRAINTS");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -61,7 +46,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         }
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parse(" ", "OCTET STRING", "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parseOctetString(" ", "TEST_CONSTRAINTS");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -69,7 +54,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         }
 
         final AsnSchemaTypeDefinition instance =
-                AsnSchemaTypeDefinitionPrimitiveParser.parse("TEST_NAME", "OCTET STRING", "TEST_CONSTRAINTS");
+                AsnSchemaTypeDefinitionPrimitiveParser.parseOctetString("TEST_NAME", "TEST_CONSTRAINTS");
         assertEquals(AsnBuiltinType.OctetString, instance.getBuiltinType());
         assertEquals("TEST_NAME", instance.getName());
         assertEquals("", instance.getTagName(""));

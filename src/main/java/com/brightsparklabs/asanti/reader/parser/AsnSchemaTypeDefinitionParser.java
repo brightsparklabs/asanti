@@ -57,9 +57,13 @@ public class AsnSchemaTypeDefinitionParser
     /** pattern to match a CLASS type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_CLASS = Pattern.compile("^CLASS ?\\{(.+)\\}$");
 
+    /** pattern to match an OCTET STRING type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_OCTET_STRING =
+            Pattern.compile("^OCTET STRING ?(\\((.+)\\))?$");
+
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
-            Pattern.compile("^(BIT STRING|GeneralizedTime|IA5String|INTEGER|NumericString|OCTET STRING|UTF8String|VisibleString) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            Pattern.compile("^(BIT STRING|GeneralizedTime|IA5String|INTEGER|NumericString|UTF8String|VisibleString) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
     // TODO add all primitives to error message (see ASN-25)
     /** error message if an unknown ASN.1 built-in type is found */
@@ -132,13 +136,26 @@ public class AsnSchemaTypeDefinitionParser
         }
 
         // check if defining a PRIMITIVE
+        matcher = PATTERN_TYPE_DEFINITION_OCTET_STRING.matcher(value);
+        if (matcher.matches())
+        {
+            final String constraintText = Strings.nullToEmpty(matcher.group(2));
+            return AsnSchemaTypeDefinitionPrimitiveParser.parseOctetString(name, constraintText);
+        }
+
+        // check if defining a PRIMITIVE
         matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
         if (matcher.matches())
         {
+            /*
+             * TODO handle all primitive types (see ASN-25) Currently this is
+             * just a catch all to log warnings
+             */
             final String builtinType = matcher.group(1);
-            final String typeBody = Strings.nullToEmpty(matcher.group(3));
-            final String constraintText = Strings.nullToEmpty(matcher.group(5));
-            return AsnSchemaTypeDefinitionPrimitiveParser.parse(name, builtinType, constraintText);
+            final String error =
+                    String.format("Cannot parse unsupported ASN.1 built-in type: %s for type: %s", builtinType, name);
+            log.warning(error);
+            return AsnSchemaTypeDefinition.NULL;
         }
 
         // check if defining a SEQUENCE OF
