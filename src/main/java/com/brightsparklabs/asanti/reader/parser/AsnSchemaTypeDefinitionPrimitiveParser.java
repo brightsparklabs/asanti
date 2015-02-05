@@ -6,7 +6,6 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
-import java.util.logging.Logger;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
@@ -19,13 +18,6 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetStrin
  */
 public class AsnSchemaTypeDefinitionPrimitiveParser
 {
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionPrimitiveParser.class.getName());
-
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -45,7 +37,8 @@ public class AsnSchemaTypeDefinitionPrimitiveParser
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    public static AsnSchemaTypeDefinition parseOctetString(String name, String constraintText) throws ParseException
+    public static AsnSchemaTypeDefinitionOctetString parseOctetString(String name, String constraintText)
+            throws ParseException
     {
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         return new AsnSchemaTypeDefinitionOctetString(name, constraint);
