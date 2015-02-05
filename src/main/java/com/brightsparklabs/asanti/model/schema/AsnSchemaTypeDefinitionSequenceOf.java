@@ -5,7 +5,6 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
-
 /**
  * A SEQUENCE OF type definition from a within a module specification within an
  * ASN.1 schema.
@@ -25,14 +24,18 @@ public class AsnSchemaTypeDefinitionSequenceOf extends AsnSchemaTypeDefinitionCo
      *            name of the SEQUENCE OF type definition
      *
      * @param elementTypeName
-     *            the name of the type for the elements in this SEQUENCE OF.
-     *            E.g. for {@code SEQUENCE OF OCTET STRING}, this would be
-     *            {@code OCTET STRING}
+     *            the name of the type for the elements in the SEQUENCE OF. E.g.
+     *            for
+     *            {@code SEQUENCE (SIZE (1..100)) OF OCTET STRING (SIZE (256))},
+     *            this would be {@code OCTET STRING}
      *
-     * @param constraints
-     *            the constraints on the SEQUENCE OF. E.g for
-     *            {@code SEQUENCE (SIZE (1..100) OF OCTET STRING} this would be
-     *            {@code (SIZE (1..100)}
+     * @param constraint
+     *            The constraint on the type. Use
+     *            {@link AsnSchemaConstraint#NULL} if no constraint.
+     *            <p>
+     *            E.g for
+     *            {@code SEQUENCE (SIZE (1..100)) OF OCTET STRING (SIZE (256))}
+     *            this would be {@code SIZE (256)}
      *
      * @throws NullPointerException
      *             if {@code name}, {@code elementTypeName} or
@@ -41,8 +44,8 @@ public class AsnSchemaTypeDefinitionSequenceOf extends AsnSchemaTypeDefinitionCo
      * @throws IllegalArgumentException
      *             if {@code name} or {@code elementTypeName} is blank
      */
-    public AsnSchemaTypeDefinitionSequenceOf(String name, String elementTypeName, String constraints)
+    public AsnSchemaTypeDefinitionSequenceOf(String name, String elementTypeName, AsnSchemaConstraint constraint)
     {
-        super(name, AsnBuiltinType.SequenceOf, elementTypeName, constraints);
+        super(name, AsnBuiltinType.SequenceOf, elementTypeName, constraint);
     }
 }

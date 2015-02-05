@@ -31,7 +31,7 @@ public class AsnSchemaTypeDefinitionSetTest
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionSet(null, componentTypes);
+            new AsnSchemaTypeDefinitionSet(null, componentTypes, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -39,17 +39,25 @@ public class AsnSchemaTypeDefinitionSetTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionSet("TEST", null);
+            new AsnSchemaTypeDefinitionSet("TEST", null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
         {
+        }
+        try
+        {
+            new AsnSchemaTypeDefinitionSet("TEST", componentTypes, null);
+        }
+        catch (final NullPointerException ex)
+        {
+            fail("NullPointerException thrown");
         }
 
         // test blank
         try
         {
-            new AsnSchemaTypeDefinitionSet("", componentTypes);
+            new AsnSchemaTypeDefinitionSet("", componentTypes, AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -57,7 +65,7 @@ public class AsnSchemaTypeDefinitionSetTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionSet(" ", componentTypes);
+            new AsnSchemaTypeDefinitionSet(" ", componentTypes, AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)

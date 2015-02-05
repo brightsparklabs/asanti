@@ -56,7 +56,7 @@ public class AsnSchemaTypeDefinitionEnumerated extends AsnSchemaTypeDefinition
      */
     public AsnSchemaTypeDefinitionEnumerated(String name, Iterable<AsnSchemaEnumeratedOption> options)
     {
-        super(name, AsnBuiltinType.Enumerated);
+        super(name, AsnBuiltinType.Enumerated, AsnSchemaConstraint.NULL);
         checkNotNull(options);
 
         final ImmutableMap.Builder<String, AsnSchemaEnumeratedOption> tagsToOptionsBuilder = ImmutableMap.builder();

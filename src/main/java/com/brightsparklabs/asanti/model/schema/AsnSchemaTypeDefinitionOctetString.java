@@ -23,9 +23,12 @@ public class AsnSchemaTypeDefinitionOctetString extends AsnSchemaTypeDefinition
      * @param name
      *            name of the ENUMERATED type definition
      *
-     * @param constraints
-     *            the constraints on the type. Use {@code null} if no
-     *            constraints.
+     * @param constraint
+     *            The constraint on the type. Use
+     *            {@link AsnSchemaConstraint#NULL} if no constraint.
+     *            <p>
+     *            E.g. For {@code OCTET STRING (SIZE (1..50))} this would be
+     *            {@code SIZE (1..50)}
      *
      * @throws NullPointerException
      *             if {@code name} is {@code null}
@@ -33,8 +36,8 @@ public class AsnSchemaTypeDefinitionOctetString extends AsnSchemaTypeDefinition
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeDefinitionOctetString(String name, String constraints)
+    public AsnSchemaTypeDefinitionOctetString(String name, AsnSchemaConstraint constraint)
     {
-        super(name, AsnBuiltinType.OctetString, constraints);
+        super(name, AsnBuiltinType.OctetString, constraint);
     }
 }

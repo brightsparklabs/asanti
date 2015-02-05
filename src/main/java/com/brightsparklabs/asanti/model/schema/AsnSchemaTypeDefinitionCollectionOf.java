@@ -51,14 +51,18 @@ public class AsnSchemaTypeDefinitionCollectionOf extends AsnSchemaTypeDefinition
      *            {@value AsnBuiltinType#SequenceOf}.
      *
      * @param elementTypeName
-     *            the name of the type for the elements in this SET OF /
-     *            SEQUENCE OF. E.g. for {@code SEQUENCE OF OCTET STRING}, this
-     *            would be {@code OCTET STRING}
+     *            the name of the type for the elements in the SET OF / SEQUENCE
+     *            OF. E.g. for
+     *            {@code SEQUENCE (SIZE (1..100)) OF OCTET STRING (SIZE (256))},
+     *            this would be {@code OCTET STRING}
      *
-     * @param constraints
-     *            the constraints on the SEQUENCE OF. E.g for
-     *            {@code SEQUENCE (SIZE (1..100) OF OCTET STRING} this would be
-     *            {@code (SIZE (1..100)}
+     * @param constraint
+     *            the constraints on the element type. Use
+     *            {@link AsnSchemaConstraint#NULL} if no constraint.
+     *            <p>
+     *            E.g for
+     *            {@code SEQUENCE (SIZE (1..100)) OF OCTET STRING (SIZE (256))}
+     *            this would be {@code SIZE (256)}
      *
      * @throws NullPointerException
      *             if {@code name}, {@code elementTypeName} or
@@ -70,9 +74,9 @@ public class AsnSchemaTypeDefinitionCollectionOf extends AsnSchemaTypeDefinition
      *             {@link #validTypes}
      */
     public AsnSchemaTypeDefinitionCollectionOf(String name, AsnBuiltinType builtinType, String elementTypeName,
-            String constraints)
+            AsnSchemaConstraint constraint)
     {
-        super(name, builtinType);
+        super(name, builtinType, constraint);
         checkArgument(validTypes.contains(builtinType), "Type must be either SET OF or SEQUENCE OF");
         checkNotNull(elementTypeName);
         checkArgument(!elementTypeName.trim()

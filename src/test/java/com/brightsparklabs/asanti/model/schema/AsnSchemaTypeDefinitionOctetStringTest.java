@@ -23,24 +23,31 @@ public class AsnSchemaTypeDefinitionOctetStringTest
     public void testAsnSchemaTypeDefinitionOctetString() throws Exception
     {
         // test valid
-        new AsnSchemaTypeDefinitionOctetString("TEST_NAME", "SIZE(1)");
-        new AsnSchemaTypeDefinitionOctetString("TEST_NAME", "");
-        new AsnSchemaTypeDefinitionOctetString("TEST_NAME", null);
+        new AsnSchemaTypeDefinitionOctetString("TEST_NAME", AsnSchemaConstraint.NULL);
+        new AsnSchemaTypeDefinitionOctetString("TEST_NAME", AsnSchemaConstraint.NULL);
 
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionOctetString(null, "SIZE(1)");
+            new AsnSchemaTypeDefinitionOctetString(null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
         {
         }
+        try
+        {
+            new AsnSchemaTypeDefinitionOctetString("TEST_NAME", null);
+        }
+        catch (final NullPointerException ex)
+        {
+            fail("NullPointerException thrown");
+        }
 
         // test empty
         try
         {
-            new AsnSchemaTypeDefinitionOctetString("", "SIZE(1)");
+            new AsnSchemaTypeDefinitionOctetString("", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -48,7 +55,7 @@ public class AsnSchemaTypeDefinitionOctetStringTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionOctetString(" ", "SIZE(1)");
+            new AsnSchemaTypeDefinitionOctetString(" ", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -60,7 +67,7 @@ public class AsnSchemaTypeDefinitionOctetStringTest
     public void testGetBuiltinType() throws Exception
     {
         final AsnSchemaTypeDefinitionOctetString instance =
-                new AsnSchemaTypeDefinitionOctetString("TEST_NAME", "SIZE(1)");
+                new AsnSchemaTypeDefinitionOctetString("TEST_NAME", AsnSchemaConstraint.NULL);
         assertEquals(AsnBuiltinType.OctetString, instance.getBuiltinType());
     }
 }

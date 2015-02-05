@@ -34,8 +34,8 @@ public class AsnSchemaTypeDefinition
      */
     private final AsnBuiltinType builtinType;
 
-    /** the constraints on the type */
-    private final String constraints;
+    /** the constraint on the type */
+    private final AsnSchemaConstraint constraint;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -50,9 +50,9 @@ public class AsnSchemaTypeDefinition
      * @param builtinType
      *            the underlying ASN.1 type of the defined type
      *
-     * @param constraints
-     *            The constraints on the type. Use {@code null} if no
-     *            constraints.
+     * @param constraint
+     *            The constraint on the type. Use
+     *            {@link AsnSchemaConstraint#NULL} if no constraint.
      *            <p>
      *            Example 1<br>
      *            For {@code SET (SIZE (1..100) OF OCTET STRING (SIZE (10))}
@@ -67,7 +67,7 @@ public class AsnSchemaTypeDefinition
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType, String constraints)
+    public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType, AsnSchemaConstraint constraint)
     {
         checkNotNull(name);
         checkArgument(!name.trim()
@@ -76,32 +76,7 @@ public class AsnSchemaTypeDefinition
 
         this.name = name.trim();
         this.builtinType = builtinType;
-        this.constraints = (constraints == null) ? "" : constraints.trim();
-    }
-
-    /**
-     * Constructor for types with no constraints.
-     *
-     * @deprecated Use
-     *             {@link #AsnSchemaTypeDefinition(String, AsnBuiltinType, String)}
-     *             instead
-     *
-     * @param name
-     *            name of the defined type
-     *
-     * @param builtinType
-     *            the underlying ASN.1 type of the defined type
-     *
-     * @throws NullPointerException
-     *             if {@code name} or {@code builtinType} are {@code null}
-     *
-     * @throws IllegalArgumentException
-     *             if {@code name} is blank
-     */
-    @Deprecated
-    public AsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType)
-    {
-        this(name, builtinType, null);
+        this.constraint = (constraint == null) ? AsnSchemaConstraint.NULL : constraint;
     }
 
     // -------------------------------------------------------------------------
@@ -169,7 +144,7 @@ public class AsnSchemaTypeDefinition
 
         private AsnSchemaTypeDefinitionNull()
         {
-            super("NULL", AsnBuiltinType.Null);
+            super("NULL", AsnBuiltinType.Null, null);
         }
     }
 }

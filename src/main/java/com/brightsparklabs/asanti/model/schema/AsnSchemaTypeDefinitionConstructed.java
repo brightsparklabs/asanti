@@ -64,6 +64,14 @@ public class AsnSchemaTypeDefinitionConstructed extends AsnSchemaTypeDefinition
      * @param componentTypes
      *            the component types within this defined type
      *
+     * @param constraint
+     *            The constraint on the type. Use
+     *            {@link AsnSchemaConstraint#NULL} if no constraint.
+     *            <p>
+     *            E.g. For
+     *            <code>SEQUENCE { ... } (CONSTRAINED BY {Person:title})</code>
+     *            this would be <code>CONSTRAINED BY {Person:title}</code>
+     *
      * @throws NullPointerException
      *             if {@code name}, {@code type} or {@code componentTypes} are
      *             {@code null}
@@ -73,9 +81,9 @@ public class AsnSchemaTypeDefinitionConstructed extends AsnSchemaTypeDefinition
      *             valid types defined in {@link #validTypes}
      */
     public AsnSchemaTypeDefinitionConstructed(String name, AsnBuiltinType type,
-            Iterable<AsnSchemaComponentType> componentTypes)
+            Iterable<AsnSchemaComponentType> componentTypes, AsnSchemaConstraint constraint)
     {
-        super(name, type);
+        super(name, type, constraint);
         checkArgument(validTypes.contains(type), "Type must be either SET, SEQUENCE, SET OF, SEQUENCE OF or CHOICE");
         checkNotNull(componentTypes);
 

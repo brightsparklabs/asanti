@@ -29,7 +29,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
     {
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parse("", "TEST_NAME", "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parse("TEST_NAME", "", "TEST_CONSTRAINTS");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -43,7 +43,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         // null name
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parse("OCTET STRING", null, "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parse(null, "OCTET STRING", "TEST_CONSTRAINTS");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -53,7 +53,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         // blank name
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parse("OCTET STRING", "", "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parse("", "OCTET STRING", "TEST_CONSTRAINTS");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -61,7 +61,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         }
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parse("OCTET STRING", " ", "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parse(" ", "OCTET STRING", "TEST_CONSTRAINTS");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -69,7 +69,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         }
 
         final AsnSchemaTypeDefinition instance =
-                AsnSchemaTypeDefinitionPrimitiveParser.parse("OCTET STRING", "TEST_NAME", "TEST_CONSTRAINTS");
+                AsnSchemaTypeDefinitionPrimitiveParser.parse("TEST_NAME", "OCTET STRING", "TEST_CONSTRAINTS");
         assertEquals(AsnBuiltinType.OctetString, instance.getBuiltinType());
         assertEquals("TEST_NAME", instance.getName());
         assertEquals("", instance.getTagName(""));

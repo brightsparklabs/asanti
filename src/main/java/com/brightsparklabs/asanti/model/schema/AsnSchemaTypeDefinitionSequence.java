@@ -26,14 +26,23 @@ public class AsnSchemaTypeDefinitionSequence extends AsnSchemaTypeDefinitionCons
      * @param componentTypes
      *            the component types in this type definition
      *
+     * @param constraint
+     *            The constraint on the type. Use
+     *            {@link AsnSchemaConstraint#NULL} if no constraint.
+     *            <p>
+     *            E.g. For
+     *            <code>SEQUENCE { ... } (CONSTRAINED BY {Person:title})</code>
+     *            this would be <code>CONSTRAINED BY {Person:title}</code>
+     *
      * @throws NullPointerException
      *             if {@code name}, or {@code componentTypes} are {@code null}
      *
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeDefinitionSequence(String name, Iterable<AsnSchemaComponentType> componentTypes)
+    public AsnSchemaTypeDefinitionSequence(String name, Iterable<AsnSchemaComponentType> componentTypes,
+            AsnSchemaConstraint constraint)
     {
-        super(name, AsnBuiltinType.Sequence, componentTypes);
+        super(name, AsnBuiltinType.Sequence, componentTypes, constraint);
     }
 }

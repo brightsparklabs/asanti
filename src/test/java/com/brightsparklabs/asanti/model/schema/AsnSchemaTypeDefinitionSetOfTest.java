@@ -25,7 +25,7 @@ public class AsnSchemaTypeDefinitionSetOfTest
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionSetOf(null, "person", "");
+            new AsnSchemaTypeDefinitionSetOf(null, "person", AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -35,7 +35,7 @@ public class AsnSchemaTypeDefinitionSetOfTest
         // test blank
         try
         {
-            new AsnSchemaTypeDefinitionSetOf("", "person", "");
+            new AsnSchemaTypeDefinitionSetOf("", "person", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -43,7 +43,7 @@ public class AsnSchemaTypeDefinitionSetOfTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionSetOf(" ", "person", "");
+            new AsnSchemaTypeDefinitionSetOf(" ", "person", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -57,7 +57,7 @@ public class AsnSchemaTypeDefinitionSetOfTest
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionSetOf("NAME", null, "");
+            new AsnSchemaTypeDefinitionSetOf("NAME", null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -67,7 +67,7 @@ public class AsnSchemaTypeDefinitionSetOfTest
         // test blank
         try
         {
-            new AsnSchemaTypeDefinitionSetOf("", "", "");
+            new AsnSchemaTypeDefinitionSetOf("", "", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -75,11 +75,25 @@ public class AsnSchemaTypeDefinitionSetOfTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionSetOf(" ", " ", "");
+            new AsnSchemaTypeDefinitionSetOf(" ", " ", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
         {
+        }
+    }
+
+    @Test
+    public void testAsnSchemaConstructedTypeDefinition_Constraint() throws Exception
+    {
+        // test null
+        try
+        {
+            new AsnSchemaTypeDefinitionSetOf("NAME", "person", null);
+        }
+        catch (final NullPointerException ex)
+        {
+            fail("NullPointerException thrown");
         }
     }
 }

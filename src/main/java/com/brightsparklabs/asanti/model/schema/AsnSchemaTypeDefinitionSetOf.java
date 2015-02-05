@@ -24,14 +24,17 @@ public class AsnSchemaTypeDefinitionSetOf extends AsnSchemaTypeDefinitionCollect
      *            name of the SET OF type definition
      *
      * @param elementTypeName
-     *            the name of the type for the elements in this SET OF. E.g. for
-     *            {@code SET OF OCTET STRING}, this would be
-     *            {@code OCTET STRING}
+     *            the name of the type for the elements in the SEQUENCE OF. E.g.
+     *            for {@code SET (SIZE (1..100)) OF OCTET STRING (SIZE (256))},
+     *            this would be {@code OCTET STRING}
      *
-     * @param constraints
-     *            the constraints on the SET OF. E.g for
-     *            {@code SET (SIZE (1..100) OF OCTET STRING} this would be
-     *            {@code (SIZE (1..100)}
+     * @param constraint
+     *            The constraint on the type. Use
+     *            {@link AsnSchemaConstraint#NULL} if no constraint.
+     *            <p>
+     *            E.g for
+     *            {@code SET (SIZE (1..100)) OF OCTET STRING (SIZE (256))} this
+     *            would be {@code SIZE (256)}
      *
      * @throws NullPointerException
      *             if {@code name}, {@code elementTypeName} or
@@ -40,8 +43,8 @@ public class AsnSchemaTypeDefinitionSetOf extends AsnSchemaTypeDefinitionCollect
      * @throws IllegalArgumentException
      *             if {@code name} or {@code elementTypeName} is blank
      */
-    public AsnSchemaTypeDefinitionSetOf(String name, String elementTypeName, String constraints)
+    public AsnSchemaTypeDefinitionSetOf(String name, String elementTypeName, AsnSchemaConstraint constraint)
     {
-        super(name, AsnBuiltinType.SetOf, elementTypeName, constraints);
+        super(name, AsnBuiltinType.SetOf, elementTypeName, constraint);
     }
 }

@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaEnumeratedOption;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
@@ -20,6 +21,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -57,9 +59,9 @@ public class AsnSchemaTypeDefinitionParser
 
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
-            Pattern.compile("^(BIT STRING|GeneralizedTime|IA5String|INTEGER|NumericString|OCTET STRING|UTF8String|VisibleString) ?(.*)$");
+            Pattern.compile("^(BIT STRING|GeneralizedTime|IA5String|INTEGER|NumericString|OCTET STRING|UTF8String|VisibleString) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
-    // TODO add all primitives to error message
+    // TODO add all primitives to error message (see ASN-25)
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
             "Parser expected a built-in type of SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS or a primitive (BIT STRING, GeneralizedTime, IA5String, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString) but found: ";
@@ -99,7 +101,8 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             final String items = matcher.group(1);
-            return parseSequence(name, items);
+            final String constraint = Strings.nullToEmpty(matcher.group(2));
+            return parseSequence(name, items, constraint);
         }
 
         // check if defining a SET
@@ -107,7 +110,8 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             final String items = matcher.group(1);
-            return parseSet(name, items);
+            final String constraint = Strings.nullToEmpty(matcher.group(2));
+            return parseSet(name, items, constraint);
         }
 
         // check if defining a CHOICE
@@ -115,7 +119,8 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             final String items = matcher.group(1);
-            return parseChoice(name, items);
+            final String constraint = (matcher.group(2) == null) ? "" : matcher.group(2);
+            return parseChoice(name, items, constraint);
         }
 
         // check if defining an ENUMERATED
@@ -131,15 +136,16 @@ public class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             final String builtinType = matcher.group(1);
-            final String constraints = matcher.group(2);
-            return AsnSchemaTypeDefinitionPrimitiveParser.parse(builtinType, name, constraints);
+            final String typeBody = Strings.nullToEmpty(matcher.group(3));
+            final String constraintText = Strings.nullToEmpty(matcher.group(5));
+            return AsnSchemaTypeDefinitionPrimitiveParser.parse(name, builtinType, constraintText);
         }
 
         // check if defining a SEQUENCE OF
         matcher = PATTERN_TYPE_DEFINITION_SEQUENCE_OF.matcher(value);
         if (matcher.matches())
         {
-            final String contraints = matcher.group(1);
+            final String contraints = Strings.nullToEmpty(matcher.group(1));
             final String elementTypeName = matcher.group(2);
             return parseSequenceOf(name, elementTypeName, contraints);
         }
@@ -148,7 +154,7 @@ public class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_SET_OF.matcher(value);
         if (matcher.matches())
         {
-            final String contraints = matcher.group(1);
+            final String contraints = Strings.nullToEmpty(matcher.group(1));
             final String elementTypeName = matcher.group(2);
             return parseSetOf(name, elementTypeName, contraints);
         }
@@ -157,7 +163,7 @@ public class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_CLASS.matcher(value);
         if (matcher.matches())
         {
-            // TODO handle CLASS
+            // TODO handle CLASS (see ASN-39)
             log.warning("Type Definitions for CLASS not yet supported");
             return AsnSchemaTypeDefinition.NULL;
         }
@@ -180,19 +186,27 @@ public class AsnSchemaTypeDefinitionParser
      * @param componentTypesText
      *            the component types contained in the SEQUENCE as a string
      *
+     * @param constraintText
+     *            the constraint on the SEQUENCE. Blank for no constraint.
+     *            <p>
+     *            E.g. For
+     *            <code>SEQUENCE { ... } (CONSTRAINED BY {Person:title})</code>
+     *            this would be <code>CONSTRAINED BY {Person:title}</code>
+     *
      * @return an {@link AsnSchemaTypeDefinitionSequence} representing the
      *         parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionSequence parseSequence(String name, String componentTypesText)
-            throws ParseException
+    private static AsnSchemaTypeDefinitionSequence parseSequence(String name, String componentTypesText,
+            String constraintText) throws ParseException
     {
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(componentTypesText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         final AsnSchemaTypeDefinitionSequence typeDefinition =
-                new AsnSchemaTypeDefinitionSequence(name, componentTypes);
+                new AsnSchemaTypeDefinitionSequence(name, componentTypes, constraint);
         return typeDefinition;
     }
 
@@ -205,17 +219,27 @@ public class AsnSchemaTypeDefinitionParser
      * @param componentTypesText
      *            the component types contained in the SET as a string
      *
+     * @param constraintText
+     *            the constraint on the SET. Blank for no constraint.
+     *            <p>
+     *            E.g. For
+     *            <code>SET { ... } (CONSTRAINED BY {Person:title})</code> this
+     *            would be <code>CONSTRAINED BY {Person:title}</code>
+     *
      * @return an {@link AsnSchemaTypeDefinitionSet} representing the parsed
      *         data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionSet parseSet(String name, String componentTypesText) throws ParseException
+    private static AsnSchemaTypeDefinitionSet parseSet(String name, String componentTypesText, String constraintText)
+            throws ParseException
     {
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaTypeDefinitionSet typeDefinition = new AsnSchemaTypeDefinitionSet(name, componentTypes);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        final AsnSchemaTypeDefinitionSet typeDefinition =
+                new AsnSchemaTypeDefinitionSet(name, componentTypes, constraint);
         return typeDefinition;
     }
 
@@ -228,18 +252,26 @@ public class AsnSchemaTypeDefinitionParser
      * @param componentTypesText
      *            the component types contained in the CHOICE as a string
      *
+     * @param constraintText
+     *            the constraint on the CHOICE. Blank for no constraint.
+     *            <p>
+     *            E.g. For CHOICE { ... } (CONSTRAINED BY {} ! X) this would be
+     *            CONSTRAINED BY {} ! X the constraint text as a string
+     *
      * @return an {@link AsnSchemaTypeDefinitionChoice} representing the parsed
      *         data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionChoice parseChoice(String name, String componentTypesText)
-            throws ParseException
+    private static AsnSchemaTypeDefinitionChoice parseChoice(String name, String componentTypesText,
+            String constraintText) throws ParseException
     {
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(componentTypesText);
-        final AsnSchemaTypeDefinitionChoice typeDefinition = new AsnSchemaTypeDefinitionChoice(name, componentTypes);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        final AsnSchemaTypeDefinitionChoice typeDefinition =
+                new AsnSchemaTypeDefinitionChoice(name, componentTypes, constraint);
         return typeDefinition;
     }
 
@@ -254,10 +286,11 @@ public class AsnSchemaTypeDefinitionParser
      *            E.g. for {@code SEQUENCE OF OCTET STRING}, this would be
      *            {@code OCTET STRING}
      *
-     * @param constraints
-     *            the constraints on the SEQUENCE OF. E.g for
-     *            {@code SEQUENCE (SIZE (1..100) OF OCTET STRING} this would be
-     *            {@code (SIZE (1..100)}
+     * @param constraintText
+     *            the constraint on the SEQUENCE OF. Blank for no constraint.
+     *            <p>
+     *            E.g for {@code SEQUENCE (SIZE (1..100) OF OCTET STRING} this
+     *            would be {@code SIZE (1..100)}
      *
      * @return an {@link AsnSchemaTypeDefinitionSequenceOf} representing the
      *         parsed data
@@ -266,10 +299,11 @@ public class AsnSchemaTypeDefinitionParser
      *             if any errors occur while parsing the type
      */
     private static AsnSchemaTypeDefinitionSequenceOf parseSequenceOf(String name, String elementTypeName,
-            String constraints) throws ParseException
+            String constraintText) throws ParseException
     {
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         final AsnSchemaTypeDefinitionSequenceOf typeDefinition =
-                new AsnSchemaTypeDefinitionSequenceOf(name, elementTypeName, constraints);
+                new AsnSchemaTypeDefinitionSequenceOf(name, elementTypeName, constraint);
         return typeDefinition;
     }
 
@@ -284,10 +318,11 @@ public class AsnSchemaTypeDefinitionParser
      *            {@code SET OF OCTET STRING}, this would be
      *            {@code OCTET STRING}
      *
-     * @param constraints
-     *            the constraints on the SET OF. E.g for
-     *            {@code SET (SIZE (1..100) OF OCTET STRING} this would be
-     *            {@code (SIZE (1..100)}
+     * @param constraintText
+     *            the constraints on the SET OF. Blank for no constraint.
+     *            <p>
+     *            E.g for {@code SET (SIZE (1..100) OF OCTET STRING} this would
+     *            be {@code SIZE (1..100)}
      *
      * @return an {@link AsnSchemaTypeDefinitionSetOf} representing the parsed
      *         data
@@ -295,11 +330,12 @@ public class AsnSchemaTypeDefinitionParser
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionSetOf parseSetOf(String name, String elementTypeName, String constraints)
+    private static AsnSchemaTypeDefinitionSetOf parseSetOf(String name, String elementTypeName, String constraintText)
             throws ParseException
     {
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         final AsnSchemaTypeDefinitionSetOf typeDefinition =
-                new AsnSchemaTypeDefinitionSetOf(name, elementTypeName, constraints);
+                new AsnSchemaTypeDefinitionSetOf(name, elementTypeName, constraint);
         return typeDefinition;
     }
 

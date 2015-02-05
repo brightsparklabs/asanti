@@ -20,7 +20,7 @@ public class AsnSchemaTypeDefinitionTest
         // test null
         try
         {
-            new AsnSchemaTypeDefinition(null, AsnBuiltinType.Null);
+            new AsnSchemaTypeDefinition(null, AsnBuiltinType.Null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -28,17 +28,25 @@ public class AsnSchemaTypeDefinitionTest
         }
         try
         {
-            new AsnSchemaTypeDefinition("TYPE_NAME", null);
+            new AsnSchemaTypeDefinition("TYPE_NAME", null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
         {
+        }
+        try
+        {
+            new AsnSchemaTypeDefinition("TYPE_NAME", AsnBuiltinType.Null, null);
+        }
+        catch (final NullPointerException ex)
+        {
+            fail("NullPointerException thrown");
         }
 
         // test blank
         try
         {
-            new AsnSchemaTypeDefinition("", AsnBuiltinType.Null);
+            new AsnSchemaTypeDefinition("", AsnBuiltinType.Null, AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -46,7 +54,7 @@ public class AsnSchemaTypeDefinitionTest
         }
         try
         {
-            new AsnSchemaTypeDefinition(" ", AsnBuiltinType.Null);
+            new AsnSchemaTypeDefinition(" ", AsnBuiltinType.Null, AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -57,7 +65,8 @@ public class AsnSchemaTypeDefinitionTest
     @Test
     public void testGetName() throws Exception
     {
-        final AsnSchemaTypeDefinition instance = new AsnSchemaTypeDefinition("NAME", AsnBuiltinType.Set);
+        final AsnSchemaTypeDefinition instance =
+                new AsnSchemaTypeDefinition("NAME", AsnBuiltinType.Set, AsnSchemaConstraint.NULL);
         assertEquals("NAME", instance.getName());
     }
 
@@ -66,7 +75,8 @@ public class AsnSchemaTypeDefinitionTest
     {
         for (final AsnBuiltinType builtinType : AsnBuiltinType.values())
         {
-            final AsnSchemaTypeDefinition instance = new AsnSchemaTypeDefinition("NAME", builtinType);
+            final AsnSchemaTypeDefinition instance =
+                    new AsnSchemaTypeDefinition("NAME", builtinType, AsnSchemaConstraint.NULL);
             assertEquals(builtinType, instance.getBuiltinType());
         }
     }
@@ -74,7 +84,8 @@ public class AsnSchemaTypeDefinitionTest
     @Test
     public void testGetTagName() throws Exception
     {
-        final AsnSchemaTypeDefinition instance = new AsnSchemaTypeDefinition("NAME", AsnBuiltinType.Set);
+        final AsnSchemaTypeDefinition instance =
+                new AsnSchemaTypeDefinition("NAME", AsnBuiltinType.Set, AsnSchemaConstraint.NULL);
         assertEquals("", instance.getTagName(""));
         assertEquals("", instance.getTagName(" "));
         assertEquals("", instance.getTagName("0"));
@@ -85,7 +96,8 @@ public class AsnSchemaTypeDefinitionTest
     @Test
     public void testGetTypeName() throws Exception
     {
-        final AsnSchemaTypeDefinition instance = new AsnSchemaTypeDefinition("NAME", AsnBuiltinType.Set);
+        final AsnSchemaTypeDefinition instance =
+                new AsnSchemaTypeDefinition("NAME", AsnBuiltinType.Set, AsnSchemaConstraint.NULL);
         assertEquals("", instance.getTypeName(""));
         assertEquals("", instance.getTypeName(" "));
         assertEquals("", instance.getTypeName("0"));
