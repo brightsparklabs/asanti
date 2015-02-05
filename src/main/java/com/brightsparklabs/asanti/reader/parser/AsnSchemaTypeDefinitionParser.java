@@ -62,14 +62,14 @@ public class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_OCTET_STRING =
             Pattern.compile("^OCTET STRING ?(\\((.+)\\))?$");
 
+    // TODO remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
-            Pattern.compile("^(BIT STRING|GeneralizedTime|IA5String|INTEGER|NumericString|UTF8String|VisibleString) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            Pattern.compile("^(BIT STRING|GeneralizedTime|IA5String|INTEGER|NumericString|UTF8String|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
-    // TODO add all primitives to error message (see ASN-25)
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
-            "Parser expected a built-in type of SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS or a primitive (BIT STRING, GeneralizedTime, IA5String, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString) but found: ";
+            "Parser expected a constructed built-in type (SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS) or a primitive built-in type (BIT STRING, GeneralizedTime, IA5String, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString, BOOLEAN, DATE, CHARACTER STRING, DATE_TIME, DURATION, EMBEDDED PDV, EXTERNAL, INTEGER, OID-IRI, NULL, OBJECT IDENTIFIER, REAL, RELATIVE-OID-IRI, RELATIVE-OID, BMPString, GeneralString, GraphicString, ISO646String, PrintableString, TeletexString, T61String, UniversalString, VideotexString, TIME, TIME-OF-DAY, CHARACTER STRING) but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
