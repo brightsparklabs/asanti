@@ -9,17 +9,21 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.DecodedAsnDataDefault;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodeResult;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.io.BaseEncoding;
 
@@ -42,10 +46,91 @@ public class AsnDecoder
     // -------------------------------------------------------------------------
 
     /**
+     * Decodes the supplied ASN.1 binary data against the specified schema as
+     * objects of the specified top level type
+     *
+     * @param berFile
+     *            ASN.1 BER binary file to decode
+     *
+     * @param asnSchema
+     *            ASN.1 schema to decode data against
+     *
+     * @param topLevelType
+     *            top level type in the schema to decode objects as
+     *
+     * @return all decoded ASN.1 data as per the schema
+     *
+     * @throws IOException
+     *             if any errors occur reading from the file
+     */
+    public static ImmutableList<DecodedAsnData> decodeAsnData(File berFile, File schemaFile, String topLevelType)
+            throws IOException
+    {
+        // TODO: cache schema (see ASN-78)
+        final AsnSchema asnSchema = AsnSchemaFileReader.read(schemaFile);
+        return decodeAsnData(berFile, asnSchema, topLevelType);
+    }
+
+    /**
+     * Decodes the supplied ASN.1 Data against the specified schema as an object
+     * of the specified top level type
+     *
+     * @param berFile
+     *            ASN.1 BER binary file to decode
+     *
+     * @param asnSchema
+     *            schema to decode data against
+     *
+     * @param topLevelType
+     *            top level type in the schema to decode object as
+     *
+     * @return the decoded ASN.1 data as per the schema
+     *
+     * @throws IOException
+     *             if any errors occur reading from the file
+     */
+    public static ImmutableList<DecodedAsnData> decodeAsnData(File berFile, AsnSchema asnSchema, String topLevelType)
+            throws IOException
+    {
+        final ImmutableList<AsnData> allAsnData = readAsnBerFile(berFile);
+        final List<DecodedAsnData> allDecodedAsnData = Lists.newArrayList();
+        for (final AsnData asnData : allAsnData)
+        {
+            final DecodedAsnData decodedAsnData = decodeAsnData(asnData, asnSchema, topLevelType);
+            allDecodedAsnData.add(decodedAsnData);
+        }
+        return ImmutableList.copyOf(allDecodedAsnData);
+    }
+
+    /**
+     * Decodes the supplied ASN.1 Data against the specified schema as an object
+     * of the specified top level type
+     *
+     * @param asnData
+     *            data from an ASN.1 binary file
+     *
+     * @param asnSchema
+     *            schema to decode data against
+     *
+     * @param topLevelType
+     *            top level type in the schema to decode object as
+     *
+     * @return the decoded ASN.1 data as per the schema
+     *
+     * @throws IOException
+     *             if any errors occur reading from the file
+     */
+    public static DecodedAsnData decodeAsnData(AsnData asnData, AsnSchema asnSchema, String topLevelType)
+            throws IOException
+    {
+        return new DecodedAsnDataDefault(asnData, asnSchema, topLevelType);
+    }
+
+    /**
      * Reads the supplied ASN.1 BER/DER binary file
      *
      * @param berFile
-     *            file to decode
+     *            file to read
      *
      * @return list of {@link AsnData} objects found in the file
      *

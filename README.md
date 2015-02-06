@@ -154,8 +154,8 @@ END
 Decoding data against the schema can be achieved via:
 
 ```java
-final AsnSchema schema = AsnSchemaParser.parse(schemaText);
-final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema, "Document");
+final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, schemaFile, "Document");
+final DecodedAsnData allDecodedData = allDecodedData.first();
 
 // all decoded tags
 decodedData.getTags();
