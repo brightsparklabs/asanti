@@ -39,5 +39,6 @@ public enum AsnBuiltinType
     SetOf,
     Prefixed,
     Time,
-    TimeOfDay
+    TimeOfDay,
+    UTF8String
 }

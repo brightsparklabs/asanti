@@ -23,11 +23,12 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Logic for parsing a Type Definition form a module within an ASN.1 schema
+ * Logic for parsing a Type Definition from a module within an ASN.1 schema
  *
  * @author brightSPARK Labs
  */
@@ -66,10 +67,13 @@ public final class AsnSchemaTypeDefinitionParser
     /** pattern to match an IA5String type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_IA5STRING = Pattern.compile("^IA5String ?(\\((.+)\\))?$");
 
+    /** pattern to match a UTF8 type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_UTF8STRING = Pattern.compile("^UTF8String ?(\\((.+)\\))?$");
+
     // TODO remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
-            Pattern.compile("^(BIT STRING|GeneralizedTime|INTEGER|NumericString|UTF8String|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            Pattern.compile("^(BIT STRING|GeneralizedTime|INTEGER|NumericString|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
@@ -140,6 +144,10 @@ public final class AsnSchemaTypeDefinitionParser
         // check if defining an IA5String
         matcher = PATTERN_TYPE_DEFINITION_IA5STRING.matcher(value);
         if (matcher.matches()) { return parseIA5String(name, matcher); }
+
+        // check if defining a UTF8String
+        matcher = PATTERN_TYPE_DEFINITION_UTF8STRING.matcher(value);
+        if (matcher.matches()) { return parseUTF8String(name, matcher); }
 
         // check if defining a PRIMITIVE
         matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
@@ -339,6 +347,29 @@ public final class AsnSchemaTypeDefinitionParser
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseIA5String(name, constraintText);
+    }
+
+    /**
+     * Parses a UTF8String type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param matcher
+     *            matcher which matched on
+     *            {@link #PATTERN_TYPE_DEFINITION_UTF8STRING}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionUTF8String} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionUTF8String parseUTF8String(String name, Matcher matcher)
+            throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        return AsnSchemaTypeDefinitionPrimitiveParser.parseUTF8String(name, constraintText);
     }
 
     /**
