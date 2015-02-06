@@ -66,7 +66,7 @@ public class AsnDecoder
     public static ImmutableList<DecodedAsnData> decodeAsnData(File berFile, File schemaFile, String topLevelType)
             throws IOException
     {
-        // TODO: cache schema (see ASN-78)
+        // TODO: ASN-78 - cache schema
         final AsnSchema asnSchema = AsnSchemaFileReader.read(schemaFile);
         return decodeAsnData(berFile, asnSchema, topLevelType);
     }

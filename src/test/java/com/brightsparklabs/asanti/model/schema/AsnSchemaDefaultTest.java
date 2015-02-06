@@ -168,12 +168,12 @@ public class AsnSchemaDefaultTest
     @Test
     public void testGetPrintableString() throws Exception
     {
-        // TODO
+        // TODO ASN-8
     }
 
     @Test
     public void testGetDecodedObject() throws Exception
     {
-        // TODO
+        // TODO ASN-8
     }
 }
