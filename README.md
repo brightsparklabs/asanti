@@ -339,11 +339,11 @@ final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Document/body/
 
 ```java
 final Validator validator = Validator.getInstance();
-final ValidationResult result = validator.validate();
+final ValidationResult result = validator.validate(decodedAsnData);
 final ValidationFailure failure = results.getFailures().first()
 
 failure.getType();     // returns MandatoryFieldMissing
-failure.getLocation(); // returns "Document/header/copyright/date"
+failure.getTag();      // returns "/Document/header/copyright/date"
 failure.getMessage();  // returns "The field /Document/header/copyright/date cannot be empty"
 ```
 
@@ -362,7 +362,7 @@ final ValidationResult result = customValidator.validate();
 final ValidationFailure failure = results.getFailures().first()
 
 failure.getType();     // returns DateCutoffFailed
-failure.getLocation(); // returns "/Document/header/published/date"
+failure.getTag();      // returns "/Document/header/published/date"
 failure.getMessage();  // returns "The date in field /Document/header/copyright/date cannot be before 2014-01-01"
 ```
 
