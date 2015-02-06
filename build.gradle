@@ -4,9 +4,10 @@
  */
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'findbugs'
 apply plugin: 'java-library-distribution'
+apply plugin: 'eclipse'
+apply plugin: 'findbugs'    // code quality
+apply plugin: 'jacoco'      // code coverage
 
 repositories {
     mavenCentral()
@@ -19,6 +20,14 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.+"
 }
 
+// create jar file
+distributions {
+    main {
+        baseName = 'asanti'
+    }
+}
+
+// code quality report
 tasks.withType(FindBugs) {
     reports {
         xml.enabled = false
@@ -26,8 +35,10 @@ tasks.withType(FindBugs) {
     }
  }
 
-distributions {
-    main{
-        baseName = 'asanti'
+// code coverage report
+jacocoTestReport {
+    reports {
+        html.enabled = true
     }
 }
+
