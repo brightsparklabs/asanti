@@ -22,6 +22,7 @@ public enum AsnBuiltinType
     EmbeddedPDV,
     Enumerated,
     External,
+    IA5String,
     InstanceOf,
     Integer,
     IRI,
@@ -38,5 +39,5 @@ public enum AsnBuiltinType
     SetOf,
     Prefixed,
     Time,
-    TimeOfDayType
+    TimeOfDay
 }

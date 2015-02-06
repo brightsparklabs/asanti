@@ -17,6 +17,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaEnumeratedOption;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
@@ -30,7 +31,7 @@ import com.google.common.collect.ImmutableList;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionParser
+public final class AsnSchemaTypeDefinitionParser
 {
     // -------------------------------------------------------------------------
     // CONSTANTS
@@ -62,10 +63,13 @@ public class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_OCTET_STRING =
             Pattern.compile("^OCTET STRING ?(\\((.+)\\))?$");
 
+    /** pattern to match an IA5String type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_IA5STRING = Pattern.compile("^IA5String ?(\\((.+)\\))?$");
+
     // TODO remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
-            Pattern.compile("^(BIT STRING|GeneralizedTime|IA5String|INTEGER|NumericString|UTF8String|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            Pattern.compile("^(BIT STRING|GeneralizedTime|INTEGER|NumericString|UTF8String|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
@@ -77,6 +81,18 @@ public class AsnSchemaTypeDefinitionParser
 
     /** class logger */
     private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionParser.class.getName());
+
+    // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+    /**
+     * Private constructor. There should be no need to ever instantiate this
+     * static class.
+     */
+    private AsnSchemaTypeDefinitionParser()
+    {
+        throw new AssertionError();
+    }
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -120,6 +136,10 @@ public class AsnSchemaTypeDefinitionParser
         // check if defining an OCTET STRING
         matcher = PATTERN_TYPE_DEFINITION_OCTET_STRING.matcher(value);
         if (matcher.matches()) { return parseOctetString(name, matcher); }
+
+        // check if defining an IA5String
+        matcher = PATTERN_TYPE_DEFINITION_IA5STRING.matcher(value);
+        if (matcher.matches()) { return parseIA5String(name, matcher); }
 
         // check if defining a PRIMITIVE
         matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
@@ -286,7 +306,7 @@ public class AsnSchemaTypeDefinitionParser
      *            matcher which matched on
      *            {@link #PATTERN_TYPE_DEFINITION_OCTET_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionEnumerated} representing the
+     * @return an {@link AsnSchemaTypeDefinitionOctetString} representing the
      *         parsed data
      *
      * @throws ParseException
@@ -297,6 +317,28 @@ public class AsnSchemaTypeDefinitionParser
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseOctetString(name, constraintText);
+    }
+
+    /**
+     * Parses an IA5String type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param matcher
+     *            matcher which matched on
+     *            {@link #PATTERN_TYPE_DEFINITION_IA5STRING}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionIA5String} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionIA5String parseIA5String(String name, Matcher matcher) throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        return AsnSchemaTypeDefinitionPrimitiveParser.parseIA5String(name, constraintText);
     }
 
     /**
