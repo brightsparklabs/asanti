@@ -8,5 +8,5 @@ sudo: false
 
 notifications:
   email:
-    on_success: always
+    on_success: never
 
