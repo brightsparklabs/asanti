@@ -11,9 +11,11 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
 
 /**
- * Logic for parsing a Type Definition form a module within an ASN.1 schema
+ * Logic for parsing a primitive Type Definition from a module within an ASN.1
+ * schema
  *
  * @author brightSPARK Labs
  */
@@ -77,5 +79,27 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
     {
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         return new AsnSchemaTypeDefinitionOctetString(name, constraint);
+    }
+
+    /**
+     * Parses a UTF8String type definition from a module from an ASN.1 schema
+     *
+     * @param name
+     *            the name of the defined type (i.e. the text on the left hand
+     *            side of the {@code ::=})
+     *
+     * @param constraintText
+     *            the constraint text as a string
+     *
+     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    public static AsnSchemaTypeDefinitionUTF8String parseUTF8String(String name, String constraintText)
+            throws ParseException
+    {
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionUTF8String(name, constraint);
     }
 }
