@@ -70,7 +70,7 @@ public final class AsnSchemaTypeDefinitionParser
     /** pattern to match a UTF8 type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_UTF8STRING = Pattern.compile("^UTF8String ?(\\((.+)\\))?$");
 
-    // TODO remove this once ASN-25 is completed
+    // TODO ASN-25 remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
             Pattern.compile("^(BIT STRING|GeneralizedTime|INTEGER|NumericString|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
@@ -154,8 +154,8 @@ public final class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             /*
-             * TODO handle all primitive types (see ASN-25) Currently this is
-             * just a catch all to log warnings
+             * TODO ASN-25 - handle all primitive types. Currently this is just
+             * a catch-all to log warnings
              */
             final String builtinType = matcher.group(1);
             final String error =
@@ -176,7 +176,7 @@ public final class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_CLASS.matcher(value);
         if (matcher.matches())
         {
-            // TODO handle CLASS (see ASN-39)
+            // TODO ASN-39 - handle CLASS
             log.warning("Type Definitions for CLASS not yet supported");
             return AsnSchemaTypeDefinition.NULL;
         }

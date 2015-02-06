@@ -23,7 +23,7 @@ public class AsnSchemaConstraint
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
-    // TODO define constraint
+    // TODO ASN-38 - define constraint
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTypeDefinitionNull

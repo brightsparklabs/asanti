@@ -325,6 +325,6 @@ public class AsnSchemaModuleParser
         final String name = valueAssignmentMatcher.group(1);
         final String value = valueAssignmentMatcher.group(5);
         log.log(Level.FINE, "Found value assignment: {0} - {1}", new Object[] { name, value });
-        // TODO parse value assignment
+        // TODO ASN-79 - parse value assignment
     }
 }
