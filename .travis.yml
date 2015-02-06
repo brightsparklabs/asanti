@@ -6,3 +6,7 @@ jdk:
 
 sudo: false
 
+notifications:
+  email:
+    on_success: always
+
