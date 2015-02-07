@@ -35,6 +35,9 @@ public class AsnSchemaParser
     /** pattern to match commented lines */
     private static final Pattern PATTERN_COMMENTS = Pattern.compile("[\\t ]*--.*?(--|\\n)");
 
+    /** pattern to match block comments */
+    private static final Pattern PATTERN_BLOCK_COMMENTS = Pattern.compile("(?s)/\\*.*?\\*/");
+
     /** pattern to match new lines */
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n+");
 
@@ -136,6 +139,7 @@ public class AsnSchemaParser
         // cull comments and collapse whitespace
         asnSchema = PATTERN_CARRIAGE_RETURN.matcher(asnSchema).replaceAll("");
         asnSchema = PATTERN_COMMENTS.matcher(asnSchema).replaceAll("");
+        asnSchema = PATTERN_BLOCK_COMMENTS.matcher(asnSchema).replaceAll("");
         asnSchema = PATTERN_NEW_LINE.matcher(asnSchema).replaceAll("\n");
         asnSchema = PATTERN_TABS_SPACES.matcher(asnSchema).replaceAll(" ");
         // ensure module header keywords appear on separate lines
