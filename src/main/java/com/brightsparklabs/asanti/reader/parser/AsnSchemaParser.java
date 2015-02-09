@@ -53,6 +53,9 @@ public class AsnSchemaParser
     /** error message if schema is missing 'END' keyword */
     private static final String ERROR_MISSING_END_KEYWORD = "Schema is missing an 'END' keyword";
 
+    /** error message if an empty file is encountered */
+    private static final String ERROR_EMPTY_FILE = "Schema is empty";
+
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -69,6 +72,8 @@ public class AsnSchemaParser
      */
     public static AsnSchema parse(String asnSchema) throws ParseException
     {
+        if (asnSchema == null || asnSchema.isEmpty()) { throw new ParseException(ERROR_EMPTY_FILE, -1); }
+
         final Map<String, AsnSchemaModule> modules = Maps.newHashMap();
         final Iterator<String> lineIterator = getLines(asnSchema);
 

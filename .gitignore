@@ -34,6 +34,11 @@ local.properties
 .loadpath
 .project
 
+### Intellij ###
+.idea/
+*.iml
+*.iws
+
 # External tool builders
 .externalToolBuilders/
 
