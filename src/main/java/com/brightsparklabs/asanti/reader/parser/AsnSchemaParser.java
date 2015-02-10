@@ -15,6 +15,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaDefault;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -72,7 +73,7 @@ public class AsnSchemaParser
      */
     public static AsnSchema parse(String asnSchema) throws ParseException
     {
-        if (asnSchema == null || asnSchema.isEmpty()) { throw new ParseException(ERROR_EMPTY_FILE, -1); }
+        if (Strings.isNullOrEmpty(asnSchema)) { throw new ParseException(ERROR_EMPTY_FILE, -1); }
 
         final Map<String, AsnSchemaModule> modules = Maps.newHashMap();
         final Iterator<String> lineIterator = getLines(asnSchema);

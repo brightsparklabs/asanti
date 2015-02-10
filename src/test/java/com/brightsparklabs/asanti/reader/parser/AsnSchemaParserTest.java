@@ -9,9 +9,9 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.fail;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.base.Splitter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -57,8 +57,8 @@ public class AsnSchemaParserTest
         "        female(1)\n" +
         "    }\n";
 
-    private static final String SCHEMA_VALID_BLOCK_COMMENTS =
-        "/*Document-PDU\n" +
+    private static final String SCHEMA_VALID =
+        "/*Document-PDU\r\n" +
         "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n" +
         "\n" +
         "DEFINITIONS\n" +
@@ -68,7 +68,8 @@ public class AsnSchemaParserTest
         "  Gender\n" +
         "    FROM People-Protocol\n" +
         "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n" +
-        "\n" +
+        "\n*/" +
+        "/*********************************\n" +
         "BEGIN\n" +
         "\n" +
         "    Document ::= SEQUENCE\n" +
@@ -78,21 +79,22 @@ public class AsnSchemaParserTest
         "        footer [3] Footer\n" +
         "    }\n" +
         "END\n" +
-        "*/\n" +
-        "People-Protocol\n" +
+        "*********************************/\n" +
+        "People-Protocol\n\n" +
         "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n" +
         "\n" +
         "DEFINITIONS\n" +
-        "    AUTOMATIC TAGS ::=\n" +
-        "\n" +
-        "BEGIN\n" +
+        "    AUTOMATIC TAGS ::= BEGIN\n" +
         "    /*Person ::= SEQUENCE\n" +
         "    {\n" +
         "        firstName [1] OCTET STRING,\n" +
+        "\t\t\t -- this is a comment --\n" +
         "        lastName  [2] OCTET STRING,\n" +
         "        title     [3] ENUMERATED\n" +
         "            { mr, mrs, ms, dr, rev } OPTIONAL,\n" +
         "        gender OPTIONAL\n" +
+        "\t\t\t -- this is a\n" +
+        "\t\t\t -- multiline comment --\n" +
         "    }*/\n" +
         "\n" +
         "    Gender ::= ENUMERATED\n" +
@@ -102,7 +104,7 @@ public class AsnSchemaParserTest
         "    }\n" +
         "END";
 
-    private static final String SCHEMA_VALID_BLOCK_COMMENTS_EXPECTED_PARSE_INPUT =
+    private static final String SCHEMA_VALID_PARSE_INPUT =
         "People-Protocol\n" +
         "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n" +
         "DEFINITIONS\n" +
@@ -162,14 +164,15 @@ public class AsnSchemaParserTest
     {
         // prepare objects for mocking of AsnSchemaModuleParser.parse static method
         // set up mock AsnSchemaModule to return
-        final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
-        moduleBuilder.setName("People-Protocol");
-        AsnSchemaModule mockAsnSchemaModule = moduleBuilder.build();
+        final AsnSchemaModule mockAsnSchemaModule = AsnSchemaModule.builder()
+                .setName("People-Protocol")
+                .build();
 
         // prepare expected input to the AsnSchemaModuleParser.parse static method for
         // valid block comments
-        List<String> expectedParseInput =
-                Arrays.asList(SCHEMA_VALID_BLOCK_COMMENTS_EXPECTED_PARSE_INPUT.split("\n"));
+        final Splitter newLineSplitter = Splitter.on("\n").omitEmptyStrings();
+        final List<String> expectedParseInput =
+                newLineSplitter.splitToList(SCHEMA_VALID_PARSE_INPUT);
 
         // mock AsnSchemaModuleParser.parse static method to only return mock object
         // if argument matches expected input
@@ -178,8 +181,8 @@ public class AsnSchemaParserTest
                 .parse(expectedParseInput))
                 .thenReturn(mockAsnSchemaModule);
 
-        // test schema with block comments
-        AsnSchema actualSchema = AsnSchemaParser.parse(SCHEMA_VALID_BLOCK_COMMENTS);
+        // test parse with a schema which has all regex combinations
+        AsnSchema actualSchema = AsnSchemaParser.parse(SCHEMA_VALID);
         assertNotNull(actualSchema);
     }
 }
