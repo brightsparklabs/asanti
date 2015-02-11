@@ -84,7 +84,13 @@ public class AsnSchemaParserTest
         "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n" +
         "\n" +
         "DEFINITIONS\n" +
-        "    AUTOMATIC TAGS ::= BEGIN\n" +
+        "    AUTOMATIC TAGS ::=\n" +
+        "\n" +
+        "IMPORTS\n" +
+        "  Hair-type\n" +
+        "    FROM Hair-Protocol\n" +
+        "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }; BEGIN\n" +
+        "\n" +
         "    /*Person ::= SEQUENCE\n" +
         "    {\n" +
         "        firstName [1] OCTET STRING,\n" +
@@ -102,20 +108,45 @@ public class AsnSchemaParserTest
         "        male(0),\n" +
         "        female(1)\n" +
         "    }\n" +
-        "END";
+        "END\n" +
+        "\n" +
+        "/*Hair-Protocol\n" +
+        "*    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }\n" +
+        "*\n" +
+        "*DEFINITIONS\n" +
+        "*    AUTOMATIC TAGS ::=\n" +
+        "*\n" +
+        "*BEGIN\n" +
+        "*    Hair ::= SEQUENCE\n" +
+        "*    {\n" +
+        "*        color [1] OCTET STRING,\n" +
+        "*        type  [2] Hair-type\n" +
+        "*    }\n" +
+        "*\n" +
+        "*    Hair-type ::= ENUMERATED\n" +
+        "*    {\n" +
+        "*        straight(0),\n" +
+        "*        curly(1)\n" +
+        "*    }\n" +
+        "*END*/";
 
     private static final String SCHEMA_VALID_PARSE_INPUT =
         "People-Protocol\n" +
         "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n" +
         "DEFINITIONS\n" +
         "AUTOMATIC TAGS ::=\n" +
+        "IMPORTS\n" +
+        "Hair-type\n" +
+        "FROM Hair-Protocol\n" +
+        "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }\n" +
+        ";\n" +
         "BEGIN\n" +
         "Gender ::= ENUMERATED\n" +
         "{\n" +
         "male(0),\n" +
         "female(1)\n" +
         "}\n" +
-        "END\n";
+        "END";
 
     // -------------------------------------------------------------------------
     // TESTS
