@@ -23,7 +23,7 @@ import com.google.common.io.BaseEncoding;
  *
  * @author brightSPARK Labs
  */
-public class DecodedAsnDataDefault implements DecodedAsnData
+public class DecodedAsnDataImpl implements DecodedAsnData
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -67,7 +67,7 @@ public class DecodedAsnDataDefault implements DecodedAsnData
      * @throws IllegalArgumentException
      *             if topLevelTypeName is blank
      */
-    public DecodedAsnDataDefault(AsnData asnData, AsnSchema asnSchema, String topLevelTypeName)
+    public DecodedAsnDataImpl(AsnData asnData, AsnSchema asnSchema, String topLevelTypeName)
     {
         checkNotNull(asnData);
         checkNotNull(asnSchema);

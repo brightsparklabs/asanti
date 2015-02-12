@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableMap;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaDefault implements AsnSchema
+public class AsnSchemaImpl implements AsnSchema
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -47,7 +47,7 @@ public class AsnSchemaDefault implements AsnSchema
      *             if no modules are specified or the primary module is not
      *             contained in the modules
      */
-    public AsnSchemaDefault(String primaryModule, Map<String, AsnSchemaModule> modules)
+    public AsnSchemaImpl(String primaryModule, Map<String, AsnSchemaModule> modules)
     {
         checkNotNull(primaryModule);
         checkNotNull(modules);
