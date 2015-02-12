@@ -12,14 +12,14 @@ import org.junit.Test;
 import com.brightsparklabs.asanti.mocks.MockAsnSchemaModule;
 import com.google.common.collect.ImmutableMap;
 
-public class AsnSchemaDefaultTest
+public class AsnSchemaImplTest
 {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
 
     /** default instance to test */
-    private static AsnSchemaDefault instance;
+    private static AsnSchemaImpl instance;
 
     /** all modules in the default instance */
     private static ImmutableMap<String, AsnSchemaModule> modules;
@@ -32,7 +32,7 @@ public class AsnSchemaDefaultTest
     public static void setUpBeforeClass()
     {
         modules = MockAsnSchemaModule.createMockedAsnSchemaModules();
-        instance = new AsnSchemaDefault("Document-PDU", modules);
+        instance = new AsnSchemaImpl("Document-PDU", modules);
     }
 
     // -------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public class AsnSchemaDefaultTest
         // test null
         try
         {
-            new AsnSchemaDefault(null, modules);
+            new AsnSchemaImpl(null, modules);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -53,7 +53,7 @@ public class AsnSchemaDefaultTest
         }
         try
         {
-            new AsnSchemaDefault("Document-PDU", null);
+            new AsnSchemaImpl("Document-PDU", null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -63,7 +63,7 @@ public class AsnSchemaDefaultTest
         // test empty
         try
         {
-            new AsnSchemaDefault("", modules);
+            new AsnSchemaImpl("", modules);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -71,7 +71,7 @@ public class AsnSchemaDefaultTest
         }
         try
         {
-            new AsnSchemaDefault(" ", modules);
+            new AsnSchemaImpl(" ", modules);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -79,7 +79,7 @@ public class AsnSchemaDefaultTest
         }
         try
         {
-            new AsnSchemaDefault("Document-PDU", ImmutableMap.<String, AsnSchemaModule>of());
+            new AsnSchemaImpl("Document-PDU", ImmutableMap.<String, AsnSchemaModule>of());
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -89,7 +89,7 @@ public class AsnSchemaDefaultTest
         // test invalid primary module
         try
         {
-            new AsnSchemaDefault("UNKNOWN", modules);
+            new AsnSchemaImpl("UNKNOWN", modules);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)

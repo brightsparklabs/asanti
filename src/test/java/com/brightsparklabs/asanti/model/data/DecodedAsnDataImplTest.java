@@ -20,11 +20,11 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 /**
- * Unit tests for public class {@link DecodedAsnDataDefault}
+ * Unit tests for public class {@link DecodedAsnDataImpl}
  *
  * @author brightSPARK Labs
  */
-public class DecodedAsnDataDefaultTest
+public class DecodedAsnDataImplTest
 {
     // -------------------------------------------------------------------------
     // FIXTURES
@@ -55,13 +55,13 @@ public class DecodedAsnDataDefaultTest
                 .build();
 
         // create instance
-        final AsnData asnData = new AsnDataDefault(tagsToData);
+        final AsnData asnData = new AsnDataImpl(tagsToData);
         final AsnSchema asnSchema = MockAsnSchema.getInstance();
-        instance = new DecodedAsnDataDefault(asnData, asnSchema, "Document");
+        instance = new DecodedAsnDataImpl(asnData, asnSchema, "Document");
 
         // create empty instance
-        final AsnData emptyAsnData = new AsnDataDefault(Maps.<String, byte[]>newHashMap());
-        emptyInstance = new DecodedAsnDataDefault(emptyAsnData, asnSchema, "Document");
+        final AsnData emptyAsnData = new AsnDataImpl(Maps.<String, byte[]>newHashMap());
+        emptyInstance = new DecodedAsnDataImpl(emptyAsnData, asnSchema, "Document");
     }
 
     // -------------------------------------------------------------------------
@@ -76,7 +76,7 @@ public class DecodedAsnDataDefaultTest
 
         try
         {
-            new DecodedAsnDataDefault(null, null, null);
+            new DecodedAsnDataImpl(null, null, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -84,7 +84,7 @@ public class DecodedAsnDataDefaultTest
         }
         try
         {
-            new DecodedAsnDataDefault(null, null, "Test");
+            new DecodedAsnDataImpl(null, null, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -92,7 +92,7 @@ public class DecodedAsnDataDefaultTest
         }
         try
         {
-            new DecodedAsnDataDefault(null, mockSchema, null);
+            new DecodedAsnDataImpl(null, mockSchema, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -100,7 +100,7 @@ public class DecodedAsnDataDefaultTest
         }
         try
         {
-            new DecodedAsnDataDefault(null, mockSchema, "Test");
+            new DecodedAsnDataImpl(null, mockSchema, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -108,7 +108,7 @@ public class DecodedAsnDataDefaultTest
         }
         try
         {
-            new DecodedAsnDataDefault(mockData, null, null);
+            new DecodedAsnDataImpl(mockData, null, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -116,7 +116,7 @@ public class DecodedAsnDataDefaultTest
         }
         try
         {
-            new DecodedAsnDataDefault(mockData, null, "Test");
+            new DecodedAsnDataImpl(mockData, null, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -124,7 +124,7 @@ public class DecodedAsnDataDefaultTest
         }
         try
         {
-            new DecodedAsnDataDefault(mockData, mockSchema, null);
+            new DecodedAsnDataImpl(mockData, mockSchema, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -132,7 +132,7 @@ public class DecodedAsnDataDefaultTest
         }
         try
         {
-            new DecodedAsnDataDefault(mockData, mockSchema, "");
+            new DecodedAsnDataImpl(mockData, mockSchema, "");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)

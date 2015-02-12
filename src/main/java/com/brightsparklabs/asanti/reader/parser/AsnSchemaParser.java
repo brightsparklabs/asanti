@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaDefault;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaImpl;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -101,7 +101,7 @@ public class AsnSchemaParser
 
         if (!moduleLines.isEmpty()) { throw new ParseException(ERROR_MISSING_END_KEYWORD, -1); }
 
-        return new AsnSchemaDefault(primaryModule, modules);
+        return new AsnSchemaImpl(primaryModule, modules);
     }
 
     // -------------------------------------------------------------------------

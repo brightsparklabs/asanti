@@ -24,7 +24,7 @@ import org.bouncycastle.asn1.DERObject;
 import org.bouncycastle.asn1.util.ASN1Dump;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.data.AsnDataDefault;
+import com.brightsparklabs.asanti.model.data.AsnDataImpl;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -72,7 +72,7 @@ public class AsnBerFileReader
 
             final Map<String, byte[]> tagsToData = Maps.newHashMap();
             processDerObject(asnObject, "", tagsToData);
-            final AsnData asnData = new AsnDataDefault(tagsToData);
+            final AsnData asnData = new AsnDataImpl(tagsToData);
             result.add(asnData);
             asnObject = asnInputStream.readObject();
         }
