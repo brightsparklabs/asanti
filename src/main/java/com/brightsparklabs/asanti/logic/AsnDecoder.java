@@ -19,6 +19,7 @@ import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.data.DecodedAsnDataImpl;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodeResult;
+import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.google.common.base.Charsets;
@@ -193,18 +194,20 @@ public class AsnDecoder
                 ImmutableList.of("/1/1", "/2/3/2/3/0/1", "/2/0/2/2/1/18/0", "/2/0/2/2/1/18/0", "/1/3/0/0");
         for (final String rawTag : rawTags)
         {
-            final DecodeResult<String> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
+            final DecodeResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
             log.log(Level.INFO, "\t{0}:\t decode {1} => {2}", new Object[] { result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag, result.getDecodedData() });
+                    rawTag, result.getDecodedData()
+                            .getDecodedTag() });
         }
 
         log.info("Expecting FAIL");
         rawTags = ImmutableList.of("/1/14", "/1/1/5", "/2/3/2/3/0/100", "/2/0/2/2/1/18/90", "/1/3/0/80");
         for (final String rawTag : rawTags)
         {
-            final DecodeResult<String> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
+            final DecodeResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
             log.log(Level.INFO, "\t{0}:\t decode {1} => {2}", new Object[] { result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag, result.getDecodedData() });
+                    rawTag, result.getDecodedData()
+                            .getDecodedTag() });
         }
 
         log.info("User testing:");
@@ -213,9 +216,10 @@ public class AsnDecoder
         {
             System.out.print("\tEnter raw tag: ");
             final String rawTag = reader.readLine();
-            final DecodeResult<String> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
+            final DecodeResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
             log.log(Level.INFO, "\t{0}:\t decode {1} => {2}", new Object[] { result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag, result.getDecodedData() });
+                    rawTag, result.getDecodedData()
+                            .getDecodedTag() });
         }
     }
 

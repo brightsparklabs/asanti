@@ -31,7 +31,7 @@ public interface AsnSchema
      *
      * @return the result of the decode attempt containing the decoded tag
      */
-    public DecodeResult<String> getDecodedTag(String rawTag, String topLevelTypeName);
+    public DecodeResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName);
 
     /**
      * Gets the data (bytes) associated with the specified tag as a printable

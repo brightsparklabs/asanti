@@ -10,7 +10,9 @@ import static org.mockito.Mockito.*;
 import org.mockito.ArgumentMatcher;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.DecodeResult;
+import com.brightsparklabs.asanti.model.schema.DecodedTag;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchema} which
@@ -126,25 +128,20 @@ public class MockAsnSchema
         if (instance != null) { return instance; }
 
         instance = mock(AsnSchema.class);
-        when(instance.getDecodedTag("/1/0/1", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/header/published/date"));
-        when(instance.getDecodedTag("/2/0/0", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/body/lastModified/date"));
-        when(instance.getDecodedTag("/2/1/1", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/body/prefix/text"));
-        when(instance.getDecodedTag("/2/2/1", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/body/content/text"));
-        when(instance.getDecodedTag("/3/0/1", "Document")).thenReturn(DecodeResult.create(true,
-                "/Document/footer/author/firstName"));
-        when(instance.getDecodedTag("/2/2/99", "Document")).thenReturn(DecodeResult.create(false,
-                "/Document/body/content/99"));
-        when(instance.getDecodedTag("/99/1/1", "Document")).thenReturn(DecodeResult.create(false, "/Document/99/1/1"));
 
         final NonEmptyByteArrayMatcher nonEmptyByteArrayMatcher = new NonEmptyByteArrayMatcher();
         when(instance.getPrintableString(anyString(), any(byte[].class))).thenReturn("");
         when(instance.getPrintableString(anyString(), argThat(nonEmptyByteArrayMatcher))).thenReturn("printableString");
         when(instance.getDecodedObject(anyString(), any(byte[].class))).thenReturn("");
         when(instance.getDecodedObject(anyString(), argThat(nonEmptyByteArrayMatcher))).thenReturn("decodedObject");
+
+        configureGetDecodedTag(instance, "/1/0/1", "Document", "/Document/header/published/date", true);
+        configureGetDecodedTag(instance, "/2/0/0", "Document", "/Document/body/lastModified/date", true);
+        configureGetDecodedTag(instance, "/2/1/1", "Document", "/Document/body/prefix/text", true);
+        configureGetDecodedTag(instance, "/2/2/1", "Document", "/Document/body/content/text", false);
+        configureGetDecodedTag(instance, "/3/0/1", "Document", "/Document/footer/author/firstName", false);
+        configureGetDecodedTag(instance, "/2/2/99", "Document", "/Document/body/content/9", false);
+        configureGetDecodedTag(instance, "/99/1/1", "Document", "/Document/99/1/1", false);
 
         return instance;
     }
@@ -164,4 +161,16 @@ public class MockAsnSchema
             return ((byte[]) item).length > 0;
         }
     };
+
+    private static void configureGetDecodedTag(AsnSchema instance, String rawTag, String topLevelTypeName,
+            String decodedTagPath, boolean isFullyDecoded)
+    {
+        final DecodedTag decodedTag = mock(DecodedTag.class);
+        when(decodedTag.getDecodedTag()).thenReturn(decodedTagPath);
+        when(decodedTag.getRawTag()).thenReturn(rawTag);
+        when(decodedTag.getType()).thenReturn(AsnSchemaTypeDefinition.NULL);
+        when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
+        when(instance.getDecodedTag(rawTag, topLevelTypeName)).thenReturn(DecodeResult.create(isFullyDecoded,
+                decodedTag));
+    }
 }

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodeResult;
+import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -72,7 +73,8 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         checkNotNull(asnData);
         checkNotNull(asnSchema);
         checkNotNull(topLevelTypeName);
-        checkArgument(!topLevelTypeName.trim().isEmpty(), "Top level type name must be specified");
+        checkArgument(!topLevelTypeName.trim()
+                .isEmpty(), "Top level type name must be specified");
 
         this.asnData = asnData;
         this.asnSchema = asnSchema;
@@ -80,22 +82,27 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         // decode the tags in the data
         final Map<String, String> decodedToRawTags = Maps.newHashMap();
         final Map<String, String> unmappedTags = Maps.newHashMap();
-        for (String rawTag : asnData.getRawTags())
+        for (final String rawTag : asnData.getRawTags())
         {
-            final DecodeResult<String> decodeResult = asnSchema.getDecodedTag(rawTag, topLevelTypeName);
+            final DecodeResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag, topLevelTypeName);
             if (decodeResult.wasSuccessful())
             {
-                decodedToRawTags.put(decodeResult.getDecodedData(), rawTag);
+                decodedToRawTags.put(decodeResult.getDecodedData()
+                        .getDecodedTag(), rawTag);
             }
             else
             {
                 // could not decode tag
-                unmappedTags.put(decodeResult.getDecodedData(), rawTag);
+                unmappedTags.put(decodeResult.getDecodedData()
+                        .getDecodedTag(), rawTag);
             }
         }
         this.decodedToRawTags = ImmutableMap.copyOf(decodedToRawTags);
         this.unmappedToRawTags = ImmutableMap.copyOf(unmappedTags);
-        this.allTags = ImmutableMap.<String, String>builder().putAll(decodedToRawTags).putAll(unmappedTags).build();
+        this.allTags = ImmutableMap.<String, String>builder()
+                .putAll(decodedToRawTags)
+                .putAll(unmappedTags)
+                .build();
     }
 
     // -------------------------------------------------------------------------
@@ -137,7 +144,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     public ImmutableMap<String, byte[]> getBytesMatching(Pattern regex)
     {
         final Map<String, byte[]> result = Maps.newHashMap();
-        for (String tag : getMatchingTags(regex))
+        for (final String tag : getMatchingTags(regex))
         {
             result.put(tag, getBytes(tag));
         }
@@ -149,14 +156,15 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     public String getHexString(String tag)
     {
         final byte[] bytes = getBytes(tag);
-        return "0x" + BaseEncoding.base16().encode(bytes);
+        return "0x" + BaseEncoding.base16()
+                .encode(bytes);
     }
 
     @Override
     public ImmutableMap<String, String> getHexStringsMatching(Pattern regex)
     {
         final Map<String, String> result = Maps.newHashMap();
-        for (String tag : getMatchingTags(regex))
+        for (final String tag : getMatchingTags(regex))
         {
             result.put(tag, getHexString(tag));
         }
@@ -175,7 +183,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     public ImmutableMap<String, String> getPrintableStringsMatching(Pattern regex)
     {
         final Map<String, String> result = Maps.newHashMap();
-        for (String tag : getMatchingTags(regex))
+        for (final String tag : getMatchingTags(regex))
         {
             result.put(tag, getPrintableString(tag));
         }
@@ -194,7 +202,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex)
     {
         final Map<String, Object> result = Maps.newHashMap();
-        for (String tag : getMatchingTags(regex))
+        for (final String tag : getMatchingTags(regex))
         {
             result.put(tag, getDecodedObject(tag));
         }
@@ -219,9 +227,10 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         if (regex == null) { return ImmutableSet.<String>of(); }
 
         final Set<String> tags = Sets.newHashSet();
-        for (String tag : allTags.keySet())
+        for (final String tag : allTags.keySet())
         {
-            if (regex.matcher(tag).matches())
+            if (regex.matcher(tag)
+                    .matches())
             {
                 tags.add(tag);
             }

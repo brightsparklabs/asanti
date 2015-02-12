@@ -63,7 +63,7 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     @Override
-    public DecodeResult<String> getDecodedTag(String rawTag, String topLevelTypeName)
+    public DecodeResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
     {
         return primaryModule.getDecodedTag(rawTag, topLevelTypeName, modules);
     }

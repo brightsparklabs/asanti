@@ -8,14 +8,11 @@ package com.brightsparklabs.asanti.model.schema;
 import static com.google.common.base.Preconditions.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -39,9 +36,6 @@ public class AsnSchemaModule
     /** splitter for separating tag strings */
     private static final Splitter tagSplitter = Splitter.on("/")
             .omitEmptyStrings();
-
-    /** splitter for creating tag strings */
-    private static final Joiner tagJoiner = Joiner.on("/");
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -138,33 +132,13 @@ public class AsnSchemaModule
      *
      * @return the decoded tag or an empty string if it cannot be decoded
      */
-    public DecodeResult<String> getDecodedTag(String rawTag, String topLevelTypeName,
+    public DecodeResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName,
             ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
-        final List<String> decodedTags = decodeTags(tags.iterator(), topLevelTypeName, allSchemaModules);
-
-        // check if decode was successful
-        boolean decodeSuccessful = true;
-        if (tags.size() != decodedTags.size())
-        {
-            // could not decode
-            decodeSuccessful = false;
-
-            // copy unknown tags into result
-            for (int i = decodedTags.size(); i < tags.size(); i++)
-            {
-                final String unknownTag = tags.get(i);
-                decodedTags.add(unknownTag);
-            }
-        }
-
-        // prefix result with top level type
-        decodedTags.add(0, topLevelTypeName);
-        decodedTags.add(0, ""); // empty string prefixes just the separator
-        final String decodedData = tagJoiner.join(decodedTags);
-
-        final DecodeResult<String> result = DecodeResult.create(decodeSuccessful, decodedData);
+        final DecodedTag.Builder decodedTagBuilder = decodeTags(tags.iterator(), topLevelTypeName, allSchemaModules);
+        final DecodedTag decodedTag = decodedTagBuilder.build(rawTag, topLevelTypeName);
+        final DecodeResult<DecodedTag> result = DecodeResult.create(decodedTag.isFullyDecoded(), decodedTag);
         return result;
     }
 
@@ -195,11 +169,12 @@ public class AsnSchemaModule
      *         a list containing the decoded tags for only the first three raw
      *         tags is returned (e.g. {@code ["Header", "Published", "Date"]})
      */
-    private List<String> decodeTags(Iterator<String> rawTags, String containingTypeName,
+    private DecodedTag.Builder decodeTags(Iterator<String> rawTags, String containingTypeName,
             ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
-        final List<String> decodedTags = Lists.newArrayList();
         String typeName = containingTypeName;
+        AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
+        final DecodedTag.Builder result = DecodedTag.builder();
 
         while (rawTags.hasNext())
         {
@@ -209,12 +184,12 @@ public class AsnSchemaModule
                 break;
             }
 
-            final AsnSchemaTypeDefinition type = getType(typeName);
+            type = getType(typeName);
             if (type == AsnSchemaTypeDefinition.NULL)
             {
                 // type is not defined locally, decode via imports
-                final List<String> importedTags = decodeUsingImportedModule(rawTags, typeName, allSchemaModules);
-                decodedTags.addAll(importedTags);
+                final DecodedTag.Builder builder = decodeUsingImportedModule(rawTags, typeName, allSchemaModules);
+                result.merge(builder);
                 break;
             }
 
@@ -223,13 +198,15 @@ public class AsnSchemaModule
             if (Strings.isNullOrEmpty(tagName))
             {
                 // unknown tag
+                result.setType(AsnSchemaTypeDefinition.NULL);
                 break;
             }
-            decodedTags.add(tagName);
+            result.setType(type);
+            result.addDecodedTag(tagName);
             typeName = type.getTypeName(tag);
         }
 
-        return decodedTags;
+        return result;
     }
 
     /**
@@ -273,7 +250,7 @@ public class AsnSchemaModule
      *         a list containing the decoded tags for only the first three raw
      *         tags is returned (e.g. {@code ["Header", "Published", "Date"]})
      */
-    private List<String> decodeUsingImportedModule(Iterator<String> rawTags, String typeName,
+    private DecodedTag.Builder decodeUsingImportedModule(Iterator<String> rawTags, String typeName,
             ImmutableMap<String, AsnSchemaModule> allSchemaModules)
     {
         // not found locally, check if it is from an import
@@ -283,7 +260,7 @@ public class AsnSchemaModule
             log.log(Level.WARNING,
                     "Could not resolve type definition \"{0}\". It is is not defined or imported in module \"{1}\"",
                     new Object[] { typeName, name });
-            return Collections.<String>emptyList();
+            return DecodedTag.builder();
         }
 
         final AsnSchemaModule importedModule = allSchemaModules.get(importedModuleName);
@@ -293,7 +270,7 @@ public class AsnSchemaModule
             log.log(Level.WARNING,
                     "Could not resolve type definition \"{0}\". Type is imported from an unknown module \"{1}\"",
                     new Object[] { typeName, name });
-            return Collections.<String>emptyList();
+            return DecodedTag.builder();
         }
 
         return importedModule.decodeTags(rawTags, typeName, allSchemaModules);
