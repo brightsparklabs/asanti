@@ -17,6 +17,8 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Logic for parsing a module within an ASN.1 schema
  *
@@ -64,10 +66,6 @@ public class AsnSchemaModuleParser
      * @param moduleText
      *            all text from module within the ASN.1 schema
      *
-     * @param importResolver
-     *            resolver to use for resolving import statements within the
-     *            module
-     *
      * @return an {@link AsnSchemaModule} representing the parsed data
      *
      * @throws ParseException
@@ -76,6 +74,8 @@ public class AsnSchemaModuleParser
      */
     public static AsnSchemaModule parse(Iterable<String> moduleText) throws ParseException
     {
+        checkNotNull(moduleText);
+
         final Iterator<String> iterator = moduleText.iterator();
         final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
         parseHeader(iterator, moduleBuilder);

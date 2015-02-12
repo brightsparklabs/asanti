@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.mocks;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import com.google.common.collect.Lists;
 import org.mockito.ArgumentMatcher;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
@@ -104,6 +105,56 @@ public class MockAsnSchema
                     .append("\t\t}\r\n")
                     .append("END\r\n")
                     .toString();
+
+    /** the example Document-PDU module defined in the {@linkplain README.md} file */
+    public static final Iterable<String> TEST_MODULE_DOCUMENT_PDU =
+            Lists.newArrayList(
+                    "Document-PDU",
+                    "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }",
+                    "DEFINITIONS",
+                    "AUTOMATIC TAGS ::=",
+                    "IMPORTS",
+                    "Person FROM People-Protocol { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }",
+                    "BEGIN",
+                    "Document ::= SEQUENCE {",
+                    "header [1] Header,",
+                    "body [2] Body,",
+                    "footer [3] Footer",
+                    "}",
+                    "Header ::= SEQUENCE",
+                    "{ published [0] PublishedMetadata }",
+                    "Body ::= SEQUENCE { lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main,",
+                    "suffix [3] Section-Note OPTIONAL }",
+                    "Footer ::= SEQUENCE { author [0] Person }",
+                    "PublishedMetadata ::= SEQUENCE { date [1] GeneralizedTime, country [2] OCTET STRING OPTIONAL }",
+                    "ModificationMetadata ::= SEQUENCE { date [0] Date, modifiedBy [1] Person }",
+                    "Section-Note ::= SEQUENCE { text [1] OCTET STRING }",
+                    "Section-Main ::= SEQUENCE { text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph }",
+                    "Paragraph ::= SEQUENCE { title [1] OCTET STRING, contributor [2] Person OPTIONAL, points [3] SEQUENCE OF OCTET STRING }",
+                    "END");
+
+    /** the example People-Protocol module defined in the {@linkplain README.md} file */
+    public static final Iterable<String> TEST_MODULE_PEOPLE_PROTOCOL =
+            Lists.newArrayList(
+                    "People-Protocol",
+                    "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }",
+                    "DEFINITIONS",
+                    "AUTOMATIC TAGS ::=",
+                    "BEGIN",
+                    "People ::= SET OF Person",
+                    "Person ::= SEQUENCE",
+                    "{",
+                    "firstName [1] OCTET STRING,",
+                    "lastName [2] OCTET STRING,",
+                    "title [3] ENUMERATED",
+                    "{ mr, mrs, ms, dr, rev } OPTIONAL,",
+                    "gender OPTIONAL",
+                    "}",
+                    "Gender ::= ENUMERATED",
+                    "{ male(0),",
+                    "female(1)",
+                    "}",
+                    "END");
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
