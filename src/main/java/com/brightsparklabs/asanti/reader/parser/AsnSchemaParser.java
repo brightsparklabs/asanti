@@ -15,6 +15,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaDefault;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -53,6 +54,9 @@ public class AsnSchemaParser
     /** error message if schema is missing 'END' keyword */
     private static final String ERROR_MISSING_END_KEYWORD = "Schema is missing an 'END' keyword";
 
+    /** error message if an empty file is encountered */
+    private static final String ERROR_EMPTY_FILE = "Schema is empty";
+
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -69,6 +73,8 @@ public class AsnSchemaParser
      */
     public static AsnSchema parse(String asnSchema) throws ParseException
     {
+        if (Strings.isNullOrEmpty(asnSchema)) { throw new ParseException(ERROR_EMPTY_FILE, -1); }
+
         final Map<String, AsnSchemaModule> modules = Maps.newHashMap();
         final Iterator<String> lineIterator = getLines(asnSchema);
 

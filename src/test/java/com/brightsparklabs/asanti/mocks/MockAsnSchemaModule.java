@@ -24,7 +24,7 @@ public class MockAsnSchemaModule
 
     /**
      * Creates a mock {@link AsnSchemaModule} instances conforming to the
-     * modules in the test schema
+     * modules in the example schema
      *
      * @return mocked instance
      */
@@ -39,7 +39,7 @@ public class MockAsnSchemaModule
 
     /**
      * Creates a mock {@link AsnSchemaModule} instance conforming to the
-     * 'Document-PDU' module in the test schema
+     * 'Document-PDU' module in the example schema
      *
      * @return mocked instance
      */
@@ -59,7 +59,7 @@ public class MockAsnSchemaModule
 
     /**
      * Creates a mock {@link AsnSchemaModule} instance conforming to the
-     * 'Document-PDU' module in the test schema
+     * 'Document-PDU' module in the example schema
      *
      * @return mocked instance
      */

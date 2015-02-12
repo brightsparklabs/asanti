@@ -21,6 +21,91 @@ import com.brightsparklabs.asanti.model.schema.DecodeResult;
 public class MockAsnSchema
 {
     // -------------------------------------------------------------------------
+    // CONSTANTS
+    // -------------------------------------------------------------------------
+
+    /** the example schema defined in the {@linkplain README.md} file */
+    public static final String TEST_SCHEMA_TEXT =
+            new StringBuilder().append("Document-PDU\n")
+                    .append("    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n")
+                    .append("DEFINITIONS")
+                    .append("    AUTOMATIC TAGS ::=")
+                    .append("IMPORTS")
+                    .append("  Person")
+                    .append("    FROM People-Protocol")
+                    .append("    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }")
+                    .append("BEGIN")
+                    .append("    Document ::= SEQUENCE")
+                    .append("    {\n")
+                    .append("        header [1] Header,\n")
+                    .append("        body   [2] Body,\n")
+                    .append("        footer [3] Footer\n")
+                    .append("    }\n")
+                    .append("    Header ::= SEQUENCE\n")
+                    .append("    {")
+                    .append("        published [0] PublishedMetadata")
+                    .append("    }\n")
+                    .append("    Body ::= SEQUENCE")
+                    .append("    {")
+                    .append("        lastModified [0] ModificationMetadata,")
+                    .append("        prefix       [1] Section-Note OPTIONAL,")
+                    .append("        content      [2] Section-Main,\n")
+                    .append("        suffix       [3] Section-Note OPTIONAL")
+                    .append("    }\n")
+                    .append("    Footer ::= SEQUENCE")
+                    .append("    {")
+                    .append("        author      [0] Person")
+                    .append("    }\n")
+                    .append("    PublishedMetadata ::= SEQUENCE")
+                    .append("    {")
+                    .append("        date    [1] GeneralizedTime,")
+                    .append("        country [2] OCTET STRING OPTIONAL")
+                    .append("    }\n")
+                    .append("    ModificationMetadata ::= SEQUENCE")
+                    .append("    {")
+                    .append("        date       [0] Date,")
+                    .append("        modifiedBy [1] Person")
+                    .append("    }\n")
+                    .append("    Section-Note ::= SEQUENCE")
+                    .append("    {")
+                    .append("        text [1] OCTET STRING")
+                    .append("    }\n")
+                    .append("    Section-Main ::= SEQUENCE")
+                    .append("    {")
+                    .append("        text       [1] OCTET STRING OPTIONAL,")
+                    .append("        paragraphs [2] SEQUENCE OF Paragraph")
+                    .append("    }\n")
+                    .append("    Paragraph ::=  SEQUENCE")
+                    .append("    {")
+                    .append("        title        [1] OCTET STRING,")
+                    .append("        contributor  [2] Person OPTIONAL,")
+                    .append("        points       [3] SEQUENCE OF OCTET STRING")
+                    .append("    }\n")
+                    .append("END")
+                    .append("\n")
+                    .append("People-Protocol\r\n\r\n")
+                    .append("\t\t{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\r\n")
+                    .append("DEFINITIONS\r\n")
+                    .append("\t\tAUTOMATIC TAGS ::=\r\n")
+                    .append("BEGIN\r\n")
+                    .append("\t\tPeople ::= SET OF Person\r\n")
+                    .append("\t\tPerson ::= SEQUENCE\r\n")
+                    .append("\t\t{\r\n")
+                    .append("\t\t\t\tfirstName \t[1]\t OCTET STRING,\r\n")
+                    .append("\t\t\t\tlastName \t [2]\t OCTET STRING,\r\n")
+                    .append("\t\t\t\ttitle\t\t   [3]\t ENUMERATED\r\n")
+                    .append("\t\t\t\t\t\t{ mr, mrs, ms, dr, rev } OPTIONAL,\r\n")
+                    .append("\t\t\t\tgender \t OPTIONAL\r\n")
+                    .append("\t\t}  \n")
+                    .append("\t\tGender ::= ENUMERATED   \r\n")
+                    .append("\t\t{")
+                    .append("\t\t\t\tmale(0), \r\n")
+                    .append("\t\t\t\tfemale(1)\t\t\r\n")
+                    .append("\t\t}\r\n")
+                    .append("END\r\n")
+                    .toString();
+
+    // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
@@ -41,12 +126,18 @@ public class MockAsnSchema
         if (instance != null) { return instance; }
 
         instance = mock(AsnSchema.class);
-        when(instance.getDecodedTag("/1/0/1", "Document")).thenReturn(DecodeResult.create(true, "/Document/header/published/date"));
-        when(instance.getDecodedTag("/2/0/0", "Document")).thenReturn(DecodeResult.create(true, "/Document/body/lastModified/date"));
-        when(instance.getDecodedTag("/2/1/1", "Document")).thenReturn(DecodeResult.create(true, "/Document/body/prefix/text"));
-        when(instance.getDecodedTag("/2/2/1", "Document")).thenReturn(DecodeResult.create(true, "/Document/body/content/text"));
-        when(instance.getDecodedTag("/3/0/1", "Document")).thenReturn(DecodeResult.create(true, "/Document/footer/author/firstName"));
-        when(instance.getDecodedTag("/2/2/99", "Document")).thenReturn(DecodeResult.create(false, "/Document/body/content/99"));
+        when(instance.getDecodedTag("/1/0/1", "Document")).thenReturn(DecodeResult.create(true,
+                "/Document/header/published/date"));
+        when(instance.getDecodedTag("/2/0/0", "Document")).thenReturn(DecodeResult.create(true,
+                "/Document/body/lastModified/date"));
+        when(instance.getDecodedTag("/2/1/1", "Document")).thenReturn(DecodeResult.create(true,
+                "/Document/body/prefix/text"));
+        when(instance.getDecodedTag("/2/2/1", "Document")).thenReturn(DecodeResult.create(true,
+                "/Document/body/content/text"));
+        when(instance.getDecodedTag("/3/0/1", "Document")).thenReturn(DecodeResult.create(true,
+                "/Document/footer/author/firstName"));
+        when(instance.getDecodedTag("/2/2/99", "Document")).thenReturn(DecodeResult.create(false,
+                "/Document/body/content/99"));
         when(instance.getDecodedTag("/99/1/1", "Document")).thenReturn(DecodeResult.create(false, "/Document/99/1/1"));
 
         final NonEmptyByteArrayMatcher nonEmptyByteArrayMatcher = new NonEmptyByteArrayMatcher();

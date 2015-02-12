@@ -84,8 +84,8 @@ BEGIN
     {
         lastModified [0] ModificationMetadata,
         prefix       [1] Section-Note OPTIONAL,
-        content      [2] Section-Main
-        suffix       [3] Section-Note OPTIONAL,
+        content      [2] Section-Main,
+        suffix       [3] Section-Note OPTIONAL
     }
 
     Footer ::= SEQUENCE
