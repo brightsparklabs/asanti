@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.data.DecodedAsnDataDefault;
+import com.brightsparklabs.asanti.model.data.DecodedAsnDataImpl;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodeResult;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
@@ -123,7 +123,7 @@ public class AsnDecoder
     public static DecodedAsnData decodeAsnData(AsnData asnData, AsnSchema asnSchema, String topLevelType)
             throws IOException
     {
-        return new DecodedAsnDataDefault(asnData, asnSchema, topLevelType);
+        return new DecodedAsnDataImpl(asnData, asnSchema, topLevelType);
     }
 
     /**
