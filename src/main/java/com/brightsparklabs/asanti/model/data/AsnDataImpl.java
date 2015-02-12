@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableSortedSet;
  *
  * @author brightSPARK Labs
  */
-public class AsnDataDefault implements AsnData
+public class AsnDataImpl implements AsnData
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -40,7 +40,7 @@ public class AsnDataDefault implements AsnData
      * @throws NullPointerException
      *             if parameters are {@code null}
      */
-    public AsnDataDefault(Map<String, byte[]> tagsToData)
+    public AsnDataImpl(Map<String, byte[]> tagsToData)
     {
         checkNotNull(tagsToData);
         this.tagsToData = ImmutableMap.copyOf(tagsToData);
