@@ -26,11 +26,11 @@ public class AsnSchemaTypeDefinitionEnumeratedTest
     private static final ImmutableList<AsnSchemaEnumeratedOption> emptyOptions =
             ImmutableList.<AsnSchemaEnumeratedOption>of();
 
-    /** options within the {@code Person} type definition from the test schema */
+    /** options within the {@code Person} type definition from the example schema */
     private static final ImmutableList<AsnSchemaEnumeratedOption> personOptions =
             MockAsnSchemaEnumeratedOption.createMockedAsnSchemaEnumeratedOptionsForPerson();
 
-    /** options within the {@code Gender} type definition from the test schema */
+    /** options within the {@code Gender} type definition from the example schema */
     private static final ImmutableList<AsnSchemaEnumeratedOption> genderOptions =
             MockAsnSchemaEnumeratedOption.createMockedAsnSchemaEnumeratedOptionsForGender();
 

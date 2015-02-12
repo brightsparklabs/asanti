@@ -4,22 +4,25 @@
  */
 package com.brightsparklabs.asanti.reader.parser;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.util.List;
 
-import com.google.common.base.Splitter;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.brightsparklabs.asanti.mocks.MockAsnSchema;
+import com.brightsparklabs.asanti.mocks.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
+import com.google.common.base.Splitter;
 
 /**
  * Unit tests for {@link AsnSchemaParser}
@@ -34,6 +37,19 @@ public class AsnSchemaParserTest
     // FIXTURES
     // -------------------------------------------------------------------------
 
+    /**
+     * number of lines expected after pre-parsing the Document-PDU module from
+     * the example schema
+     */
+    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 23;
+
+    /**
+     * number of lines expected after pre-parsing the People-Protocol module
+     * from the example schema
+     */
+    private static final int EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT = 19;
+
+    /** an invalid schema (missing an END tag) */
     private static final String SCHEMA_NO_END =
         "People-Protocol\n" +
         "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n" +
@@ -57,7 +73,8 @@ public class AsnSchemaParserTest
         "        female(1)\n" +
         "    }\n";
 
-    private static final String SCHEMA_VALID =
+    /** a valid schema to check all regex matches */
+    private static final String SCHEMA_FOR_REGEX_TEST =
         "/*Document-PDU\r\n" +
         "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n" +
         "\n" +
@@ -130,6 +147,10 @@ public class AsnSchemaParserTest
         "*    }\n" +
         "*END*/";
 
+    /**
+     * The text expected after applying regex matches to
+     * {@link #SCHEMA_FOR_REGEX_TEST}
+     */
     private static final String SCHEMA_VALID_PARSE_INPUT =
         "People-Protocol\n" +
         "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n" +
@@ -193,6 +214,29 @@ public class AsnSchemaParserTest
     @Test
     public void testParse() throws Exception
     {
+        // prepare expected output to AsnSchemaModuleParser.parse()
+        final AsnSchemaModule expectedDocumentPduSchemaModule =
+                MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu();
+        final AsnSchemaModule expectedPeopleProtocolSchemaModule =
+                MockAsnSchemaModule.createMockedAsnSchemaModuleForPeopleProtocol();
+
+        // mock AsnSchemaModuleParser.parse() static method
+        PowerMockito.mockStatic(AsnSchemaModuleParser.class);
+        final Matcher<Iterable<String>> documentPduMatcher =
+                org.hamcrest.Matchers.<String>iterableWithSize(EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT);
+        when(AsnSchemaModuleParser.parse(argThat(documentPduMatcher))).thenReturn(expectedDocumentPduSchemaModule);
+        final Matcher<Iterable<String>> peopleProtocolMatcher =
+                org.hamcrest.Matchers.<String>iterableWithSize(EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT);
+        when(AsnSchemaModuleParser.parse(argThat(peopleProtocolMatcher))).thenReturn(expectedPeopleProtocolSchemaModule);
+
+        // parse the example schema
+        final AsnSchema actualSchema = AsnSchemaParser.parse(MockAsnSchema.TEST_SCHEMA_TEXT);
+        assertNotNull(actualSchema);
+    }
+
+    @Test
+    public void testParse_BlockComments() throws Exception
+    {
         // prepare objects for mocking of AsnSchemaModuleParser.parse static method
         // set up mock AsnSchemaModule to return
         final AsnSchemaModule mockAsnSchemaModule = AsnSchemaModule.builder()
@@ -213,7 +257,7 @@ public class AsnSchemaParserTest
                 .thenReturn(mockAsnSchemaModule);
 
         // test parse with a schema which has all regex combinations
-        AsnSchema actualSchema = AsnSchemaParser.parse(SCHEMA_VALID);
+        final AsnSchema actualSchema = AsnSchemaParser.parse(SCHEMA_FOR_REGEX_TEST);
         assertNotNull(actualSchema);
     }
 }
