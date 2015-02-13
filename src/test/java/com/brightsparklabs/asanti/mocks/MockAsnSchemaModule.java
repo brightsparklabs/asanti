@@ -47,6 +47,7 @@ public class MockAsnSchemaModule
     {
         final Builder moduleBuilder = AsnSchemaModule.builder();
         moduleBuilder.setName("Document-PDU")
+                .addImport("People", "People-Protocol")
                 .addImport("Person", "People-Protocol");
         final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
                 MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForDocumentPdu();

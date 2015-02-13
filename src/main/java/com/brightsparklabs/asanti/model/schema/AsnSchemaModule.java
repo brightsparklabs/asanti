@@ -7,16 +7,9 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -26,17 +19,6 @@ import com.google.common.collect.Maps;
  */
 public class AsnSchemaModule
 {
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaModule.class.getName());
-
-    /** splitter for separating tag strings */
-    private static final Splitter tagSplitter = Splitter.on("/")
-            .omitEmptyStrings();
-
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -115,101 +97,6 @@ public class AsnSchemaModule
     }
 
     /**
-     * Returns the decoded tag for the supplied raw tag. E.g.
-     * {@code getDecodedTag("/1/0/1", "Document", schemas)} =>
-     * {@code "/Document/Header/Published/Date"}
-     *
-     * @param rawTag
-     *            raw tag to decode
-     *
-     * @param topLevelTypeName
-     *            the name of the top level type in this module from which to
-     *            begin decoding the raw tag
-     *
-     * @param allSchemaModules
-     *            all modules which are present in the schema. These are used to
-     *            resolve imports. Map is of form: {@code moduleName => module}
-     *
-     * @return the decoded tag or an empty string if it cannot be decoded
-     */
-    public DecodeResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName,
-            ImmutableMap<String, AsnSchemaModule> allSchemaModules)
-    {
-        final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
-        final DecodedTag.Builder decodedTagBuilder = decodeTags(tags.iterator(), topLevelTypeName, allSchemaModules);
-        final DecodedTag decodedTag = decodedTagBuilder.build(rawTag, topLevelTypeName);
-        final DecodeResult<DecodedTag> result = DecodeResult.create(decodedTag.isFullyDecoded(), decodedTag);
-        return result;
-    }
-
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
-
-    /**
-     * Returns the decoded tags for the supplied raw tags
-     *
-     * @param rawTags
-     *            raw tags to decode. This should be an iterable in the order of
-     *            the tags. E.g. The raw tag {code "/1/0/1"} should be provided
-     *            as an iterator of {code ["1", "0", "1"]}
-     *
-     * @param containingTypeName
-     *            the type in this module from which to begin decoding the raw
-     *            tag. E.g. {@code "Document"} will start decoding the raw tags
-     *            from the type definition named {@code Document}
-     *
-     * @param allSchemaModules
-     *            all modules which are present in the schema. These are used to
-     *            resolve imports. Map is of form: {@code moduleName => module}
-     *
-     * @return a list of all decoded tags. If a raw tag could not be decoded
-     *         then processing stops. E.g. for the raw tags {code "1", "0" "1",
-     *         "99", "98"}, if the {@code "99"} raw tag cannot be decoded, then
-     *         a list containing the decoded tags for only the first three raw
-     *         tags is returned (e.g. {@code ["Header", "Published", "Date"]})
-     */
-    private DecodedTag.Builder decodeTags(Iterator<String> rawTags, String containingTypeName,
-            ImmutableMap<String, AsnSchemaModule> allSchemaModules)
-    {
-        String typeName = containingTypeName;
-        AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
-        final DecodedTag.Builder result = DecodedTag.builder();
-
-        while (rawTags.hasNext())
-        {
-            if (Strings.isNullOrEmpty(typeName))
-            {
-                // no type to delve into
-                break;
-            }
-
-            type = getType(typeName);
-            if (type == AsnSchemaTypeDefinition.NULL)
-            {
-                // type is not defined locally, decode via imports
-                final DecodedTag.Builder builder = decodeUsingImportedModule(rawTags, typeName, allSchemaModules);
-                result.merge(builder);
-                break;
-            }
-
-            final String tag = rawTags.next();
-            final String tagName = type.getTagName(tag);
-            if (Strings.isNullOrEmpty(tagName))
-            {
-                // unknown tag
-                result.setType(AsnSchemaTypeDefinition.NULL);
-                break;
-            }
-            result.setType(type);
-            result.addDecodedTag(tagName);
-            typeName = type.getTypeName(tag);
-        }
-
-        return result;
-    }
-
-    /**
      * Returns the type definition associated with the specified type name
      *
      * @param typeName
@@ -219,61 +106,26 @@ public class AsnSchemaModule
      *         {@link AsnSchemaTypeDefinition#NULL} if no type definition is
      *         found
      */
-    private AsnSchemaTypeDefinition getType(String typeName)
+    public AsnSchemaTypeDefinition getType(String typeName)
     {
         final AsnSchemaTypeDefinition type = types.get(typeName);
         return type != null ? type : AsnSchemaTypeDefinition.NULL;
     }
 
     /**
-     * Returns the decoded tags for the supplied raw tags using an imported
-     * module.
-     *
-     * @param rawTags
-     *            raw tags to decode. This should be an iterable in the order of
-     *            the tags. E.g. The raw tag {code "/1/0/1"} should be provided
-     *            as an iterator of {code ["1", "0", "1"]}
+     * Returns the name of the imported module which contains the specified type
+     * name
      *
      * @param typeName
-     *            the type in the <b>imported</b> module from which to begin
-     *            decoding the raw tag. E.g. {@code "People"} will start
-     *            decoding the raw tags from the type definition named
-     *            {@code People}
+     *            the name of the type which has been imported
      *
-     * @param allSchemaModules
-     *            all modules which are present in the schema. These are used to
-     *            resolve imports. Map is of form: {@code moduleName => module}
-     *
-     * @return a list of all decoded tags. If a raw tag could not be decoded
-     *         then processing stops. E.g. for the raw tags {code "1", "0" "1",
-     *         "99", "98"}, if the {@code "99"} raw tag cannot be decoded, then
-     *         a list containing the decoded tags for only the first three raw
-     *         tags is returned (e.g. {@code ["Header", "Published", "Date"]})
+     * @return the name of the imported module which contains the specified type
+     *         or an empty string if the type has not been imported
      */
-    private DecodedTag.Builder decodeUsingImportedModule(Iterator<String> rawTags, String typeName,
-            ImmutableMap<String, AsnSchemaModule> allSchemaModules)
+    public String getImportedModuleFor(String typeName)
     {
-        // not found locally, check if it is from an import
-        final String importedModuleName = imports.get(typeName);
-        if (importedModuleName == null)
-        {
-            log.log(Level.WARNING,
-                    "Could not resolve type definition \"{0}\". It is is not defined or imported in module \"{1}\"",
-                    new Object[] { typeName, name });
-            return DecodedTag.builder();
-        }
-
-        final AsnSchemaModule importedModule = allSchemaModules.get(importedModuleName);
-        // ensure we do not recursively look into the current module
-        if (importedModule == null || importedModule.equals(this))
-        {
-            log.log(Level.WARNING,
-                    "Could not resolve type definition \"{0}\". Type is imported from an unknown module \"{1}\"",
-                    new Object[] { typeName, name });
-            return DecodedTag.builder();
-        }
-
-        return importedModule.decodeTags(rawTags, typeName, allSchemaModules);
+        final String moduleName = imports.get(typeName);
+        return (moduleName == null) ? "" : moduleName;
     }
 
     // -------------------------------------------------------------------------
@@ -285,7 +137,6 @@ public class AsnSchemaModule
      */
     public static class Builder
     {
-
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
