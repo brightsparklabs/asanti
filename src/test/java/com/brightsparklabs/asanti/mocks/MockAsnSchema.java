@@ -139,8 +139,8 @@ public class MockAsnSchema
         configureGetDecodedTag(instance, "/1/0/1", "Document", "/Document/header/published/date", true);
         configureGetDecodedTag(instance, "/2/0/0", "Document", "/Document/body/lastModified/date", true);
         configureGetDecodedTag(instance, "/2/1/1", "Document", "/Document/body/prefix/text", true);
-        configureGetDecodedTag(instance, "/2/2/1", "Document", "/Document/body/content/text", false);
-        configureGetDecodedTag(instance, "/3/0/1", "Document", "/Document/footer/author/firstName", false);
+        configureGetDecodedTag(instance, "/2/2/1", "Document", "/Document/body/content/text", true);
+        configureGetDecodedTag(instance, "/3/0/1", "Document", "/Document/footer/author/firstName", true);
         configureGetDecodedTag(instance, "/2/2/99", "Document", "/Document/body/content/9", false);
         configureGetDecodedTag(instance, "/99/1/1", "Document", "/Document/99/1/1", false);
 
@@ -163,6 +163,25 @@ public class MockAsnSchema
         }
     };
 
+    /**
+     * Configures the {@code getDecodedTag()} method on the supplied instance to
+     * use the mocked values supplied
+     *
+     * @param instance
+     *            instance to configure
+     *
+     * @param rawTag
+     *            the raw tag to return
+     *
+     * @param topLevelTypeName
+     *            the top level type name
+     *
+     * @param decodedTagPath
+     *            the value to return for {@link DecodedTag#getDecodedTag()}
+     *
+     * @param isFullyDecoded
+     *            the value to return for {@link DecodeResult#wasSuccessful()}
+     */
     private static void configureGetDecodedTag(AsnSchema instance, String rawTag, String topLevelTypeName,
             String decodedTagPath, boolean isFullyDecoded)
     {

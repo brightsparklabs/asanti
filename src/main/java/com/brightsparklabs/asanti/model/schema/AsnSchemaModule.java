@@ -9,6 +9,7 @@ import static com.google.common.base.Preconditions.*;
 
 import java.util.Map;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -19,6 +20,13 @@ import com.google.common.collect.Maps;
  */
 public class AsnSchemaModule
 {
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+
+    /** null instance */
+    public static final AsnSchemaModule.Null NULL = new AsnSchemaModule.Null();
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -125,7 +133,7 @@ public class AsnSchemaModule
     public String getImportedModuleFor(String typeName)
     {
         final String moduleName = imports.get(typeName);
-        return (moduleName == null) ? "" : moduleName;
+        return Strings.nullToEmpty(moduleName);
     }
 
     // -------------------------------------------------------------------------
@@ -246,6 +254,27 @@ public class AsnSchemaModule
         {
             final AsnSchemaModule module = new AsnSchemaModule(name, types, imports);
             return module;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // INTERNAL CLASS: Null
+    // -------------------------------------------------------------------------
+
+    /**
+     * Null instance of {@link AsnSchemaModule}
+     *
+     * @author brightSPARK Labs
+     */
+    public static class Null extends AsnSchemaModule
+    {
+        /**
+         * Default constructor. Hidden, use {@link AsnSchemaModule#NULL} to
+         * obtain a singleton instance.
+         */
+        private Null()
+        {
+            super("NULL", Maps.<String, AsnSchemaTypeDefinition>newHashMap(), Maps.<String, String>newHashMap());
         }
     }
 }
