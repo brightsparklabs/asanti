@@ -87,8 +87,8 @@ public class MockAsnSchemaTypeDefinition
         listBuilder.add(mocktypeDefinition);
 
         // build Footer
-        mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("Footer", AsnBuiltinType.Sequence)
-                .addComponentType("0", "author", "Person")
+        mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("Footer", AsnBuiltinType.Set)
+                .addComponentType("0", "authors", "People")
                 .build();
         listBuilder.add(mocktypeDefinition);
 
@@ -108,7 +108,7 @@ public class MockAsnSchemaTypeDefinition
 
         // build ModificationMetadata
         mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("ModificationMetadata", AsnBuiltinType.Sequence)
-                .addComponentType("0", "date", "GeneralizedTime")
+                .addComponentType("0", "date", "DATE")
                 .addComponentType("1", "modifiedBy", "Person")
                 .build();
         listBuilder.add(mocktypeDefinition);
