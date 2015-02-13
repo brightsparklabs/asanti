@@ -48,7 +48,7 @@ public class AsnBerFileReader
     // -------------------------------------------------------------------------
 
     /**
-     * Read the supplied ASN.1 BER/DER binary file
+     * Reads the supplied ASN.1 BER/DER binary file
      *
      * @param berFile
      *            file to decode
@@ -59,6 +59,28 @@ public class AsnBerFileReader
      *             if any errors occur reading from the file
      */
     public static ImmutableList<AsnData> read(File berFile) throws IOException
+    {
+        return read(berFile, 0);
+    }
+
+    /**
+     * Reads the supplied ASN.1 BER/DER binary file and stops reading when it
+     * has read the specified number of PDUs
+     *
+     * @param berFile
+     *            file to decode
+     *
+     * @param maxPDUs
+     *            number of PDUs to read from the file. The returned list will
+     *            be less than or equal to this value. Set to {@code 0} for no
+     *            maximum (or use {@link #read(File)} instead).
+     *
+     * @return list of {@link AsnData} objects found in the file
+     *
+     * @throws IOException
+     *             if any errors occur reading from the file
+     */
+    public static ImmutableList<AsnData> read(File berFile, int maxPDUs) throws IOException
     {
         final FileInputStream fileInputStream = new FileInputStream(berFile);
         final ASN1InputStream asnInputStream = new ASN1InputStream(fileInputStream);
@@ -75,6 +97,17 @@ public class AsnBerFileReader
             final AsnData asnData = new AsnDataImpl(tagsToData);
             result.add(asnData);
             asnObject = asnInputStream.readObject();
+
+            /*
+             * NOTE: do not use '>=' in the below if statement as we use 0 (or
+             * negative numbers) to indicate no limit. We cannot use
+             * Integer#MAX_VALUE as iterables do not need to be limited to this
+             * size
+             */
+            if (result.size() == maxPDUs)
+            {
+                break;
+            }
         }
 
         asnInputStream.close();
@@ -168,7 +201,8 @@ public class AsnBerFileReader
     }
 
     /**
-     * Processes the elements found in an ASN.1 'Sequence' or ASN.1 'Set' stores the tags/data found in them
+     * Processes the elements found in an ASN.1 'Sequence' or ASN.1 'Set' stores
+     * the tags/data found in them
      *
      * @param elements
      *            elements from the sequence or set
@@ -182,17 +216,18 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix, Map<String, byte[]> tagsToData)
-            throws IOException
+    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix,
+            Map<String, byte[]> tagsToData) throws IOException
     {
         int index = 0;
         while (elements.hasMoreElements())
         {
             final Object obj = elements.nextElement();
-            final DERObject derObject = (obj instanceof DERObject) ? (DERObject) obj : ((DEREncodable) obj)
-                    .getDERObject();
+            final DERObject derObject =
+                    (obj instanceof DERObject) ? (DERObject) obj : ((DEREncodable) obj).getDERObject();
             // if object is not tagged, then include index in prefix
-            final String elementPrefix = (derObject instanceof ASN1TaggedObject) ? prefix : String.format("%s[%d]", prefix, index);
+            final String elementPrefix =
+                    (derObject instanceof ASN1TaggedObject) ? prefix : String.format("%s[%d]", prefix, index);
             processDerObject(derObject, elementPrefix, tagsToData);
             index++;
         }

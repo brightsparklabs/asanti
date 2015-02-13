@@ -143,6 +143,28 @@ public class AsnDecoder
         return AsnBerFileReader.read(berFile);
     }
 
+    /**
+     * Reads the supplied ASN.1 BER/DER binary file and stops reading when it
+     * has read the specified number of items
+     *
+     * @param berFile
+     *            file to decode
+     *
+     * @param maxPDUs
+     *            number of PDUs to read from the file. The returned list will
+     *            be less than or equal to this value. To read all items call
+     *            {@link #readAsnBerFile(File)}) instead.
+     *
+     * @return list of {@link AsnData} objects found in the file
+     *
+     * @throws IOException
+     *             if any errors occur reading from the file
+     */
+    public static ImmutableList<AsnData> readAsnBerFile(File berFile, int maxPDUs) throws IOException
+    {
+        return AsnBerFileReader.read(berFile, maxPDUs);
+    }
+
     // -------------------------------------------------------------------------
     // TEST METHODS
     // -------------------------------------------------------------------------

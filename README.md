@@ -62,6 +62,7 @@ DEFINITIONS
     AUTOMATIC TAGS ::=
 
 IMPORTS
+  People,
   Person
     FROM People-Protocol
     { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
@@ -88,9 +89,9 @@ BEGIN
         suffix       [3] Section-Note OPTIONAL
     }
 
-    Footer ::= SEQUENCE
+    Footer ::= SET
     {
-        author      [0] Person
+        authors [0] People
     }
 
     PublishedMetadata ::= SEQUENCE
@@ -101,7 +102,7 @@ BEGIN
 
     ModificationMetadata ::= SEQUENCE
     {
-        date       [0] Date,
+        date       [0] DATE,
         modifiedBy [1] Person
     }
 
@@ -140,7 +141,7 @@ BEGIN
         lastName  [2] OCTET STRING,
         title     [3] ENUMERATED
             { mr, mrs, ms, dr, rev } OPTIONAL,
-        gender OPTIONAL
+        gender        Gender OPTIONAL
     }
 
     Gender ::= ENUMERATED
