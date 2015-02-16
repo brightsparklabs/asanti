@@ -204,7 +204,7 @@ public class AsnSchemaModuleParser
             if (line.startsWith("EXPORTS"))
             {
                 // skip past all exports
-                while (!";".equals(line) || line.startsWith("IMPORTS"))
+                while (!(";".equals(line) || line.startsWith("IMPORTS")))
                 {
                     line = lineIterator.next();
                 }
@@ -212,7 +212,7 @@ public class AsnSchemaModuleParser
             else if (line.startsWith("IMPORTS"))
             {
                 final StringBuilder builder = new StringBuilder();
-                while (!";".equals(line) || line.startsWith("EXPORTS"))
+                while (!(";".equals(line) || line.startsWith("EXPORTS")))
                 {
                     line = lineIterator.next();
                     builder.append(line)
@@ -229,7 +229,10 @@ public class AsnSchemaModuleParser
                     // skip the semi-colon
                     line = lineIterator.next();
                 }
-                break;
+                else
+                {
+                    break;
+                }
             }
         }
 

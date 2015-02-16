@@ -61,12 +61,13 @@ Document-PDU
 DEFINITIONS
     AUTOMATIC TAGS ::=
 
-IMPORTS
-  Person
-    FROM People-Protocol
-    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
-
 BEGIN
+    EXPORTS Header, Body;
+    
+    IMPORTS
+      Person
+        FROM People-Protocol
+        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) };
 
     Document ::= SEQUENCE
     {
@@ -131,6 +132,8 @@ DEFINITIONS
     AUTOMATIC TAGS ::=
 
 BEGIN
+
+    DefaultAge INTEGER ::= 45
 
     People ::= SET OF Person
 

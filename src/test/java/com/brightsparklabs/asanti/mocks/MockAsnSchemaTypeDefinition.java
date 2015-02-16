@@ -99,13 +99,6 @@ public class MockAsnSchemaTypeDefinition
                 .build();
         listBuilder.add(mocktypeDefinition);
 
-        // build PublishedMetadata
-        mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("PublishedMetadata", AsnBuiltinType.Sequence)
-                .addComponentType("1", "date", "GeneralizedTime")
-                .addComponentType("2", "country", "OCTET STRING")
-                .build();
-        listBuilder.add(mocktypeDefinition);
-
         // build ModificationMetadata
         mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("ModificationMetadata", AsnBuiltinType.Sequence)
                 .addComponentType("0", "date", "GeneralizedTime")
@@ -159,6 +152,11 @@ public class MockAsnSchemaTypeDefinition
                 .addComponentType("1", "firstName", "OCTET STRING")
                 .addComponentType("2", "lastName", "OCTET STRING")
                 .addComponentType("3", "title", "ENUMERATED")
+                .build();
+        listBuilder.add(mocktypeDefinition);
+
+        // build Gender
+        mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("Gender", AsnBuiltinType.Enumerated)
                 .build();
         listBuilder.add(mocktypeDefinition);
 
