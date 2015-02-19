@@ -17,6 +17,8 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Logic for parsing a module within an ASN.1 schema
  *
@@ -64,11 +66,10 @@ public class AsnSchemaModuleParser
      * @param moduleText
      *            all text from module within the ASN.1 schema
      *
-     * @param importResolver
-     *            resolver to use for resolving import statements within the
-     *            module
-     *
      * @return an {@link AsnSchemaModule} representing the parsed data
+     *
+     * @throws NullPointerException
+     *             if {@code moduleText} is {@code null}
      *
      * @throws ParseException
      *             if any errors occur while parsing the module
@@ -76,6 +77,8 @@ public class AsnSchemaModuleParser
      */
     public static AsnSchemaModule parse(Iterable<String> moduleText) throws ParseException
     {
+        checkNotNull(moduleText);
+
         final Iterator<String> iterator = moduleText.iterator();
         final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
         parseHeader(iterator, moduleBuilder);
@@ -175,9 +178,8 @@ public class AsnSchemaModuleParser
      * return the line following the 'BEGIN' keyword.
      * <p>
      * After calling this method, the iterator will be pointing at the line
-     * containing the 'END' keyword. I.e. calling {@code iterator.next()} will
-     * return the line following the 'END' keyword.
-     *
+     * following all imports/exports. I.e. calling {@code iterator.next()} will
+     * return the line *following* the first type definition or value assignment.
      *
      * @param lineIterator
      *            iterator pointing at the first line following the 'BEGIN'
@@ -186,7 +188,8 @@ public class AsnSchemaModuleParser
      * @param moduleBuilder
      *            builder to use to construct module from the parsed information
      *
-     * @return
+     * @return the line following the imports/exports, i.e. the first type
+     *         definition or value assignment
      *
      * @throws ParseException
      *             if any errors occur while parsing the schema
@@ -204,7 +207,7 @@ public class AsnSchemaModuleParser
             if (line.startsWith("EXPORTS"))
             {
                 // skip past all exports
-                while (!";".equals(line) || line.startsWith("IMPORTS"))
+                while (!(";".equals(line) || line.startsWith("IMPORTS")))
                 {
                     line = lineIterator.next();
                 }
@@ -212,7 +215,7 @@ public class AsnSchemaModuleParser
             else if (line.startsWith("IMPORTS"))
             {
                 final StringBuilder builder = new StringBuilder();
-                while (!";".equals(line) || line.startsWith("EXPORTS"))
+                while (!(";".equals(line) || line.startsWith("EXPORTS")))
                 {
                     line = lineIterator.next();
                     builder.append(line)
@@ -229,7 +232,10 @@ public class AsnSchemaModuleParser
                     // skip the semi-colon
                     line = lineIterator.next();
                 }
-                break;
+                else
+                {
+                    break;
+                }
             }
         }
 
@@ -242,7 +248,7 @@ public class AsnSchemaModuleParser
      * <p>
      * Prior to calling this method, the iterator should be pointing at the line
      * following all imports/exports. I.e. calling {@code iterator.next()} will
-     * return the line following the first type definition or value assignment.
+     * return the line *following* the first type definition or value assignment.
      * <p>
      * After calling this method, the iterator will be pointing at the line
      * containing the 'END' keyword. I.e. calling {@code iterator.next()} will

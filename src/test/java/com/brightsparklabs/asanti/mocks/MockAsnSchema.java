@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.mocks;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import com.google.common.collect.Lists;
 import org.mockito.ArgumentMatcher;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
@@ -30,12 +31,13 @@ public class MockAsnSchema
                     .append("    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n")
                     .append("DEFINITIONS")
                     .append("    AUTOMATIC TAGS ::=")
+                    .append("BEGIN")
+                    .append("EXPORTS Header, Body;\n")
                     .append("IMPORTS")
                     .append("  People,")
                     .append("  Person")
                     .append("    FROM People-Protocol")
-                    .append("    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }")
-                    .append("BEGIN")
+                    .append("    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) };")
                     .append("    Document ::= SEQUENCE")
                     .append("    {\n")
                     .append("        header [1] Header,\n")
@@ -89,6 +91,7 @@ public class MockAsnSchema
                     .append("DEFINITIONS\r\n")
                     .append("\t\tAUTOMATIC TAGS ::=\r\n")
                     .append("BEGIN\r\n")
+                    .append("\t\tDefaultAge INTEGER ::= 45\r\n")
                     .append("\t\tPeople ::= SET OF Person\r\n")
                     .append("\t\tPerson ::= SEQUENCE\r\n")
                     .append("\t\t{\r\n")
