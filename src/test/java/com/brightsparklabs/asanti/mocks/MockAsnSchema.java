@@ -144,7 +144,7 @@ public class MockAsnSchema
         configureGetDecodedTag(instance, "/2/1/1", "Document", "/Document/body/prefix/text", true);
         configureGetDecodedTag(instance, "/2/2/1", "Document", "/Document/body/content/text", true);
         configureGetDecodedTag(instance, "/3/0/1", "Document", "/Document/footer/author/firstName", true);
-        configureGetDecodedTag(instance, "/2/2/99", "Document", "/Document/body/content/9", false);
+        configureGetDecodedTag(instance, "/2/2/99", "Document", "/Document/body/content/99", false);
         configureGetDecodedTag(instance, "/99/1/1", "Document", "/Document/99/1/1", false);
 
         return instance;
