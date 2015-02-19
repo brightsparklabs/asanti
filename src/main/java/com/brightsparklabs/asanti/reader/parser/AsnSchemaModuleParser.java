@@ -68,6 +68,9 @@ public class AsnSchemaModuleParser
      *
      * @return an {@link AsnSchemaModule} representing the parsed data
      *
+     * @throws NullPointerException
+     *             if {@code moduleText} is {@code null}
+     *
      * @throws ParseException
      *             if any errors occur while parsing the module
      *
@@ -175,9 +178,8 @@ public class AsnSchemaModuleParser
      * return the line following the 'BEGIN' keyword.
      * <p>
      * After calling this method, the iterator will be pointing at the line
-     * containing the 'END' keyword. I.e. calling {@code iterator.next()} will
-     * return the line following the 'END' keyword.
-     *
+     * following all imports/exports. I.e. calling {@code iterator.next()} will
+     * return the line *following* the first type definition or value assignment.
      *
      * @param lineIterator
      *            iterator pointing at the first line following the 'BEGIN'
@@ -186,7 +188,8 @@ public class AsnSchemaModuleParser
      * @param moduleBuilder
      *            builder to use to construct module from the parsed information
      *
-     * @return
+     * @return the line following the imports/exports, i.e. the first type
+     *         definition or value assignment
      *
      * @throws ParseException
      *             if any errors occur while parsing the schema
@@ -245,7 +248,7 @@ public class AsnSchemaModuleParser
      * <p>
      * Prior to calling this method, the iterator should be pointing at the line
      * following all imports/exports. I.e. calling {@code iterator.next()} will
-     * return the line following the first type definition or value assignment.
+     * return the line *following* the first type definition or value assignment.
      * <p>
      * After calling this method, the iterator will be pointing at the line
      * containing the 'END' keyword. I.e. calling {@code iterator.next()} will
