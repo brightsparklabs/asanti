@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -34,21 +34,21 @@ public class AsnSchemaImportsParser
             .omitEmptyStrings()
             .trimResults();
 
+    /** error message if imports statement is invalid */
+    private static final String ERROR_INVALID_IMPORTS_STATEMENT =
+            "Imports statement is invalid";
+
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * Parses a type definition from a module from an ASN.1 schema
+     * Parses an Imports statement from a module from an ASN.1 schema
      *
-     * @param name
-     *            the name of the defined type (i.e. the text on the left hand
-     *            side of the {@code ::=})
-     * @param value
-     *            the value of the defined type (i.e. the text on the right hand
-     *            side of the {@code ::=})
+     * @param imports
+     *            the imports statement string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an ImmutableMap representing the imports
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
@@ -56,10 +56,13 @@ public class AsnSchemaImportsParser
     public static ImmutableMap<String, String> parse(String imports) throws ParseException
     {
         final Map<String, String> typeToModule = Maps.newHashMap();
+        if (Strings.isNullOrEmpty(imports)) { return ImmutableMap.copyOf(typeToModule); }
 
         final Matcher matcher = PATTERN_MODULE_IMPORT.matcher(imports);
+        Boolean matchFound = false;
         while (matcher.find())
         {
+            matchFound = true;
             final Iterable<String> types = COMMA_SPLITTER.split(matcher.group(1));
             final String module = matcher.group(2);
             for (final String type : types)
@@ -67,6 +70,12 @@ public class AsnSchemaImportsParser
                 typeToModule.put(type, module);
             }
         }
+
+        if (!matchFound)
+        {
+            throw new ParseException(ERROR_INVALID_IMPORTS_STATEMENT, -1);
+        }
+
         return ImmutableMap.copyOf(typeToModule);
     }
 }

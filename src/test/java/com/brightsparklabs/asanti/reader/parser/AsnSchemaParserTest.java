@@ -41,13 +41,13 @@ public class AsnSchemaParserTest
      * number of lines expected after pre-parsing the Document-PDU module from
      * the example schema
      */
-    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 23;
+    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 27;
 
     /**
      * number of lines expected after pre-parsing the People-Protocol module
      * from the example schema
      */
-    private static final int EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT = 19;
+    private static final int EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT = 20;
 
     /** an invalid schema (missing an END tag) */
     private static final String SCHEMA_NO_END =
