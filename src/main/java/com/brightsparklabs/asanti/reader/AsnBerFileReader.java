@@ -134,8 +134,7 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processDerObject(DERObject derObject, String prefix, Map<String, byte[]> tagsToData)
-            throws IOException
+    private static void processDerObject(DERObject derObject, String prefix, Map<String, byte[]> tagsToData) throws IOException
     {
         if (derObject instanceof ASN1Sequence)
         {
@@ -174,8 +173,7 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processSequence(ASN1Sequence asnSequence, String prefix, Map<String, byte[]> tagsToData)
-            throws IOException
+    private static void processSequence(ASN1Sequence asnSequence, String prefix, Map<String, byte[]> tagsToData) throws IOException
     {
         processElementsFromSequenceOrSet(asnSequence.getObjects(), prefix, tagsToData);
     }
@@ -216,18 +214,18 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix,
-            Map<String, byte[]> tagsToData) throws IOException
+    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix, Map<String, byte[]> tagsToData)
+            throws IOException
     {
         int index = 0;
         while (elements.hasMoreElements())
         {
             final Object obj = elements.nextElement();
-            final DERObject derObject =
-                    (obj instanceof DERObject) ? (DERObject) obj : ((DEREncodable) obj).getDERObject();
+            final DERObject derObject = (obj instanceof DERObject) ? (DERObject) obj
+                    : ((DEREncodable) obj).getDERObject();
             // if object is not tagged, then include index in prefix
-            final String elementPrefix =
-                    (derObject instanceof ASN1TaggedObject) ? prefix : String.format("%s[%d]", prefix, index);
+            final String elementPrefix = (derObject instanceof ASN1TaggedObject) ? prefix
+                    : String.format("%s[%d]", prefix, index);
             processDerObject(derObject, elementPrefix, tagsToData);
             index++;
         }
@@ -248,8 +246,8 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processTaggedObject(ASN1TaggedObject asnTaggedObject, String prefix,
-            Map<String, byte[]> tagsToData) throws IOException
+    private static void processTaggedObject(ASN1TaggedObject asnTaggedObject, String prefix, Map<String, byte[]> tagsToData)
+            throws IOException
     {
         prefix = prefix + "/" + asnTaggedObject.getTagNo();
         processDerObject(asnTaggedObject.getObject(), prefix, tagsToData);
@@ -294,13 +292,29 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]> tagsToData)
-            throws IOException
+    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]> tagsToData) throws IOException
     {
         // get the bytes representing Tag-Length-Value
         final byte[] tlvData = derObject.getEncoded();
-        // extract and store value
-        final byte[] value = (tlvData.length < 3) ? new byte[0] : Arrays.copyOfRange(tlvData, 2, tlvData.length);
+
+        // extract the value
+        byte[] value = new byte[0];
+        // must be at least three octets to contain a value
+        if (tlvData.length >= 3)
+        {
+            // determine the number of bytes which define the length
+            int numberOfAdditionalLengthBytes = 0;
+            final int length = tlvData[1] & 0xff;
+            if (length > 127)
+            {
+                // more than one byte used to specify length
+                numberOfAdditionalLengthBytes = length & 0x7f;
+            }
+
+            // extract and store value
+            final int firstDataByteIndex = 2 + numberOfAdditionalLengthBytes;
+            value = Arrays.copyOfRange(tlvData, firstDataByteIndex, tlvData.length);
+        }
         tagsToData.put(tag, value);
     }
 }
