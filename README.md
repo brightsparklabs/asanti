@@ -134,7 +134,7 @@ DEFINITIONS
 
 BEGIN
 
-    DefaultAge INTEGER ::= 45
+    defaultAge INTEGER ::= 45
 
     People ::= SET OF Person
 
