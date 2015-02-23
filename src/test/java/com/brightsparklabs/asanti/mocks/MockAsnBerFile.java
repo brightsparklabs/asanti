@@ -21,14 +21,18 @@ import com.google.common.io.Files;
 public class MockAsnBerFile
 {
     // -------------------------------------------------------------------------
-    // CONSTANTS
+    // FIXTURES
     // -------------------------------------------------------------------------
+
+    /** encoding for converting to/from hex */
+    private static final BaseEncoding hexEncoding = BaseEncoding.base16().lowerCase();
 
     /**
      * a PDU of a 'Document' value assignment setting the minimum required
      * fields
      */
-    public static final String EXAMPLE_SCHEMA_DOCUMENT_PDU_MINIMUM = new StringBuilder().append("doc Document ::=\n")
+    public static final String EXAMPLE_SCHEMA_DOCUMENT_PDU_MINIMUM = new StringBuilder()
+            .append("doc Document ::=\n")
             .append("{\n")
             .append("  header\n")
             .append("  {\n")
@@ -79,15 +83,12 @@ public class MockAsnBerFile
      * BER
      */
     // generated using http://asn1-playground.oss.com/
-    private static final byte[] EXAMPLE_SCHEMA_DOCUMENT_PDU_MINIMUM_BER =
-            BaseEncoding.base16()
-                    .lowerCase()
-                    .decode("3081bfa111a00f810d3230313530313032303030305aa28184a01a80083230313530313031a10e8106446f6e616c6482044475636ba266a2643030810b5061726167726170682031a3210409506f696e7420312e310409506f696e7420312e320409506f696e7420312e333030810b5061726167726170682032a3210409506f696e7420322e310409506f696e7420322e320409506f696e7420322e33a323a021300f81064d69636b657982054d6f757365300e8106446f6e616c6482044475636b");
+    private static final byte[] EXAMPLE_SCHEMA_DOCUMENT_PDU_MINIMUM_BER = hexEncoding
+            .decode("3081bfa111a00f810d3230313530313032303030305aa28184a01a80083230313530313031a10e8106446f6e616c6482044475636ba266a2643030810b5061726167726170682031a3210409506f696e7420312e310409506f696e7420312e320409506f696e7420312e333030810b5061726167726170682032a3210409506f696e7420322e310409506f696e7420322e320409506f696e7420322e33a323a021300f81064d69636b657982054d6f757365300e8106446f6e616c6482044475636b");
 
     /** a PDU of a 'People' value assignment setting the minimum required fields */
-    public static final String EXAMPLE_SCHEMA_PEOPLE_PDU_MINIMUM = new StringBuilder().append("team People ::= \n")
-            .append("{  \n")
-            // firstName: "Mickey", lastName: "Mouse"
+    public static final String EXAMPLE_SCHEMA_PEOPLE_PDU_MINIMUM = new StringBuilder().append("team People ::= \n").append("{  \n")
+    // firstName: "Mickey", lastName: "Mouse"
             .append("  { firstName '446f6e616c64'H, lastName '4475636b'H },\n")
             // firstName: "Donald", lastName: "Duck"
             .append("  { firstName '4d69636b6579'H, lastName '4d6f757365'H }\n")
@@ -98,8 +99,7 @@ public class MockAsnBerFile
      * bytes from encoding {@link #EXAMPLE_SCHEMA_PEOPLE_PDU_MINIMUM} using BER
      */
     // generated using http://asn1-playground.oss.com/
-    private static final byte[] EXAMPLE_SCHEMA_PEOPLE_PDU_MINIMUM_BER = BaseEncoding.base16()
-            .lowerCase()
+    private static final byte[] EXAMPLE_SCHEMA_PEOPLE_PDU_MINIMUM_BER = hexEncoding
             .decode("3121300e8106446f6e616c6482044475636b300f81064d69636b657982054d6f757365");
 
     // -------------------------------------------------------------------------
@@ -140,10 +140,6 @@ public class MockAsnBerFile
         return createAsnBerFile(pduCount, EXAMPLE_SCHEMA_PEOPLE_PDU_MINIMUM_BER);
     }
 
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
-
     /**
      * Creates an ASN.1 BER binary file containing the specified number of PDUs.
      * Each PDU is a copy of the supplied pdu bytes.
@@ -159,7 +155,7 @@ public class MockAsnBerFile
      * @throws IOException
      *             if any errors occur while creating the file
      */
-    private static File createAsnBerFile(int pduCount, byte[] pdu) throws IOException
+    public static File createAsnBerFile(int pduCount, byte[] pdu) throws IOException
     {
         final File berFile = File.createTempFile(MockAsnBerFile.class.getSimpleName(), ".ber");
         berFile.deleteOnExit();
