@@ -110,7 +110,6 @@ signing {
     sign configurations.archives
 }
 
-/*
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -149,11 +148,9 @@ uploadArchives {
                         id 'brightsparklabs'
                         name 'brightSPARK Labs'
                         email 'enquire@brightsparklabs.com'
-                        organisation 'brightSPARK Labs'
                     }
                 }
             }
         }
     }
 }
-*/
