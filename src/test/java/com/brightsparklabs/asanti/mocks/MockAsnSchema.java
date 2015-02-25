@@ -180,7 +180,7 @@ public class MockAsnSchema
      *            the top level type name
      *
      * @param decodedTagPath
-     *            the value to return for {@link DecodedTag#getDecodedTag()}
+     *            the value to return for {@link DecodedTag#getTag()}
      *
      * @param isFullyDecoded
      *            the value to return for {@link DecodeResult#wasSuccessful()}
@@ -189,7 +189,7 @@ public class MockAsnSchema
             String decodedTagPath, boolean isFullyDecoded)
     {
         final DecodedTag decodedTag = mock(DecodedTag.class);
-        when(decodedTag.getDecodedTag()).thenReturn(decodedTagPath);
+        when(decodedTag.getTag()).thenReturn(decodedTagPath);
         when(decodedTag.getRawTag()).thenReturn(rawTag);
         when(decodedTag.getType()).thenReturn(AsnSchemaTypeDefinition.NULL);
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);

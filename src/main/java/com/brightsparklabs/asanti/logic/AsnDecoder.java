@@ -219,7 +219,7 @@ public class AsnDecoder
             final DecodeResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
             log.log(Level.INFO, "\t{0}:\t decode {1} => {2}", new Object[] { result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag, result.getDecodedData()
-                            .getDecodedTag() });
+                            .getTag() });
         }
 
         log.info("Expecting FAIL");
@@ -229,7 +229,7 @@ public class AsnDecoder
             final DecodeResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
             log.log(Level.INFO, "\t{0}:\t decode {1} => {2}", new Object[] { result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag, result.getDecodedData()
-                            .getDecodedTag() });
+                            .getTag() });
         }
 
         log.info("User testing:");
@@ -241,7 +241,7 @@ public class AsnDecoder
             final DecodeResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
             log.log(Level.INFO, "\t{0}:\t decode {1} => {2}", new Object[] { result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag, result.getDecodedData()
-                            .getDecodedTag() });
+                            .getTag() });
         }
     }
 

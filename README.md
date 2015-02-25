@@ -63,7 +63,7 @@ DEFINITIONS
 
 BEGIN
     EXPORTS Header, Body;
-    
+
     IMPORTS
       People,
       Person
@@ -362,7 +362,7 @@ final Validator customValidator = Validator.builder()
     .withValidationRule(rule, "/Document/body/lastModified/date")
     .build();
 
-final ValidationResult result = customValidator.validate();
+final ValidationResult result = customValidator.validate(decodedAsnData);
 final ValidationFailure failure = results.getFailures().first()
 
 failure.getType();     // returns DateCutoffFailed

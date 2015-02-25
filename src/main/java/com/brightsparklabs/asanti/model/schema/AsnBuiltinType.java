@@ -22,6 +22,7 @@ public enum AsnBuiltinType
     EmbeddedPDV,
     Enumerated,
     External,
+    GeneralizedTime,
     IA5String,
     InstanceOf,
     Integer,

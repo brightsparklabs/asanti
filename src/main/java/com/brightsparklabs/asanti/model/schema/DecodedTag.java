@@ -21,7 +21,7 @@ public class DecodedTag
     // -------------------------------------------------------------------------
 
     /** the full path of the decoded tag */
-    private final String decodedTag;
+    private final String tag;
 
     /** the full path of the raw tag */
     private final String rawTag;
@@ -50,14 +50,14 @@ public class DecodedTag
      */
     public DecodedTag(String decodedTag, String rawTag, AsnSchemaTypeDefinition type, boolean isFullyDecoded)
     {
-        this.decodedTag = Strings.nullToEmpty(decodedTag)
+        this.tag = Strings.nullToEmpty(decodedTag)
                 .trim();
         this.rawTag = Strings.nullToEmpty(rawTag)
                 .trim();
         this.type = type;
         this.isFullyDecoded = isFullyDecoded;
 
-        checkArgument(!this.decodedTag.isEmpty(), "Decoded tag cannot be blank");
+        checkArgument(!this.tag.isEmpty(), "Decoded tag cannot be blank");
         checkArgument(!this.rawTag.isEmpty(), "Raw tag cannot be blank");
         checkNotNull(this.type);
     }
@@ -71,9 +71,9 @@ public class DecodedTag
      *
      * @return the full path of the decoded tag
      */
-    public String getDecodedTag()
+    public String getTag()
     {
-        return decodedTag;
+        return tag;
     }
 
     /**

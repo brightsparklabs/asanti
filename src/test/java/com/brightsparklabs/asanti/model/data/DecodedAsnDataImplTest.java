@@ -13,6 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.mocks.MockAsnSchema;
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
@@ -352,6 +353,53 @@ public class DecodedAsnDataImplTest
         assertEquals(0, result.size());
         result = emptyInstance.getPrintableStringsMatching(regex);
         assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testGetType() throws Exception
+    {
+        /*
+         * TODO ASN-89 - until implemented the below always return
+         * AsnSchemaTypeDefinition.NULL
+         *
+         * assertEquals(AsnBuiltinType.GeneralizedTime,
+         * instance.getType("/Document/header/published/date"
+         * ).getBuiltinType()); assertEquals(AsnBuiltinType.Date,
+         * instance.getType
+         * ("/Document/body/lastModified/date").getBuiltinType());
+         * assertEquals(AsnBuiltinType.OctetString,
+         * instance.getType("/Document/body/prefix/text").getBuiltinType());
+         * assertEquals(AsnBuiltinType.OctetString,
+         * instance.getType("/Document/body/content/text").getBuiltinType());
+         * assertEquals(AsnBuiltinType.OctetString,
+         * instance.getType("/Document/footer/author/firstName"
+         * ).getBuiltinType());
+         */
+
+        // test unmapped tags
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/body/content/99")
+                .getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/99/1/1")
+                .getBuiltinType());
+
+        // test raw tags
+        assertEquals(AsnBuiltinType.Null, instance.getType("/2/2/99")
+                .getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/99/1/1")
+                .getBuiltinType());
+
+        // test unknown tags
+        assertEquals(AsnBuiltinType.Null, instance.getType("")
+                .getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/0/0/0")
+                .getBuiltinType());
+
+        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("")
+                .getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("/Document/0/0/0")
+                .getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("/Document/header/published/date")
+                .getBuiltinType());
     }
 
     @Test
