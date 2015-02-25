@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionCollectionOf extends AsnSchemaTypeDefinition
+public abstract class AsnSchemaTypeDefinitionCollectionOf extends AsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES

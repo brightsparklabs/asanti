@@ -45,4 +45,14 @@ public class AsnSchemaTypeDefinitionChoice extends AsnSchemaTypeDefinitionConstr
     {
         super(name, AsnBuiltinType.Choice, componentTypes, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

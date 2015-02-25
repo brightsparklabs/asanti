@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.brightsparklabs.asanti.mocks.MockAsnSchemaTypeDefinitionVisitor;
+
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionUTF8String}
  *
@@ -69,5 +71,14 @@ public class AsnSchemaTypeDefinitionUTF8Test
         final AsnSchemaTypeDefinitionUTF8String instance =
                 new AsnSchemaTypeDefinitionUTF8String("TEST_NAME", AsnSchemaConstraint.NULL);
         assertEquals(AsnBuiltinType.UTF8String, instance.getBuiltinType());
+    }
+
+    @Test
+    public void testVisit() throws Exception
+    {
+        final AsnSchemaTypeDefinitionUTF8String instance =
+                new AsnSchemaTypeDefinitionUTF8String("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals("com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String",
+                instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }

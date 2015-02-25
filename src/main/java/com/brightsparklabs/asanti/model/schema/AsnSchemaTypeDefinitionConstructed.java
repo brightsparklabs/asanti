@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionConstructed extends AsnSchemaTypeDefinition
+public abstract class AsnSchemaTypeDefinitionConstructed extends AsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES

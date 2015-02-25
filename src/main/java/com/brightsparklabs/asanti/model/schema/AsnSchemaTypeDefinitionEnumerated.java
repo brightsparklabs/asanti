@@ -93,4 +93,10 @@ public class AsnSchemaTypeDefinitionEnumerated extends AsnSchemaTypeDefinition
         final AsnSchemaEnumeratedOption option = tagsToOptions.get(tag);
         return (option == null) ? "" : option.getTagName();
     }
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

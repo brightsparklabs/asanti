@@ -31,8 +31,8 @@ public class AsnSchemaTypeDefinitionSet extends AsnSchemaTypeDefinitionConstruct
      *            {@link AsnSchemaConstraint#NULL} if no constraint.
      *            <p>
      *            E.g. For
-     *            <code>SET { ... } (CONSTRAINED BY {Person:title})</code>
-     *            this would be <code>CONSTRAINED BY {Person:title}</code>
+     *            <code>SET { ... } (CONSTRAINED BY {Person:title})</code> this
+     *            would be <code>CONSTRAINED BY {Person:title}</code>
      *
      * @throws NullPointerException
      *             if {@code name}, or {@code componentTypes} are {@code null}
@@ -44,5 +44,15 @@ public class AsnSchemaTypeDefinitionSet extends AsnSchemaTypeDefinitionConstruct
             AsnSchemaConstraint constraint)
     {
         super(name, AsnBuiltinType.Set, componentTypes, constraint);
+    }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
     }
 }

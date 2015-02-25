@@ -45,4 +45,14 @@ public class AsnSchemaTypeDefinitionSequence extends AsnSchemaTypeDefinitionCons
     {
         super(name, AsnBuiltinType.Sequence, componentTypes, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

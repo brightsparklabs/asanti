@@ -9,12 +9,34 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link AsnSchemaTypeDefinitionCollectionOf}
+ * Unit tests for {@link TestInstance}
  *
  * @author brightSPARK Labs
  */
 public class AsnSchemaTypeDefinitionCollectionOfTest
 {
+    // -------------------------------------------------------------------------
+    // FIXTURES
+    // -------------------------------------------------------------------------
+
+    /**
+     * New definition of test class with dummy abstract methods
+     */
+    private static class TestInstance extends AsnSchemaTypeDefinitionCollectionOf
+    {
+        public TestInstance(String name, AsnBuiltinType builtinType, String elementTypeName,
+                AsnSchemaConstraint constraint)
+        {
+            super(name, builtinType, elementTypeName, constraint);
+        }
+
+        @Override
+        public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+        {
+            return "";
+        }
+    }
+
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
@@ -25,7 +47,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionCollectionOf(null, AsnBuiltinType.SetOf, "person", AsnSchemaConstraint.NULL);
+            new TestInstance(null, AsnBuiltinType.SetOf, "person", AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -35,7 +57,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
         // test blank
         try
         {
-            new AsnSchemaTypeDefinitionCollectionOf("", AsnBuiltinType.SetOf, "person", AsnSchemaConstraint.NULL);
+            new TestInstance("", AsnBuiltinType.SetOf, "person", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -43,7 +65,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionCollectionOf(" ", AsnBuiltinType.SetOf, "person", AsnSchemaConstraint.NULL);
+            new TestInstance(" ", AsnBuiltinType.SetOf, "person", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -57,7 +79,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionCollectionOf("NAME", null, "person", AsnSchemaConstraint.NULL);
+            new TestInstance("NAME", null, "person", AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -71,7 +93,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
             {
                 try
                 {
-                    new AsnSchemaTypeDefinitionCollectionOf("NAME", type, "person", AsnSchemaConstraint.NULL);
+                    new TestInstance("NAME", type, "person", AsnSchemaConstraint.NULL);
                 }
                 catch (final IllegalArgumentException ex)
                 {
@@ -82,7 +104,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
             {
                 try
                 {
-                    new AsnSchemaTypeDefinitionCollectionOf("NAME", type, "person", AsnSchemaConstraint.NULL);
+                    new TestInstance("NAME", type, "person", AsnSchemaConstraint.NULL);
                     fail("IllegalAccessException not thrown");
                 }
                 catch (final IllegalArgumentException ex)
@@ -98,7 +120,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionCollectionOf("NAME", AsnBuiltinType.SetOf, null, AsnSchemaConstraint.NULL);
+            new TestInstance("NAME", AsnBuiltinType.SetOf, null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -108,7 +130,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
         // test blank
         try
         {
-            new AsnSchemaTypeDefinitionCollectionOf("", AsnBuiltinType.SetOf, "", AsnSchemaConstraint.NULL);
+            new TestInstance("", AsnBuiltinType.SetOf, "", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -116,7 +138,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionCollectionOf(" ", AsnBuiltinType.SetOf, " ", AsnSchemaConstraint.NULL);
+            new TestInstance(" ", AsnBuiltinType.SetOf, " ", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -130,7 +152,7 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionCollectionOf("NAME", AsnBuiltinType.SetOf, "person", null);
+            new TestInstance("NAME", AsnBuiltinType.SetOf, "person", null);
         }
         catch (final NullPointerException ex)
         {
@@ -141,11 +163,8 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
     @Test
     public void testGetTagName() throws Exception
     {
-        final AsnSchemaTypeDefinitionCollectionOf instance =
-                new AsnSchemaTypeDefinitionCollectionOf("NAME",
-                        AsnBuiltinType.SetOf,
-                        "person",
-                        AsnSchemaConstraint.NULL);
+        final TestInstance instance =
+                new TestInstance("NAME", AsnBuiltinType.SetOf, "person", AsnSchemaConstraint.NULL);
         // test explicit tags
         assertEquals("", instance.getTagName("1"));
         assertEquals("", instance.getTagName("2"));
@@ -161,11 +180,8 @@ public class AsnSchemaTypeDefinitionCollectionOfTest
     @Test
     public void testGetTypeName() throws Exception
     {
-        final AsnSchemaTypeDefinitionCollectionOf instance =
-                new AsnSchemaTypeDefinitionCollectionOf("NAME",
-                        AsnBuiltinType.SequenceOf,
-                        "person",
-                        AsnSchemaConstraint.NULL);
+        final TestInstance instance =
+                new TestInstance("NAME", AsnBuiltinType.SequenceOf, "person", AsnSchemaConstraint.NULL);
         // test explicit tags
         assertEquals("person", instance.getTypeName("1"));
         assertEquals("person", instance.getTypeName("2"));
