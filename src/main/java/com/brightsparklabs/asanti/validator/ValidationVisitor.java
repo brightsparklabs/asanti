@@ -19,7 +19,8 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisitor;
 
 /**
- * Visitor for validating {@link AsnSchemaTypeDefinition} objects.
+ * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the
+ * most appropriate {@link ValidationRule} pertaining to it.
  *
  * @author brightSPARK Labs
  */
