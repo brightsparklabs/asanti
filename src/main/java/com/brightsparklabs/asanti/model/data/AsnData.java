@@ -35,8 +35,8 @@ public interface AsnData
      * Determines whether the data contains any tags matching the supplied
      * regular expression
      *
-     * @param tag
-     *            tag to check
+     * @param regex
+     *            regular expression to match tags against
      *
      * @return {@code true} if the tag is in the data; {@code false} otherwise
      */

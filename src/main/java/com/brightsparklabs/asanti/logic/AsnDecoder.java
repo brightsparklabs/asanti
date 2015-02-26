@@ -53,8 +53,8 @@ public class AsnDecoder
      * @param berFile
      *            ASN.1 BER binary file to decode
      *
-     * @param asnSchema
-     *            ASN.1 schema to decode data against
+     * @param schemaFile
+     *            ASN.1 schema file to decode data against
      *
      * @param topLevelType
      *            top level type in the schema to decode objects as

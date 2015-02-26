@@ -47,8 +47,8 @@ public abstract class AsnSchemaTypeDefinitionCollectionOf extends AsnSchemaTypeD
      *
      * @param builtinType
      *            the underlying ASN.1 type of the defined type. Must be either
-     *            {@value AsnBuiltinType#SetOf} or
-     *            {@value AsnBuiltinType#SequenceOf}.
+     *            {@link AsnBuiltinType#SetOf} or
+     *            {@link AsnBuiltinType#SequenceOf}.
      *
      * @param elementTypeName
      *            the name of the type for the elements in the SET OF / SEQUENCE

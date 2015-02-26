@@ -39,14 +39,27 @@ public class DecodedTag
     /**
      * Default constructor
      *
-     * @param tagsToData
-     *            map of tags to data
+     * @param decodedTag
+     *            the full path of the decoded tag (e.g.
+     * @code{"/Document/header/published/date" )
+     *
+     * @param rawTag
+     *            the full path of the raw tag (e.g. @code{"/1/0/1"})
+     *
+     * @param type
+     *            the type of construct represented by the tag
+     *
+     * @param isFullyDecoded
+     *            whether the raw tag was completely decoded
      *
      * @throws NullPointerException
      *             if parameters are {@code null}
      *
      * @throws IllegalArgumentException
      *             if {@code decodedTag} or {@code rawTag} are blank
+     */
+    /**
+     *
      */
     public DecodedTag(String decodedTag, String rawTag, AsnSchemaTypeDefinition type, boolean isFullyDecoded)
     {
