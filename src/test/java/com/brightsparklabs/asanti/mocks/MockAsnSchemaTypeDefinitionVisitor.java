@@ -5,9 +5,11 @@
 package com.brightsparklabs.asanti.mocks;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
@@ -64,6 +66,13 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefiniti
     }
 
     @Override
+    public String visit(AsnSchemaTypeDefinitionBitString visitable)
+    {
+        return visitable.getClass()
+                .getCanonicalName();
+    }
+
+    @Override
     public String visit(AsnSchemaTypeDefinitionChoice visitable)
     {
         return visitable.getClass()
@@ -79,6 +88,13 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefiniti
 
     @Override
     public String visit(AsnSchemaTypeDefinitionIA5String visitable)
+    {
+        return visitable.getClass()
+                .getCanonicalName();
+    }
+
+    @Override
+    public String visit(AsnSchemaTypeDefinitionNumericString visitable)
     {
         return visitable.getClass()
                 .getCanonicalName();

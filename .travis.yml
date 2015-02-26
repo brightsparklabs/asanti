@@ -10,3 +10,7 @@ notifications:
   email:
     on_success: never
 
+# there is no signatory on build server, so call 'gradle jar' rather than
+# 'gradle assemble' to prevent 'signArchives' from being called
+install:
+  - gradle jar

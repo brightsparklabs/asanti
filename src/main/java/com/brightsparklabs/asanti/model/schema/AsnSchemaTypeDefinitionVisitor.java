@@ -40,6 +40,16 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
+    public T visit(AsnSchemaTypeDefinitionBitString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *            the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnSchemaTypeDefinitionChoice visitable);
 
     /**
@@ -61,6 +71,16 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionIA5String visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *            the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionNumericString visitable);
 
     /**
      * Processes the supplied object with this visitor

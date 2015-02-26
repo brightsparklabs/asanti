@@ -9,9 +9,11 @@ import java.text.ParseException;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
 
 /**
  * Logic for parsing a primitive Type Definition from a module within an ASN.1
@@ -82,6 +84,28 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
     }
 
     /**
+     * Parses a BIT STRING type definition from a module from an ASN.1 schema
+     *
+     * @param name
+     *            the name of the defined type (i.e. the text on the left hand
+     *            side of the {@code ::=})
+     *
+     * @param constraintText
+     *            the constraint text as a string
+     *
+     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    public static AsnSchemaTypeDefinitionBitString parseBitString(String name, String constraintText)
+            throws ParseException
+    {
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionBitString(name, constraint);
+    }
+
+    /**
      * Parses a UTF8String type definition from a module from an ASN.1 schema
      *
      * @param name
@@ -101,5 +125,27 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
     {
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         return new AsnSchemaTypeDefinitionUTF8String(name, constraint);
+    }
+
+    /**
+     * Parses a NumericString type definition from a module from an ASN.1 schema
+     *
+     * @param name
+     *            the name of the defined type (i.e. the text on the left hand
+     *            side of the {@code ::=})
+     *
+     * @param constraintText
+     *            the constraint text as a string
+     *
+     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    public static AsnSchemaTypeDefinitionNumericString parseNumericString(String name, String constraintText)
+            throws ParseException
+    {
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionNumericString(name, constraint);
     }
 }

@@ -28,6 +28,7 @@ public enum AsnBuiltinType
     Integer,
     IRI,
     Null,
+    NumericString,
     ObjectClassField,
     ObjectIdentifier,
     OctetString,

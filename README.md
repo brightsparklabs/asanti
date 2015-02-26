@@ -134,7 +134,7 @@ DEFINITIONS
 
 BEGIN
 
-    DefaultAge INTEGER ::= 45
+    defaultAge INTEGER ::= 45
 
     People ::= SET OF Person
 
@@ -369,6 +369,18 @@ failure.getType();     // returns DateCutoffFailed
 failure.getTag();      // returns "/Document/header/published/date"
 failure.getMessage();  // returns "The date in field /Document/header/copyright/date cannot be before 2014-01-01"
 ```
+
+## Licenses
+
+Refer to the LICENSE file for details.
+
+This project makes use of the following libraries:
+
+- [Bouncy Castle Crypto APIs](http://www.bouncycastle.org/)
+- [Google Guava](https://github.com/google/guava)
+- [Hamcrest](http://hamcrest.org/)
+- [JUnit](http://junit.org/)
+- [PowerMock](https://code.google.com/p/powermock/)
 
 ## Contributing
 Contributions are welcome. Simply fork the repository and create a pull request with your suggested changes.
