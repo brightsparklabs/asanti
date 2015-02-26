@@ -2,10 +2,10 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.model.validator;
+package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Contains the results from running a {@link Validator} over
@@ -32,5 +32,5 @@ public interface ValidationResults
      *
      * @return all failures that occurred during validation
      */
-    public ImmutableList<ValidationResult> getFailures();
+    public ImmutableSet<ValidationResult> getFailures();
 }

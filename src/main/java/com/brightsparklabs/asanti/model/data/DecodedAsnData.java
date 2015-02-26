@@ -173,9 +173,9 @@ public interface DecodedAsnData
 
     public static class Null implements DecodedAsnData
     {
-        // -------------------------------------------------------------------------
+        // ---------------------------------------------------------------------
         // IMPLEMENTATION: DecodedAsnData
-        // -------------------------------------------------------------------------
+        // ---------------------------------------------------------------------
 
         @Override
         public ImmutableSet<String> getTags()
