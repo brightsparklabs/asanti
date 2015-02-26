@@ -8,7 +8,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaComponentType;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -71,5 +72,26 @@ public class AsnSchemaTypeDefinitionChoiceTest
         catch (final IllegalArgumentException ex)
         {
         }
+    }
+
+    @Test
+    public void testGetBuiltinType() throws Exception
+    {
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForBody();
+        final AsnSchemaTypeDefinitionChoice instance =
+                new AsnSchemaTypeDefinitionChoice("Test", componentTypes, AsnSchemaConstraint.NULL);
+        assertEquals(AsnBuiltinType.Choice, instance.getBuiltinType());
+    }
+
+    @Test
+    public void testVisit() throws Exception
+    {
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForBody();
+        final AsnSchemaTypeDefinitionChoice instance =
+                new AsnSchemaTypeDefinitionChoice("Test", componentTypes, AsnSchemaConstraint.NULL);
+        assertEquals("com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice",
+                instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }

@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
+
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionSequenceOf}
  *
@@ -84,6 +86,14 @@ public class AsnSchemaTypeDefinitionSequenceOfTest
     }
 
     @Test
+    public void testGetBuiltinType() throws Exception
+    {
+        final AsnSchemaTypeDefinitionOctetString instance =
+                new AsnSchemaTypeDefinitionOctetString("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals(AsnBuiltinType.OctetString, instance.getBuiltinType());
+    }
+
+    @Test
     public void testAsnSchemaConstructedTypeDefinition_Constraint() throws Exception
     {
         // test null
@@ -95,5 +105,14 @@ public class AsnSchemaTypeDefinitionSequenceOfTest
         {
             fail("NullPointerException thrown");
         }
+    }
+
+    @Test
+    public void testVisit() throws Exception
+    {
+        final AsnSchemaTypeDefinitionOctetString instance =
+                new AsnSchemaTypeDefinitionOctetString("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals("com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString",
+                instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }

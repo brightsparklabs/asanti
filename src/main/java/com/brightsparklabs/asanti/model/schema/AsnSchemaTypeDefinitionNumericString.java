@@ -40,4 +40,14 @@ public class AsnSchemaTypeDefinitionNumericString extends AsnSchemaTypeDefinitio
     {
         super(name, AsnBuiltinType.NumericString, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

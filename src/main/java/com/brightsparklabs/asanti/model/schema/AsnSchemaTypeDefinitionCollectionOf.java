@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionCollectionOf extends AsnSchemaTypeDefinition
+public abstract class AsnSchemaTypeDefinitionCollectionOf extends AsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -47,8 +47,8 @@ public class AsnSchemaTypeDefinitionCollectionOf extends AsnSchemaTypeDefinition
      *
      * @param builtinType
      *            the underlying ASN.1 type of the defined type. Must be either
-     *            {@value AsnBuiltinType#SetOf} or
-     *            {@value AsnBuiltinType#SequenceOf}.
+     *            {@link AsnBuiltinType#SetOf} or
+     *            {@link AsnBuiltinType#SequenceOf}.
      *
      * @param elementTypeName
      *            the name of the type for the elements in the SET OF / SEQUENCE

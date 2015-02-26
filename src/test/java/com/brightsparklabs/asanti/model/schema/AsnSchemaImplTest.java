@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaModule;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.google.common.collect.ImmutableMap;
 
 public class AsnSchemaImplTest
@@ -102,78 +102,103 @@ public class AsnSchemaImplTest
     {
         // test known
         assertEquals("/Document/header/published", instance.getDecodedTag("1/0", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/lastModified/date", instance.getDecodedTag("2/0/0", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/lastModified/modifiedBy/firstName", instance.getDecodedTag("2/0/1/1", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/lastModified/modifiedBy/lastName", instance.getDecodedTag("2/0/1/2", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/lastModified/modifiedBy/title", instance.getDecodedTag("2/0/1/3", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/prefix/text", instance.getDecodedTag("2/1/1", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/content/text", instance.getDecodedTag("2/2/1", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/content/paragraphs/title", instance.getDecodedTag("2/2/2/1", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/content/paragraphs[0]/title", instance.getDecodedTag("2/2/2[0]/1", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/content/paragraphs[1]/title", instance.getDecodedTag("2/2/2[1]/1", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
                 instance.getDecodedTag("2/2/2[0]/2/1", "Document")
-                        .getDecodedData());
+                        .getDecodedData()
+                        .getTag());
         assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
                 instance.getDecodedTag("2/2/2[0]/2/2", "Document")
-                        .getDecodedData());
+                        .getDecodedData()
+                        .getTag());
         assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
                 instance.getDecodedTag("2/2/2[0]/2/3", "Document")
-                        .getDecodedData());
+                        .getDecodedData()
+                        .getTag());
         assertEquals("/Document/body/content/paragraphs[0]/points", instance.getDecodedTag("2/2/2[0]/3", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/content/paragraphs[0]/points[0]",
                 instance.getDecodedTag("2/2/2[0]/3[0]", "Document")
-                        .getDecodedData());
+                        .getDecodedData()
+                        .getTag());
         assertEquals("/Document/body/content/paragraphs[99]/title", instance.getDecodedTag("2/2/2[99]/1", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
                 instance.getDecodedTag("2/2/2[99]/2/1", "Document")
-                        .getDecodedData());
+                        .getDecodedData()
+                        .getTag());
         assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
                 instance.getDecodedTag("2/2/2[99]/2/2", "Document")
-                        .getDecodedData());
+                        .getDecodedData()
+                        .getTag());
         assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
                 instance.getDecodedTag("2/2/2[99]/2/3", "Document")
-                        .getDecodedData());
+                        .getDecodedData()
+                        .getTag());
         assertEquals("/Document/body/content/paragraphs[99]/points", instance.getDecodedTag("2/2/2[99]/3", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/content/paragraphs[99]/points[99]",
                 instance.getDecodedTag("2/2/2[99]/3[99]", "Document")
-                        .getDecodedData());
+                        .getDecodedData()
+                        .getTag());
         assertEquals("/Document/body/suffix/text", instance.getDecodedTag("2/3/1", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
 
         // test partial
         assertEquals("/Document/header/published/99/98", instance.getDecodedTag("1/0/99/98", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
         assertEquals("/Document/body/lastModified/99/98", instance.getDecodedTag("2/0/99/98", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
 
         // test unknown
         assertEquals("/Document/99/98", instance.getDecodedTag("/99/98", "Document")
-                .getDecodedData());
+                .getDecodedData()
+                .getTag());
     }
 
     @Test
     public void testGetPrintableString() throws Exception
     {
-        // TODO
+        // TODO ASN-8
     }
 
     @Test
     public void testGetDecodedObject() throws Exception
     {
-        // TODO
+        // TODO ASN-8
     }
 }

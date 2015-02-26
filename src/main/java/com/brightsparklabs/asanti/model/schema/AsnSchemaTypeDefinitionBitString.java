@@ -40,4 +40,14 @@ public class AsnSchemaTypeDefinitionBitString extends AsnSchemaTypeDefinition
     {
         super(name, AsnBuiltinType.BitString, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

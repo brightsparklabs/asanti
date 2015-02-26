@@ -9,9 +9,8 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaModule;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Unit tests for {@link AsnSchemaModule}
@@ -24,11 +23,8 @@ public class AsnSchemaModuleTest
     // FIXTURES
     // -------------------------------------------------------------------------
 
-    /** default instance to test */
+    /** instance under test */
     private static AsnSchemaModule instance;
-
-    /** all schema modules referenced in the tests */
-    private static ImmutableMap<String, AsnSchemaModule> allSchemaModules;
 
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
@@ -37,8 +33,7 @@ public class AsnSchemaModuleTest
     @BeforeClass
     public static void setUpBeforeClass()
     {
-        allSchemaModules = MockAsnSchemaModule.createMockedAsnSchemaModules();
-        instance = allSchemaModules.get("Document-PDU");
+        instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu();
     }
 
     // -------------------------------------------------------------------------
@@ -92,68 +87,64 @@ public class AsnSchemaModuleTest
     }
 
     @Test
-    public void testGetDecodedTag() throws Exception
+    public void testGetType() throws Exception
     {
-        assertEquals("/Document/header/published", instance.getDecodedTag("1/0", "Document", allSchemaModules)
-                .getDecodedData());
-        assertEquals("/Document/body/lastModified/date", instance.getDecodedTag("2/0/0", "Document", allSchemaModules)
-                .getDecodedData());
-        assertEquals("/Document/body/lastModified/modifiedBy/firstName",
-                instance.getDecodedTag("2/0/1/1", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/lastModified/modifiedBy/lastName",
-                instance.getDecodedTag("2/0/1/2", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/lastModified/modifiedBy/title",
-                instance.getDecodedTag("2/0/1/3", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/prefix/text", instance.getDecodedTag("2/1/1", "Document", allSchemaModules)
-                .getDecodedData());
-        assertEquals("/Document/body/content/text", instance.getDecodedTag("2/2/1", "Document", allSchemaModules)
-                .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs/title",
-                instance.getDecodedTag("2/2/2/1", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[0]/title",
-                instance.getDecodedTag("2/2/2[0]/1", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[1]/title",
-                instance.getDecodedTag("2/2/2[1]/1", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
-                instance.getDecodedTag("2/2/2[0]/2/1", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
-                instance.getDecodedTag("2/2/2[0]/2/2", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
-                instance.getDecodedTag("2/2/2[0]/2/3", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[0]/points",
-                instance.getDecodedTag("2/2/2[0]/3", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[0]/points[0]",
-                instance.getDecodedTag("2/2/2[0]/3[0]", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[99]/title",
-                instance.getDecodedTag("2/2/2[99]/1", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
-                instance.getDecodedTag("2/2/2[99]/2/1", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
-                instance.getDecodedTag("2/2/2[99]/2/2", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
-                instance.getDecodedTag("2/2/2[99]/2/3", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[99]/points",
-                instance.getDecodedTag("2/2/2[99]/3", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/content/paragraphs[99]/points[99]",
-                instance.getDecodedTag("2/2/2[99]/3[99]", "Document", allSchemaModules)
-                        .getDecodedData());
-        assertEquals("/Document/body/suffix/text", instance.getDecodedTag("2/3/1", "Document", allSchemaModules)
-                .getDecodedData());
+        // test known
+        assertEquals("Document", instance.getType("Document")
+                .getName());
+        assertEquals("Header", instance.getType("Header")
+                .getName());
+        assertEquals("Body", instance.getType("Body")
+                .getName());
+        assertEquals("Footer", instance.getType("Footer")
+                .getName());
+        assertEquals("PublishedMetadata", instance.getType("PublishedMetadata")
+                .getName());
+        assertEquals("ModificationMetadata", instance.getType("ModificationMetadata")
+                .getName());
+        assertEquals("Section-Note", instance.getType("Section-Note")
+                .getName());
+        assertEquals("Section-Main", instance.getType("Section-Main")
+                .getName());
+        assertEquals("Section-Note", instance.getType("Section-Note")
+                .getName());
+        assertEquals("Paragraph", instance.getType("Paragraph")
+                .getName());
+        // test imports
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("People"));
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("Person"));
+        // test unknown
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("NON_EXISTING_TYPE"));
+        // test blank
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(""));
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(" "));
+        // test null
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(null));
+    }
+
+    @Test
+    public void testGetImportedModuleFor() throws Exception
+    {
+        // test imports
+        assertEquals("People-Protocol", instance.getImportedModuleFor("People"));
+        assertEquals("People-Protocol", instance.getImportedModuleFor("Person"));
+        // test non-imported
+        assertEquals("", instance.getImportedModuleFor("Document"));
+        assertEquals("", instance.getImportedModuleFor("Header"));
+        assertEquals("", instance.getImportedModuleFor("Body"));
+        assertEquals("", instance.getImportedModuleFor("Footer"));
+        assertEquals("", instance.getImportedModuleFor("PublishedMetadata"));
+        assertEquals("", instance.getImportedModuleFor("ModificationMetadata"));
+        assertEquals("", instance.getImportedModuleFor("Section-Note"));
+        assertEquals("", instance.getImportedModuleFor("Section-Main"));
+        assertEquals("", instance.getImportedModuleFor("Section-Note"));
+        assertEquals("", instance.getImportedModuleFor("Paragraph"));
+        // test unknown
+        assertEquals("", instance.getImportedModuleFor("NON_EXISTING_TYPE"));
+        // test blank
+        assertEquals("", instance.getImportedModuleFor(""));
+        assertEquals("", instance.getImportedModuleFor(" "));
+        // test null
+        assertEquals("", instance.getImportedModuleFor(null));
     }
 }

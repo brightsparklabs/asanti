@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.data;
 
 import java.util.regex.Pattern;
 
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -17,13 +18,12 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface DecodedAsnData
 {
-
     // -------------------------------------------------------------------------
-    // CLASS VARIABLES
+    // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** null instance of interface */
-    public static final DecodedAsnData NULL = new DecodedAsnDataNull();
+    /** null instance */
+    public static final DecodedAsnData.Null NULL = new DecodedAsnData.Null();
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -127,6 +127,17 @@ public interface DecodedAsnData
     public ImmutableMap<String, String> getPrintableStringsMatching(Pattern regex);
 
     /**
+     * Gets the ASN.1 Type Definition of the specified tag
+     *
+     * @param tag
+     *            tag to retrieve the type of
+     *
+     * @return the ASN.1 Type Definition of the specified tag or
+     *         {@link AsnSchemaTypeDefinition#NULL} if the tag does not exist
+     */
+    public AsnSchemaTypeDefinition getType(String tag);
+
+    /**
      * Gets the data (bytes) associated with the specified tag as the decoded
      * Java object most appropriate to its type
      *
@@ -149,4 +160,93 @@ public interface DecodedAsnData
      *         {@code tag => data}
      */
     public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex);
+
+    // -------------------------------------------------------------------------
+    // INTERNAL CLASS: Null
+    // -------------------------------------------------------------------------
+
+    /**
+     * Null instance of {@link DecodedAsnData}
+     *
+     * @author brightSPARK Labs
+     */
+
+    public static class Null implements DecodedAsnData
+    {
+        // ---------------------------------------------------------------------
+        // IMPLEMENTATION: DecodedAsnData
+        // ---------------------------------------------------------------------
+
+        @Override
+        public ImmutableSet<String> getTags()
+        {
+            return ImmutableSet.<String>of();
+        }
+
+        @Override
+        public ImmutableSet<String> getUnmappedTags()
+        {
+            return ImmutableSet.<String>of();
+        }
+
+        @Override
+        public boolean contains(String tag)
+        {
+            return false;
+        }
+
+        @Override
+        public byte[] getBytes(String tag)
+        {
+            return new byte[0];
+        }
+
+        @Override
+        public ImmutableMap<String, byte[]> getBytesMatching(Pattern regex)
+        {
+            return ImmutableMap.<String, byte[]>of();
+        }
+
+        @Override
+        public String getHexString(String tag)
+        {
+            return "0x";
+        }
+
+        @Override
+        public ImmutableMap<String, String> getHexStringsMatching(Pattern regex)
+        {
+            return ImmutableMap.<String, String>of();
+        }
+
+        @Override
+        public String getPrintableString(String tag)
+        {
+            return "";
+        }
+
+        @Override
+        public ImmutableMap<String, String> getPrintableStringsMatching(Pattern regex)
+        {
+            return ImmutableMap.<String, String>of();
+        }
+
+        @Override
+        public AsnSchemaTypeDefinition getType(String tag)
+        {
+            return AsnSchemaTypeDefinition.NULL;
+        }
+
+        @Override
+        public Object getDecodedObject(String tag)
+        {
+            return new byte[0];
+        }
+
+        @Override
+        public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex)
+        {
+            return ImmutableMap.<String, Object>of();
+        }
+    }
 }

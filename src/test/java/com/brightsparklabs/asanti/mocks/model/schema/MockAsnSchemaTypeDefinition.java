@@ -2,7 +2,7 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.mocks;
+package com.brightsparklabs.asanti.mocks.model.schema;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;

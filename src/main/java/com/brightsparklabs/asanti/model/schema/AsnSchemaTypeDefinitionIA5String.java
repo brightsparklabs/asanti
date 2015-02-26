@@ -40,4 +40,14 @@ public class AsnSchemaTypeDefinitionIA5String extends AsnSchemaTypeDefinition
     {
         super(name, AsnBuiltinType.IA5String, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

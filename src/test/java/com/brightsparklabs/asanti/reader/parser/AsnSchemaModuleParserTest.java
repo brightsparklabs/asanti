@@ -4,8 +4,8 @@
  */
 package com.brightsparklabs.asanti.reader.parser;
 
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaModule;
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;

@@ -8,7 +8,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaEnumeratedOption;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaEnumeratedOption;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -26,11 +27,15 @@ public class AsnSchemaTypeDefinitionEnumeratedTest
     private static final ImmutableList<AsnSchemaEnumeratedOption> emptyOptions =
             ImmutableList.<AsnSchemaEnumeratedOption>of();
 
-    /** options within the {@code Person} type definition from the example schema */
+    /**
+     * options within the {@code Person} type definition from the example schema
+     */
     private static final ImmutableList<AsnSchemaEnumeratedOption> personOptions =
             MockAsnSchemaEnumeratedOption.createMockedAsnSchemaEnumeratedOptionsForPerson();
 
-    /** options within the {@code Gender} type definition from the example schema */
+    /**
+     * options within the {@code Gender} type definition from the example schema
+     */
     private static final ImmutableList<AsnSchemaEnumeratedOption> genderOptions =
             MockAsnSchemaEnumeratedOption.createMockedAsnSchemaEnumeratedOptionsForGender();
 
@@ -162,5 +167,22 @@ public class AsnSchemaTypeDefinitionEnumeratedTest
         assertEquals("", instance.getTypeName(null));
         assertEquals("", instance.getTypeName(""));
         assertEquals("", instance.getTypeName(" "));
+    }
+
+    @Test
+    public void testGetBuiltinType() throws Exception
+    {
+        final AsnSchemaTypeDefinitionEnumerated instance =
+                new AsnSchemaTypeDefinitionEnumerated("TYPE_NAME", personOptions);
+        assertEquals(AsnBuiltinType.Enumerated, instance.getBuiltinType());
+    }
+
+    @Test
+    public void testVisit() throws Exception
+    {
+        final AsnSchemaTypeDefinitionEnumerated instance =
+                new AsnSchemaTypeDefinitionEnumerated("TYPE_NAME", personOptions);
+        assertEquals("com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated",
+                instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }

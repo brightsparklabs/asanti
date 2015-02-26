@@ -40,4 +40,14 @@ public class AsnSchemaTypeDefinitionUTF8String extends AsnSchemaTypeDefinition
     {
         super(name, AsnBuiltinType.UTF8String, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

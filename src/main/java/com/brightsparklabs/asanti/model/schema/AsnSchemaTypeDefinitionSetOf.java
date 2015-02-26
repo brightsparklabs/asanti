@@ -47,4 +47,14 @@ public class AsnSchemaTypeDefinitionSetOf extends AsnSchemaTypeDefinitionCollect
     {
         super(name, AsnBuiltinType.SetOf, elementTypeName, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

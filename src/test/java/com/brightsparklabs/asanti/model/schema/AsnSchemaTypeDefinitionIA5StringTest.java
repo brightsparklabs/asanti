@@ -8,12 +8,14 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
+
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionIA5String}
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionIA5Test
+public class AsnSchemaTypeDefinitionIA5StringTest
 {
     // -------------------------------------------------------------------------
     // TESTS
@@ -69,5 +71,14 @@ public class AsnSchemaTypeDefinitionIA5Test
         final AsnSchemaTypeDefinitionIA5String instance =
                 new AsnSchemaTypeDefinitionIA5String("TEST_NAME", AsnSchemaConstraint.NULL);
         assertEquals(AsnBuiltinType.IA5String, instance.getBuiltinType());
+    }
+
+    @Test
+    public void testVisit() throws Exception
+    {
+        final AsnSchemaTypeDefinitionIA5String instance =
+                new AsnSchemaTypeDefinitionIA5String("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals("com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String",
+                instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }

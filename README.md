@@ -63,7 +63,7 @@ DEFINITIONS
 
 BEGIN
     EXPORTS Header, Body;
-    
+
     IMPORTS
       People,
       Person
@@ -158,8 +158,8 @@ END
 Decoding data against the schema can be achieved via:
 
 ```java
-final AsnSchema schema = AsnSchemaParser.parse(schemaText);
-final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema, "Document");
+final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, schemaFile, "Document");
+final DecodedAsnData allDecodedData = allDecodedData.first();
 
 // all decoded tags
 decodedData.getTags();
@@ -343,11 +343,11 @@ final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Document/body/
 
 ```java
 final Validator validator = Validator.getInstance();
-final ValidationResult result = validator.validate();
+final ValidationResult result = validator.validate(decodedAsnData);
 final ValidationFailure failure = results.getFailures().first()
 
 failure.getType();     // returns MandatoryFieldMissing
-failure.getLocation(); // returns "Document/header/copyright/date"
+failure.getTag();      // returns "/Document/header/copyright/date"
 failure.getMessage();  // returns "The field /Document/header/copyright/date cannot be empty"
 ```
 
@@ -362,11 +362,11 @@ final Validator customValidator = Validator.builder()
     .withValidationRule(rule, "/Document/body/lastModified/date")
     .build();
 
-final ValidationResult result = customValidator.validate();
+final ValidationResult result = customValidator.validate(decodedAsnData);
 final ValidationFailure failure = results.getFailures().first()
 
 failure.getType();     // returns DateCutoffFailed
-failure.getLocation(); // returns "/Document/header/published/date"
+failure.getTag();      // returns "/Document/header/published/date"
 failure.getMessage();  // returns "The date in field /Document/header/copyright/date cannot be before 2014-01-01"
 ```
 

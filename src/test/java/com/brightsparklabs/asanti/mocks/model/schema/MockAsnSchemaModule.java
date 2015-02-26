@@ -2,7 +2,7 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.mocks;
+package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
@@ -106,6 +106,7 @@ public class MockAsnSchemaModule
     {
         final Builder moduleBuilder = AsnSchemaModule.builder();
         moduleBuilder.setName("Document-PDU")
+                .addImport("People", "People-Protocol")
                 .addImport("Person", "People-Protocol");
         final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
                 MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForDocumentPdu();

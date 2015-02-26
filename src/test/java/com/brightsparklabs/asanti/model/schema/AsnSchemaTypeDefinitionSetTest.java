@@ -8,7 +8,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaComponentType;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -39,7 +40,7 @@ public class AsnSchemaTypeDefinitionSetTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionSet("TEST", null, AsnSchemaConstraint.NULL);
+            new AsnSchemaTypeDefinitionSet("NAME", null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -47,7 +48,7 @@ public class AsnSchemaTypeDefinitionSetTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionSet("TEST", componentTypes, null);
+            new AsnSchemaTypeDefinitionSet("NAME", componentTypes, null);
         }
         catch (final NullPointerException ex)
         {
@@ -71,5 +72,26 @@ public class AsnSchemaTypeDefinitionSetTest
         catch (final IllegalArgumentException ex)
         {
         }
+    }
+
+    @Test
+    public void testGetBuiltinType() throws Exception
+    {
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForBody();
+        final AsnSchemaTypeDefinitionSet instance =
+                new AsnSchemaTypeDefinitionSet("NAME", componentTypes, AsnSchemaConstraint.NULL);
+        assertEquals(AsnBuiltinType.Set, instance.getBuiltinType());
+    }
+
+    @Test
+    public void testVisit() throws Exception
+    {
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForBody();
+        final AsnSchemaTypeDefinitionSet instance =
+                new AsnSchemaTypeDefinitionSet("NAME", componentTypes, AsnSchemaConstraint.NULL);
+        assertEquals("com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet",
+                instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }

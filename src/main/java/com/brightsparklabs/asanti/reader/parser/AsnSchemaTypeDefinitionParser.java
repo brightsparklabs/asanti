@@ -19,13 +19,13 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
@@ -77,9 +77,10 @@ public final class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_UTF8STRING = Pattern.compile("^UTF8String ?(\\((.+)\\))?$");
 
     /** pattern to match a NumericString type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION_NUMERICSTRING = Pattern.compile("^NumericString ?(\\((.+)\\))?$");
+    private static final Pattern PATTERN_TYPE_DEFINITION_NUMERICSTRING =
+            Pattern.compile("^NumericString ?(\\((.+)\\))?$");
 
-    // TODO remove this once ASN-25 is completed
+    // TODO ASN-25 remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
             Pattern.compile("^(GeneralizedTime|INTEGER|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
@@ -171,8 +172,8 @@ public final class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             /*
-             * TODO handle all primitive types (see ASN-25) Currently this is
-             * just a catch all to log warnings
+             * TODO ASN-25 - handle all primitive types. Currently this is just
+             * a catch-all to log warnings
              */
             final String builtinType = matcher.group(1);
             final String error =
@@ -193,7 +194,7 @@ public final class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_CLASS.matcher(value);
         if (matcher.matches())
         {
-            // TODO handle CLASS (see ASN-39)
+            // TODO ASN-39 - handle CLASS
             log.warning("Type Definitions for CLASS not yet supported");
             return AsnSchemaTypeDefinition.NULL;
         }
@@ -360,10 +361,9 @@ public final class AsnSchemaTypeDefinitionParser
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionBitString parseBitString(String name, Matcher matcher)
-            throws ParseException
+    private static AsnSchemaTypeDefinitionBitString parseBitString(String name, Matcher matcher) throws ParseException
     {
-        // TODO parse list of named bits (see ASN-87)
+        // TODO ASN-87 - parse list of named bits
         final String constraintText = Strings.nullToEmpty(matcher.group(6));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseBitString(name, constraintText);
     }

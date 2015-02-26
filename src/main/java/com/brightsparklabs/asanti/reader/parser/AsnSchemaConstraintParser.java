@@ -37,7 +37,7 @@ public class AsnSchemaConstraintParser
      */
     public static AsnSchemaConstraint parse(String constraintText) throws ParseException
     {
-        // TODO parse constraint text (see ASN-38)
+        // TODO ASN-38 - parse constraint text
         return AsnSchemaConstraint.NULL;
     }
 }

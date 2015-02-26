@@ -62,7 +62,7 @@ public class AsnSchemaTypeDefinitionEnumerated extends AsnSchemaTypeDefinition
         final ImmutableMap.Builder<String, AsnSchemaEnumeratedOption> tagsToOptionsBuilder = ImmutableMap.builder();
 
         // next expected tag is used to generate tags for automatic tagging
-        // TODO ensure that generating for all missing tags is correct and safe
+        // TODO ASN-80 - ensure that generating for all missing tags is correct
         int nextExpectedTag = 0;
 
         for (final AsnSchemaEnumeratedOption option : options)
@@ -92,5 +92,11 @@ public class AsnSchemaTypeDefinitionEnumerated extends AsnSchemaTypeDefinition
     {
         final AsnSchemaEnumeratedOption option = tagsToOptions.get(tag);
         return (option == null) ? "" : option.getTagName();
+    }
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
     }
 }

@@ -40,4 +40,14 @@ public class AsnSchemaTypeDefinitionOctetString extends AsnSchemaTypeDefinition
     {
         super(name, AsnBuiltinType.OctetString, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

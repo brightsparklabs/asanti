@@ -7,13 +7,15 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
+import com.brightsparklabs.asanti.common.Visitable;
+
 /**
  * A type definition from a within a module specification within an ASN.1
  * schema.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinition
+public abstract class AsnSchemaTypeDefinition implements Visitable<AsnSchemaTypeDefinitionVisitor<?>>
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -134,17 +136,35 @@ public class AsnSchemaTypeDefinition
     }
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaConstructTypeDefinitionNUll
+    // INTERNAL CLASS: AsnSchemaConstructTypeDefinitionNull
     // -------------------------------------------------------------------------
+
     /**
      * Null instance of {@link AsnSchemaTypeDefinition}
      */
-    private static class AsnSchemaTypeDefinitionNull extends AsnSchemaTypeDefinition
+    public static class AsnSchemaTypeDefinitionNull extends AsnSchemaTypeDefinition
     {
+        // ---------------------------------------------------------------------
+        // CONSTRUCTION
+        // ---------------------------------------------------------------------
 
+        /**
+         * Default constructor. This is private. Use
+         * {@link AsnSchemaTypeDefinition#NULL} to obtain an instance.
+         */
         private AsnSchemaTypeDefinitionNull()
         {
             super("NULL", AsnBuiltinType.Null, null);
+        }
+
+        // ---------------------------------------------------------------------
+        // IMPLEMENTATION: AsnSchemaTypeDefinition
+        // ---------------------------------------------------------------------
+
+        @Override
+        public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+        {
+            return visitor.visit(this);
         }
     }
 }

@@ -48,4 +48,14 @@ public class AsnSchemaTypeDefinitionSequenceOf extends AsnSchemaTypeDefinitionCo
     {
         super(name, AsnBuiltinType.SequenceOf, elementTypeName, constraint);
     }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    {
+        return visitor.visit(this);
+    }
 }
