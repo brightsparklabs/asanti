@@ -8,8 +8,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaComponentType;
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaTypeDefinitionVisitor;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
 import com.google.common.collect.ImmutableList;
 
 /**

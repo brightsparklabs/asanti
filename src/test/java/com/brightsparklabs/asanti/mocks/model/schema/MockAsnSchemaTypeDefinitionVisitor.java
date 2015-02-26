@@ -2,7 +2,7 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.mocks;
+package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;

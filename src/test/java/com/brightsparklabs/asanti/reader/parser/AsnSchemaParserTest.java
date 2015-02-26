@@ -18,8 +18,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.brightsparklabs.asanti.mocks.MockAsnSchema;
-import com.brightsparklabs.asanti.mocks.MockAsnSchemaModule;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.google.common.base.Splitter;
