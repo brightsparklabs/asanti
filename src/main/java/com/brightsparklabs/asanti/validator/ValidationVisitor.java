@@ -18,6 +18,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisibleString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisitor;
 
 /**
@@ -100,6 +101,12 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
 
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionUTF8String visitable)
+    {
+        return ValidationRule.NULL;
+    }
+
+    @Override
+    public ValidationRule visit(AsnSchemaTypeDefinitionVisibleString visitable)
     {
         return ValidationRule.NULL;
     }

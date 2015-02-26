@@ -26,6 +26,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisibleString;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
@@ -80,10 +81,14 @@ public final class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_NUMERICSTRING =
             Pattern.compile("^NumericString ?(\\((.+)\\))?$");
 
+    /** pattern to match a VisibleString type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_VISIBLESTRING =
+            Pattern.compile("^VisibleString ?(\\((.+)\\))?$");
+
     // TODO ASN-25 remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
-            Pattern.compile("^(GeneralizedTime|INTEGER|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            Pattern.compile("^(GeneralizedTime|INTEGER|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
@@ -166,6 +171,10 @@ public final class AsnSchemaTypeDefinitionParser
         // check if defining a NumericString
         matcher = PATTERN_TYPE_DEFINITION_NUMERICSTRING.matcher(value);
         if (matcher.matches()) { return parseNumericString(name, matcher); }
+
+        // check if defining a VisibleString
+        matcher = PATTERN_TYPE_DEFINITION_VISIBLESTRING.matcher(value);
+        if (matcher.matches()) { return parseVisibleString(name, matcher); }
 
         // check if defining a PRIMITIVE
         matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
@@ -434,6 +443,29 @@ public final class AsnSchemaTypeDefinitionParser
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseNumericString(name, constraintText);
+    }
+
+    /**
+     * Parses a VisibleString type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param matcher
+     *            matcher which matched on
+     *            {@link #PATTERN_TYPE_DEFINITION_VISIBLESTRING}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionVisibleString} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionVisibleString parseVisibleString(String name, Matcher matcher)
+            throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        return AsnSchemaTypeDefinitionPrimitiveParser.parseVisibleString(name, constraintText);
     }
 
     /**

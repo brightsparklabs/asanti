@@ -16,6 +16,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisibleString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisitor;
 
 /**
@@ -137,6 +138,13 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefiniti
 
     @Override
     public String visit(AsnSchemaTypeDefinitionUTF8String visitable)
+    {
+        return visitable.getClass()
+                .getCanonicalName();
+    }
+
+    @Override
+    public String visit(AsnSchemaTypeDefinitionVisibleString visitable)
     {
         return visitable.getClass()
                 .getCanonicalName();
