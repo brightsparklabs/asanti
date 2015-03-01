@@ -11,6 +11,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
@@ -147,5 +148,27 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
     {
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         return new AsnSchemaTypeDefinitionNumericString(name, constraint);
+    }
+
+    /**
+     * Parses an Integer type definition from a module from an ASN.1 schema
+     *
+     * @param name
+     *            the name of the defined type (i.e. the text on the left hand
+     *            side of the {@code ::=})
+     *
+     * @param constraintText
+     *            the constraint text as a string
+     *
+     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    public static AsnSchemaTypeDefinitionInteger parseInteger(String name, String constraintText)
+            throws ParseException
+    {
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionInteger(name, constraint);
     }
 }
