@@ -15,9 +15,11 @@ import java.util.regex.Pattern;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaFixedNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaFixedSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
+import com.google.common.base.Strings;
 
 /**
  * Logic for parsing Constraints from an {@link AsnSchemaTypeDefinition} or
@@ -33,15 +35,21 @@ public class AsnSchemaConstraintParser
 
     /** pattern to match a bounded SIZE constraint */
     private static final Pattern PATTERN_SIZE_CONSTRAINT =
-            Pattern.compile("\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)\\s*\\)\\s*");
+            Pattern.compile("\\(?\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)[^\\)]*\\)\\s*\\)?");
 
     /** pattern to match a fixed SIZE constraint */
     private static final Pattern PATTERN_FIXED_SIZE_CONSTRAINT =
-            Pattern.compile("\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\)\\s*");
+            Pattern.compile("\\(?\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\)\\s*\\)?");
 
     /** pattern to match a bounded numeric value constraint */
     private static final Pattern PATTERN_NUMERIC_VALUE_CONSTRAINT =
-            Pattern.compile("\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)\\s");
+            Pattern.compile("\\(?\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)[^\\)]*\\)?");
+
+    /** pattern to match a bounded numeric value constraint */
+    private static final Pattern PATTERN_FIXED_NUMERIC_VALUE_CONSTRAINT = Pattern.compile("\\(?\\s*(\\d+)\\s*\\)?");
+
+    /** error message if an unsupported constraint definition is found */
+    private static final String ERROR_UNSUPPORTED_CONSTRAINT = "Unsupported constraint definition found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -68,7 +76,11 @@ public class AsnSchemaConstraintParser
      */
     public static AsnSchemaConstraint parse(String constraintText) throws ParseException
     {
-        log.log(Level.INFO, "Found constraint: {0}", constraintText);
+        constraintText = Strings.nullToEmpty(constraintText)
+                .trim();
+        if (constraintText.isEmpty()) { return AsnSchemaConstraint.NULL; }
+
+        log.log(Level.FINE, "Found constraint: {0}", constraintText);
 
         // check if defining a bounded SIZE constraint
         Matcher matcher = PATTERN_SIZE_CONSTRAINT.matcher(constraintText);
@@ -82,8 +94,15 @@ public class AsnSchemaConstraintParser
         matcher = PATTERN_NUMERIC_VALUE_CONSTRAINT.matcher(constraintText);
         if (matcher.matches()) { return parseNumericValueConstraint(matcher); }
 
-        // TODO ASN-38 - parse constraint text
-        log.log(Level.WARNING, "Could not parse constraint: {0}", constraintText);
+        // check if defining a fixed numeric value constraint
+        matcher = PATTERN_FIXED_NUMERIC_VALUE_CONSTRAINT.matcher(constraintText);
+        if (matcher.matches()) { return parseFixedNumericValueConstraint(matcher); }
+
+        final String error = ERROR_UNSUPPORTED_CONSTRAINT + constraintText;
+        // TODO ASN-96 - handle value assignment variables in constraints
+        // e.g. (SIZE (1..maxNrOfPoints))
+        // throw new ParseException(error, -1);
+        log.warning(error);
         return AsnSchemaConstraint.NULL;
     }
 
@@ -149,7 +168,7 @@ public class AsnSchemaConstraintParser
     }
 
     /**
-     * Parses a SIZE constraint containing an upper and lower bound
+     * Parses a numeric value constraint containing an upper and lower bound
      *
      * @param matcher
      *            matcher which matched on
@@ -175,6 +194,35 @@ public class AsnSchemaConstraintParser
                     String.format("Could not convert the following strings into integers: %s, %s",
                             matcher.group(1),
                             matcher.group(2));
+            throw new ParseException(error, -1);
+        }
+    }
+
+    /**
+     * Parses a numeric value constraint containing a fixed value
+     *
+     * @param matcher
+     *            matcher which matched on
+     *            {@link #PATTERN_FIXED_NUMERIC_VALUE_CONSTRAINT}
+     *
+     * @return an {@link AsnSchemaFixedNumericValueConstraint} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaFixedNumericValueConstraint parseFixedNumericValueConstraint(Matcher matcher)
+            throws ParseException
+    {
+        try
+        {
+            final BigInteger fixedBound = new BigInteger(matcher.group(1));
+            return new AsnSchemaFixedNumericValueConstraint(fixedBound);
+        }
+        catch (final NumberFormatException ex)
+        {
+            final String error =
+                    String.format("Could not convert the following strings into integers: %s", matcher.group(1));
             throw new ParseException(error, -1);
         }
     }
