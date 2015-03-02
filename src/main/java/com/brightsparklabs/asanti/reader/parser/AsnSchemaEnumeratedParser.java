@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaEnumeratedOption;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaEnumeratedOption;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 

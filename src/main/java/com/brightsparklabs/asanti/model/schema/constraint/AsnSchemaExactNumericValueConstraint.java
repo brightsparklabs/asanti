@@ -9,8 +9,8 @@ import static com.google.common.base.Preconditions.*;
 
 import java.math.BigInteger;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 
 /**
  * Models an 'exact' numeric value constraint from within a

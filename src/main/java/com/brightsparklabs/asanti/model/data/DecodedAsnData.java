@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.model.data;
 
 import java.util.regex.Pattern;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 

@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 
 /**
  * Unit tests for {@link AsnSchemaModule}

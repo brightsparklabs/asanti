@@ -12,9 +12,9 @@ import com.google.common.collect.Lists;
 import org.mockito.ArgumentMatcher;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.DecodeResult;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchema} which

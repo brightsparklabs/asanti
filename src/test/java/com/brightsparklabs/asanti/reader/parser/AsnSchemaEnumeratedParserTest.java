@@ -10,7 +10,7 @@ import java.text.ParseException;
 
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaEnumeratedOption;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaEnumeratedOption;
 import com.google.common.collect.ImmutableList;
 
 /**

@@ -7,15 +7,15 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
 
-import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionInteger;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisibleString;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionNumericString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionOctetString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
 
 /**
  * Logic for parsing a primitive Type Definition from a module within an ASN.1

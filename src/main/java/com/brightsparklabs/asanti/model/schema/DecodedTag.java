@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Strings;
 
 /**
@@ -41,10 +42,10 @@ public class DecodedTag
      *
      * @param decodedTag
      *            the full path of the decoded tag (e.g.
-     * @code{"/Document/header/published/date" )
+     *            {@code "/Document/header/published/date"})
      *
      * @param rawTag
-     *            the full path of the raw tag (e.g. @code{"/1/0/1"})
+     *            the full path of the raw tag (e.g. {@code "/1/0/1"})
      *
      * @param type
      *            the type of construct represented by the tag

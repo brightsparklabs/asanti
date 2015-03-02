@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 
 import static org.mockito.Mockito.*;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
 
 /**

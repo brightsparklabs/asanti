@@ -5,22 +5,22 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionInteger;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisibleString;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisitor;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionChoice;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionEnumerated;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionNumericString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionOctetString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSequence;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSequenceOf;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSet;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSetOf;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisitor;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
 
 /**
  * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the

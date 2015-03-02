@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 

@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionPrimitiveParser}
