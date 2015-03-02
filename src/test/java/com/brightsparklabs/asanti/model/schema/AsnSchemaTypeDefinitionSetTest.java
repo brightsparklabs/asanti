@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.google.common.collect.ImmutableList;
 
 /**

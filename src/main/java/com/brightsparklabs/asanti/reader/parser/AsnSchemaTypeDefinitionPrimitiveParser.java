@@ -7,7 +7,6 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
@@ -16,6 +15,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericStr
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisibleString;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 
 /**
  * Logic for parsing a primitive Type Definition from a module within an ASN.1
