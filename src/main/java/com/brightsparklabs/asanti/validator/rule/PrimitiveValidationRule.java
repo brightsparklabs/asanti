@@ -7,7 +7,6 @@ package com.brightsparklabs.asanti.validator.rule;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.validator.ValidationResult;
-import com.brightsparklabs.asanti.validator.ValidationRule;
 
 /**
  * Represents a rule to validate {@link DecodedAsnData} against.
