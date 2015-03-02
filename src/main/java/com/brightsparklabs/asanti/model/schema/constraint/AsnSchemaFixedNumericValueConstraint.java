@@ -19,17 +19,14 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaNumericValueConstraint implements AsnSchemaConstraint
+public class AsnSchemaFixedNumericValueConstraint implements AsnSchemaConstraint
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the minimum value the data can be */
-    private final BigInteger minimumValue;
-
-    /** the minimum value the data can be */
-    private final BigInteger maximumValue;
+    /** the length the data must be */
+    private final BigInteger fixedValue;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -47,12 +44,10 @@ public class AsnSchemaNumericValueConstraint implements AsnSchemaConstraint
      * @throws NullPointerException
      *             if any of the parameters are {@code null}
      */
-    public AsnSchemaNumericValueConstraint(BigInteger minimumValue, BigInteger maximumValue)
+    public AsnSchemaFixedNumericValueConstraint(BigInteger fixedValue)
     {
-        checkNotNull(minimumValue);
-        checkNotNull(maximumValue);
-        this.minimumValue = minimumValue;
-        this.maximumValue = maximumValue;
+        checkNotNull(fixedValue);
+        this.fixedValue = fixedValue;
     }
 
     // -------------------------------------------------------------------------
@@ -60,8 +55,8 @@ public class AsnSchemaNumericValueConstraint implements AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Returns true if the value in the supplied array falls between the minimum
-     * and maximum bounds of this constraint. The value of the array is read via
+     * Returns true if the value in the supplied array matches the fixed value
+     * of this constraint. The value of the array is read via
      * {@link BigInteger#BigInteger(byte[])}.
      *
      * @param data
@@ -73,7 +68,14 @@ public class AsnSchemaNumericValueConstraint implements AsnSchemaConstraint
     @Override
     public boolean isMet(byte[] data)
     {
-        final BigInteger value = new BigInteger(data);
-        return (value.compareTo(minimumValue) > -1) && (value.compareTo(maximumValue) < 1);
+        try
+        {
+            final BigInteger value = new BigInteger(data);
+            return fixedValue.equals(value);
+        }
+        catch (final NumberFormatException ex)
+        {
+            return false;
+        }
     }
 }

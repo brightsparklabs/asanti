@@ -22,6 +22,31 @@ public class AsnSchemaNumericValueConstraintTest
     // -------------------------------------------------------------------------
 
     @Test
+    public void testAsnSchemaNumericValueConstraint() throws Exception
+    {
+        // test valid
+        new AsnSchemaNumericValueConstraint(BigInteger.ZERO, BigInteger.ONE);
+
+        // test null
+        try
+        {
+            new AsnSchemaNumericValueConstraint(null, BigInteger.ONE);
+            fail("NullPointerException not thrown");
+        }
+        catch (final NullPointerException ex)
+        {
+        }
+        try
+        {
+            new AsnSchemaNumericValueConstraint(BigInteger.ZERO, null);
+            fail("NullPointerException not thrown");
+        }
+        catch (final NullPointerException ex)
+        {
+        }
+    }
+
+    @Test
     public void testIsMet() throws Exception
     {
         // test entire Long range
@@ -29,11 +54,16 @@ public class AsnSchemaNumericValueConstraintTest
                 new AsnSchemaNumericValueConstraint(BigInteger.valueOf(Long.MIN_VALUE),
                         BigInteger.valueOf(Long.MAX_VALUE));
         // test values within range
-        for (long value = Long.MIN_VALUE; value <= Long.MIN_VALUE; value++)
-        {
-            assertEquals(true, instance.isMet(BigInteger.valueOf(value)
-                    .toByteArray()));
-        }
+        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
+                .toByteArray()));
+        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
+                .add(BigInteger.TEN)
+                .toByteArray()));
+        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MAX_VALUE)
+                .subtract(BigInteger.TEN)
+                .toByteArray()));
+        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MAX_VALUE)
+                .toByteArray()));
         // test values outside of range
         assertEquals(false, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
                 .subtract(BigInteger.ONE)
