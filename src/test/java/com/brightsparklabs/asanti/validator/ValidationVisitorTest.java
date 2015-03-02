@@ -23,7 +23,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNullInstance;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -47,7 +47,7 @@ public class ValidationVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionNull()
     {
-        final AsnSchemaTypeDefinitionNull visitable = AsnSchemaTypeDefinition.NULL;
+        final AsnSchemaTypeDefinitionNullInstance visitable = AsnSchemaTypeDefinition.NULL;
         assertEquals(ValidationRule.NULL, instance.visit(visitable));
     }
 

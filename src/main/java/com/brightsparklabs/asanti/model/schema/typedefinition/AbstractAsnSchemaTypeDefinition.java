@@ -91,6 +91,12 @@ public abstract class AbstractAsnSchemaTypeDefinition implements AsnSchemaTypeDe
     }
 
     @Override
+    public AsnSchemaConstraint getConstraint()
+    {
+        return constraint;
+    }
+
+    @Override
     public String getTagName(String tag)
     {
         // no constructs within base type definition

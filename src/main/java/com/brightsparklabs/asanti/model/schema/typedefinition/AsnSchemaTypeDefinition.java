@@ -6,6 +6,7 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import com.brightsparklabs.asanti.common.Visitable;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 
 /**
  * A type definition from a within a module specification within an ASN.1
@@ -20,7 +21,7 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
     // -------------------------------------------------------------------------
 
     /** null instance */
-    public static final AsnSchemaTypeDefinitionNull NULL = new AsnSchemaTypeDefinitionNull();
+    public static final AsnSchemaTypeDefinitionNullInstance NULL = new AsnSchemaTypeDefinitionNullInstance();
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -31,14 +32,22 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
      *
      * @return the name of this type definition
      */
-    public abstract String getName();
+    public String getName();
 
     /**
      * Returns the ASN.1 built-in type for this type definition
      *
      * @return the ASN.1 built-in type for this type definition
      */
-    public abstract AsnBuiltinType getBuiltinType();
+    public AsnBuiltinType getBuiltinType();
+
+    /**
+     * Returns the constraint associated with this type definition
+     *
+     * @return the constraint associated with this type definition or
+     *         {@link AsnSchemaConstraint#NULL} if there is no constraint.
+     */
+    public AsnSchemaConstraint getConstraint();
 
     /**
      * Returns the name of the specified tag
@@ -49,7 +58,7 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
      * @return name of the specified tag; or an empty string if tag is not
      *         recognised.
      */
-    public abstract String getTagName(String tag);
+    public String getTagName(String tag);
 
     /**
      * Returns the name of the type definition associated with the specified tag
@@ -60,16 +69,19 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
      * @return name of the type definition associated with the specified tag; or
      *         an empty string if tag is not recognised.
      */
-    public abstract String getTypeName(String tag);
+    public String getTypeName(String tag);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaConstructTypeDefinitionNull
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractAsnSchemaTypeDefinition}
+     * Null instance of {@link AbstractAsnSchemaTypeDefinition}.
+     * <p>
+     * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
+     * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
      */
-    public static class AsnSchemaTypeDefinitionNull extends AbstractAsnSchemaTypeDefinition
+    public static class AsnSchemaTypeDefinitionNullInstance extends AbstractAsnSchemaTypeDefinition
     {
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -79,9 +91,9 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
          * Default constructor. This is private. Use
          * {@link AbstractAsnSchemaTypeDefinition#NULL} to obtain an instance.
          */
-        private AsnSchemaTypeDefinitionNull()
+        private AsnSchemaTypeDefinitionNullInstance()
         {
-            super("NULL", AsnBuiltinType.Null, null);
+            super("NULL", AsnBuiltinType.Null, AsnSchemaConstraint.NULL);
         }
 
         // ---------------------------------------------------------------------
