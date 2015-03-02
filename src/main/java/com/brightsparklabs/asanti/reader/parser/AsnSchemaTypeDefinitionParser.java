@@ -89,7 +89,7 @@ public final class AsnSchemaTypeDefinitionParser
 
     /** pattern to match an Integer type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_INTEGER =
-            Pattern.compile("^INTEGER ?(\\{(.+?)\\})? ?(\\((.+?)\\)) ?(DEFAULT ?.)?$");
+            Pattern.compile("^INTEGER ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
 
     // TODO ASN-25 remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
@@ -498,7 +498,7 @@ public final class AsnSchemaTypeDefinitionParser
     private static AsnSchemaTypeDefinitionInteger parseInteger(String name, Matcher matcher) throws ParseException
     {
         // TODO ASN-95 - parse optional distinguished values
-        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        final String constraintText = Strings.nullToEmpty(matcher.group(3));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(name, constraintText);
     }
 
