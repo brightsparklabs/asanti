@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.DecodeResult;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
@@ -94,7 +94,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final Map<String, DecodedTag> unmappedTags = Maps.newHashMap();
         for (final String rawTag : asnData.getRawTags())
         {
-            final DecodeResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag, topLevelTypeName);
+            final OperationResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag, topLevelTypeName);
             final DecodedTag decodedTag = decodeResult.getDecodedData();
             if (decodeResult.wasSuccessful())
             {
