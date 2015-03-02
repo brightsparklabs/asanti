@@ -15,7 +15,7 @@ import org.junit.Test;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaFixedNumericValueConstraintTest
+public class AsnSchemaExactNumericValueConstraintTest
 {
     // -------------------------------------------------------------------------
     // TESTS
@@ -25,12 +25,12 @@ public class AsnSchemaFixedNumericValueConstraintTest
     public void testAsnSchemaFixedNumericValueConstraint() throws Exception
     {
         // test valid
-        new AsnSchemaFixedNumericValueConstraint(BigInteger.ZERO);
+        new AsnSchemaExactNumericValueConstraint(BigInteger.ZERO);
 
         // test null
         try
         {
-            new AsnSchemaFixedNumericValueConstraint(null);
+            new AsnSchemaExactNumericValueConstraint(null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -42,8 +42,8 @@ public class AsnSchemaFixedNumericValueConstraintTest
     public void testIsMet() throws Exception
     {
         // test against Long.MIN_VALUE
-        AsnSchemaFixedNumericValueConstraint instance =
-                new AsnSchemaFixedNumericValueConstraint(BigInteger.valueOf(Long.MIN_VALUE));
+        AsnSchemaExactNumericValueConstraint instance =
+                new AsnSchemaExactNumericValueConstraint(BigInteger.valueOf(Long.MIN_VALUE));
 
         assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
                 .toByteArray()));
@@ -55,7 +55,7 @@ public class AsnSchemaFixedNumericValueConstraintTest
                 .toByteArray()));
 
         // test Long.MAX_VALUE
-        instance = new AsnSchemaFixedNumericValueConstraint(BigInteger.valueOf(Long.MIN_VALUE));
+        instance = new AsnSchemaExactNumericValueConstraint(BigInteger.valueOf(Long.MIN_VALUE));
         assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
                 .toByteArray()));
         assertEquals(false, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
@@ -66,7 +66,7 @@ public class AsnSchemaFixedNumericValueConstraintTest
                 .toByteArray()));
 
         // test values outside of Long range
-        instance = new AsnSchemaFixedNumericValueConstraint(new BigInteger("-92233720368547758080"));
+        instance = new AsnSchemaExactNumericValueConstraint(new BigInteger("-92233720368547758080"));
         assertEquals(true, instance.isMet(new BigInteger("-92233720368547758080").toByteArray()));
         assertEquals(false, instance.isMet(new BigInteger("92233720368547758070").toByteArray()));
         assertEquals(false, instance.isMet(new BigInteger("-92233720368547758081").toByteArray()));

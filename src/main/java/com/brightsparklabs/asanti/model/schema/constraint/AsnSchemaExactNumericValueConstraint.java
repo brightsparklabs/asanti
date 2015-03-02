@@ -13,20 +13,20 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 
 /**
- * Models a minimum/maximum value 'bounded' numeric value constraint from within
- * a {@link AsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
- * {@code INTEGER (0 .. 256)}.
+ * Models an 'exact' numeric value constraint from within a
+ * {@link AsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
+ * {@code INTEGER (10)}.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaFixedNumericValueConstraint implements AsnSchemaConstraint
+public class AsnSchemaExactNumericValueConstraint implements AsnSchemaConstraint
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the length the data must be */
-    private final BigInteger fixedValue;
+    /** the value the data must be */
+    private final BigInteger exactValue;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -35,19 +35,16 @@ public class AsnSchemaFixedNumericValueConstraint implements AsnSchemaConstraint
     /**
      * Default constructor
      *
-     * @param minimumValue
-     *            the minimum value the data can be
-     *
-     * @param maximumValue
-     *            the minimum value the data can be
+     * @param exactValue
+     *            the value the data must be
      *
      * @throws NullPointerException
      *             if any of the parameters are {@code null}
      */
-    public AsnSchemaFixedNumericValueConstraint(BigInteger fixedValue)
+    public AsnSchemaExactNumericValueConstraint(BigInteger exactValue)
     {
-        checkNotNull(fixedValue);
-        this.fixedValue = fixedValue;
+        checkNotNull(exactValue);
+        this.exactValue = exactValue;
     }
 
     // -------------------------------------------------------------------------
@@ -55,7 +52,7 @@ public class AsnSchemaFixedNumericValueConstraint implements AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Returns true if the value in the supplied array matches the fixed value
+     * Returns true if the value in the supplied array matches the exact value
      * of this constraint. The value of the array is read via
      * {@link BigInteger#BigInteger(byte[])}.
      *
@@ -71,7 +68,7 @@ public class AsnSchemaFixedNumericValueConstraint implements AsnSchemaConstraint
         try
         {
             final BigInteger value = new BigInteger(data);
-            return fixedValue.equals(value);
+            return exactValue.equals(value);
         }
         catch (final NumberFormatException ex)
         {

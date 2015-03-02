@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaFixedNumericValueConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaFixedSizeConstraint;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactNumericValueConstraint;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
 import com.google.common.base.Strings;
@@ -37,16 +37,16 @@ public class AsnSchemaConstraintParser
     private static final Pattern PATTERN_SIZE_CONSTRAINT =
             Pattern.compile("\\(?\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)[^\\)]*\\)\\s*\\)?");
 
-    /** pattern to match a fixed SIZE constraint */
-    private static final Pattern PATTERN_FIXED_SIZE_CONSTRAINT =
+    /** pattern to match an exact SIZE constraint */
+    private static final Pattern PATTERN_EXACT_SIZE_CONSTRAINT =
             Pattern.compile("\\(?\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\)\\s*\\)?");
 
     /** pattern to match a bounded numeric value constraint */
     private static final Pattern PATTERN_NUMERIC_VALUE_CONSTRAINT =
             Pattern.compile("\\(?\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)[^\\)]*\\)?");
 
-    /** pattern to match a bounded numeric value constraint */
-    private static final Pattern PATTERN_FIXED_NUMERIC_VALUE_CONSTRAINT = Pattern.compile("\\(?\\s*(\\d+)\\s*\\)?");
+    /** pattern to match an exact numeric value constraint */
+    private static final Pattern PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT = Pattern.compile("\\(?\\s*(\\d+)\\s*\\)?");
 
     /** error message if an unsupported constraint definition is found */
     private static final String ERROR_UNSUPPORTED_CONSTRAINT = "Unsupported constraint definition found: ";
@@ -86,17 +86,17 @@ public class AsnSchemaConstraintParser
         Matcher matcher = PATTERN_SIZE_CONSTRAINT.matcher(constraintText);
         if (matcher.matches()) { return parseSizeConstraint(matcher); }
 
-        // check if defining a fixed SIZE constraint
-        matcher = PATTERN_FIXED_SIZE_CONSTRAINT.matcher(constraintText);
-        if (matcher.matches()) { return parseFixedSizeConstraint(matcher); }
+        // check if defining a exact SIZE constraint
+        matcher = PATTERN_EXACT_SIZE_CONSTRAINT.matcher(constraintText);
+        if (matcher.matches()) { return parseExactSizeConstraint(matcher); }
 
         // check if defining a bounded numeric value constraint
         matcher = PATTERN_NUMERIC_VALUE_CONSTRAINT.matcher(constraintText);
         if (matcher.matches()) { return parseNumericValueConstraint(matcher); }
 
-        // check if defining a fixed numeric value constraint
-        matcher = PATTERN_FIXED_NUMERIC_VALUE_CONSTRAINT.matcher(constraintText);
-        if (matcher.matches()) { return parseFixedNumericValueConstraint(matcher); }
+        // check if defining a exact numeric value constraint
+        matcher = PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT.matcher(constraintText);
+        if (matcher.matches()) { return parseExactNumericValueConstraint(matcher); }
 
         final String error = ERROR_UNSUPPORTED_CONSTRAINT + constraintText;
         // TODO ASN-96 - handle value assignment variables in constraints
@@ -125,9 +125,9 @@ public class AsnSchemaConstraintParser
     {
         try
         {
-            final int minimumBound = Integer.parseInt(matcher.group(1));
-            final int maximumBound = Integer.parseInt(matcher.group(2));
-            return new AsnSchemaSizeConstraint(minimumBound, maximumBound);
+            final int minimumLength = Integer.parseInt(matcher.group(1));
+            final int maximumLength = Integer.parseInt(matcher.group(2));
+            return new AsnSchemaSizeConstraint(minimumLength, maximumLength);
         }
         catch (final NumberFormatException ex)
         {
@@ -140,24 +140,24 @@ public class AsnSchemaConstraintParser
     }
 
     /**
-     * Parses a SIZE constraint containing a fixed size
+     * Parses a SIZE constraint containing an exact size
      *
      * @param matcher
      *            matcher which matched on
-     *            {@link #PATTERN_FIXED_SIZE_CONSTRAINT}
+     *            {@link #PATTERN_EXACT_SIZE_CONSTRAINT}
      *
-     * @return an {@link AsnSchemaFixedSizeConstraint} representing the parsed
+     * @return an {@link AsnSchemaExactSizeConstraint} representing the parsed
      *         data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaFixedSizeConstraint parseFixedSizeConstraint(Matcher matcher) throws ParseException
+    private static AsnSchemaExactSizeConstraint parseExactSizeConstraint(Matcher matcher) throws ParseException
     {
         try
         {
-            final int fixedBound = Integer.parseInt(matcher.group(1));
-            return new AsnSchemaFixedSizeConstraint(fixedBound);
+            final int fixedLength = Integer.parseInt(matcher.group(1));
+            return new AsnSchemaExactSizeConstraint(fixedLength);
         }
         catch (final NumberFormatException ex)
         {
@@ -184,9 +184,9 @@ public class AsnSchemaConstraintParser
     {
         try
         {
-            final BigInteger minimumBound = new BigInteger(matcher.group(1));
-            final BigInteger maximumBound = new BigInteger(matcher.group(2));
-            return new AsnSchemaNumericValueConstraint(minimumBound, maximumBound);
+            final BigInteger minimumValue = new BigInteger(matcher.group(1));
+            final BigInteger maximumValue = new BigInteger(matcher.group(2));
+            return new AsnSchemaNumericValueConstraint(minimumValue, maximumValue);
         }
         catch (final NumberFormatException ex)
         {
@@ -199,25 +199,25 @@ public class AsnSchemaConstraintParser
     }
 
     /**
-     * Parses a numeric value constraint containing a fixed value
+     * Parses a numeric value constraint containing an exact value
      *
      * @param matcher
      *            matcher which matched on
-     *            {@link #PATTERN_FIXED_NUMERIC_VALUE_CONSTRAINT}
+     *            {@link #PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT}
      *
-     * @return an {@link AsnSchemaFixedNumericValueConstraint} representing the
+     * @return an {@link AsnSchemaExactNumericValueConstraint} representing the
      *         parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaFixedNumericValueConstraint parseFixedNumericValueConstraint(Matcher matcher)
+    private static AsnSchemaExactNumericValueConstraint parseExactNumericValueConstraint(Matcher matcher)
             throws ParseException
     {
         try
         {
-            final BigInteger fixedBound = new BigInteger(matcher.group(1));
-            return new AsnSchemaFixedNumericValueConstraint(fixedBound);
+            final BigInteger exactValue = new BigInteger(matcher.group(1));
+            return new AsnSchemaExactNumericValueConstraint(exactValue);
         }
         catch (final NumberFormatException ex)
         {

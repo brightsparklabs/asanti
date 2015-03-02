@@ -13,7 +13,7 @@ import org.junit.Test;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaFixedSizeConstraintTest
+public class AsnSchemaExactSizeConstraintTest
 {
     // -------------------------------------------------------------------------
     // TESTS
@@ -23,28 +23,28 @@ public class AsnSchemaFixedSizeConstraintTest
     public void testIsMet() throws Exception
     {
         // test minimum
-        AsnSchemaFixedSizeConstraint instance = new AsnSchemaFixedSizeConstraint(0);
+        AsnSchemaExactSizeConstraint instance = new AsnSchemaExactSizeConstraint(0);
         assertEquals(true, instance.isMet(new byte[0]));
         assertEquals(false, instance.isMet(new byte[1]));
         assertEquals(false, instance.isMet(new byte[256]));
         assertEquals(false, instance.isMet(new byte[10000]));
 
         // test large (1 MB)
-        instance = new AsnSchemaFixedSizeConstraint(1000000);
+        instance = new AsnSchemaExactSizeConstraint(1000000);
         assertEquals(false, instance.isMet(new byte[0]));
         assertEquals(false, instance.isMet(new byte[1]));
         assertEquals(false, instance.isMet(new byte[256]));
         assertEquals(true, instance.isMet(new byte[1000000]));
 
         // test normal
-        instance = new AsnSchemaFixedSizeConstraint(256);
+        instance = new AsnSchemaExactSizeConstraint(256);
         assertEquals(false, instance.isMet(new byte[0]));
         assertEquals(false, instance.isMet(new byte[1]));
         assertEquals(false, instance.isMet(new byte[255]));
         assertEquals(true, instance.isMet(new byte[256]));
 
         // test invalid bounds
-        instance = new AsnSchemaFixedSizeConstraint(Integer.MIN_VALUE);
+        instance = new AsnSchemaExactSizeConstraint(Integer.MIN_VALUE);
         assertEquals(false, instance.isMet(new byte[0]));
         assertEquals(false, instance.isMet(new byte[1]));
         assertEquals(false, instance.isMet(new byte[255]));

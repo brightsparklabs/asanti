@@ -9,20 +9,20 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 
 /**
- * Models a 'fixed' SIZE constraint from within a
+ * Models an 'exact' SIZE constraint from within a
  * {@link AsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
  * {@code SIZE (10)}.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaFixedSizeConstraint implements AsnSchemaConstraint
+public class AsnSchemaExactSizeConstraint implements AsnSchemaConstraint
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
     /** the length the data must be */
-    private final int fixedLength;
+    private final int exactLength;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -31,12 +31,12 @@ public class AsnSchemaFixedSizeConstraint implements AsnSchemaConstraint
     /**
      * Default constructor
      *
-     * @param fixedLength
+     * @param exactLength
      *            the length the data must be
      */
-    public AsnSchemaFixedSizeConstraint(int fixedLength)
+    public AsnSchemaExactSizeConstraint(int exactLength)
     {
-        this.fixedLength = fixedLength;
+        this.exactLength = exactLength;
     }
 
     // -------------------------------------------------------------------------
@@ -44,7 +44,7 @@ public class AsnSchemaFixedSizeConstraint implements AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Returns true if the length of the supplied array matches the fixed length
+     * Returns true if the length of the supplied array matches the exact length
      * of this constraint. The content of the byte array is irrelevant.
      *
      * @param data
@@ -56,6 +56,6 @@ public class AsnSchemaFixedSizeConstraint implements AsnSchemaConstraint
     @Override
     public boolean isMet(byte[] data)
     {
-        return data.length == fixedLength;
+        return data.length == exactLength;
     }
 }

@@ -14,8 +14,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaFixedNumericValueConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaFixedSizeConstraint;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactNumericValueConstraint;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
 
@@ -69,15 +69,15 @@ public class AsnSchemaConstraintParserTest
     {
         // sunny day case
         AsnSchemaConstraint result = AsnSchemaConstraintParser.parse("SIZE (1)");
-        assertTrue(result instanceof AsnSchemaFixedSizeConstraint);
+        assertTrue(result instanceof AsnSchemaExactSizeConstraint);
         // extra brackets
         result = AsnSchemaConstraintParser.parse("(SIZE (1))");
-        assertTrue(result instanceof AsnSchemaFixedSizeConstraint);
+        assertTrue(result instanceof AsnSchemaExactSizeConstraint);
         // extra whitespace
         result = AsnSchemaConstraintParser.parse("\r\n\t\tSIZE(\r\n\t\t1 \r\n\t\t)\r\n\t\t");
-        assertTrue(result instanceof AsnSchemaFixedSizeConstraint);
+        assertTrue(result instanceof AsnSchemaExactSizeConstraint);
         result = AsnSchemaConstraintParser.parse("\r\n\t\t(\n\t  SIZE(1  \t\n ) \t  )\n");
-        assertTrue(result instanceof AsnSchemaFixedSizeConstraint);
+        assertTrue(result instanceof AsnSchemaExactSizeConstraint);
     }
 
     @Test
@@ -108,14 +108,14 @@ public class AsnSchemaConstraintParserTest
     {
         // sunny day case
         AsnSchemaConstraint result = AsnSchemaConstraintParser.parse("1");
-        assertTrue(result instanceof AsnSchemaFixedNumericValueConstraint);
+        assertTrue(result instanceof AsnSchemaExactNumericValueConstraint);
         // extra brackets
         result = AsnSchemaConstraintParser.parse("(1)");
-        assertTrue(result instanceof AsnSchemaFixedNumericValueConstraint);
+        assertTrue(result instanceof AsnSchemaExactNumericValueConstraint);
         // extra whitespace
         result = AsnSchemaConstraintParser.parse("\r\n\t\t\r\n\t\t1 \r\n\t\t\r\n\t\t");
-        assertTrue(result instanceof AsnSchemaFixedNumericValueConstraint);
+        assertTrue(result instanceof AsnSchemaExactNumericValueConstraint);
         result = AsnSchemaConstraintParser.parse("\r\n\t\t\n\t  (1  \t\n ) \t  \n");
-        assertTrue(result instanceof AsnSchemaFixedNumericValueConstraint);
+        assertTrue(result instanceof AsnSchemaExactNumericValueConstraint);
     }
 }

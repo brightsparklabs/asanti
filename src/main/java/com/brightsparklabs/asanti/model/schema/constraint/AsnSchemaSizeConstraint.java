@@ -22,10 +22,10 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /** the minimum length the data can be */
-    private final int minimumBound;
+    private final int minimumLength;
 
     /** the minimum length the data can be */
-    private final int maximumBound;
+    private final int maximumLength;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -34,16 +34,16 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
     /**
      * Default constructor
      *
-     * @param minimumBound
+     * @param minimumLength
      *            the minimum length the data can be
      *
-     * @param maximumBound
+     * @param maximumLength
      *            the minimum length the data can be
      */
-    public AsnSchemaSizeConstraint(int minimumBound, int maximumBound)
+    public AsnSchemaSizeConstraint(int minimumLength, int maximumLength)
     {
-        this.minimumBound = minimumBound;
-        this.maximumBound = maximumBound;
+        this.minimumLength = minimumLength;
+        this.maximumLength = maximumLength;
     }
 
     // -------------------------------------------------------------------------
@@ -65,6 +65,6 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
     public boolean isMet(byte[] data)
     {
         final int length = data.length;
-        return length >= minimumBound && length <= maximumBound;
+        return length >= minimumLength && length <= maximumLength;
     }
 }
