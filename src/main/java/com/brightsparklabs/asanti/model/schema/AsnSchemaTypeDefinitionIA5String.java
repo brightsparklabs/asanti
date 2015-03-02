@@ -5,6 +5,8 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+
 /**
  * An {@code IA5String} type definition from a within a module specification
  * within an ASN.1 schema.

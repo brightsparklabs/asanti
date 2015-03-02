@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionUTF8String}

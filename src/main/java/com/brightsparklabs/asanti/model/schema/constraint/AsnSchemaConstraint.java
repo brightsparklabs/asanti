@@ -3,7 +3,10 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.model.schema;
+package com.brightsparklabs.asanti.model.schema.constraint;
+
+import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 
 /**
  * Models a Constraint from within a {@link AsnSchemaTypeDefinition} or
@@ -11,7 +14,7 @@ package com.brightsparklabs.asanti.model.schema;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaConstraint
+public interface AsnSchemaConstraint
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -21,9 +24,19 @@ public class AsnSchemaConstraint
     public static final AsnSchemaTypeDefinitionNull NULL = new AsnSchemaTypeDefinitionNull();
 
     // -------------------------------------------------------------------------
-    // CONSTRUCTION
+    // PUBLIC METHODS
     // -------------------------------------------------------------------------
-    // TODO ASN-38 - define constraint
+
+    /**
+     * Returns whether the supplied data conforms to this constraint
+     *
+     * @param data
+     *            the data to test
+     *
+     * @return {@code true} if the data conforms to this constraint;
+     *         {@code false} otherwise
+     */
+    public boolean isMet(byte[] data);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTypeDefinitionNull
@@ -32,7 +45,7 @@ public class AsnSchemaConstraint
     /**
      * Null instance of {@link AsnSchemaTypeDefinition}
      */
-    private static class AsnSchemaTypeDefinitionNull extends AsnSchemaConstraint
+    public static class AsnSchemaTypeDefinitionNull implements AsnSchemaConstraint
     {
         /**
          * Default constructor. Private, use {@link AsnSchemaConstraint#NULL}
@@ -40,6 +53,16 @@ public class AsnSchemaConstraint
          */
         private AsnSchemaTypeDefinitionNull()
         {
+        }
+
+        // ---------------------------------------------------------------------
+        // IMPLEMENTATION: AsnSchemaConstraint
+        // ---------------------------------------------------------------------
+
+        @Override
+        public boolean isMet(byte[] data)
+        {
+            return true;
         }
     }
 }

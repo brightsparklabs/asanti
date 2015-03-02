@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.google.common.collect.ImmutableSet;
 
 /**

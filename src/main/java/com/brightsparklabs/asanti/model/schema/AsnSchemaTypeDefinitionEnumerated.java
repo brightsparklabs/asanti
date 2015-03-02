@@ -10,6 +10,7 @@ import static com.google.common.base.Preconditions.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 

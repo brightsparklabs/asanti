@@ -8,6 +8,7 @@ package com.brightsparklabs.asanti.model.schema;
 import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.common.Visitable;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 
 /**
  * A type definition from a within a module specification within an ASN.1
