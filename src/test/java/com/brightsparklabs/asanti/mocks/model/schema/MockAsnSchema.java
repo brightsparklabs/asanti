@@ -8,6 +8,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import com.google.common.collect.Lists;
+
 import org.mockito.ArgumentMatcher;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;

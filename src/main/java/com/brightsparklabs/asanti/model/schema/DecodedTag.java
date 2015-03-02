@@ -58,9 +58,6 @@ public class DecodedTag
      * @throws IllegalArgumentException
      *             if {@code decodedTag} or {@code rawTag} are blank
      */
-    /**
-     *
-     */
     public DecodedTag(String decodedTag, String rawTag, AsnSchemaTypeDefinition type, boolean isFullyDecoded)
     {
         this.tag = Strings.nullToEmpty(decodedTag)

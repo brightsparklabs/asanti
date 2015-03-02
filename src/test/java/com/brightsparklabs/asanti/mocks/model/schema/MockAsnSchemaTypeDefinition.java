@@ -11,12 +11,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 
 /**
  * Utility class for obtaining mocked instances of
- * {@link AsnSchemaTypeDefinition} which conform to the test ASN.1 schema
+ * {@link AbstractAsnSchemaTypeDefinition} which conform to the test ASN.1 schema
  * defined in the {@linkplain README.md} file
  *
  * @author brightSPARK Labs
@@ -52,18 +52,18 @@ public class MockAsnSchemaTypeDefinition
     }
 
     /**
-     * Creates mock {@link AsnSchemaTypeDefinition} instances conforming to the
+     * Creates mock {@link AbstractAsnSchemaTypeDefinition} instances conforming to the
      * 'Document-PDU' module in the test ASN.1 schema defined in the
      * {@linkplain README.md} file
      *
      * @return mock instances for use within the 'Document-PDU' module
      */
-    public static ImmutableList<AsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForDocumentPdu()
+    public static ImmutableList<AbstractAsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForDocumentPdu()
     {
-        final ImmutableList.Builder<AsnSchemaTypeDefinition> listBuilder = ImmutableList.builder();
+        final ImmutableList.Builder<AbstractAsnSchemaTypeDefinition> listBuilder = ImmutableList.builder();
 
         // build Document
-        AsnSchemaTypeDefinition mocktypeDefinition =
+        AbstractAsnSchemaTypeDefinition mocktypeDefinition =
                 MockAsnSchemaTypeDefinition.builder("Document", AsnBuiltinType.Sequence)
                         .addComponentType("1", "header", "Header")
                         .addComponentType("2", "body", "Body")
@@ -131,18 +131,18 @@ public class MockAsnSchemaTypeDefinition
     }
 
     /**
-     * Creates mock {@link AsnSchemaTypeDefinition} instances conforming to the
+     * Creates mock {@link AbstractAsnSchemaTypeDefinition} instances conforming to the
      * 'People-Protocol' module in the test ASN.1 schema defined in the
      * {@linkplain README.md} file
      *
      * @return mock instances for use within the 'PeopleProtocol' module
      */
-    public static ImmutableList<AsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForPeopleProtocol()
+    public static ImmutableList<AbstractAsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForPeopleProtocol()
     {
-        final ImmutableList.Builder<AsnSchemaTypeDefinition> listBuilder = ImmutableList.builder();
+        final ImmutableList.Builder<AbstractAsnSchemaTypeDefinition> listBuilder = ImmutableList.builder();
 
         // build People
-        AsnSchemaTypeDefinition mocktypeDefinition =
+        AbstractAsnSchemaTypeDefinition mocktypeDefinition =
                 MockAsnSchemaTypeDefinition.builder("People", AsnBuiltinType.SetOf)
                         .build();
         listBuilder.add(mocktypeDefinition);
@@ -168,7 +168,7 @@ public class MockAsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
 
     /**
-     * Builder for creating mocked instances of {@link AsnSchemaTypeDefinition}
+     * Builder for creating mocked instances of {@link AbstractAsnSchemaTypeDefinition}
      *
      * @author brightSPARK Labs
      */
@@ -178,7 +178,7 @@ public class MockAsnSchemaTypeDefinition
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
 
-        final AsnSchemaTypeDefinition mockedInstance = mock(AsnSchemaTypeDefinition.class);
+        final AbstractAsnSchemaTypeDefinition mockedInstance = mock(AbstractAsnSchemaTypeDefinition.class);
 
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -270,9 +270,9 @@ public class MockAsnSchemaTypeDefinition
         /**
          * Creates a mocked instance from the data in this builder
          *
-         * @return a mocked instance of {@link AsnSchemaTypeDefinition}
+         * @return a mocked instance of {@link AbstractAsnSchemaTypeDefinition}
          */
-        public AsnSchemaTypeDefinition build()
+        public AbstractAsnSchemaTypeDefinition build()
         {
             return mockedInstance;
         }

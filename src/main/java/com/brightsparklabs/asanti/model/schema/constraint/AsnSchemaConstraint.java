@@ -6,10 +6,10 @@
 package com.brightsparklabs.asanti.model.schema.constraint;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 
 /**
- * Models a Constraint from within a {@link AsnSchemaTypeDefinition} or
+ * Models a Constraint from within a {@link AbstractAsnSchemaTypeDefinition} or
  * {@link AsnSchemaComponentType}
  *
  * @author brightSPARK Labs
@@ -21,7 +21,7 @@ public interface AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /** null instance */
-    public static final AsnSchemaTypeDefinitionNull NULL = new AsnSchemaTypeDefinitionNull();
+    public static final AsnSchemaConstraintNull NULL = new AsnSchemaConstraintNull();
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -43,15 +43,15 @@ public interface AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AsnSchemaTypeDefinition}
+     * Null instance of {@link AbstractAsnSchemaTypeDefinition}
      */
-    public static class AsnSchemaTypeDefinitionNull implements AsnSchemaConstraint
+    public static class AsnSchemaConstraintNull implements AsnSchemaConstraint
     {
         /**
          * Default constructor. Private, use {@link AsnSchemaConstraint#NULL}
          * instead to obtain a singleton instance
          */
-        private AsnSchemaTypeDefinitionNull()
+        private AsnSchemaConstraintNull()
         {
         }
 

@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
@@ -22,7 +22,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstrain
 import com.google.common.base.Strings;
 
 /**
- * Logic for parsing Constraints from an {@link AsnSchemaTypeDefinition} or
+ * Logic for parsing Constraints from an {@link AbstractAsnSchemaTypeDefinition} or
  * {@link AsnSchemaComponentType}
  *
  * @author brightSPARK Labs
@@ -63,7 +63,7 @@ public class AsnSchemaConstraintParser
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the constraint from an {@link AsnSchemaTypeDefinition} or
+     * Parses the constraint from an {@link AbstractAsnSchemaTypeDefinition} or
      * {@link AsnSchemaComponentType}
      *
      * @param constraintText

@@ -8,7 +8,7 @@ import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -219,7 +219,7 @@ public class AsnSchemaModuleParserTest
         {
             // need to mock AsnSchemaTypeDefinitionParser.parse static method for the
             // People type definition
-            AsnSchemaTypeDefinition mockedPeopleTypeDefinition =
+            AbstractAsnSchemaTypeDefinition mockedPeopleTypeDefinition =
                     MockAsnSchemaTypeDefinition.builder("People", AsnBuiltinType.SetOf).build();
 
             PowerMockito.mockStatic(AsnSchemaTypeDefinitionParser.class);
@@ -273,7 +273,7 @@ public class AsnSchemaModuleParserTest
                 .thenReturn(mockedImportsImmutableMap);
 
         // prepare mocked AsnSchemaTypeDefinitions for Document PDU module
-        final ImmutableList<AsnSchemaTypeDefinition> mockedAsnSchemaTypeDefinitions =
+        final ImmutableList<AbstractAsnSchemaTypeDefinition> mockedAsnSchemaTypeDefinitions =
                 MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForDocumentPdu();
 
         // mock AsnSchemaTypeDefinitionParser.parse static method
@@ -323,7 +323,7 @@ public class AsnSchemaModuleParserTest
     public void testParse_PeopleProtocol() throws Exception
     {
         // prepare mocked AsnSchemaTypeDefinitions for People Protocol module
-        final ImmutableList<AsnSchemaTypeDefinition> mockedAsnSchemaTypeDefinitions =
+        final ImmutableList<AbstractAsnSchemaTypeDefinition> mockedAsnSchemaTypeDefinitions =
                 MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForPeopleProtocol();
 
         // mock AsnSchemaTypeDefinitionParser.parse static method

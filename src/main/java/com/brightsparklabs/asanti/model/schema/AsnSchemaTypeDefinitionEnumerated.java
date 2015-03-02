@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableMap;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionEnumerated extends AsnSchemaTypeDefinition
+public class AsnSchemaTypeDefinitionEnumerated extends AbstractAsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES

@@ -11,11 +11,11 @@ import org.junit.Test;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 
 /**
- * Unit tests for {@link AsnSchemaTypeDefinition}
+ * Unit tests for {@link AbstractAsnSchemaTypeDefinition}
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionTest
+public class AbstractAsnSchemaTypeDefinitionTest
 {
     // -------------------------------------------------------------------------
     // FIXTURES
@@ -24,7 +24,7 @@ public class AsnSchemaTypeDefinitionTest
     /**
      * New definition of test class with dummy abstract methods
      */
-    private static class TestInstance extends AsnSchemaTypeDefinition
+    private static class TestInstance extends AbstractAsnSchemaTypeDefinition
     {
         public TestInstance(String name, AsnBuiltinType builtinType, AsnSchemaConstraint constraint)
         {

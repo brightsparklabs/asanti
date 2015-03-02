@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -297,7 +297,7 @@ public class AsnSchemaModuleParser
             {
                 final String name = matcher.group(1);
                 final String value = matcher.group(4);
-                final AsnSchemaTypeDefinition typeDefinition = AsnSchemaTypeDefinitionParser.parse(name, value);
+                final AbstractAsnSchemaTypeDefinition typeDefinition = AsnSchemaTypeDefinitionParser.parse(name, value);
                 moduleBuilder.addType(typeDefinition);
                 continue;
             }

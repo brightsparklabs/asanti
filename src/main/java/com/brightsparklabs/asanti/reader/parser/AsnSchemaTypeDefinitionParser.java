@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaEnumeratedOption;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
@@ -133,12 +134,12 @@ public final class AsnSchemaTypeDefinitionParser
      *            the value of the defined type (i.e. the text on the right hand
      *            side of the {@code ::=})
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    public static AsnSchemaTypeDefinition parse(String name, String value) throws ParseException
+    public static AbstractAsnSchemaTypeDefinition parse(String name, String value) throws ParseException
     {
         log.log(Level.FINE, "Found type definition: {0} = {1}", new Object[] { name, value });
 

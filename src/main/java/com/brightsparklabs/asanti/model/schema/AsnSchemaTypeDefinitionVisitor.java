@@ -9,7 +9,8 @@ import com.brightsparklabs.asanti.common.Visitor;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
 
 /**
- * Interface for visitors that can visit {@link AsnSchemaTypeDefinition} objects
+ * Interface for visitors that can visit {@link AbstractAsnSchemaTypeDefinition}
+ * objects
  *
  * @param <T>
  *            type of value returned by this {@link Visitor}

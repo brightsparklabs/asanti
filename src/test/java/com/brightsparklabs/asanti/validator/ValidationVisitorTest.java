@@ -12,7 +12,6 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaEnumeratedOption;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
@@ -24,6 +23,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisibleString;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.google.common.collect.ImmutableList;
 
 /**

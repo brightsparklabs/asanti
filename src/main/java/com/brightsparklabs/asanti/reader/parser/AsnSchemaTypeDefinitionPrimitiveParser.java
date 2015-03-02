@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionInteger;
@@ -52,7 +52,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @param constraintText
      *            the constraint text as a string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
@@ -74,7 +74,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @param constraintText
      *            the constraint text as a string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
@@ -96,7 +96,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @param constraintText
      *            the constraint text as a string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
@@ -118,7 +118,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @param constraintText
      *            the constraint text as a string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
@@ -140,7 +140,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @param constraintText
      *            the constraint text as a string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
@@ -162,7 +162,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @param constraintText
      *            the constraint text as a string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
@@ -184,7 +184,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @param constraintText
      *            the constraint text as a string
      *
-     * @return an {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type

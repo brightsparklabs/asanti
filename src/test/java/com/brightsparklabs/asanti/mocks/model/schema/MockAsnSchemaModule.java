@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -108,9 +108,9 @@ public class MockAsnSchemaModule
         moduleBuilder.setName("Document-PDU")
                 .addImport("People", "People-Protocol")
                 .addImport("Person", "People-Protocol");
-        final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
+        final ImmutableList<AbstractAsnSchemaTypeDefinition> typeDefinitions =
                 MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForDocumentPdu();
-        for (final AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
+        for (final AbstractAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
         {
             moduleBuilder.addType(typeDefinition);
         }
@@ -127,9 +127,9 @@ public class MockAsnSchemaModule
     {
         final Builder moduleBuilder = AsnSchemaModule.builder();
         moduleBuilder.setName("People-Protocol");
-        final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
+        final ImmutableList<AbstractAsnSchemaTypeDefinition> typeDefinitions =
                 MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForPeopleProtocol();
-        for (final AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
+        for (final AbstractAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
         {
             moduleBuilder.addType(typeDefinition);
         }

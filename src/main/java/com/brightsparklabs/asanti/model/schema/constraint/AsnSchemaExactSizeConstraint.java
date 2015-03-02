@@ -6,11 +6,11 @@
 package com.brightsparklabs.asanti.model.schema.constraint;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 
 /**
  * Models an 'exact' SIZE constraint from within a
- * {@link AsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
+ * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
  * {@code SIZE (10)}.
  *
  * @author brightSPARK Labs

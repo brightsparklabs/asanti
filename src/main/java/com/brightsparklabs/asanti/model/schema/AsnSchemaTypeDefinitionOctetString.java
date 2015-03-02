@@ -13,7 +13,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionOctetString extends AsnSchemaTypeDefinition
+public class AsnSchemaTypeDefinitionOctetString extends AbstractAsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION

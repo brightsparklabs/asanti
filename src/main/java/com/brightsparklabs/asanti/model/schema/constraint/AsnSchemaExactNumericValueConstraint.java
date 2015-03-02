@@ -10,11 +10,11 @@ import static com.google.common.base.Preconditions.*;
 import java.math.BigInteger;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.AbstractAsnSchemaTypeDefinition;
 
 /**
  * Models an 'exact' numeric value constraint from within a
- * {@link AsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
+ * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
  * {@code INTEGER (10)}.
  *
  * @author brightSPARK Labs
