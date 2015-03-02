@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
 /**
  * Default implementation of {@link Validator}.

@@ -2,9 +2,12 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.validator;
+package com.brightsparklabs.asanti.validator.rule;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.ValidationResultImpl;
+import com.brightsparklabs.asanti.validator.ValidationResultImpl.ValidationSuccess;
 
 /**
  * Represents a rule to validate {@link DecodedAsnData} against.

@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.validator;
 import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
 /**
  * Represents the result from running a {@link ValidationRule} against a tag in

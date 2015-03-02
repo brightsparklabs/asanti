@@ -5,6 +5,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
 /**
  * Represents the result from running a {@link ValidationRule} against
