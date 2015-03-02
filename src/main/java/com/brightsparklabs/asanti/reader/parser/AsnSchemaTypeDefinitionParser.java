@@ -19,6 +19,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
@@ -80,10 +81,14 @@ public final class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_NUMERICSTRING =
             Pattern.compile("^NumericString ?(\\((.+)\\))?$");
 
+    /** pattern to match an Integer type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_INTEGER =
+            Pattern.compile("^INTEGER ?(\\{(.+?)\\})? ?(\\((.+?)\\)) ?(DEFAULT ?.)?$");
+
     // TODO ASN-25 remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
-            Pattern.compile("^(GeneralizedTime|INTEGER|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            Pattern.compile("^(GeneralizedTime|VisibleString|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
@@ -166,6 +171,10 @@ public final class AsnSchemaTypeDefinitionParser
         // check if defining a NumericString
         matcher = PATTERN_TYPE_DEFINITION_NUMERICSTRING.matcher(value);
         if (matcher.matches()) { return parseNumericString(name, matcher); }
+
+        // check if defining a Integer
+        matcher = PATTERN_TYPE_DEFINITION_INTEGER.matcher(value);
+        if (matcher.matches()) { return parseInteger(name, matcher); }
 
         // check if defining a PRIMITIVE
         matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
@@ -434,6 +443,30 @@ public final class AsnSchemaTypeDefinitionParser
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseNumericString(name, constraintText);
+    }
+
+    /**
+     * Parses an Integer type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param matcher
+     *            matcher which matched on
+     *            {@link #PATTERN_TYPE_DEFINITION_INTEGER}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionInteger} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionInteger parseInteger(String name, Matcher matcher)
+            throws ParseException
+    {
+        // TODO ASN-95 - parse optional distinguished values
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        return AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(name, constraintText);
     }
 
     /**

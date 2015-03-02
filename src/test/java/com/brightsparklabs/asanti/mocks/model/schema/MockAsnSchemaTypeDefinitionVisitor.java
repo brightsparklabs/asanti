@@ -9,6 +9,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
@@ -88,6 +89,13 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefiniti
 
     @Override
     public String visit(AsnSchemaTypeDefinitionIA5String visitable)
+    {
+        return visitable.getClass()
+                .getCanonicalName();
+    }
+
+    @Override
+    public String visit(AsnSchemaTypeDefinitionInteger visitable)
     {
         return visitable.getClass()
                 .getCanonicalName();
