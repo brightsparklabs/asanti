@@ -11,6 +11,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionNumericString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
@@ -53,6 +54,12 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
 
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionEnumerated visitable)
+    {
+        return ValidationRule.NULL;
+    }
+
+    @Override
+    public ValidationRule visit(AsnSchemaTypeDefinitionInteger visitable)
     {
         return ValidationRule.NULL;
     }

@@ -216,4 +216,43 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         assertEquals("", instance.getTagName(""));
         assertEquals("", instance.getTypeName(""));
     }
+
+    @Test
+    public void testParseInteger() throws Exception
+    {
+        // null name
+        try
+        {
+            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(null, "TEST_CONSTRAINTS");
+            fail("NullPointerException not thrown");
+        }
+        catch (final NullPointerException ex)
+        {
+        }
+
+        // blank name
+        try
+        {
+            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger("", "TEST_CONSTRAINTS");
+            fail("IllegalArgumentException not thrown");
+        }
+        catch (final IllegalArgumentException ex)
+        {
+        }
+        try
+        {
+            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(" ", "TEST_CONSTRAINTS");
+            fail("IllegalArgumentException not thrown");
+        }
+        catch (final IllegalArgumentException ex)
+        {
+        }
+
+        final AsnSchemaTypeDefinition instance =
+                AsnSchemaTypeDefinitionPrimitiveParser.parseInteger("TEST_NAME", "TEST_CONSTRAINTS");
+        assertEquals(AsnBuiltinType.Integer, instance.getBuiltinType());
+        assertEquals("TEST_NAME", instance.getName());
+        assertEquals("", instance.getTagName(""));
+        assertEquals("", instance.getTypeName(""));
+    }
 }

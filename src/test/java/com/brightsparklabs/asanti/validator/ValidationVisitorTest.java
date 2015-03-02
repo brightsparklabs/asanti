@@ -16,6 +16,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition.AsnSchema
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionEnumerated;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionOctetString;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequence;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf;
@@ -73,6 +74,14 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionIA5String visitable =
                 new AsnSchemaTypeDefinitionIA5String("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals(ValidationRule.NULL, instance.visit(visitable));
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionInteger()
+    {
+        final AsnSchemaTypeDefinitionInteger visitable =
+                new AsnSchemaTypeDefinitionInteger("TEST_NAME", AsnSchemaConstraint.NULL);
         assertEquals(ValidationRule.NULL, instance.visit(visitable));
     }
 
