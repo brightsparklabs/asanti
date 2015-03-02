@@ -21,7 +21,7 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
     // -------------------------------------------------------------------------
 
     /** null instance */
-    public static final AsnSchemaTypeDefinitionNullInstance NULL = new AsnSchemaTypeDefinitionNullInstance();
+    public static final AsnSchemaTypeDefinition.Null NULL = new AsnSchemaTypeDefinition.Null();
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -81,7 +81,7 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
      */
-    public static class AsnSchemaTypeDefinitionNullInstance extends AbstractAsnSchemaTypeDefinition
+    public static class Null extends AbstractAsnSchemaTypeDefinition
     {
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -91,7 +91,7 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
          * Default constructor. This is private. Use
          * {@link AbstractAsnSchemaTypeDefinition#NULL} to obtain an instance.
          */
-        private AsnSchemaTypeDefinitionNullInstance()
+        private Null()
         {
             super("NULL", AsnBuiltinType.Null, AsnSchemaConstraint.NULL);
         }

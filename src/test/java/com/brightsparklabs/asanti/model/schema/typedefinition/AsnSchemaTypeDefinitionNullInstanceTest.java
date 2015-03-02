@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNullInstance;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
 
 public class AsnSchemaTypeDefinitionNullInstanceTest
 {
@@ -22,28 +22,28 @@ public class AsnSchemaTypeDefinitionNullInstanceTest
     @Test
     public void testGetName() throws Exception
     {
-        final AsnSchemaTypeDefinitionNullInstance instance = AsnSchemaTypeDefinition.NULL;
+        final AsnSchemaTypeDefinition.Null instance = AsnSchemaTypeDefinition.NULL;
         assertEquals("NULL", instance.getName());
     }
 
     @Test
     public void testGetBuiltinType() throws Exception
     {
-        final AsnSchemaTypeDefinitionNullInstance instance = AsnSchemaTypeDefinition.NULL;
+        final Null instance = AsnSchemaTypeDefinition.NULL;
         assertEquals(AsnBuiltinType.Null, instance.getBuiltinType());
     }
 
     @Test
     public void testGetConstraint() throws Exception
     {
-        final AsnSchemaTypeDefinitionNullInstance instance = AsnSchemaTypeDefinition.NULL;
+        final AsnSchemaTypeDefinition.Null instance = AsnSchemaTypeDefinition.NULL;
         assertEquals(AsnSchemaConstraint.NULL, instance.getConstraint());
     }
 
     @Test
     public void testGetTagName() throws Exception
     {
-        final AsnSchemaTypeDefinitionNullInstance instance = AsnSchemaTypeDefinition.NULL;
+        final AsnSchemaTypeDefinition.Null instance = AsnSchemaTypeDefinition.NULL;
         assertEquals("", instance.getTagName("0"));
         assertEquals("", instance.getTagName("1"));
         assertEquals("", instance.getTagName("2"));
@@ -54,7 +54,7 @@ public class AsnSchemaTypeDefinitionNullInstanceTest
     @Test
     public void testGetTypeName() throws Exception
     {
-        final AsnSchemaTypeDefinitionNullInstance instance = AsnSchemaTypeDefinition.NULL;
+        final AsnSchemaTypeDefinition.Null instance = AsnSchemaTypeDefinition.NULL;
         assertEquals("", instance.getTypeName("0"));
         assertEquals("", instance.getTypeName("1"));
         assertEquals("", instance.getTypeName("2"));
@@ -65,8 +65,8 @@ public class AsnSchemaTypeDefinitionNullInstanceTest
     @Test
     public void testVisit() throws Exception
     {
-        final AsnSchemaTypeDefinitionNullInstance instance = AsnSchemaTypeDefinition.NULL;
-        assertEquals(AsnSchemaTypeDefinitionNullInstance.class.getCanonicalName(),
+        final AsnSchemaTypeDefinition.Null instance = AsnSchemaTypeDefinition.NULL;
+        assertEquals(AsnSchemaTypeDefinition.Null.class.getCanonicalName(),
                 instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }

@@ -6,7 +6,7 @@
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import com.brightsparklabs.asanti.common.Visitor;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNullInstance;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
 
 /**
  * Interface for visitors that can visit {@link AbstractAsnSchemaTypeDefinition}
@@ -31,7 +31,7 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(AsnSchemaTypeDefinitionNullInstance visitable);
+    public T visit(Null visitable);
 
     /**
      * Processes the supplied object with this visitor

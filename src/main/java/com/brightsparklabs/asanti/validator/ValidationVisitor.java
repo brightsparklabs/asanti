@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionEnumerated;
@@ -20,7 +21,6 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisitor;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNullInstance;
 
 /**
  * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the
@@ -35,7 +35,7 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationRule visit(AsnSchemaTypeDefinitionNullInstance visitable)
+    public ValidationRule visit(Null visitable)
     {
         return ValidationRule.NULL;
     }
