@@ -10,6 +10,8 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
+import com.brightsparklabs.asanti.common.OperationResult;
+
 /**
  * Unit tests for {@link AsnSchemaNumericValueConstraint}
  *
@@ -47,55 +49,102 @@ public class AsnSchemaNumericValueConstraintTest
     }
 
     @Test
-    public void testIsMet() throws Exception
+    public void testApply() throws Exception
     {
         // test entire Long range
         AsnSchemaNumericValueConstraint instance =
                 new AsnSchemaNumericValueConstraint(BigInteger.valueOf(Long.MIN_VALUE),
                         BigInteger.valueOf(Long.MAX_VALUE));
         // test values within range
-        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
-                .toByteArray()));
-        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
+        OperationResult<byte[]> result = instance.apply(BigInteger.valueOf(Long.MIN_VALUE)
+                .toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
+        result = instance.apply(BigInteger.valueOf(Long.MIN_VALUE)
                 .add(BigInteger.TEN)
-                .toByteArray()));
-        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MAX_VALUE)
+                .toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
+        result = instance.apply(BigInteger.valueOf(Long.MAX_VALUE)
                 .subtract(BigInteger.TEN)
-                .toByteArray()));
-        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MAX_VALUE)
-                .toByteArray()));
+                .toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
+        result = instance.apply(BigInteger.valueOf(Long.MAX_VALUE)
+                .toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
         // test values outside of range
-        assertEquals(false, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
+        result = instance.apply(BigInteger.valueOf(Long.MIN_VALUE)
                 .subtract(BigInteger.ONE)
-                .toByteArray()));
-        assertEquals(false, instance.isMet(BigInteger.valueOf(Long.MAX_VALUE)
+                .toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between -9223372036854775808 and 9223372036854775807, but found: -9223372036854775809",
+                result.getFailureReason());
+        result = instance.apply(BigInteger.valueOf(Long.MAX_VALUE)
                 .add(BigInteger.ONE)
-                .toByteArray()));
+                .toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between -9223372036854775808 and 9223372036854775807, but found: 9223372036854775808",
+                result.getFailureReason());
 
         // test values outside of Long range
         instance =
                 new AsnSchemaNumericValueConstraint(new BigInteger("-92233720368547758080"),
                         new BigInteger("92233720368547758070"));
         // test minimum/maximum
-        assertEquals(true, instance.isMet(new BigInteger("-92233720368547758080").toByteArray()));
-        assertEquals(true, instance.isMet(new BigInteger("92233720368547758070").toByteArray()));
+        result = instance.apply(new BigInteger("-92233720368547758080").toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
+        result = instance.apply(new BigInteger("92233720368547758070").toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
         // test valid
-        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MIN_VALUE)
-                .toByteArray()));
-        assertEquals(true, instance.isMet(new BigInteger("0").toByteArray()));
-        assertEquals(true, instance.isMet(new BigInteger("1000000").toByteArray()));
-        assertEquals(true, instance.isMet(BigInteger.valueOf(Long.MAX_VALUE)
-                .toByteArray()));
+        result = instance.apply(BigInteger.valueOf(Long.MIN_VALUE)
+                .toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
+        result = instance.apply(new BigInteger("0").toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
+        result = instance.apply(new BigInteger("1000000").toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
+        result = instance.apply(BigInteger.valueOf(Long.MAX_VALUE)
+                .toByteArray());
+        assertEquals(true, result.wasSuccessful());
+        assertEquals("", result.getFailureReason());
         // test ranges beyond range
-        assertEquals(false, instance.isMet(new BigInteger("-92233720368547758081").toByteArray()));
-        assertEquals(false, instance.isMet(new BigInteger("92233720368547758071").toByteArray()));
+        result = instance.apply(new BigInteger("-92233720368547758081").toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between -92233720368547758080 and 92233720368547758070, but found: -92233720368547758081",
+                result.getFailureReason());
+        result = instance.apply(new BigInteger("92233720368547758071").toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between -92233720368547758080 and 92233720368547758070, but found: 92233720368547758071",
+                result.getFailureReason());
 
         // test invalid bounds
         instance = new AsnSchemaNumericValueConstraint(new BigInteger("5"), new BigInteger("-5"));
-        assertEquals(false, instance.isMet(new BigInteger("-5").toByteArray()));
-        assertEquals(false, instance.isMet(new BigInteger("0").toByteArray()));
-        assertEquals(false, instance.isMet(new BigInteger("5").toByteArray()));
-        assertEquals(false, instance.isMet(new BigInteger("10").toByteArray()));
-        assertEquals(false, instance.isMet(new BigInteger("-10").toByteArray()));
+        result = instance.apply(new BigInteger("-5").toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between 5 and -5, but found: -5", result.getFailureReason());
+        result = instance.apply(new BigInteger("0").toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between 5 and -5, but found: 0", result.getFailureReason());
+        result = instance.apply(new BigInteger("5").toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between 5 and -5, but found: 5", result.getFailureReason());
+        result = instance.apply(new BigInteger("10").toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between 5 and -5, but found: 10", result.getFailureReason());
+        result = instance.apply(new BigInteger("-10").toByteArray());
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between 5 and -5, but found: -10", result.getFailureReason());
+        // test invalid array
+        result = instance.apply(new byte[0]);
+        assertEquals(false, result.wasSuccessful());
+        assertEquals("Expected a value between 5 and -5, but no value found", result.getFailureReason());
+
     }
 }

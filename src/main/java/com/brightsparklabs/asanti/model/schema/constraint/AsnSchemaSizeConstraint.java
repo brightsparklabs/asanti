@@ -5,13 +5,14 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 
 /**
  * Models a minimum/maximum value 'bounded' SIZE constraint from within a
- * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
- * {@code SIZE (0 .. 256)}.
+ * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}.
+ * E.g. {@code SIZE (0 .. 256)}.
  *
  * @author brightSPARK Labs
  */
@@ -62,9 +63,23 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
      *         {@code false} otherwise
      */
     @Override
-    public boolean isMet(byte[] data)
+    public OperationResult<byte[]> apply(byte[] data)
     {
         final int length = data.length;
-        return length >= minimumLength && length <= maximumLength;
+        final boolean conforms = (length >= minimumLength) && (length <= maximumLength);
+        if (conforms)
+        {
+            return OperationResult.createSuccessfulInstance(data);
+        }
+        else
+        {
+            final String error =
+                    String.format("Expected a value between %d and %d, but found: %d",
+                            minimumLength,
+                            maximumLength,
+                            length);
+            return OperationResult.createUnsuccessfulInstance(data, error);
+        }
+
     }
 }

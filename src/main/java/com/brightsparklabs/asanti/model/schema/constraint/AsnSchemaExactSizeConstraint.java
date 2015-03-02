@@ -5,13 +5,14 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 
 /**
  * Models an 'exact' SIZE constraint from within a
- * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
- * {@code SIZE (10)}.
+ * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}.
+ * E.g. {@code SIZE (10)}.
  *
  * @author brightSPARK Labs
  */
@@ -54,8 +55,16 @@ public class AsnSchemaExactSizeConstraint implements AsnSchemaConstraint
      *         {@code false} otherwise
      */
     @Override
-    public boolean isMet(byte[] data)
+    public OperationResult<byte[]> apply(byte[] data)
     {
-        return data.length == exactLength;
+        if (data.length == exactLength)
+        {
+            return OperationResult.createSuccessfulInstance(data);
+        }
+        else
+        {
+            final String error = String.format("Expected a value of %d, but found: %d", exactLength, data.length);
+            return OperationResult.createUnsuccessfulInstance(data, error);
+        }
     }
 }

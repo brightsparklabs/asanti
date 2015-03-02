@@ -9,13 +9,14 @@ import static com.google.common.base.Preconditions.*;
 
 import java.math.BigInteger;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 
 /**
  * Models an 'exact' numeric value constraint from within a
- * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
- * {@code INTEGER (10)}.
+ * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}.
+ * E.g. {@code INTEGER (10)}.
  *
  * @author brightSPARK Labs
  */
@@ -63,16 +64,26 @@ public class AsnSchemaExactNumericValueConstraint implements AsnSchemaConstraint
      *         {@code false} otherwise
      */
     @Override
-    public boolean isMet(byte[] data)
+    public OperationResult<byte[]> apply(byte[] data)
     {
         try
         {
             final BigInteger value = new BigInteger(data);
-            return exactValue.equals(value);
+            if (exactValue.equals(value))
+            {
+                return OperationResult.createSuccessfulInstance(data);
+            }
+            else
+            {
+                final String error =
+                        String.format("Expected a value of %s, but found: %s", exactValue.toString(), value.toString());
+                return OperationResult.createUnsuccessfulInstance(data, error);
+            }
         }
         catch (final NumberFormatException ex)
         {
-            return false;
+            final String error = String.format("Expected a value of %s, but no value found", exactValue.toString());
+            return OperationResult.createUnsuccessfulInstance(data, error);
         }
     }
 }
