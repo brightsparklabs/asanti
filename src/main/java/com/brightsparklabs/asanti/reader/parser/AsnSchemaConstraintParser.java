@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaFixedSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
 
 /**
@@ -31,6 +32,10 @@ public class AsnSchemaConstraintParser
     /** pattern to match a bounded SIZE constraint */
     private static final Pattern PATTERN_SIZE_CONSTRAINT =
             Pattern.compile("\\s*SIZE\\s*\\((\\d+)\\s*\\.\\.\\s*(\\d+)\\s*\\)\\s*");
+
+    /** pattern to match a fixed SIZE constraint */
+    private static final Pattern PATTERN_FIZED_SIZE_CONSTRAINT =
+            Pattern.compile("\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\)\\s*");
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -60,8 +65,12 @@ public class AsnSchemaConstraintParser
         log.log(Level.FINE, "Found constraint: {0}", constraintText);
 
         // check if defining a bounded SIZE constraint
-        final Matcher matcher = PATTERN_SIZE_CONSTRAINT.matcher(constraintText);
+        Matcher matcher = PATTERN_SIZE_CONSTRAINT.matcher(constraintText);
         if (matcher.matches()) { return parseSizeConstraint(matcher); }
+
+        // check if defining a fixed SIZE constraint
+        matcher = PATTERN_FIZED_SIZE_CONSTRAINT.matcher(constraintText);
+        if (matcher.matches()) { return parseFixedSizeConstraint(matcher); }
 
         // TODO ASN-38 - parse constraint text
         return AsnSchemaConstraint.NULL;
@@ -96,6 +105,34 @@ public class AsnSchemaConstraintParser
                     String.format("Could not convert the following strings into integers: %s, %s",
                             matcher.group(1),
                             matcher.group(2));
+            throw new ParseException(error, -1);
+        }
+    }
+
+    /**
+     * Parses a SIZE constraint containing a fixed size
+     *
+     * @param matcher
+     *            matcher which matched on
+     *            {@link #PATTERN_FIZED_SIZE_CONSTRAINT}
+     *
+     * @return an {@link AsnSchemaFixedSizeConstraint} representing the parsed
+     *         data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaFixedSizeConstraint parseFixedSizeConstraint(Matcher matcher) throws ParseException
+    {
+        try
+        {
+            final int fixedBound = Integer.parseInt(matcher.group(1));
+            return new AsnSchemaFixedSizeConstraint(fixedBound);
+        }
+        catch (final NumberFormatException ex)
+        {
+            final String error =
+                    String.format("Could not convert the following strings into integers: %s", matcher.group(1));
             throw new ParseException(error, -1);
         }
     }

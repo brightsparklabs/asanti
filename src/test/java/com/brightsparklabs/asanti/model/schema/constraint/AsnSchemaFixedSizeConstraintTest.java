@@ -13,7 +13,7 @@ import org.junit.Test;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaSizeConstraintTest
+public class AsnSchemaFixedSizeConstraintTest
 {
     // -------------------------------------------------------------------------
     // TESTS
@@ -22,29 +22,29 @@ public class AsnSchemaSizeConstraintTest
     @Test
     public void testIsMet() throws Exception
     {
-        // test minimum and maximum possible
-        AsnSchemaSizeConstraint instance = new AsnSchemaSizeConstraint(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        // test minimum
+        AsnSchemaFixedSizeConstraint instance = new AsnSchemaFixedSizeConstraint(0);
         assertEquals(true, instance.isMet(new byte[0]));
-        assertEquals(true, instance.isMet(new byte[1]));
-        assertEquals(true, instance.isMet(new byte[256]));
-        assertEquals(true, instance.isMet(new byte[1000000]));
+        assertEquals(false, instance.isMet(new byte[1]));
+        assertEquals(false, instance.isMet(new byte[256]));
+        assertEquals(false, instance.isMet(new byte[10000]));
 
-        // test lower bound
-        instance = new AsnSchemaSizeConstraint(2, Integer.MAX_VALUE);
+        // test large (1 MB)
+        instance = new AsnSchemaFixedSizeConstraint(1000000);
         assertEquals(false, instance.isMet(new byte[0]));
         assertEquals(false, instance.isMet(new byte[1]));
-        assertEquals(true, instance.isMet(new byte[2]));
+        assertEquals(false, instance.isMet(new byte[256]));
+        assertEquals(true, instance.isMet(new byte[1000000]));
+
+        // test normal
+        instance = new AsnSchemaFixedSizeConstraint(256);
+        assertEquals(false, instance.isMet(new byte[0]));
+        assertEquals(false, instance.isMet(new byte[1]));
+        assertEquals(false, instance.isMet(new byte[255]));
         assertEquals(true, instance.isMet(new byte[256]));
 
-        // test upper bound
-        instance = new AsnSchemaSizeConstraint(Integer.MIN_VALUE, 255);
-        assertEquals(true, instance.isMet(new byte[0]));
-        assertEquals(true, instance.isMet(new byte[1]));
-        assertEquals(true, instance.isMet(new byte[255]));
-        assertEquals(false, instance.isMet(new byte[256]));
-
         // test invalid bounds
-        instance = new AsnSchemaSizeConstraint(5, -5);
+        instance = new AsnSchemaFixedSizeConstraint(Integer.MIN_VALUE);
         assertEquals(false, instance.isMet(new byte[0]));
         assertEquals(false, instance.isMet(new byte[1]));
         assertEquals(false, instance.isMet(new byte[255]));

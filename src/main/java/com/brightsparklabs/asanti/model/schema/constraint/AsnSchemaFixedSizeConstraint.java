@@ -9,23 +9,20 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinition;
 
 /**
- * Models a minimum/maximum value 'bounded' SIZE constraint from within a
+ * Models a 'fixed' SIZE constraint from within a
  * {@link AsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
- * {@code SIZE (0 .. 256)}.
+ * {@code SIZE (10)}.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
+public class AsnSchemaFixedSizeConstraint implements AsnSchemaConstraint
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the minimum length the data can be */
-    private final int minimumBound;
-
-    /** the minimum length the data can be */
-    private final int maximumBound;
+    /** the length the data must be */
+    private final int fixedLength;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -34,16 +31,12 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
     /**
      * Default constructor
      *
-     * @param minimumBound
-     *            the minimum length the data can be
-     *
-     * @param maximumBound
-     *            the minimum length the data can be
+     * @param fixedLength
+     *            the length the data must be
      */
-    public AsnSchemaSizeConstraint(int minimumBound, int maximumBound)
+    public AsnSchemaFixedSizeConstraint(int fixedLength)
     {
-        this.minimumBound = minimumBound;
-        this.maximumBound = maximumBound;
+        this.fixedLength = fixedLength;
     }
 
     // -------------------------------------------------------------------------
@@ -51,9 +44,8 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Returns true if the length of the supplied array falls between the
-     * minimum and maximum bounds of this constraint. The content of the byte
-     * array is irrelevant.
+     * Returns true if the length of the supplied array matches the fixed length
+     * of this constraint. The content of the byte array is irrelevant.
      *
      * @param data
      *            the data to test
@@ -64,7 +56,6 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
     @Override
     public boolean isMet(byte[] data)
     {
-        final int length = data.length;
-        return length >= minimumBound && length <= maximumBound;
+        return data.length == fixedLength;
     }
 }
