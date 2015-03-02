@@ -23,6 +23,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSequenceOf
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTypeDefinitionVisibleString;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -133,6 +134,14 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionUTF8String visitable =
                 new AsnSchemaTypeDefinitionUTF8String("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals(ValidationRule.NULL, instance.visit(visitable));
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionVisibleString()
+    {
+        final AsnSchemaTypeDefinitionVisibleString visitable =
+                new AsnSchemaTypeDefinitionVisibleString("TEST_NAME", AsnSchemaConstraint.NULL);
         assertEquals(ValidationRule.NULL, instance.visit(visitable));
     }
 }

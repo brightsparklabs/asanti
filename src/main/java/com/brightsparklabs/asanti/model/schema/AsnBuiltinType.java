@@ -42,5 +42,6 @@ public enum AsnBuiltinType
     Prefixed,
     Time,
     TimeOfDay,
-    UTF8String
+    UTF8String,
+    VisibleString
 }
