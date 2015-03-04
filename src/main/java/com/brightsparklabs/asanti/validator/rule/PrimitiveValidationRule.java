@@ -6,7 +6,8 @@ package com.brightsparklabs.asanti.validator.rule;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.ValidationFailure;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Represents a rule to validate {@link DecodedAsnData} against.
@@ -35,12 +36,12 @@ public class PrimitiveValidationRule implements ValidationRule
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationResult validate(String tag, DecodedAsnData decodedAsnData)
+    public ImmutableSet<ValidationFailure> validate(String tag, DecodedAsnData decodedAsnData)
     {
-//        final byte[] bytes = decodedAsnData.getBytes(tag);
-//        final boolean met = constraint.isMet(bytes);
-//        // final ValidationResult a = new
-//        // ValidationResultImpl.ValidationFailure();
+        // final byte[] bytes = decodedAsnData.getBytes(tag);
+        // final boolean met = constraint.isMet(bytes);
+        // // final ValidationResult a = new
+        // // ValidationResultImpl.ValidationFailure();
         return null;
 
     }

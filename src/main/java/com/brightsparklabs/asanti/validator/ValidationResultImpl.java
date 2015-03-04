@@ -4,173 +4,160 @@
  */
 package com.brightsparklabs.asanti.validator;
 
-import static com.google.common.base.Preconditions.*;
-
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.validator.rule.ValidationRule;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSetMultimap;
 
 /**
- * Represents the result from running a {@link ValidationRule} against a tag in
- * a {@link DecodedAsnData} object.
+ * Contains the results from running a {@link Validator} over
+ * {@link DecodedAsnData}.
  *
  * @author brightSPARK Labs
  */
-public abstract class ValidationResultImpl implements ValidationResult
+public class ValidationResultImpl implements ValidationResult
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the tag the validation result pertains to */
-    private final String tag;
-
-    /** whether the validation failed */
-    private final boolean isFailure;
+    /**
+     * all failures that occurred during validation. Map is of form {tag =>
+     * failure}
+     */
+    private final ImmutableSetMultimap<String, ValidationFailure> tagsToFailures;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor.
+     * Default constructor. This is private, use {@link #builder()} to create
+     * instances.
      *
-     * @param tag
-     *            the tag the validation result pertains to
-     *
-     * @param isFailure
-     *            whether the validation failed
-     *
-     * @throws NullPointerException
-     *             if parameters are {@code null}
-     *
-     * @throws IllegalArgumentException
-     *             if tag is {@code null} or empty
+     * @param failures
+     *            failures to include in this result set
      */
-    public ValidationResultImpl(String tag, boolean isFailure)
+    private ValidationResultImpl(Iterable<ValidationFailure> failures)
     {
-        checkNotNull(tag);
-        this.tag = tag.trim();
-        checkArgument(!this.tag.isEmpty(), "Tag cannot be null or empty");
-        this.isFailure = isFailure;
+        final ImmutableSetMultimap.Builder<String, ValidationFailure> builder = ImmutableSetMultimap.builder();
+        for (final ValidationFailure failure : failures)
+        {
+            final String tag = failure.getTag();
+            builder.put(tag, failure);
+        }
+        this.tagsToFailures = builder.build();
+    }
+
+    /**
+     * Returns a builder for creating instances of {@link ValidationResultImpl}
+     *
+     * @return a builder for creating instances of {@link ValidationResultImpl}
+     */
+    public static Builder builder()
+    {
+        return new Builder();
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: ValidationResult
+    // IMPLEMENTATION: ValidationResults
     // -------------------------------------------------------------------------
 
     @Override
-    public String getTag()
+    public boolean hasFailures()
     {
-        return tag;
+        return !tagsToFailures.isEmpty();
     }
 
     @Override
-    public boolean isFailure()
+    public ImmutableSet<ValidationFailure> getFailures()
     {
-        return isFailure;
+        return ImmutableSet.copyOf(tagsToFailures.values());
+    }
+
+    @Override
+    public boolean hasFailures(String tag)
+    {
+        return !tagsToFailures.get(tag)
+                .isEmpty();
+    }
+
+    @Override
+    public ImmutableSet<ValidationFailure> getFailures(String tag)
+    {
+        return tagsToFailures.get(tag);
     }
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: Success
+    // INTERNAL CLASS: Builder
     // -------------------------------------------------------------------------
 
     /**
-     * A validation result which was successful
-     *
-     * @author brightSPARK Labs
+     * Builder for creating instances of {@link ValidationResultImpl}
      */
-    public static class ValidationSuccess extends ValidationResultImpl
-    {
-        // ---------------------------------------------------------------------
-        // CONSTRUCTION
-        // ---------------------------------------------------------------------
-
-        /**
-         * Default constructor
-         *
-         * @param tag
-         *            the tag the validation succeeded on
-         */
-        public ValidationSuccess(String tag)
-        {
-            super(tag, false);
-        }
-
-        // ---------------------------------------------------------------------
-        // IMPLEMENTATION: ValidationResult
-        // ---------------------------------------------------------------------
-
-        @Override
-        public FailureType getFailureType()
-        {
-            return FailureType.None;
-        }
-
-        @Override
-        public String getFailureReason()
-        {
-            return "";
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // INTERNAL CLASS: Success
-    // -------------------------------------------------------------------------
-
-    /**
-     * A validation result which was successful
-     *
-     * @author brightSPARK Labs
-     */
-    public static class ValidationFailure extends ValidationResultImpl
+    public static class Builder
     {
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
 
-        /** the type of failure that occurred */
-        private final FailureType failureType;
-
-        /** the reason for the failure */
-        private final String failureReason;
+        /** the results to include in the result set */
+        private final ImmutableSet.Builder<ValidationFailure> failuresBuilder = ImmutableSet.builder();
 
         // ---------------------------------------------------------------------
         // CONSTRUCTION
         // ---------------------------------------------------------------------
 
         /**
-         * Default constructor
-         *
-         * @param tag
-         *            the tag the validation failed on
-         *
-         * @param failureType
-         *            the type of failure that occurred
-         *
-         * @param failureReason
-         *            the reason for the failure
+         * Default constructor. This is private, use
+         * {@link ValidationResultImpl#builder()} to create an instance.
          */
-        public ValidationFailure(String tag, FailureType failureType, String failureReason)
+        private Builder()
         {
-            super(tag, true);
-            this.failureType = failureType;
-            this.failureReason = failureReason;
         }
 
         // ---------------------------------------------------------------------
-        // IMPLEMENTATION: ValidationResult
+        // PUBLIC METHODS
         // ---------------------------------------------------------------------
 
-        @Override
-        public FailureType getFailureType()
+        /**
+         * Adds a failure to the result set
+         *
+         * @param failures
+         *            result to add
+         *
+         * @return this builder
+         */
+        public Builder add(ValidationFailure failures)
         {
-            return failureType;
+            failuresBuilder.add(failures);
+            return this;
         }
 
-        @Override
-        public String getFailureReason()
+        /**
+         * Adds a failure to the result set
+         *
+         * @param failures
+         *            failures to add
+         *
+         * @return this builder
+         */
+        public Builder addAll(Iterable<ValidationFailure> failures)
         {
-            return failureReason;
+            failuresBuilder.addAll(failures);
+            return this;
+        }
+
+        /**
+         * Creates a new instance of {@link ValidationResultImpl} containing all
+         * the results which have been added to this builder
+         *
+         * @return a new instance of {@link ValidationResultImpl} containing all
+         *         the results which have been added to this builder
+         */
+        public ValidationResultImpl build()
+        {
+            final ImmutableSet<ValidationFailure> failures = failuresBuilder.build();
+            return new ValidationResultImpl(failures);
         }
     }
 }

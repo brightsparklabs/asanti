@@ -5,9 +5,8 @@
 package com.brightsparklabs.asanti.validator.rule;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.validator.ValidationResult;
-import com.brightsparklabs.asanti.validator.ValidationResultImpl;
-import com.brightsparklabs.asanti.validator.ValidationResultImpl.ValidationSuccess;
+import com.brightsparklabs.asanti.validator.ValidationFailure;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Represents a rule to validate {@link DecodedAsnData} against.
@@ -38,7 +37,7 @@ public interface ValidationRule
      *
      * @return the results of validation
      */
-    public ValidationResult validate(String tag, DecodedAsnData decodedAsnData);
+    public ImmutableSet<ValidationFailure> validate(String tag, DecodedAsnData decodedAsnData);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null
@@ -68,9 +67,9 @@ public interface ValidationRule
         // ---------------------------------------------------------------------
 
         @Override
-        public ValidationResult validate(String tag, DecodedAsnData decodedAsnData)
+        public ImmutableSet<ValidationFailure> validate(String tag, DecodedAsnData decodedAsnData)
         {
-            return new ValidationResultImpl.ValidationSuccess(tag);
+            return ImmutableSet.<ValidationFailure>of();
         }
     }
 }

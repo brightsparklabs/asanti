@@ -5,10 +5,10 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.validator.rule.ValidationRule;
+import com.google.common.collect.ImmutableSet;
 
 /**
- * Represents the result from running a {@link ValidationRule} against
+ * Contains the results from running a {@link Validator} over
  * {@link DecodedAsnData}.
  *
  * @author brightSPARK Labs
@@ -20,34 +20,38 @@ public interface ValidationResult
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the tag that the validation result pertains to
+     * Determines whether failures occurred during validation
      *
-     * @return the tag that the validation result pertains to
+     * @return {@code true} if failures occurred during validation;
+     *         {@code false} otherwise
      */
-    public String getTag();
+    public boolean hasFailures();
 
     /**
-     * Determines whether the data failed validation (i.e. the validation rule
-     * was unsuccessful).
+     * Determines whether failures occurred while validating the specified tag
      *
-     * @return {@code true} if the data failed validation; {@code false}
-     *         otherwise
+     * @param tag
+     *            the tag of interest (e.g. "/Document/header/published/date")
+     *
+     * @return {@code true} if failures occurred while validating the specified
+     *         tag; {@code false} otherwise
      */
-    public boolean isFailure();
+    public boolean hasFailures(String tag);
 
     /**
-     * Returns a string detailing the type of validation failure that occurred
+     * Returns all failures that occurred during validation
      *
-     * @return a string detailing the type of validation failure that occurred;
-     *         or an empty string if the validation did not fail
+     * @return all failures that occurred during validation
      */
-    public FailureType getFailureType();
+    public ImmutableSet<ValidationFailure> getFailures();
 
     /**
-     * Returns a string describing why the validation failure occurred
+     * Returns all failures that occurred validating the specified tag
      *
-     * @return a string describing why the validation failure occurred; or an
-     *         empty string if the validation did not fail
+     * @param tag
+     *            the tag of interest (e.g. "/Document/header/published/date")
+     *
+     * @return all failures that occurred validating the specified tag
      */
-    public String getFailureReason();
+    public ImmutableSet<ValidationFailure> getFailures(String tag);
 }
