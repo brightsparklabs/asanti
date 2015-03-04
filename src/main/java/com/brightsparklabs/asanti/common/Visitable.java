@@ -22,6 +22,9 @@ public interface Visitable<T extends Visitor>
     /**
      * Visits this objects with the supplied visitor
      *
+     * @param visitor
+     *            the visitor to visit the object with
+     *
      * @return the result from the visitor
      */
     public Object visit(T visitor);

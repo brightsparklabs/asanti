@@ -14,7 +14,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionUTF8String extends AbstractAsnSchemaTypeDefinition
+public class AsnSchemaTypeDefinitionUTF8String extends AsnSchemaTypeDefinitionPrimitive
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION

@@ -7,12 +7,10 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import com.google.common.collect.Lists;
-
 import org.mockito.ArgumentMatcher;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.DecodeResult;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 
@@ -184,7 +182,8 @@ public class MockAsnSchema
      *            the value to return for {@link DecodedTag#getTag()}
      *
      * @param isFullyDecoded
-     *            the value to return for {@link DecodeResult#wasSuccessful()}
+     *            the value to return for
+     *            {@link OperationResult#wasSuccessful()}
      */
     private static void configureGetDecodedTag(AsnSchema instance, String rawTag, String topLevelTypeName,
             String decodedTagPath, boolean isFullyDecoded)
@@ -194,7 +193,7 @@ public class MockAsnSchema
         when(decodedTag.getRawTag()).thenReturn(rawTag);
         when(decodedTag.getType()).thenReturn(AsnSchemaTypeDefinition.NULL);
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
-        when(instance.getDecodedTag(rawTag, topLevelTypeName)).thenReturn(DecodeResult.create(isFullyDecoded,
-                decodedTag));
+        when(instance.getDecodedTag(rawTag, topLevelTypeName)).thenReturn(isFullyDecoded ? OperationResult.createSuccessfulInstance(decodedTag)
+                : OperationResult.createUnsuccessfulInstance(decodedTag, "Mock Failure"));
     }
 }

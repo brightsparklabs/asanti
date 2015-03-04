@@ -91,6 +91,12 @@ public abstract class AsnSchemaTypeDefinitionCollectionOf extends AbstractAsnSch
     // -------------------------------------------------------------------------
 
     @Override
+    public String getTagName(String tag)
+    {
+        return "";
+    }
+
+    @Override
     public String getTypeName(String tag)
     {
         return elementTypeName;

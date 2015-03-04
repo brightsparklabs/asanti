@@ -9,13 +9,14 @@ import static com.google.common.base.Preconditions.*;
 
 import java.math.BigInteger;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 
 /**
  * Models a minimum/maximum value 'bounded' numeric value constraint from within
- * a {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g.
- * {@code INTEGER (0 .. 256)}.
+ * a {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}.
+ * E.g. {@code INTEGER (0 .. 256)}.
  *
  * @author brightSPARK Labs
  */
@@ -71,9 +72,33 @@ public class AsnSchemaNumericValueConstraint implements AsnSchemaConstraint
      *         {@code false} otherwise
      */
     @Override
-    public boolean isMet(byte[] data)
+    public OperationResult<byte[]> apply(byte[] data)
     {
-        final BigInteger value = new BigInteger(data);
-        return (value.compareTo(minimumValue) > -1) && (value.compareTo(maximumValue) < 1);
+        try
+        {
+            final BigInteger value = new BigInteger(data);
+            final boolean conforms = (value.compareTo(minimumValue) > -1) && (value.compareTo(maximumValue) < 1);
+            if (conforms)
+            {
+                return OperationResult.createSuccessfulInstance(data);
+            }
+            else
+            {
+                final String error =
+                        String.format("Expected a value between %s and %s, but found: %s",
+                                minimumValue.toString(),
+                                maximumValue.toString(),
+                                value.toString());
+                return OperationResult.createUnsuccessfulInstance(data, error);
+            }
+        }
+        catch (final NumberFormatException ex)
+        {
+            final String error =
+                    String.format("Expected a value between %s and %s, but no value found",
+                            minimumValue.toString(),
+                            maximumValue.toString());
+            return OperationResult.createUnsuccessfulInstance(data, error);
+        }
     }
 }

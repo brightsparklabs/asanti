@@ -24,5 +24,5 @@ public interface Validator
      *
      * @return the results from validating the data
      */
-    public ValidationResults validate(DecodedAsnData decodedAsnData);
+    public ValidationResult validate(DecodedAsnData decodedAsnData);
 }

@@ -18,7 +18,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisitor;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
 
 /**
  * A simple visitor which returns the canonical class name of the object it
@@ -61,7 +61,7 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefiniti
     // -------------------------------------------------------------------------
 
     @Override
-    public String visit(AsnSchemaTypeDefinitionNull visitable)
+    public String visit(Null visitable)
     {
         return visitable.getClass()
                 .getCanonicalName();

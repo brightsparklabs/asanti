@@ -23,7 +23,8 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
+import com.brightsparklabs.asanti.validator.rule.PrimitiveValidationRule;
+import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -47,7 +48,7 @@ public class ValidationVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionNull()
     {
-        final AsnSchemaTypeDefinitionNull visitable = AsnSchemaTypeDefinition.NULL;
+        final AsnSchemaTypeDefinition.Null visitable = AsnSchemaTypeDefinition.NULL;
         assertEquals(ValidationRule.NULL, instance.visit(visitable));
     }
 
@@ -74,7 +75,8 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionIA5String visitable =
                 new AsnSchemaTypeDefinitionIA5String("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(ValidationRule.NULL, instance.visit(visitable));
+        final Object result = instance.visit(visitable);
+        assertTrue(result instanceof PrimitiveValidationRule);
     }
 
     @Test
@@ -82,7 +84,8 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionInteger visitable =
                 new AsnSchemaTypeDefinitionInteger("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(ValidationRule.NULL, instance.visit(visitable));
+        final Object result = instance.visit(visitable);
+        assertTrue(result instanceof PrimitiveValidationRule);
     }
 
     @Test
@@ -90,7 +93,8 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionOctetString visitable =
                 new AsnSchemaTypeDefinitionOctetString("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(ValidationRule.NULL, instance.visit(visitable));
+        final Object result = instance.visit(visitable);
+        assertTrue(result instanceof PrimitiveValidationRule);
     }
 
     @Test
@@ -134,7 +138,8 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionUTF8String visitable =
                 new AsnSchemaTypeDefinitionUTF8String("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(ValidationRule.NULL, instance.visit(visitable));
+        final Object result = instance.visit(visitable);
+        assertTrue(result instanceof PrimitiveValidationRule);
     }
 
     @Test
@@ -142,6 +147,7 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionVisibleString visitable =
                 new AsnSchemaTypeDefinitionVisibleString("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(ValidationRule.NULL, instance.visit(visitable));
+        final Object result = instance.visit(visitable);
+        assertTrue(result instanceof PrimitiveValidationRule);
     }
 }

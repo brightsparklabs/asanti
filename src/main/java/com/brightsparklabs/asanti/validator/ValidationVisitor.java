@@ -13,6 +13,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionNumericString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionOctetString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionPrimitive;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSequence;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSequenceOf;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSet;
@@ -20,7 +21,8 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisitor;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.AsnSchemaTypeDefinitionNull;
+import com.brightsparklabs.asanti.validator.rule.PrimitiveValidationRule;
+import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
 /**
  * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the
@@ -35,7 +37,7 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationRule visit(AsnSchemaTypeDefinitionNull visitable)
+    public ValidationRule visit(AsnSchemaTypeDefinition.Null visitable)
     {
         return ValidationRule.NULL;
     }
@@ -43,7 +45,7 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionBitString visitable)
     {
-        return ValidationRule.NULL;
+        return createPrimitiveValidationRule(visitable);
     }
 
     @Override
@@ -61,25 +63,25 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionInteger visitable)
     {
-        return ValidationRule.NULL;
+        return createPrimitiveValidationRule(visitable);
     }
 
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionIA5String visitable)
     {
-        return ValidationRule.NULL;
+        return createPrimitiveValidationRule(visitable);
     }
 
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionNumericString visitable)
     {
-        return ValidationRule.NULL;
+        return createPrimitiveValidationRule(visitable);
     }
 
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionOctetString visitable)
     {
-        return ValidationRule.NULL;
+        return createPrimitiveValidationRule(visitable);
     }
 
     @Override
@@ -109,12 +111,32 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionUTF8String visitable)
     {
-        return ValidationRule.NULL;
+        return createPrimitiveValidationRule(visitable);
     }
 
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionVisibleString visitable)
     {
-        return ValidationRule.NULL;
+        return createPrimitiveValidationRule(visitable);
+    }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: Validator
+    // -------------------------------------------------------------------------
+
+    /**
+     * Creates a {@link ValidationRule} to validate data from ASN.1 primitives
+     * by applying the constraints defined in the supplied primitive type
+     * definition.
+     *
+     * @param primitive
+     *            the primitive type definition to create the validation rule
+     *            from
+     *
+     * @return a validation rule which validates data from ASN.1 primitives
+     */
+    private ValidationRule createPrimitiveValidationRule(AsnSchemaTypeDefinitionPrimitive primitive)
+    {
+        return new PrimitiveValidationRule(primitive.getConstraint());
     }
 }

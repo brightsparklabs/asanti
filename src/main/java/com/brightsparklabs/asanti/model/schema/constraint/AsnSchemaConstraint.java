@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 
@@ -28,15 +29,16 @@ public interface AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Returns whether the supplied data conforms to this constraint
+     * Returns the result from applying the constraint to the supplied data
      *
      * @param data
      *            the data to test
      *
-     * @return {@code true} if the data conforms to this constraint;
-     *         {@code false} otherwise
+     * @return a successful result if the data conforms to this constraint; an
+     *         unsuccessful result otherwise. The result contains the data which
+     *         was tested to generate the result.
      */
-    public boolean isMet(byte[] data);
+    public OperationResult<byte[]> apply(byte[] data);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTypeDefinitionNull
@@ -60,9 +62,9 @@ public interface AsnSchemaConstraint
         // ---------------------------------------------------------------------
 
         @Override
-        public boolean isMet(byte[] data)
+        public OperationResult<byte[]> apply(byte[] data)
         {
-            return true;
+            return OperationResult.createSuccessfulInstance(data);
         }
     }
 }

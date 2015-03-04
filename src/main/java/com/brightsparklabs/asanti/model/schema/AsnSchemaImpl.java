@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -88,7 +89,7 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     @Override
-    public DecodeResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
+    public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(), topLevelTypeName, primaryModule);
@@ -115,7 +116,10 @@ public class AsnSchemaImpl implements AsnSchema
         final String decodedTagPath = tagJoiner.join(decodedTags);
 
         final DecodedTag decodedTag = new DecodedTag(decodedTagPath, rawTag, decodedTagsAndType.type, decodeSuccessful);
-        final DecodeResult<DecodedTag> result = DecodeResult.create(decodedTag.isFullyDecoded(), decodedTag);
+        final OperationResult<DecodedTag> result =
+                decodeSuccessful ? OperationResult.createSuccessfulInstance(decodedTag)
+                        : OperationResult.createUnsuccessfulInstance(decodedTag,
+                                "The supplied raw tag does not map to a type in this schema");
         return result;
     }
 
