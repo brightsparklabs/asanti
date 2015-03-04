@@ -10,9 +10,6 @@ import org.junit.Test;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisitor;
 
 /**
  * Unit tests for {@link AbstractAsnSchemaTypeDefinition}
@@ -33,6 +30,18 @@ public class AbstractAsnSchemaTypeDefinitionTest
         public TestInstance(String name, AsnBuiltinType builtinType, AsnSchemaConstraint constraint)
         {
             super(name, builtinType, constraint);
+        }
+
+        @Override
+        public String getTagName(String tag)
+        {
+            return "";
+        }
+
+        @Override
+        public String getTypeName(String tag)
+        {
+            return "";
         }
 
         @Override

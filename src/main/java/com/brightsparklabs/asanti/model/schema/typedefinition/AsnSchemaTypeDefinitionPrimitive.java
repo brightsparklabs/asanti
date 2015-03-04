@@ -9,28 +9,37 @@ import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 /**
- * Convenience class to simplify implementing {@link AsnSchemaTypeDefinition}
+ * A primitive type definition is an ASN.1 type which is not 'constructed'. The
+ * 'constructed' types are SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE and
+ * ENUMERATED (see {@link AsnSchemaTypeDefinitionConstructed}).
  *
  * @author brightSPARK Labs
  */
-public abstract class AbstractAsnSchemaTypeDefinition implements AsnSchemaTypeDefinition
+public abstract class AsnSchemaTypeDefinitionPrimitive extends AbstractAsnSchemaTypeDefinition
 {
     // -------------------------------------------------------------------------
-    // INSTANCE VARIABLES
+    // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** name of the type definition */
-    private final String name;
+    /**
+     * built-in types which are 'constructed'
+     */
+    private static final ImmutableSet<AsnBuiltinType> invalidTypes = ImmutableSet.of(AsnBuiltinType.Set,
+            AsnBuiltinType.Sequence,
+            AsnBuiltinType.SetOf,
+            AsnBuiltinType.SequenceOf,
+            AsnBuiltinType.Choice,
+            AsnBuiltinType.Enumerated);
 
     /**
-     * the underlying ASN.1 built-in type for this type (SEQUENCE, INTEGER, etc)
+     * built-in types which are not 'constructed'
      */
-    private final AsnBuiltinType builtinType;
-
-    /** the constraint on the type */
-    private final AsnSchemaConstraint constraint;
+    public static final ImmutableSet<AsnBuiltinType> validTypes =
+            ImmutableSet.copyOf(Sets.difference(ImmutableSet.copyOf(AsnBuiltinType.values()), invalidTypes));
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -62,16 +71,12 @@ public abstract class AbstractAsnSchemaTypeDefinition implements AsnSchemaTypeDe
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AbstractAsnSchemaTypeDefinition(String name, AsnBuiltinType builtinType, AsnSchemaConstraint constraint)
+    public AsnSchemaTypeDefinitionPrimitive(String name, AsnBuiltinType builtinType, AsnSchemaConstraint constraint)
     {
-        checkNotNull(name);
-        checkArgument(!name.trim()
-                .isEmpty(), "Tag name must be specified");
-        checkNotNull(builtinType);
-
-        this.name = name.trim();
-        this.builtinType = builtinType;
-        this.constraint = (constraint == null) ? AsnSchemaConstraint.NULL : constraint;
+        super(name, builtinType, constraint);
+        checkArgument(validTypes.contains(builtinType),
+                "Type cannot be SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED. Found: {0}",
+                builtinType.toString());
     }
 
     // -------------------------------------------------------------------------
@@ -79,20 +84,16 @@ public abstract class AbstractAsnSchemaTypeDefinition implements AsnSchemaTypeDe
     // -------------------------------------------------------------------------
 
     @Override
-    public String getName()
+    public String getTagName(String tag)
     {
-        return name;
+        // no constructs within primitive type definition
+        return "";
     }
 
     @Override
-    public AsnBuiltinType getBuiltinType()
+    public String getTypeName(String tag)
     {
-        return builtinType;
-    }
-
-    @Override
-    public AsnSchemaConstraint getConstraint()
-    {
-        return constraint;
+        // no constructs within primitive type definition
+        return "";
     }
 }

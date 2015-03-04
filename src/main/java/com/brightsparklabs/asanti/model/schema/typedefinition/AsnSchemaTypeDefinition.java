@@ -105,5 +105,17 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
         {
             return visitor.visit(this);
         }
+
+        @Override
+        public String getTagName(String tag)
+        {
+            return "";
+        }
+
+        @Override
+        public String getTypeName(String tag)
+        {
+            return "";
+        }
     }
 }

@@ -28,7 +28,7 @@ public class AsnSchemaTypeDefinitionEnumerated extends AbstractAsnSchemaTypeDefi
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionConstructed.class.getName());
+    private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionEnumerated.class.getName());
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -94,6 +94,12 @@ public class AsnSchemaTypeDefinitionEnumerated extends AbstractAsnSchemaTypeDefi
     {
         final AsnSchemaEnumeratedOption option = tagsToOptions.get(tag);
         return (option == null) ? "" : option.getTagName();
+    }
+
+    @Override
+    public String getTypeName(String tag)
+    {
+        return "";
     }
 
     @Override
