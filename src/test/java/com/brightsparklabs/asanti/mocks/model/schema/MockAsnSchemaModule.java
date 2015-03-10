@@ -39,7 +39,8 @@ public class MockAsnSchemaModule
                     "Document ::= SEQUENCE {",
                     "header [1] Header,",
                     "body [2] Body,",
-                    "footer [3] Footer",
+                    "footer [3] Footer,",
+                    "dueDate [4] Date-Due",
                     "}",
                     "Header ::= SEQUENCE",
                     "{ published [0] PublishedMetadata }",
@@ -51,6 +52,7 @@ public class MockAsnSchemaModule
                     "Section-Note ::= SEQUENCE { text [1] OCTET STRING }",
                     "Section-Main ::= SEQUENCE { text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph }",
                     "Paragraph ::= SEQUENCE { title [1] OCTET STRING, contributor [2] Person OPTIONAL, points [3] SEQUENCE OF OCTET STRING }",
+                    "Date-Due ::= INTEGER { tomorrow(0), three-day(1), week(2) } DEFAULT week",
                     "END");
 
     /** the example People-Protocol module defined in the {@linkplain README.md} file */

@@ -4,19 +4,20 @@
  */
 package com.brightsparklabs.asanti.mocks.model.schema;
 
-import static org.mockito.Mockito.*;
-
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaEnumeratedOption;
 import com.google.common.collect.ImmutableList;
+
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
+
+import static org.mockito.Mockito.*;
 
 /**
  * Utility class for obtaining mocked instances of
- * {@link AsnSchemaEnumeratedOption} which conform to the test ASN.1 schema
+ * {@link AsnSchemaNamedTag} which conform to the test ASN.1 schema
  * defined in the {@linkplain README.md} file
  *
  * @author brightSPARK Labs
  */
-public class MockAsnSchemaEnumeratedOption
+public class MockAsnSchemaNamedTag
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -26,43 +27,43 @@ public class MockAsnSchemaEnumeratedOption
      * Default constructor. This is hidden, use one of the factory methods
      * instead.
      */
-    private MockAsnSchemaEnumeratedOption()
+    private MockAsnSchemaNamedTag()
     {
         // private constructor
     }
 
     /**
-     * Creates a mock {@link AsnSchemaEnumeratedOption} instance
+     * Creates a mock {@link AsnSchemaNamedTag} instance
      *
      * @param tagName
      *            value to return for
-     *            {@link AsnSchemaEnumeratedOption#getTagName()}
+     *            {@link AsnSchemaNamedTag#getTagName()}
      *
      * @param tag
-     *            value to return for {@link AsnSchemaEnumeratedOption#getTag()}
+     *            value to return for {@link AsnSchemaNamedTag#getTag()}
      *
      * @return mock instance which returns the supplied values
      */
-    public static AsnSchemaEnumeratedOption createMockedInstance(String tagName, String tag)
+    public static AsnSchemaNamedTag createMockedInstance(String tagName, String tag)
     {
-        final AsnSchemaEnumeratedOption mockedInstance = mock(AsnSchemaEnumeratedOption.class);
+        final AsnSchemaNamedTag mockedInstance = mock(AsnSchemaNamedTag.class);
         when(mockedInstance.getTagName()).thenReturn(tagName);
         when(mockedInstance.getTag()).thenReturn(tag);
         return mockedInstance;
     }
 
     /**
-     * Creates mock {@link AsnSchemaEnumeratedOption} instances conforming to
+     * Creates mock {@link AsnSchemaNamedTag} instances conforming to
      * the {@code title} component type within the {@code Person} type
      * definition in the test ASN.1 schema defined in the {@linkplain README.md}
      * file
      *
      * @return mock instances conforming to schema
      */
-    public static ImmutableList<AsnSchemaEnumeratedOption> createMockedAsnSchemaEnumeratedOptionsForPerson()
+    public static ImmutableList<AsnSchemaNamedTag> createMockedAsnSchemaNamedTagsForPerson()
     {
-        final ImmutableList.Builder<AsnSchemaEnumeratedOption> listBuilder = ImmutableList.builder();
-        AsnSchemaEnumeratedOption option = createMockedInstance("mr", "");
+        final ImmutableList.Builder<AsnSchemaNamedTag> listBuilder = ImmutableList.builder();
+        AsnSchemaNamedTag option = createMockedInstance("mr", "");
         listBuilder.add(option);
         option = createMockedInstance("mrs", "");
         listBuilder.add(option);
@@ -76,18 +77,36 @@ public class MockAsnSchemaEnumeratedOption
     }
 
     /**
-     * Creates mock {@link AsnSchemaEnumeratedOption} instances conforming to
+     * Creates mock {@link AsnSchemaNamedTag} instances conforming to
      * the {@code Gender} type definition in the test ASN.1 schema defined in
      * the {@linkplain README.md} file
      *
      * @return mock instances conforming to schema
      */
-    public static ImmutableList<AsnSchemaEnumeratedOption> createMockedAsnSchemaEnumeratedOptionsForGender()
+    public static ImmutableList<AsnSchemaNamedTag> createMockedAsnSchemaNamedTagsForGender()
     {
-        final ImmutableList.Builder<AsnSchemaEnumeratedOption> listBuilder = ImmutableList.builder();
-        AsnSchemaEnumeratedOption option = createMockedInstance("male", "0");
+        final ImmutableList.Builder<AsnSchemaNamedTag> listBuilder = ImmutableList.builder();
+        AsnSchemaNamedTag option = createMockedInstance("male", "0");
         listBuilder.add(option);
         option = createMockedInstance("female", "1");
+        listBuilder.add(option);
+        return listBuilder.build();
+    }
+
+    /**
+     * Creates mock {@link AsnSchemaNamedTag} instances conforming to
+     * the {@code Date-Due} type definition in the test ASN.1 schema defined in
+     * the {@linkplain README.md} file
+     * @return
+     */
+    public static ImmutableList<AsnSchemaNamedTag> createMockedAsnNamedTagsForDateDue()
+    {
+        final ImmutableList.Builder<AsnSchemaNamedTag> listBuilder = ImmutableList.builder();
+        AsnSchemaNamedTag option = createMockedInstance("tomorrow", "0");
+        listBuilder.add(option);
+        option = createMockedInstance("three-day", "1");
+        listBuilder.add(option);
+        option = createMockedInstance("week", "2");
         listBuilder.add(option);
         return listBuilder.build();
     }

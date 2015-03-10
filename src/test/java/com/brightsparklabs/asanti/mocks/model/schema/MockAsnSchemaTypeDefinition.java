@@ -68,6 +68,7 @@ public class MockAsnSchemaTypeDefinition
                         .addComponentType("1", "header", "Header")
                         .addComponentType("2", "body", "Body")
                         .addComponentType("3", "footer", "Footer")
+                        .addComponentType("4", "dueDate", "Date-Due")
                         .build();
         listBuilder.add(mocktypeDefinition);
 
@@ -124,6 +125,11 @@ public class MockAsnSchemaTypeDefinition
                 .addComponentType("1", "title", "OCTET STRING")
                 .addComponentType("2", "contributor", "Person")
                 .addSeqeunceOfComponentType("3", "points", "SEQUENCE OF OCTET STRING")
+                .build();
+        listBuilder.add(mocktypeDefinition);
+
+        // build Date-Due
+        mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("Date-Due", AsnBuiltinType.Integer)
                 .build();
         listBuilder.add(mocktypeDefinition);
 

@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaEnumeratedOption;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaNamedTag;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableList;
@@ -25,20 +25,20 @@ public class AsnSchemaTypeDefinitionEnumeratedTest
     // -------------------------------------------------------------------------
 
     /** an empty list of options */
-    private static final ImmutableList<AsnSchemaEnumeratedOption> emptyOptions =
-            ImmutableList.<AsnSchemaEnumeratedOption>of();
+    private static final ImmutableList<AsnSchemaNamedTag> emptyOptions =
+            ImmutableList.<AsnSchemaNamedTag>of();
 
     /**
      * options within the {@code Person} type definition from the example schema
      */
-    private static final ImmutableList<AsnSchemaEnumeratedOption> personOptions =
-            MockAsnSchemaEnumeratedOption.createMockedAsnSchemaEnumeratedOptionsForPerson();
+    private static final ImmutableList<AsnSchemaNamedTag> personOptions =
+            MockAsnSchemaNamedTag.createMockedAsnSchemaNamedTagsForPerson();
 
     /**
      * options within the {@code Gender} type definition from the example schema
      */
-    private static final ImmutableList<AsnSchemaEnumeratedOption> genderOptions =
-            MockAsnSchemaEnumeratedOption.createMockedAsnSchemaEnumeratedOptionsForGender();
+    private static final ImmutableList<AsnSchemaNamedTag> genderOptions =
+            MockAsnSchemaNamedTag.createMockedAsnSchemaNamedTagsForGender();
 
     // -------------------------------------------------------------------------
     // TESTS

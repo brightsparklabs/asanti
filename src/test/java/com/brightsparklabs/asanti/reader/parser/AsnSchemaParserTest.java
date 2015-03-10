@@ -41,7 +41,7 @@ public class AsnSchemaParserTest
      * number of lines expected after pre-parsing the Document-PDU module from
      * the example schema
      */
-    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 27;
+    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 33;
 
     /**
      * number of lines expected after pre-parsing the People-Protocol module

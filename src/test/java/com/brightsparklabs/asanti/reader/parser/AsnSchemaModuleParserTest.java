@@ -280,7 +280,7 @@ public class AsnSchemaModuleParserTest
         // return mocked AsnSchemaTypeDefinition instances when expected inputs are received
         PowerMockito.mockStatic(AsnSchemaTypeDefinitionParser.class);
         when(AsnSchemaTypeDefinitionParser
-                .parse("Document", "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer }"))
+                .parse("Document", "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due }"))
                 .thenReturn(mockedAsnSchemaTypeDefinitions.get(0));
 
         when(AsnSchemaTypeDefinitionParser
@@ -314,6 +314,10 @@ public class AsnSchemaModuleParserTest
         when(AsnSchemaTypeDefinitionParser
                 .parse("Paragraph", "SEQUENCE { title [1] OCTET STRING, contributor [2] Person OPTIONAL, points [3] SEQUENCE OF OCTET STRING }"))
                 .thenReturn(mockedAsnSchemaTypeDefinitions.get(8));
+
+        when(AsnSchemaTypeDefinitionParser
+                .parse("Date-Due", "INTEGER { tomorrow(0), three-day(1), week(2) } DEFAULT week"))
+                .thenReturn(mockedAsnSchemaTypeDefinitions.get(9));
 
         final AsnSchemaModule actualModule = AsnSchemaModuleParser.parse(MockAsnSchemaModule.TEST_MODULE_DOCUMENT_PDU);
         assertNotNull(actualModule);
