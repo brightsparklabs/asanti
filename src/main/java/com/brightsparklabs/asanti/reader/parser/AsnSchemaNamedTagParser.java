@@ -9,10 +9,9 @@ import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 
 /**
  * Logic for parsing ENUMERATED options and INTEGER distinguished values

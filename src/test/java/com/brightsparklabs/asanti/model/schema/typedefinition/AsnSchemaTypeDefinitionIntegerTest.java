@@ -4,15 +4,15 @@
  */
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.Test;
-
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaNamedTag;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinitionVisitor;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.google.common.collect.ImmutableList;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionInteger}

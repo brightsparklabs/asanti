@@ -5,10 +5,9 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import com.google.common.collect.ImmutableMap;
-
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.google.common.collect.ImmutableMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

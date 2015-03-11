@@ -5,8 +5,6 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import static com.google.common.base.Preconditions.*;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +12,8 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A ENUMERATED type definition from a within a module specification within an

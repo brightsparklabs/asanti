@@ -4,15 +4,15 @@
  */
 package com.brightsparklabs.asanti.mocks.model.schema;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import org.mockito.ArgumentMatcher;
-
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import org.mockito.ArgumentMatcher;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchema} which

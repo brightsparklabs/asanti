@@ -4,11 +4,11 @@
  */
 package com.brightsparklabs.asanti.mocks.model.schema;
 
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.collect.ImmutableList;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Utility class for obtaining mocked instances of

@@ -4,10 +4,6 @@
  */
 package com.brightsparklabs.asanti.validator;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
@@ -26,6 +22,9 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.validator.rule.PrimitiveValidationRule;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 import com.google.common.collect.ImmutableList;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link ValidationVisitor}

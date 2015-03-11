@@ -4,15 +4,15 @@
  */
 package com.brightsparklabs.asanti.mocks.model.schema;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import static org.mockito.Matchers.matches;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Utility class for obtaining mocked instances of
