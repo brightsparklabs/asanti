@@ -127,11 +127,12 @@ BEGIN
     }
 
     Date-Due ::= INTEGER
-    { tomorrow(0),
+    {
+      tomorrow(0),
       three-day(1),
       week (2)
     } DEFAULT week
-    
+
 END
 
 People-Protocol

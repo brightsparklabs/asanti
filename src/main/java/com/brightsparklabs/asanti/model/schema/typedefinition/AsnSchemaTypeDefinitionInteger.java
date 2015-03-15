@@ -5,11 +5,11 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
+import static com.google.common.base.Preconditions.*;
+
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.google.common.collect.ImmutableMap;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An {@code Integer} type definition from a within a module specification
@@ -37,23 +37,25 @@ public class AsnSchemaTypeDefinitionInteger extends AsnSchemaTypeDefinitionPrimi
      *            name of the Integer type definition
      *
      * @param distinguishedValues
-     *            the optional list of distinguished values in this INTEGER type definition
+     *            the optional list of distinguished values in this INTEGER type
+     *            definition. Use an empty iterable if there are no
+     *            distinguished values.
      *
      * @param constraint
      *            The constraint on the type. Use
      *            {@link AsnSchemaConstraint#NULL} if no constraint.
      *            <p>
-     *            E.g. For {@code Integer (1..56)} this would be
-     *            {@code (1..56)}
+     *            E.g. For {@code Integer (1..56)} this would be {@code (1..56)}
      *
      * @throws NullPointerException
-     *             if {@code name} or {@code distinguishedValues} is {@code null}
+     *             if {@code name} or {@code distinguishedValues} is
+     *             {@code null}
      *
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
     public AsnSchemaTypeDefinitionInteger(String name, Iterable<AsnSchemaNamedTag> distinguishedValues,
-                                          AsnSchemaConstraint constraint)
+            AsnSchemaConstraint constraint)
     {
         super(name, AsnBuiltinType.Integer, constraint);
         checkNotNull(distinguishedValues);
@@ -62,7 +64,7 @@ public class AsnSchemaTypeDefinitionInteger extends AsnSchemaTypeDefinitionPrimi
 
         for (final AsnSchemaNamedTag distinguishedValue : distinguishedValues)
         {
-            String tag = distinguishedValue.getTag();
+            final String tag = distinguishedValue.getTag();
             tagsToDistinguishedValuesBuilder.put(tag, distinguishedValue);
         }
         tagsToDistinguishedValues = tagsToDistinguishedValuesBuilder.build();

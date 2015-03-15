@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -24,12 +25,16 @@ public class AsnSchemaNamedTagParser
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** pattern for an option in an ENUMERATED type definition. Breaks text
-     *  into: tag name, tag (where the tag is optional) */
+    /**
+     * pattern for an option in an ENUMERATED type definition. Breaks text into:
+     * tag name, tag (where the tag is optional)
+     */
     private static final Pattern PATTERN_ENUMERATED_OPTION = Pattern.compile("([^\\(]+)(\\((.+)\\))?$");
 
-    /** pattern for a distinguished value in an INTEGER type definition. Breaks
-     *  text into: tag name, tag (where the tag is required) */
+    /**
+     * pattern for a distinguished value in an INTEGER type definition. Breaks
+     * text into: tag name, tag (where the tag is required)
+     */
     private static final Pattern PATTERN_DISTINGUISHED_VALUE = Pattern.compile("([^\\(]+)(\\((.+)\\))$");
 
     /** splitter which splits strings on commas */
@@ -55,7 +60,8 @@ public class AsnSchemaNamedTagParser
      * @throws ParseException
      *             if any errors occur while parsing the data
      */
-    public static ImmutableList<AsnSchemaNamedTag> parseEnumeratedOptions(String enumeratedOptionsText) throws ParseException
+    public static ImmutableList<AsnSchemaNamedTag> parseEnumeratedOptions(String enumeratedOptionsText)
+            throws ParseException
     {
         final ImmutableList.Builder<AsnSchemaNamedTag> builder = ImmutableList.builder();
         if (enumeratedOptionsText == null) { return builder.build(); }
@@ -81,22 +87,23 @@ public class AsnSchemaNamedTagParser
      *
      * @param distinguishedValuesText
      *            the distinguished values text as a string. This is the text
-     *            between the curly braces following the word INTEGER. E.g.
-     *            for <code>INTEGER { tomorrow(0), three-day(1) }</code> this is
+     *            between the curly braces following the word INTEGER. E.g. for
+     *            <code>INTEGER { tomorrow(0), three-day(1) }</code> this is
      *            {@code "tomorrow(0), three-day(1)"}
      *
-     * @return each distinguished value found in the INTEGER distinguished values list
+     * @return each distinguished value found in the INTEGER distinguished
+     *         values list
      *
      * @throws ParseException
      *             if any errors occur while parsing the data
      */
-    public static ImmutableList<AsnSchemaNamedTag> parseIntegerDistinguishedValues(String distinguishedValuesText) throws ParseException
+    public static ImmutableList<AsnSchemaNamedTag> parseIntegerDistinguishedValues(String distinguishedValuesText)
+            throws ParseException
     {
         final ImmutableList.Builder<AsnSchemaNamedTag> builder = ImmutableList.builder();
-        if (distinguishedValuesText == null) { return builder.build(); }
+        if (Strings.isNullOrEmpty(distinguishedValuesText)) { return builder.build(); }
 
         final Iterable<String> lines = COMMA_SPLITTER.split(distinguishedValuesText);
-
         for (final String distinguishedValueLine : lines)
         {
             final AsnSchemaNamedTag distinguishedValue = parseDistinguishedValue(distinguishedValueLine);
@@ -138,7 +145,8 @@ public class AsnSchemaNamedTagParser
     }
 
     /**
-     * Parses a single distinguished value from an INTEGER definition list of distinguished values
+     * Parses a single distinguished value from an INTEGER definition list of
+     * distinguished values
      *
      * @param distinguishedValueLine
      *            the distinguished value text to parse

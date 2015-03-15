@@ -4,15 +4,15 @@
  */
 package com.brightsparklabs.asanti.mocks.model.schema;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import org.mockito.ArgumentMatcher;
+
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import org.mockito.ArgumentMatcher;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchema} which
@@ -87,7 +87,8 @@ public class MockAsnSchema
                     .append("        points       [3] SEQUENCE OF OCTET STRING")
                     .append("    }\n")
                     .append("    Date-Due ::= INTEGER\n")
-                    .append("    { tomorrow(0),\n")
+                    .append("    {")
+                    .append("      tomorrow(0),\n")
                     .append("      three-day(1),\n")
                     .append("      week (2)\n")
                     .append("    } DEFAULT week\n")
