@@ -39,7 +39,7 @@ public class AsnSchemaModule
     private final ImmutableMap<String, AsnSchemaTypeDefinition> types;
 
     /**
-     * all types imported by this module. Map is of form {typeName =>
+     * all types imported by this module. Map is of form {typeName =&gt;
      * importedModuleName}
      */
     private final ImmutableMap<String, String> imports;
@@ -60,7 +60,7 @@ public class AsnSchemaModule
      * @param imports
      *            the imports defined in this module. This identifies the module
      *            that an imported type comes from. Map is of format {typeName
-     *            => moduleName}
+     *            =&gt; moduleName}
      *
      * @throws NullPointerException
      *             if any of the parameters are {@code null}
@@ -71,8 +71,7 @@ public class AsnSchemaModule
     private AsnSchemaModule(String name, Map<String, AsnSchemaTypeDefinition> types, Map<String, String> imports)
     {
         checkNotNull(name);
-        checkArgument(!name.trim()
-                .isEmpty(), "A module from an ASN.1 schema must have a name");
+        checkArgument(!name.trim().isEmpty(), "A module from an ASN.1 schema must have a name");
         checkNotNull(types);
         checkNotNull(imports);
 
@@ -118,7 +117,8 @@ public class AsnSchemaModule
     public AsnSchemaTypeDefinition getType(String typeName)
     {
         final AsnSchemaTypeDefinition type = types.get(typeName);
-        return type != null ? type : AsnSchemaTypeDefinition.NULL;
+        return type != null ? type
+                : AsnSchemaTypeDefinition.NULL;
     }
 
     /**
@@ -157,7 +157,7 @@ public class AsnSchemaModule
         private final Map<String, AsnSchemaTypeDefinition> types = Maps.newHashMap();
 
         /**
-         * all types imported by this module. Map is of form {typeName =>
+         * all types imported by this module. Map is of form {typeName =&gt;
          * importedModuleName}
          */
         private final Map<String, String> imports = Maps.newHashMap();
@@ -235,7 +235,7 @@ public class AsnSchemaModule
          * @param imports
          *            the imports defined in this module. This identifies the
          *            module that an imported type comes from. Map is of format
-         *            {typeName => moduleName}
+         *            {typeName =&gt; moduleName}
          *
          * @return this builder
          */

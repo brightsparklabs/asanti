@@ -22,6 +22,9 @@ public interface Validator
     /**
      * Validates the supplied data using the rules in this validator
      *
+     * @param decodedAsnData
+     *            data to validate
+     *
      * @return the results from validating the data
      */
     public ValidationResult validate(DecodedAsnData decodedAsnData);
