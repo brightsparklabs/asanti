@@ -13,11 +13,11 @@ non-conforming data.
 ```bash
 git clone git@github.com:brightsparklabs/asanti.git
 cd asanti
-gradle build
+./gradlew build
 # generate eclipse classpath (optional)
-gradle eclipse
+./gradlew eclipse
 # generate intellij classpath (optional)
-gradle idea
+./gradlew idea
 ```
 
 ## Usage

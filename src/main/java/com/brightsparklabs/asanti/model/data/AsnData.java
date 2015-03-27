@@ -65,7 +65,7 @@ public interface AsnData
     /**
      * Returns a mapping of all tags to the data (bytes) associated with them
      * <p>
-     * E.g. "/1/1/1" => "[0x00, 0x01]", "3/1/2" => "[0x00, 0x01]"
+     * E.g. "/1/1/1" =&gt; "[0x00, 0x01]", "3/1/2" =&gt; "[0x00, 0x01]"
      *
      * @return mapping of all tags to their associated data
      */
@@ -76,14 +76,14 @@ public interface AsnData
      * expression
      * <p>
      * E.g.
-     * <code>getBytesMatching(Pattern.compile("/1/1/.*")) => { "/1/1/1" => "[0x00, 0x01]",
-     * "/1/1/2" => "[0x00, 0x01]" } </code>
+     * <code>getBytesMatching(Pattern.compile("/1/1/.*")) =&gt; { "/1/1/1" =&gt; "[0x00, 0x01]",
+     * "/1/1/2" =&gt; "[0x00, 0x01]" } </code>
      *
      * @param regex
      *            regular expression to match tags against
      *
      * @return data associated with the matching tags. Map is of form:
-     *         {@code tag => data}
+     *         {@code tag =&gt; data}
      */
     public ImmutableMap<String, byte[]> getBytesMatching(Pattern regex);
 }

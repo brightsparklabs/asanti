@@ -54,8 +54,7 @@ public class OperationResult<T>
     {
         this.wasSuccessful = wasSuccessful;
         this.output = output;
-        this.failureReason = Strings.nullToEmpty(failureReason)
-                .trim();
+        this.failureReason = Strings.nullToEmpty(failureReason).trim();
     }
 
     /**
@@ -68,6 +67,9 @@ public class OperationResult<T>
      *
      * @param output
      *            the resulting output from the operation
+     *
+     * @param <T>
+     *            the type of the result
      *
      * @return a 'successful' result instance containing the supplied data
      */
@@ -89,6 +91,9 @@ public class OperationResult<T>
      *
      * @param failureReason
      *            the reason the operation failed
+     *
+     * @param <T>
+     *            the type of the result
      *
      * @return an 'unsuccessful' result instance containing the supplied data
      */

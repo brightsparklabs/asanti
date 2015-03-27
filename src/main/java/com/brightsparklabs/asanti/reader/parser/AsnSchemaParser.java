@@ -62,7 +62,7 @@ public class AsnSchemaParser
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the supplied ASN.1 schema
+     * Parses the supplied ASN.1 schema text
      *
      * @param asnSchema
      *            all text from the ASN.1 schema
@@ -70,6 +70,7 @@ public class AsnSchemaParser
      * @throws ParseException
      *             if any errors occur while parsing the schema
      *
+     * @return the parsed schema
      */
     public static AsnSchema parse(String asnSchema) throws ParseException
     {

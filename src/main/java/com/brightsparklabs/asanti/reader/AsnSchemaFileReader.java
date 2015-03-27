@@ -44,6 +44,7 @@ public class AsnSchemaFileReader
      * @throws IOException
      *             if any errors occur while parsing the schema file
      *
+     * @return the data from the supplied ASN.1 schema file
      */
     public static AsnSchema read(File asnSchemaFile) throws IOException
     {
@@ -53,7 +54,7 @@ public class AsnSchemaFileReader
         {
             return AsnSchemaParser.parse(contents);
         }
-        catch (ParseException ex)
+        catch (final ParseException ex)
         {
             throw new IOException(ex);
         }

@@ -21,7 +21,7 @@ public interface AsnSchema
 
     /**
      * Returns the decoded tag for the supplied raw tag. E.g.
-     * {@code getDecodedTag("/1/0/1", "Document")} =>
+     * {@code getDecodedTag("/1/0/1", "Document")} =&gt;
      * {@code "/Document/header/published/date"}
      *
      * @param rawTag

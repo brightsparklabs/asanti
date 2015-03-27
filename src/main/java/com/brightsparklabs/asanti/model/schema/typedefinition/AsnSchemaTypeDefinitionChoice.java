@@ -33,9 +33,8 @@ public class AsnSchemaTypeDefinitionChoice extends AsnSchemaTypeDefinitionConstr
      *            The constraint on the type. Use
      *            {@link AsnSchemaConstraint#NULL} if no constraint.
      *            <p>
-     *            E.g. For
-     *            <code>CHOICE { ... } (CONSTRAINED BY {} ! X)<code> this would be
-     *            <code>CONSTRAINED BY {} ! X<code>
+     *            E.g. For <code>CHOICE { ... } (CONSTRAINED BY {} ! X)</code>
+     *            this would be <code>CONSTRAINED BY {} ! X</code>
      *
      * @throws NullPointerException
      *             if {@code name}, or {@code componentTypes} are {@code null}
@@ -43,8 +42,7 @@ public class AsnSchemaTypeDefinitionChoice extends AsnSchemaTypeDefinitionConstr
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeDefinitionChoice(String name, Iterable<AsnSchemaComponentType> componentTypes,
-            AsnSchemaConstraint constraint)
+    public AsnSchemaTypeDefinitionChoice(String name, Iterable<AsnSchemaComponentType> componentTypes, AsnSchemaConstraint constraint)
     {
         super(name, AsnBuiltinType.Choice, componentTypes, constraint);
     }
