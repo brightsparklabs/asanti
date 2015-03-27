@@ -16,6 +16,8 @@ cd asanti
 gradle build
 # generate eclipse classpath (optional)
 gradle eclipse
+# generate intellij classpath (optional)
+gradle idea
 ```
 
 ## Usage
