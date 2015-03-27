@@ -10,6 +10,7 @@
 apply plugin: 'java'
 apply plugin: 'java-library-distribution'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'findbugs'    // code quality
 apply plugin: 'jacoco'      // code coverage
 apply plugin: 'maven'       // publishing to maven central
