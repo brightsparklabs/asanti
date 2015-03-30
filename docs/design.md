@@ -62,18 +62,27 @@ The `AsnSchemaComponentTypeParser.parseComponentType` method detects
 the `Pseudo Type Definition` using a regular expression. A name in
 the following format is generated for the `Pseudo Type Definition`:
 ```
-<containingTypeName>.generated.<componentTypeName>
+generated.<containingTypeName>.<componentTypeName>
 ```
+
+The use of a lowercase type reference name containing dots is invalid in
+ASN.1. Using this format:
+
+1. Ensures there are no clashes with valid type reference names
+1. Makes it explicitly clear that the name was generated.
 
 For the previous example the name would be:
 ```
-IRI-Parameters.generated.callContentLinkInformation
+generated.IRI-Parameters.callContentLinkInformation
 ```
 
 The text of the `Pseudo Type Definition` is formatted to a single line of text. An
-`AsnSchemaComponentTypeRaw` object storing the `AsnSchemaComponentType`,
-generated name and text of the `Pseudo Type Definition` is returned from the
-`AsnSchemaComponentTypeParser.parseComponentType` method.
+`AsnSchemaComponentTypeRaw` object is returned from the
+`AsnSchemaComponentTypeParser.parseComponentType` method. It stores the following:
+
+- The `AsnSchemaComponentType`
+- The generated name
+- The text of the `Pseudo Type Definition`
 
 The `AsnSchemaComponentTypeParser.parse` method processes the
 `AsnSchemaComponentTypeRaw` objects to create a `ComponentTypeParseResult`
@@ -106,4 +115,3 @@ Given that `Pseudo Type Definitions` are parsed and added to the
 Definition` is essentially the same as if the tag were referencing an explicit
 type definition. The only difference would be that the resulting type in the
 `DecodedTag` object has a generated name.
-
