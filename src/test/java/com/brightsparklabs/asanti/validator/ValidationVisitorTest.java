@@ -4,13 +4,9 @@
  */
 package com.brightsparklabs.asanti.validator;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaEnumeratedOption;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionEnumerated;
@@ -26,6 +22,9 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.validator.rule.PrimitiveValidationRule;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 import com.google.common.collect.ImmutableList;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link ValidationVisitor}
@@ -66,7 +65,7 @@ public class ValidationVisitorTest
     public void testVisitAsnSchemaTypeDefinitionEnumerated()
     {
         final AsnSchemaTypeDefinitionEnumerated visitable =
-                new AsnSchemaTypeDefinitionEnumerated("TEST_NAME", ImmutableList.<AsnSchemaEnumeratedOption>of());
+                new AsnSchemaTypeDefinitionEnumerated("TEST_NAME", ImmutableList.<AsnSchemaNamedTag>of());
         assertEquals(ValidationRule.NULL, instance.visit(visitable));
     }
 
@@ -83,7 +82,7 @@ public class ValidationVisitorTest
     public void testVisitAsnSchemaTypeDefinitionInteger()
     {
         final AsnSchemaTypeDefinitionInteger visitable =
-                new AsnSchemaTypeDefinitionInteger("TEST_NAME", AsnSchemaConstraint.NULL);
+                new AsnSchemaTypeDefinitionInteger("TEST_NAME", ImmutableList.<AsnSchemaNamedTag>of(), AsnSchemaConstraint.NULL);
         final Object result = instance.visit(visitable);
         assertTrue(result instanceof PrimitiveValidationRule);
     }

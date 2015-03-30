@@ -5,8 +5,6 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import static com.google.common.base.Preconditions.*;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +12,8 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A ENUMERATED type definition from a within a module specification within an
@@ -35,7 +35,7 @@ public class AsnSchemaTypeDefinitionEnumerated extends AbstractAsnSchemaTypeDefi
     // -------------------------------------------------------------------------
 
     /** mapping from raw tag to enumerated option */
-    private final ImmutableMap<String, AsnSchemaEnumeratedOption> tagsToOptions;
+    private final ImmutableMap<String, AsnSchemaNamedTag> tagsToOptions;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -56,18 +56,18 @@ public class AsnSchemaTypeDefinitionEnumerated extends AbstractAsnSchemaTypeDefi
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeDefinitionEnumerated(String name, Iterable<AsnSchemaEnumeratedOption> options)
+    public AsnSchemaTypeDefinitionEnumerated(String name, Iterable<AsnSchemaNamedTag> options)
     {
         super(name, AsnBuiltinType.Enumerated, AsnSchemaConstraint.NULL);
         checkNotNull(options);
 
-        final ImmutableMap.Builder<String, AsnSchemaEnumeratedOption> tagsToOptionsBuilder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, AsnSchemaNamedTag> tagsToOptionsBuilder = ImmutableMap.builder();
 
         // next expected tag is used to generate tags for automatic tagging
         // TODO ASN-80 - ensure that generating for all missing tags is correct
         int nextExpectedTag = 0;
 
-        for (final AsnSchemaEnumeratedOption option : options)
+        for (final AsnSchemaNamedTag option : options)
         {
             String tag = option.getTag();
             if (Strings.isNullOrEmpty(tag))
@@ -92,7 +92,7 @@ public class AsnSchemaTypeDefinitionEnumerated extends AbstractAsnSchemaTypeDefi
     @Override
     public String getTagName(String tag)
     {
-        final AsnSchemaEnumeratedOption option = tagsToOptions.get(tag);
+        final AsnSchemaNamedTag option = tagsToOptions.get(tag);
         return (option == null) ? "" : option.getTagName();
     }
 

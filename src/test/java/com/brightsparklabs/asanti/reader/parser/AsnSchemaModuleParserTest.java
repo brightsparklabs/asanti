@@ -4,6 +4,9 @@
  */
 package com.brightsparklabs.asanti.reader.parser;
 
+import java.text.ParseException;
+import java.util.Map;
+
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -13,15 +16,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.text.ParseException;
-import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -280,7 +279,7 @@ public class AsnSchemaModuleParserTest
         // return mocked AsnSchemaTypeDefinition instances when expected inputs are received
         PowerMockito.mockStatic(AsnSchemaTypeDefinitionParser.class);
         when(AsnSchemaTypeDefinitionParser
-                .parse("Document", "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer }"))
+                .parse("Document", "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due }"))
                 .thenReturn(mockedAsnSchemaTypeDefinitions.get(0));
 
         when(AsnSchemaTypeDefinitionParser
@@ -314,6 +313,10 @@ public class AsnSchemaModuleParserTest
         when(AsnSchemaTypeDefinitionParser
                 .parse("Paragraph", "SEQUENCE { title [1] OCTET STRING, contributor [2] Person OPTIONAL, points [3] SEQUENCE OF OCTET STRING }"))
                 .thenReturn(mockedAsnSchemaTypeDefinitions.get(8));
+
+        when(AsnSchemaTypeDefinitionParser
+                .parse("Date-Due", "INTEGER { tomorrow(0), three-day(1), week(2) } DEFAULT week"))
+                .thenReturn(mockedAsnSchemaTypeDefinitions.get(9));
 
         final AsnSchemaModule actualModule = AsnSchemaModuleParser.parse(MockAsnSchemaModule.TEST_MODULE_DOCUMENT_PDU);
         assertNotNull(actualModule);

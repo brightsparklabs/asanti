@@ -4,12 +4,14 @@
  */
 package com.brightsparklabs.asanti.reader.parser;
 
-import static org.junit.Assert.*;
-
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionPrimitiveParser}
@@ -223,7 +225,17 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         // null name
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(null, "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(null, ImmutableList.<AsnSchemaNamedTag>of(), "TEST_CONSTRAINTS");
+            fail("NullPointerException not thrown");
+        }
+        catch (final NullPointerException ex)
+        {
+        }
+
+        // null distinguished values
+        try
+        {
+            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(null, null, "TEST_CONSTRAINTS");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -233,7 +245,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         // blank name
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger("", "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger("", ImmutableList.<AsnSchemaNamedTag>of(), "TEST_CONSTRAINTS");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -241,7 +253,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         }
         try
         {
-            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(" ", "TEST_CONSTRAINTS");
+            AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(" ", ImmutableList.<AsnSchemaNamedTag>of(), "TEST_CONSTRAINTS");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -249,7 +261,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         }
 
         final AsnSchemaTypeDefinition instance =
-                AsnSchemaTypeDefinitionPrimitiveParser.parseInteger("TEST_NAME", "TEST_CONSTRAINTS");
+                AsnSchemaTypeDefinitionPrimitiveParser.parseInteger("TEST_NAME", ImmutableList.<AsnSchemaNamedTag>of(), "TEST_CONSTRAINTS");
         assertEquals(AsnBuiltinType.Integer, instance.getBuiltinType());
         assertEquals("TEST_NAME", instance.getName());
         assertEquals("", instance.getTagName(""));

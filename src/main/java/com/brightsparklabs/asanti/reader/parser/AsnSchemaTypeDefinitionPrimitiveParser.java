@@ -9,6 +9,7 @@ import java.text.ParseException;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIA5String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
@@ -181,6 +182,9 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      *            the name of the defined type (i.e. the text on the left hand
      *            side of the {@code ::=})
      *
+     * @param distinguishedValues
+     *            the optional list of distinguished values
+     *
      * @param constraintText
      *            the constraint text as a string
      *
@@ -189,9 +193,11 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    public static AsnSchemaTypeDefinitionInteger parseInteger(String name, String constraintText) throws ParseException
+    public static AsnSchemaTypeDefinitionInteger parseInteger(String name,
+                                                              Iterable<AsnSchemaNamedTag> distinguishedValues,
+                                                              String constraintText) throws ParseException
     {
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionInteger(name, constraint);
+        return new AsnSchemaTypeDefinitionInteger(name, distinguishedValues, constraint);
     }
 }

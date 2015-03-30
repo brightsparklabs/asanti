@@ -74,9 +74,10 @@ BEGIN
 
     Document ::= SEQUENCE
     {
-        header [1] Header,
-        body   [2] Body,
-        footer [3] Footer
+        header  [1] Header,
+        body    [2] Body,
+        footer  [3] Footer,
+        dueDate [4] Date-Due
     }
 
     Header ::= SEQUENCE
@@ -126,6 +127,14 @@ BEGIN
         contributor  [2] Person OPTIONAL,
         points       [3] SEQUENCE OF OCTET STRING
     }
+
+    Date-Due ::= INTEGER
+    {
+      tomorrow(0),
+      three-day(1),
+      week (2)
+    } DEFAULT week
+
 END
 
 People-Protocol
@@ -154,6 +163,7 @@ BEGIN
         male(0),
         female(1)
     }
+
 END
 ```
 

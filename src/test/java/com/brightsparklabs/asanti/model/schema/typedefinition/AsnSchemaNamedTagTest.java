@@ -4,30 +4,29 @@
  */
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaEnumeratedOption;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
- * Units tests for {@link AsnSchemaEnumeratedOption}
+ * Units tests for {@link AsnSchemaNamedTag}
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaEnumeratedOptionTest
+public class AsnSchemaNamedTagTest
 {
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
     @Test
-    public void testAsnSchemaEnumeratedOption_Name() throws Exception
+    public void testAsnSchemaNamedTag_Name() throws Exception
     {
         // test null
         try
         {
-            new AsnSchemaEnumeratedOption(null, null);
+            new AsnSchemaNamedTag(null, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -37,7 +36,7 @@ public class AsnSchemaEnumeratedOptionTest
         // test blank
         try
         {
-            new AsnSchemaEnumeratedOption("", null);
+            new AsnSchemaNamedTag("", null);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -45,7 +44,7 @@ public class AsnSchemaEnumeratedOptionTest
         }
         try
         {
-            new AsnSchemaEnumeratedOption(" ", null);
+            new AsnSchemaNamedTag(" ", null);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -56,24 +55,24 @@ public class AsnSchemaEnumeratedOptionTest
     @Test
     public void testGetTagName() throws Exception
     {
-        final AsnSchemaEnumeratedOption instance = new AsnSchemaEnumeratedOption("TAG_NAME", "0");
+        final AsnSchemaNamedTag instance = new AsnSchemaNamedTag("TAG_NAME", "0");
         assertEquals("TAG_NAME", instance.getTagName());
     }
 
     @Test
     public void testGetTag() throws Exception
     {
-        AsnSchemaEnumeratedOption instance = new AsnSchemaEnumeratedOption("TAG_NAME", "0");
+        AsnSchemaNamedTag instance = new AsnSchemaNamedTag("TAG_NAME", "0");
         assertEquals("0", instance.getTag());
 
         // test null
-        instance = new AsnSchemaEnumeratedOption("TAG_NAME", null);
+        instance = new AsnSchemaNamedTag("TAG_NAME", null);
         assertEquals("", instance.getTag());
 
         // test blank
-        instance = new AsnSchemaEnumeratedOption("TAG_NAME", "");
+        instance = new AsnSchemaNamedTag("TAG_NAME", "");
         assertEquals("", instance.getTag());
-        instance = new AsnSchemaEnumeratedOption("TAG_NAME", " ");
+        instance = new AsnSchemaNamedTag("TAG_NAME", " ");
         assertEquals("", instance.getTag());
     }
 }

@@ -4,13 +4,14 @@
  */
 package com.brightsparklabs.asanti.reader.parser;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
 import java.text.ParseException;
 import java.util.List;
 
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
+import com.google.common.base.Splitter;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,11 +19,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
-import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
-import com.google.common.base.Splitter;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link AsnSchemaParser}
@@ -41,7 +41,7 @@ public class AsnSchemaParserTest
      * number of lines expected after pre-parsing the Document-PDU module from
      * the example schema
      */
-    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 27;
+    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 33;
 
     /**
      * number of lines expected after pre-parsing the People-Protocol module

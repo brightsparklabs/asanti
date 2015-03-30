@@ -8,20 +8,21 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * An option within an ENUMERATED definition
+ * A named tag in the ENUMERATED or INTEGER type definitions e.g. an ENUMERATED option or an INTEGER distinguished
+ * value.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaEnumeratedOption
+public class AsnSchemaNamedTag
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** name of this option (i.e. tag name) */
+    /** name of the option or distinguished value (i.e. tag name) */
     private final String tagName;
 
-    /** tag of this option */
+    /** tag of the option or distinguished value */
     private final String tag;
 
     // -------------------------------------------------------------------------
@@ -44,7 +45,7 @@ public class AsnSchemaEnumeratedOption
      * @throws IllegalArgumentException
      *             if {@code tagName} is blank
      */
-    public AsnSchemaEnumeratedOption(String tagName, String tag)
+    public AsnSchemaNamedTag(String tagName, String tag)
     {
         checkNotNull(tagName);
         checkArgument(!tagName.trim()
@@ -59,9 +60,9 @@ public class AsnSchemaEnumeratedOption
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the name of this option
+     * Returns the name of the component type
      *
-     * @return the name of this option (i.e. tag name)
+     * @return the name of the component type (i.e. tag name)
      */
     public String getTagName()
     {
@@ -69,9 +70,9 @@ public class AsnSchemaEnumeratedOption
     }
 
     /**
-     * Returns the tag of this option
+     * Returns the tag of the component type
      *
-     * @return the tag of this option
+     * @return the tag of the component type
      */
     public String getTag()
     {

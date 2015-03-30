@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaEnumeratedOption;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionChoice;
@@ -335,8 +335,8 @@ public final class AsnSchemaTypeDefinitionParser
     {
         final String enumeratedOptionsText = matcher.group(1);
 
-        final ImmutableList<AsnSchemaEnumeratedOption> enumeratedOptions =
-                AsnSchemaEnumeratedParser.parse(enumeratedOptionsText);
+        final ImmutableList<AsnSchemaNamedTag> enumeratedOptions =
+                AsnSchemaNamedTagParser.parseEnumeratedOptions(enumeratedOptionsText);
         final AsnSchemaTypeDefinitionEnumerated typeDefinition =
                 new AsnSchemaTypeDefinitionEnumerated(name, enumeratedOptions);
         return typeDefinition;
@@ -497,9 +497,13 @@ public final class AsnSchemaTypeDefinitionParser
      */
     private static AsnSchemaTypeDefinitionInteger parseInteger(String name, Matcher matcher) throws ParseException
     {
-        // TODO ASN-95 - parse optional distinguished values
+        final String distinguishedValuesText = matcher.group(2);
+
+        final ImmutableList<AsnSchemaNamedTag> distinguishedValues =
+                AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesText);
+
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(name, constraintText);
+        return AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(name, distinguishedValues, constraintText);
     }
 
     /**
