@@ -193,8 +193,8 @@ public class AsnDecoder
         }
         catch (final Exception ex)
         {
-            logger.error("Could not parse file - " + ex.getMessage());
-            ex.printStackTrace();
+            logger.error("Could not parse file", ex);
+            System.exit(1);
         }
     }
 
