@@ -7,8 +7,9 @@ package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 
-import java.math.BigInteger;
-import java.sql.Timestamp;
+import java.util.logging.Logger;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Utility class for decoding bytes from ASN.1 String Types.
@@ -21,6 +22,13 @@ import java.sql.Timestamp;
  */
 class AsnStringByteDecoder
 {
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+
+    /** class logger */
+    private static final Logger logger = Logger.getLogger(AsnStringByteDecoder.class.getName());
+
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -160,12 +168,17 @@ class AsnStringByteDecoder
      * @param bytes
      *         bytes to decode
      *
-     * @return the decoded bytes
+     * @return the decoded bytes. No transformation is done for bytes in an OCTET STRING. I.e. the bytes are returned as
+     * is.
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
-    static String decodeAsOctetString(byte[] bytes)
+    static byte[] decodeAsOctetString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        checkNotNull(bytes);
+        // no transformation needed for OCTET STRING. Returns raw bytes
+        return bytes;
     }
 
     /**

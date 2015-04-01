@@ -10,8 +10,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Utility class for decoding bytes in ASN.1 Types
@@ -321,9 +320,13 @@ public class AsnByteDecoder
      * @param bytes
      *         bytes to decode
      *
-     * @return the decoded bytes
+     * @return the decoded bytes. No transformation is done for bytes in an OCTET STRING. I.e. the bytes are returned as
+     * is.
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
-    public static String decodeAsOctetString(byte[] bytes)
+    public static byte[] decodeAsOctetString(byte[] bytes)
     {
         return AsnStringByteDecoder.decodeAsOctetString(bytes);
     }

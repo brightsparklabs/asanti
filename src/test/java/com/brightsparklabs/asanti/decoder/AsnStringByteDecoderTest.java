@@ -71,7 +71,21 @@ public class AsnStringByteDecoderTest
     @Test
     public void testDecodeAsOctetString() throws Exception
     {
-        // TODO: ASN-8
+        // test valid
+        byte[] bytes = new byte[0];
+        assertArrayEquals(bytes, AsnStringByteDecoder.decodeAsOctetString(bytes));
+        bytes = new byte[] { Byte.MIN_VALUE, -1, 0, 1, Byte.MAX_VALUE };
+        assertArrayEquals(bytes, AsnStringByteDecoder.decodeAsOctetString(bytes));
+
+        // test null
+        try
+        {
+            AsnByteDecoder.decodeAsOctetString(null);
+            fail("NullPointerException not thrown");
+        }
+        catch (NullPointerException ex)
+        {
+        }
     }
 
     @Test
