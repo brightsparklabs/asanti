@@ -10,6 +10,9 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Utility class for decoding bytes in ASN.1 Types
  *
@@ -71,11 +74,17 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
+     * @throws IllegalArgumentException
+     *         if the byte array is not have a length of 1
      */
     public static boolean decodeAsBoolean(byte[] bytes)
     {
-        // TODO: ASN-8
-        return false;
+        checkNotNull(bytes);
+        checkArgument(bytes.length == 1, "ASN.1 BOOLEAN type can only be one byte long");
+        return bytes[0] != 0;
     }
 
     /**
