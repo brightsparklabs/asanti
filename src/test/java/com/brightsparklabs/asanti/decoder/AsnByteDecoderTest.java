@@ -27,126 +27,96 @@ public class AsnByteDecoderTest
     @Test
     public void testDecodeAsBoolean() throws Exception
     {
-
-    }
-
-    @Test
-    public void testDecodeAsDate() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsDateTime() throws Exception
-    {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsDuration() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsEmbeddedPDV() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsExternal() throws Exception
     {
-
-    }
-
-    @Test
-    public void testDecodeAsGeneralizedTime() throws Exception
-    {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsInstanceOf() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsInteger() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsIri() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsNull() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsObjectClassField() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsOid() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsOidIri() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsPrefixed() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsReal() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsRelativeIri() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsRelativeOid() throws Exception
     {
-
+        // TODO: ASN-8
     }
 
     @Test
     public void testDecodeAsRelativeOidIri() throws Exception
     {
-
-    }
-
-    @Test
-    public void testDecodeAsTime() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsTimeOfDay() throws Exception
-    {
-
+        // TODO: ASN-8
     }
 }
