@@ -13,7 +13,8 @@ import static org.junit.Assert.*;
  * Units tests for {@link AsnByteDecoder}.
  * <p/>
  * Since {@link AsnByteDecoder} delegates to a number of other classes, not all methods are tested directly here. Refer
- * to the following test classes to see the delegated tests: {@link AsnStringByteDecoderTest}.
+ * to the following test classes to see the delegated tests: {@link AsnStringByteDecoderTest}, {@link
+ * AsnTimestampByteDecoderTest}.
  *
  * @author brightSPARK Labs
  */

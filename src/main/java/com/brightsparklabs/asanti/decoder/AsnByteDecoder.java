@@ -101,8 +101,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsDate(byte[] bytes)
     {
-        // TODO: ASN-8
-        return new Timestamp(0);
+        return AsnTimestampByteDecoder.decodeAsDate(bytes);
     }
 
     /**
@@ -115,8 +114,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsDateTime(byte[] bytes)
     {
-        // TODO: ASN-8
-        return new Timestamp(0);
+        return AsnTimestampByteDecoder.decodeAsDateTime(bytes);
     }
 
     /**
@@ -171,8 +169,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsGeneralizedTime(byte[] bytes)
     {
-        // TODO: ASN-8
-        return new Timestamp(0);
+        return AsnTimestampByteDecoder.decodeAsGeneralizedTime(bytes);
     }
 
     /**
@@ -457,8 +454,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsTime(byte[] bytes)
     {
-        // TODO: ASN-8
-        return new Timestamp(0);
+        return AsnTimestampByteDecoder.decodeAsTime(bytes);
     }
 
     /**
@@ -471,8 +467,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsTimeOfDay(byte[] bytes)
     {
-        // TODO: ASN-8
-        return new Timestamp(0);
+        return AsnTimestampByteDecoder.decodeAsTimeOfDay(bytes);
     }
 
     /**

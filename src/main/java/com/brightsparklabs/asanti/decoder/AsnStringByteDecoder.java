@@ -3,11 +3,6 @@
  * www.brightsparklabs.com
  */
 
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
-
 package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
