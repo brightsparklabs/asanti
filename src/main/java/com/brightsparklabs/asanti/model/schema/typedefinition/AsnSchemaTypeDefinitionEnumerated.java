@@ -5,8 +5,8 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
@@ -28,7 +28,7 @@ public class AsnSchemaTypeDefinitionEnumerated extends AbstractAsnSchemaTypeDefi
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionEnumerated.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaTypeDefinitionEnumerated.class);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -73,7 +73,7 @@ public class AsnSchemaTypeDefinitionEnumerated extends AbstractAsnSchemaTypeDefi
             if (Strings.isNullOrEmpty(tag))
             {
                 tag = String.valueOf(nextExpectedTag);
-                log.log(Level.FINE, "Generated automatic tag [{0}] for {1}", new Object[] { tag, option.getTagName() });
+                logger.debug("Generated automatic tag [{}] for {}", tag, option.getTagName());
                 nextExpectedTag++;
             }
             else

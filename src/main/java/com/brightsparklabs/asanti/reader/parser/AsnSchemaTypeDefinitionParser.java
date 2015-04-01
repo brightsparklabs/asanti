@@ -6,8 +6,9 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -105,7 +106,7 @@ public final class AsnSchemaTypeDefinitionParser
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionParser.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaTypeDefinitionParser.class.getName());
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -141,7 +142,7 @@ public final class AsnSchemaTypeDefinitionParser
      */
     public static AbstractAsnSchemaTypeDefinition parse(String name, String value) throws ParseException
     {
-        log.log(Level.FINE, "Found type definition: {0} = {1}", new Object[] { name, value });
+        logger.debug("Found type definition: {} = {}", name, value);
 
         // check if defining a SEQUENCE
         Matcher matcher = PATTERN_TYPE_DEFINITION_SEQUENCE.matcher(value);
@@ -198,7 +199,7 @@ public final class AsnSchemaTypeDefinitionParser
             final String builtinType = matcher.group(1);
             final String error =
                     String.format("Cannot parse unsupported ASN.1 built-in type: %s for type: %s", builtinType, name);
-            log.warning(error);
+            logger.warn(error);
             return AsnSchemaTypeDefinition.NULL;
         }
 
@@ -215,7 +216,7 @@ public final class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             // TODO ASN-39 - handle CLASS
-            log.warning("Type Definitions for CLASS not yet supported");
+            logger.warn("Type Definitions for CLASS not yet supported");
             return AsnSchemaTypeDefinition.NULL;
         }
 

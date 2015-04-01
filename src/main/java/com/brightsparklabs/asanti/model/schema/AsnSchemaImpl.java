@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
@@ -34,7 +34,7 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaModule.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaModule.class);
 
     /** splitter for separating tag strings */
     private static final Splitter tagSplitter = Splitter.on("/")
@@ -209,29 +209,16 @@ public class AsnSchemaImpl implements AsnSchema
     }
 
     /**
-     * Returns the decoded tags for the supplied raw tags using an imported
+     * Returns the imported module which contains the specified type
      * module.
      *
-     * @param rawTags
-     *            raw tags to decode. This should be an iterable in the order of
-     *            the tags. E.g. The raw tag {code "/1/0/1"} should be provided
-     *            as an iterator of {code ["1", "0", "1"]}
-     *
      * @param typeName
-     *            the type in the <b>imported</b> module from which to begin
-     *            decoding the raw tag. E.g. {@code "People"} will start
-     *            decoding the raw tags from the type definition named
-     *            {@code People}
+     *            the type in the <b>imported</b> module
      *
-     * @param allSchemaModules
-     *            all modules which are present in the schema. These are used to
-     *            resolve imports. Map is of form: {@code moduleName => module}
+     * @param module
+     *            the module which imported the specified type
      *
-     * @return a list of all decoded tags. If a raw tag could not be decoded
-     *         then processing stops. E.g. for the raw tags {code "1", "0" "1",
-     *         "99", "98"}, if the {@code "99"} raw tag cannot be decoded, then
-     *         a list containing the decoded tags for only the first three raw
-     *         tags is returned (e.g. {@code ["Header", "Published", "Date"]})
+     * @return the imported module which contains the specified type
      */
     private AsnSchemaModule getImportedModuleFor(String typeName, AsnSchemaModule module)
     {
@@ -239,9 +226,9 @@ public class AsnSchemaImpl implements AsnSchema
         final String importedModuleName = module.getImportedModuleFor(typeName);
         if (Strings.isNullOrEmpty(importedModuleName))
         {
-            log.log(Level.WARNING,
-                    "Could not resolve type definition \"{0}\". It is is not defined or imported in module \"{1}\"",
-                    new Object[] { typeName, module.getName() });
+            logger.warn("Could not resolve type definition \"{}\". It is is not defined or imported in module \"{}\"",
+                    typeName,
+                    module.getName());
             return AsnSchemaModule.NULL;
         }
 
@@ -249,9 +236,9 @@ public class AsnSchemaImpl implements AsnSchema
         // ensure we do not recursively look into the current module
         if (importedModule == null || importedModule.equals(module))
         {
-            log.log(Level.WARNING,
-                    "Could not resolve type definition \"{0}\". Type is imported from an unknown module \"{1}\"",
-                    new Object[] { typeName, module.getName() });
+            logger.warn("Could not resolve type definition \"{}\". Type is imported from an unknown module \"{}\"",
+                    typeName,
+                    module.getName());
             return AsnSchemaModule.NULL;
         }
 
