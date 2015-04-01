@@ -11,11 +11,11 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIa5String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionNumericString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionOctetString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUtf8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
 
 /**
@@ -44,7 +44,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
     // -------------------------------------------------------------------------
 
     /**
-     * Parses an IA5String type definition from a module from an ASN.1 schema
+     * Parses an Ia5String type definition from a module from an ASN.1 schema
      *
      * @param name
      *            the name of the defined type (i.e. the text on the left hand
@@ -58,11 +58,11 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    public static AsnSchemaTypeDefinitionIA5String parseIA5String(String name, String constraintText)
+    public static AsnSchemaTypeDefinitionIa5String parseIA5String(String name, String constraintText)
             throws ParseException
     {
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionIA5String(name, constraint);
+        return new AsnSchemaTypeDefinitionIa5String(name, constraint);
     }
 
     /**
@@ -110,7 +110,7 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
     }
 
     /**
-     * Parses a UTF8String type definition from a module from an ASN.1 schema
+     * Parses a Utf8String type definition from a module from an ASN.1 schema
      *
      * @param name
      *            the name of the defined type (i.e. the text on the left hand
@@ -124,11 +124,11 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    public static AsnSchemaTypeDefinitionUTF8String parseUTF8String(String name, String constraintText)
+    public static AsnSchemaTypeDefinitionUtf8String parseUTF8String(String name, String constraintText)
             throws ParseException
     {
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionUTF8String(name, constraint);
+        return new AsnSchemaTypeDefinitionUtf8String(name, constraint);
     }
 
     /**

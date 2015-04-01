@@ -14,6 +14,7 @@ public enum AsnBuiltinType
 {
     BitString,
     Boolean,
+    BmpString,
     CharacterString,
     Choice,
     Date,
@@ -23,25 +24,40 @@ public enum AsnBuiltinType
     Enumerated,
     External,
     GeneralizedTime,
-    IA5String,
+    GeneralString,
+    GraphicString,
+    Ia5String,
     InstanceOf,
     Integer,
+    /** Internationalized Resource Identifier */
     IRI,
+    Iso646String,
     Null,
     NumericString,
     ObjectClassField,
-    ObjectIdentifier,
+    /** Object Identifier */
+    Oid,
+    /** Object Identifier (Internationalized Resource Identifier) */
+    OidIri,
     OctetString,
     Real,
-    RelativeIRI,
-    RelativeOID,
+    /** Relative Internationalized Resource Identifier */
+    RelativeIri,
+    /** Relative Object Identifier */
+    RelativeOid,
+    /** Relative Object Identifier (Internationalized Resource Identifier) */
+    RelativeOidIri,
     Sequence,
     SequenceOf,
     Set,
     SetOf,
     Prefixed,
+    PrintableString,
+    TeletexString,
     Time,
     TimeOfDay,
-    UTF8String,
+    UniversalString,
+    Utf8String,
+    VideotexString,
     VisibleString
 }

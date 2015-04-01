@@ -19,7 +19,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionEnumerated;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIA5String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIa5String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionNumericString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionOctetString;
@@ -27,7 +27,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSequenceOf;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSet;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSetOf;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUtf8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -73,7 +73,7 @@ public final class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_BIT_STRING =
             Pattern.compile("^BIT STRING ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
 
-    /** pattern to match an IA5String type definition */
+    /** pattern to match an Ia5String type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_IA5_STRING = Pattern.compile("^IA5String ?(\\((.+)\\))?$");
 
     /** pattern to match a UTF8 type definition */
@@ -98,7 +98,7 @@ public final class AsnSchemaTypeDefinitionParser
 
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
-            "Parser expected a constructed built-in type (SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS) or a primitive built-in type (BIT STRING, GeneralizedTime, IA5String, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString, BOOLEAN, DATE, CHARACTER STRING, DATE_TIME, DURATION, EMBEDDED PDV, EXTERNAL, INTEGER, OID-IRI, NULL, OBJECT IDENTIFIER, REAL, RELATIVE-OID-IRI, RELATIVE-OID, BMPString, GeneralString, GraphicString, ISO646String, PrintableString, TeletexString, T61String, UniversalString, VideotexString, TIME, TIME-OF-DAY, CHARACTER STRING) but found: ";
+            "Parser expected a constructed built-in type (SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS) or a primitive built-in type (BIT STRING, GeneralizedTime, Ia5String, INTEGER, NumericString, OCTET STRING, Utf8String, VisibleString, BOOLEAN, DATE, CHARACTER STRING, DATE_TIME, DURATION, EMBEDDED PDV, EXTERNAL, INTEGER, Oid-IRI, NULL, OBJECT IDENTIFIER, REAL, RELATIVE-Oid-IRI, RELATIVE-Oid, BmpString, GeneralString, GraphicString, Iso646String, PrintableString, TeletexString, T61String, UniversalString, VideotexString, TIME, TIME-OF-DAY, CHARACTER STRING) but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -167,11 +167,11 @@ public final class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_BIT_STRING.matcher(value);
         if (matcher.matches()) { return parseBitString(name, matcher); }
 
-        // check if defining an IA5String
+        // check if defining an Ia5String
         matcher = PATTERN_TYPE_DEFINITION_IA5_STRING.matcher(value);
         if (matcher.matches()) { return parseIA5String(name, matcher); }
 
-        // check if defining a UTF8String
+        // check if defining a Utf8String
         matcher = PATTERN_TYPE_DEFINITION_UTF8_STRING.matcher(value);
         if (matcher.matches()) { return parseUTF8String(name, matcher); }
 
@@ -389,7 +389,7 @@ public final class AsnSchemaTypeDefinitionParser
     }
 
     /**
-     * Parses an IA5String type definition
+     * Parses an Ia5String type definition
      *
      * @param name
      *            name of the defined type
@@ -398,20 +398,20 @@ public final class AsnSchemaTypeDefinitionParser
      *            matcher which matched on
      *            {@link #PATTERN_TYPE_DEFINITION_IA5_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionIA5String} representing the
+     * @return an {@link AsnSchemaTypeDefinitionIa5String} representing the
      *         parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionIA5String parseIA5String(String name, Matcher matcher) throws ParseException
+    private static AsnSchemaTypeDefinitionIa5String parseIA5String(String name, Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseIA5String(name, constraintText);
     }
 
     /**
-     * Parses a UTF8String type definition
+     * Parses a Utf8String type definition
      *
      * @param name
      *            name of the defined type
@@ -420,13 +420,13 @@ public final class AsnSchemaTypeDefinitionParser
      *            matcher which matched on
      *            {@link #PATTERN_TYPE_DEFINITION_UTF8_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionUTF8String} representing the
+     * @return an {@link AsnSchemaTypeDefinitionUtf8String} representing the
      *         parsed data
      *
      * @throws ParseException
      *             if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionUTF8String parseUTF8String(String name, Matcher matcher)
+    private static AsnSchemaTypeDefinitionUtf8String parseUTF8String(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
