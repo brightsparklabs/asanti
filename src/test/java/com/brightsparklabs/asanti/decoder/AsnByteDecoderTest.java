@@ -99,13 +99,25 @@ public class AsnByteDecoderTest
     }
 
     @Test
-    public void testDecodeAsIso646String() throws Exception
+    public void testDecodeAsInstanceOf() throws Exception
     {
 
     }
 
     @Test
     public void testDecodeAsInteger() throws Exception
+    {
+
+    }
+
+    @Test
+    public void testDecodeAsIri() throws Exception
+    {
+
+    }
+
+    @Test
+    public void testDecodeAsIso646String() throws Exception
     {
 
     }
@@ -123,6 +135,18 @@ public class AsnByteDecoderTest
     }
 
     @Test
+    public void testDecodeAsObjectClassField() throws Exception
+    {
+
+    }
+
+    @Test
+    public void testDecodeAsOctetString() throws Exception
+    {
+
+    }
+
+    @Test
     public void testDecodeAsOid() throws Exception
     {
 
@@ -135,6 +159,12 @@ public class AsnByteDecoderTest
     }
 
     @Test
+    public void testDecodeAsPrefixed() throws Exception
+    {
+
+    }
+
+    @Test
     public void testDecodeAsPrintableString() throws Exception
     {
 
@@ -142,6 +172,12 @@ public class AsnByteDecoderTest
 
     @Test
     public void testDecodeAsReal() throws Exception
+    {
+
+    }
+
+    @Test
+    public void testDecodeAsRelativeIri() throws Exception
     {
 
     }

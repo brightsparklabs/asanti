@@ -221,14 +221,14 @@ public class AsnByteDecoder
     }
 
     /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#Iso646String}
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#InstanceOf}
      *
      * @param bytes
      *         bytes to decode
      *
      * @return the decoded bytes
      */
-    public static String decodeAsIso646String(byte[] bytes)
+    public static String decodeAsInstanceOf(byte[] bytes)
     {
         // TODO: ASN-8
         return "";
@@ -246,6 +246,34 @@ public class AsnByteDecoder
     {
         // TODO: ASN-8
         return BigInteger.ZERO;
+    }
+
+    /**
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#IRI}
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the decoded bytes
+     */
+    public static String decodeAsIri(byte[] bytes)
+    {
+        // TODO: ASN-8
+        return "";
+    }
+
+    /**
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#Iso646String}
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the decoded bytes
+     */
+    public static String decodeAsIso646String(byte[] bytes)
+    {
+        // TODO: ASN-8
+        return "";
     }
 
     /**
@@ -271,6 +299,34 @@ public class AsnByteDecoder
      * @return the decoded bytes
      */
     public static String decodeAsNumericString(byte[] bytes)
+    {
+        // TODO: ASN-8
+        return "";
+    }
+
+    /**
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#ObjectClassField}
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the decoded bytes
+     */
+    public static String decodeAsObjectClassField(byte[] bytes)
+    {
+        // TODO: ASN-8
+        return "";
+    }
+
+    /**
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#OctetString}
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the decoded bytes
+     */
+    public static String decodeAsOctetString(byte[] bytes)
     {
         // TODO: ASN-8
         return "";
@@ -305,6 +361,20 @@ public class AsnByteDecoder
     }
 
     /**
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#Prefixed}
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the decoded bytes
+     */
+    public static String decodeAsPrefixed(byte[] bytes)
+    {
+        // TODO: ASN-8
+        return "";
+    }
+
+    /**
      * Decodes the supplied bytes as an {@link AsnBuiltinType#PrintableString}
      *
      * @param bytes
@@ -333,6 +403,20 @@ public class AsnByteDecoder
     }
 
     /**
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#RelativeIri}
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the decoded bytes
+     */
+    public static String decodeAsRelativeIri(byte[] bytes)
+    {
+        // TODO: ASN-8
+        return "";
+    }
+
+    /**
      * Decodes the supplied bytes as an {@link AsnBuiltinType#RelativeOid}
      *
      * @param bytes
@@ -345,6 +429,7 @@ public class AsnByteDecoder
         // TODO: ASN-8
         return "";
     }
+
 
     /**
      * Decodes the supplied bytes as an {@link AsnBuiltinType#RelativeOidIri}
@@ -359,7 +444,6 @@ public class AsnByteDecoder
         // TODO: ASN-8
         return "";
     }
-
     /**
      * Decodes the supplied bytes as an {@link AsnBuiltinType#TeletexString}
      *
