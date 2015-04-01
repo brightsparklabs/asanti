@@ -7,8 +7,9 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import static com.google.common.base.Preconditions.*;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ public abstract class AsnSchemaTypeDefinitionConstructed extends AbstractAsnSche
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionConstructed.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaTypeDefinitionConstructed.class);
 
     /**
      * built-in types which are considered 'constructed'. Currently: SET,
@@ -101,9 +102,7 @@ public abstract class AsnSchemaTypeDefinitionConstructed extends AbstractAsnSche
             if (Strings.isNullOrEmpty(tag))
             {
                 tag = String.valueOf(nextExpectedTag);
-                log.log(Level.FINE,
-                        "Generated automatic tag [{0}] for {1}",
-                        new Object[] { tag, componentType.getTagName() });
+                logger.debug("Generated automatic tag [{}] for {}", tag, componentType.getTagName());
                 nextExpectedTag++;
             }
             else
@@ -125,7 +124,7 @@ public abstract class AsnSchemaTypeDefinitionConstructed extends AbstractAsnSche
         final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
         if (schemaTag == AsnSchemaTag.NULL)
         {
-            log.log(Level.WARNING, "Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {0}", tag);
+            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}", tag);
             return "";
         }
 
@@ -139,7 +138,7 @@ public abstract class AsnSchemaTypeDefinitionConstructed extends AbstractAsnSche
         final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
         if (schemaTag == AsnSchemaTag.NULL)
         {
-            log.log(Level.WARNING, "Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {0}", tag);
+            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}", tag);
             return "";
         }
 
@@ -207,7 +206,7 @@ public abstract class AsnSchemaTypeDefinitionConstructed extends AbstractAsnSche
          * @param rawTag
          *            raw tag to create instance from
          *
-         * @return instance which models the raw tag, or {@value #NULL} if the
+         * @return instance which models the raw tag, or {@link #NULL} if the
          *         raw tag is invalid
          */
         public static AsnSchemaTag create(String rawTag)
