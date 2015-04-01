@@ -8,8 +8,9 @@ package com.brightsparklabs.asanti.reader.parser;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +45,7 @@ public class AsnSchemaComponentTypeParser
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaComponentTypeParser.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaComponentTypeParser.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -139,7 +140,7 @@ public class AsnSchemaComponentTypeParser
 
         for (final String item : items)
         {
-            log.log(Level.FINER, "  - {0}", item);
+            logger.debug("  - {}", item);
         }
 
         return items;

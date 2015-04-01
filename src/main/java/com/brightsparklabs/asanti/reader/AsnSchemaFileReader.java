@@ -8,8 +8,8 @@ package com.brightsparklabs.asanti.reader;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
@@ -28,7 +28,7 @@ public class AsnSchemaFileReader
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaFileReader.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaFileReader.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -48,7 +48,7 @@ public class AsnSchemaFileReader
      */
     public static AsnSchema read(File asnSchemaFile) throws IOException
     {
-        log.log(Level.FINE, "Parsing schema file: {0}", asnSchemaFile.getAbsolutePath());
+        logger.debug("Parsing schema file: {}", asnSchemaFile.getAbsolutePath());
         final String contents = Files.toString(asnSchemaFile, Charsets.UTF_8);
         try
         {
