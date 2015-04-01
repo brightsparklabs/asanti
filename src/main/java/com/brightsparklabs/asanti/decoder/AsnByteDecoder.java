@@ -249,8 +249,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsIri(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnIdentifierByteDecoder.decodeAsIri(bytes);
     }
 
     /**
@@ -330,8 +329,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsOid(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnIdentifierByteDecoder.decodeAsOid(bytes);
     }
 
     /**
@@ -344,8 +342,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsOidIri(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnIdentifierByteDecoder.decodeAsOidIri(bytes);
     }
 
     /**
@@ -399,8 +396,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsRelativeIri(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnIdentifierByteDecoder.decodeAsRelativeIri(bytes);
     }
 
     /**
@@ -413,8 +409,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsRelativeOid(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnIdentifierByteDecoder.decodeAsRelativeOid(bytes);
     }
 
     /**
@@ -427,8 +422,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsRelativeOidIri(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnIdentifierByteDecoder.decodeAsRelativeOidIri(bytes);
     }
 
     /**

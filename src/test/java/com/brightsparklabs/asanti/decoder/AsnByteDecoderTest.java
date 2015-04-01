@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  * <p/>
  * Since {@link AsnByteDecoder} delegates to a number of other classes, not all methods are tested directly here. Refer
  * to the following test classes to see the delegated tests: {@link AsnStringByteDecoderTest}, {@link
- * AsnTimestampByteDecoderTest}.
+ * AsnIdentifierByteDecoder}, {@link AsnTimestampByteDecoderTest}.
  *
  * @author brightSPARK Labs
  */
@@ -61,12 +61,6 @@ public class AsnByteDecoderTest
     }
 
     @Test
-    public void testDecodeAsIri() throws Exception
-    {
-        // TODO: ASN-8
-    }
-
-    @Test
     public void testDecodeAsNull() throws Exception
     {
         // TODO: ASN-8
@@ -79,18 +73,6 @@ public class AsnByteDecoderTest
     }
 
     @Test
-    public void testDecodeAsOid() throws Exception
-    {
-        // TODO: ASN-8
-    }
-
-    @Test
-    public void testDecodeAsOidIri() throws Exception
-    {
-        // TODO: ASN-8
-    }
-
-    @Test
     public void testDecodeAsPrefixed() throws Exception
     {
         // TODO: ASN-8
@@ -98,24 +80,6 @@ public class AsnByteDecoderTest
 
     @Test
     public void testDecodeAsReal() throws Exception
-    {
-        // TODO: ASN-8
-    }
-
-    @Test
-    public void testDecodeAsRelativeIri() throws Exception
-    {
-        // TODO: ASN-8
-    }
-
-    @Test
-    public void testDecodeAsRelativeOid() throws Exception
-    {
-        // TODO: ASN-8
-    }
-
-    @Test
-    public void testDecodeAsRelativeOidIri() throws Exception
     {
         // TODO: ASN-8
     }
