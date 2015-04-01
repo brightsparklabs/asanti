@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 
 /**
- * Utility class for decoding bytes in an ASN.1 Type
+ * Utility class for decoding bytes in ASN.1 Types
  *
  * @author brightSPARK Labs
  */
@@ -48,8 +48,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsBitString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsBitString(bytes);
     }
 
     /**
@@ -62,8 +61,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsBmpString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsBmpString(bytes);
     }
 
     /**
@@ -90,8 +88,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsCharacterString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsCharacterString(bytes);
     }
 
     /**
@@ -188,8 +185,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsGeneralString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsGeneralString(bytes);
     }
 
     /**
@@ -202,8 +198,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsGraphicString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsGraphicString(bytes);
     }
 
     /**
@@ -216,8 +211,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsIa5String(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsIa5String(bytes);
     }
 
     /**
@@ -272,8 +266,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsIso646String(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsIso646String(bytes);
     }
 
     /**
@@ -300,8 +293,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsNumericString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsNumericString(bytes);
     }
 
     /**
@@ -328,8 +320,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsOctetString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsOctetString(bytes);
     }
 
     /**
@@ -384,8 +375,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsPrintableString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsPrintableString(bytes);
     }
 
     /**
@@ -430,7 +420,6 @@ public class AsnByteDecoder
         return "";
     }
 
-
     /**
      * Decodes the supplied bytes as an {@link AsnBuiltinType#RelativeOidIri}
      *
@@ -444,6 +433,7 @@ public class AsnByteDecoder
         // TODO: ASN-8
         return "";
     }
+
     /**
      * Decodes the supplied bytes as an {@link AsnBuiltinType#TeletexString}
      *
@@ -454,8 +444,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsTeletexString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsTeletexString(bytes);
     }
 
     /**
@@ -496,8 +485,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsUniversalString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsUniversalString(bytes);
     }
 
     /**
@@ -510,8 +498,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsUtf8String(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsUtf8String(bytes);
     }
 
     /**
@@ -524,8 +511,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsVideotexString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsVideotexString(bytes);
     }
 
     /**
@@ -538,7 +524,6 @@ public class AsnByteDecoder
      */
     public static String decodeAsVisibleString(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        return AsnStringByteDecoder.decodeAsVisibleString(bytes);
     }
 }

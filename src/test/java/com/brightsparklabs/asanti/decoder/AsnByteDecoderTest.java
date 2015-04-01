@@ -10,7 +10,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Units tests for {@link AsnByteDecoder}
+ * Units tests for {@link AsnByteDecoder}.
+ * <p/>
+ * Since {@link AsnByteDecoder} delegates to a number of other classes, not all methods are tested directly here. Refer
+ * to the following test classes to see the delegated tests: {@link AsnStringByteDecoderTest}.
  *
  * @author brightSPARK Labs
  */
@@ -21,25 +24,7 @@ public class AsnByteDecoderTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testDecodeAsBitString() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsBmpString() throws Exception
-    {
-
-    }
-
-    @Test
     public void testDecodeAsBoolean() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsCharacterString() throws Exception
     {
 
     }
@@ -81,24 +66,6 @@ public class AsnByteDecoderTest
     }
 
     @Test
-    public void testDecodeAsGeneralString() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsGraphicString() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsIa5String() throws Exception
-    {
-
-    }
-
-    @Test
     public void testDecodeAsInstanceOf() throws Exception
     {
 
@@ -117,31 +84,13 @@ public class AsnByteDecoderTest
     }
 
     @Test
-    public void testDecodeAsIso646String() throws Exception
-    {
-
-    }
-
-    @Test
     public void testDecodeAsNull() throws Exception
     {
 
     }
 
     @Test
-    public void testDecodeAsNumericString() throws Exception
-    {
-
-    }
-
-    @Test
     public void testDecodeAsObjectClassField() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsOctetString() throws Exception
     {
 
     }
@@ -160,12 +109,6 @@ public class AsnByteDecoderTest
 
     @Test
     public void testDecodeAsPrefixed() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsPrintableString() throws Exception
     {
 
     }
@@ -195,12 +138,6 @@ public class AsnByteDecoderTest
     }
 
     @Test
-    public void testDecodeAsTeletexString() throws Exception
-    {
-
-    }
-
-    @Test
     public void testDecodeAsTime() throws Exception
     {
 
@@ -208,30 +145,6 @@ public class AsnByteDecoderTest
 
     @Test
     public void testDecodeAsTimeOfDay() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsUniversalString() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsUtf8String() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsVideotexString() throws Exception
-    {
-
-    }
-
-    @Test
-    public void testDecodeAsVisibleString() throws Exception
     {
 
     }
