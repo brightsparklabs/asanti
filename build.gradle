@@ -27,10 +27,14 @@ repositories {
 dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'org.bouncycastle:bcprov-jdk16:1.45'
+    compile 'org.slf4j:slf4j-api:1.7.10'
+
     testCompile 'junit:junit:4.12'
     testCompile 'org.powermock:powermock-api-mockito:1.6.1'
     testCompile 'org.powermock:powermock-module-junit4:1.6.1'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
+
+    runtime 'org.slf4j:slf4j-log4j12:1.7.10'
 }
 
 // -----------------------------------------------------------------------------
@@ -135,7 +139,7 @@ uploadArchives {
             pom.project {
                 name project.name
                 packaging 'jar'
-                // optionally artifactId can be defined here 
+                // optionally artifactId can be defined here
                 description project.description
                 url project.url
 
