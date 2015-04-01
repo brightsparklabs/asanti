@@ -48,6 +48,9 @@ class AsnTimestampByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static Timestamp decodeAsDate(byte[] bytes)
     {
@@ -62,6 +65,9 @@ class AsnTimestampByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static Timestamp decodeAsDateTime(byte[] bytes)
     {
@@ -76,6 +82,9 @@ class AsnTimestampByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static Timestamp decodeAsGeneralizedTime(byte[] bytes)
     {
@@ -90,6 +99,9 @@ class AsnTimestampByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static Timestamp decodeAsTime(byte[] bytes)
     {
@@ -104,6 +116,9 @@ class AsnTimestampByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static Timestamp decodeAsTimeOfDay(byte[] bytes)
     {

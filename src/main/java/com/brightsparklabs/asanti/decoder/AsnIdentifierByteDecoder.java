@@ -53,6 +53,9 @@ class AsnIdentifierByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsIri(byte[] bytes)
     {
@@ -67,6 +70,9 @@ class AsnIdentifierByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsOid(byte[] bytes)
     {
@@ -81,6 +87,9 @@ class AsnIdentifierByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsOidIri(byte[] bytes)
     {
@@ -95,6 +104,9 @@ class AsnIdentifierByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsRelativeIri(byte[] bytes)
     {
@@ -109,6 +121,9 @@ class AsnIdentifierByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsRelativeOid(byte[] bytes)
     {
@@ -123,6 +138,9 @@ class AsnIdentifierByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsRelativeOidIri(byte[] bytes)
     {

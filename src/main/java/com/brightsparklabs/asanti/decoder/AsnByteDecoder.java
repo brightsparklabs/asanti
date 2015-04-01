@@ -47,6 +47,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsBitString(byte[] bytes)
     {
@@ -60,6 +63,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsBmpString(byte[] bytes)
     {
@@ -93,6 +99,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsCharacterString(byte[] bytes)
     {
@@ -106,6 +115,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static Timestamp decodeAsDate(byte[] bytes)
     {
@@ -119,6 +131,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static Timestamp decodeAsDateTime(byte[] bytes)
     {
@@ -132,6 +147,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsDuration(byte[] bytes)
     {
@@ -146,6 +164,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsEmbeddedPDV(byte[] bytes)
     {
@@ -160,6 +181,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsExternal(byte[] bytes)
     {
@@ -174,6 +198,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static Timestamp decodeAsGeneralizedTime(byte[] bytes)
     {
@@ -187,6 +214,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsGeneralString(byte[] bytes)
     {
@@ -200,6 +230,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsGraphicString(byte[] bytes)
     {
@@ -213,6 +246,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsIa5String(byte[] bytes)
     {
@@ -226,6 +262,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsInstanceOf(byte[] bytes)
     {
@@ -240,6 +279,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static BigInteger decodeAsInteger(byte[] bytes)
     {
@@ -254,6 +296,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsIri(byte[] bytes)
     {
@@ -267,6 +312,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsIso646String(byte[] bytes)
     {
@@ -280,6 +328,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsNull(byte[] bytes)
     {
@@ -294,6 +345,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsNumericString(byte[] bytes)
     {
@@ -307,6 +361,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsObjectClassField(byte[] bytes)
     {
@@ -320,7 +377,10 @@ public class AsnByteDecoder
      * @param bytes
      *         bytes to decode
      *
-     * @return the decoded bytes. No transformation is done for bytes in an OCTET STRING. I.e. the bytes are returned as
+     * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}. No transformation is done for bytes in an OCTET STRING. I.e. the bytes are returned as
      * is.
      *
      * @throws NullPointerException
@@ -338,6 +398,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsOid(byte[] bytes)
     {
@@ -351,6 +414,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsOidIri(byte[] bytes)
     {
@@ -364,6 +430,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsPrefixed(byte[] bytes)
     {
@@ -378,6 +447,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsPrintableString(byte[] bytes)
     {
@@ -391,6 +463,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsReal(byte[] bytes)
     {
@@ -405,6 +480,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsRelativeIri(byte[] bytes)
     {
@@ -418,6 +496,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsRelativeOid(byte[] bytes)
     {
@@ -431,6 +512,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsRelativeOidIri(byte[] bytes)
     {
@@ -444,6 +528,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsTeletexString(byte[] bytes)
     {
@@ -457,6 +544,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static Timestamp decodeAsTime(byte[] bytes)
     {
@@ -470,6 +560,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static Timestamp decodeAsTimeOfDay(byte[] bytes)
     {
@@ -483,6 +576,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsUniversalString(byte[] bytes)
     {
@@ -496,6 +592,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsUtf8String(byte[] bytes)
     {
@@ -509,6 +608,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsVideotexString(byte[] bytes)
     {
@@ -522,6 +624,9 @@ public class AsnByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     public static String decodeAsVisibleString(byte[] bytes)
     {

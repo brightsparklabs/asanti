@@ -6,8 +6,7 @@
 package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-
-import java.util.logging.Logger;
+import com.google.common.base.Charsets;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -22,13 +21,6 @@ import static com.google.common.base.Preconditions.*;
  */
 class AsnStringByteDecoder
 {
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static final Logger logger = Logger.getLogger(AsnStringByteDecoder.class.getName());
-
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -57,6 +49,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsBitString(byte[] bytes)
     {
@@ -71,6 +66,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsBmpString(byte[] bytes)
     {
@@ -85,6 +83,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsCharacterString(byte[] bytes)
     {
@@ -99,6 +100,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsGeneralString(byte[] bytes)
     {
@@ -113,6 +117,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsGraphicString(byte[] bytes)
     {
@@ -127,11 +134,25 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
+     * @throws IllegalArgumentException
+     *         if the array contains bytes not in the range 0 - 127
      */
     static String decodeAsIa5String(byte[] bytes)
     {
-        // TODO: ASN-8
-        return "";
+        checkNotNull(bytes);
+        for (byte b : bytes)
+        {
+            if (b < 0 || b > 127)
+            {
+                throw new IllegalArgumentException(
+                        "Supplied bytes do not conform to the IA5String format. All bytes must be within the range 0 - 127. Supplied bytes contain a byte with value: "
+                                + b);
+            }
+        }
+        return new String(bytes, Charsets.UTF_8);
     }
 
     /**
@@ -141,6 +162,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsIso646String(byte[] bytes)
     {
@@ -155,6 +179,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsNumericString(byte[] bytes)
     {
@@ -188,7 +215,11 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
+
     static String decodeAsPrintableString(byte[] bytes)
     {
         // TODO: ASN-8
@@ -202,6 +233,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsTeletexString(byte[] bytes)
     {
@@ -216,6 +250,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsUniversalString(byte[] bytes)
     {
@@ -230,6 +267,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsUtf8String(byte[] bytes)
     {
@@ -244,6 +284,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsVideotexString(byte[] bytes)
     {
@@ -258,6 +301,9 @@ class AsnStringByteDecoder
      *         bytes to decode
      *
      * @return the decoded bytes
+     *
+     * @throws NullPointerException
+     *         if parameters are {@code null}
      */
     static String decodeAsVisibleString(byte[] bytes)
     {
