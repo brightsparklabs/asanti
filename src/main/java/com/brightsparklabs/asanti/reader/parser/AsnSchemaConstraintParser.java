@@ -7,8 +7,9 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +57,7 @@ public class AsnSchemaConstraintParser
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaTypeDefinitionParser.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaTypeDefinitionParser.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -80,7 +81,7 @@ public class AsnSchemaConstraintParser
                 .trim();
         if (constraintText.isEmpty()) { return AsnSchemaConstraint.NULL; }
 
-        log.log(Level.FINE, "Found constraint: {0}", constraintText);
+        logger.debug("Found constraint: {}", constraintText);
 
         // check if defining a bounded SIZE constraint
         Matcher matcher = PATTERN_SIZE_CONSTRAINT.matcher(constraintText);
@@ -102,7 +103,7 @@ public class AsnSchemaConstraintParser
         // TODO ASN-96 - handle value assignment variables in constraints
         // e.g. (SIZE (1..maxNrOfPoints))
         // throw new ParseException(error, -1);
-        log.warning(error);
+        logger.warn(error);
         return AsnSchemaConstraint.NULL;
     }
 

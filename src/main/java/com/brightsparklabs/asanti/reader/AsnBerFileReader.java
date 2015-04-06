@@ -12,7 +12,8 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -41,7 +42,7 @@ public class AsnBerFileReader
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static Logger log = Logger.getLogger(AsnBerFileReader.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(AsnBerFileReader.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -90,7 +91,7 @@ public class AsnBerFileReader
         DERObject asnObject = asnInputStream.readObject();
         while (asnObject != null)
         {
-            log.fine(ASN1Dump.dumpAsString(asnObject));
+            logger.debug(ASN1Dump.dumpAsString(asnObject));
 
             final Map<String, byte[]> tagsToData = Maps.newHashMap();
             processDerObject(asnObject, "", tagsToData);
