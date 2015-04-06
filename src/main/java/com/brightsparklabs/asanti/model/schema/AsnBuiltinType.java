@@ -23,6 +23,7 @@ public enum AsnBuiltinType
     Enumerated,
     External,
     GeneralizedTime,
+    GeneralString,
     IA5String,
     InstanceOf,
     Integer,
