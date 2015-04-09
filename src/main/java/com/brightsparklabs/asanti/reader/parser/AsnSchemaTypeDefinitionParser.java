@@ -6,13 +6,7 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
@@ -20,6 +14,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionChoice;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionEnumerated;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionGeneralString;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIA5String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionNumericString;
@@ -30,6 +25,13 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSetOf;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
@@ -88,6 +90,10 @@ public final class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_VISIBLE_STRING =
             Pattern.compile("^VisibleString ?(\\((.+)\\))?$");
 
+    /** pattern to match a GeneralString type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_GENERAL_STRING =
+            Pattern.compile("^GeneralString ?(\\((.+)\\))?$");
+
     /** pattern to match an Integer type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_INTEGER =
             Pattern.compile("^INTEGER ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
@@ -95,7 +101,7 @@ public final class AsnSchemaTypeDefinitionParser
     // TODO ASN-25 remove this once ASN-25 is completed
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE =
-            Pattern.compile("^(GeneralizedTime|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            Pattern.compile("^(GeneralizedTime|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
@@ -183,6 +189,10 @@ public final class AsnSchemaTypeDefinitionParser
         // check if defining a VisibleString
         matcher = PATTERN_TYPE_DEFINITION_VISIBLE_STRING.matcher(value);
         if (matcher.matches()) { return parseVisibleString(name, matcher); }
+
+        // check if defining a GeneralString
+        matcher = PATTERN_TYPE_DEFINITION_GENERAL_STRING.matcher(value);
+        if (matcher.matches()) { return parseGeneralString(name, matcher); }
 
         // check if defining a Integer
         matcher = PATTERN_TYPE_DEFINITION_INTEGER.matcher(value);
@@ -478,6 +488,29 @@ public final class AsnSchemaTypeDefinitionParser
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseVisibleString(name, constraintText);
+    }
+
+    /**
+     * Parses a General type definition
+     *
+     * @param name
+     *            name of the defined type
+     *
+     * @param matcher
+     *            matcher which matched on
+     *            {@link #PATTERN_TYPE_DEFINITION_GENERAL_STRING}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionGeneralString} representing the
+     *         parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionGeneralString parseGeneralString(String name, Matcher matcher)
+            throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        return AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralString(name, constraintText);
     }
 
     /**
