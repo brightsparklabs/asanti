@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -298,8 +299,12 @@ public class AsnSchemaModuleParser
             {
                 final String name = matcher.group(1);
                 final String value = matcher.group(4);
-                final AbstractAsnSchemaTypeDefinition typeDefinition = AsnSchemaTypeDefinitionParser.parse(name, value);
-                moduleBuilder.addType(typeDefinition);
+                final ImmutableList<AbstractAsnSchemaTypeDefinition> typeDefinitions =
+                        AsnSchemaTypeDefinitionParser.parse(name, value);
+                for (AbstractAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
+                {
+                    moduleBuilder.addType(typeDefinition);
+                }
                 continue;
             }
 
