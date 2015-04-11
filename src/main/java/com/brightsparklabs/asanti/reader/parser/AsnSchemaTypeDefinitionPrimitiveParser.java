@@ -8,16 +8,7 @@ package com.brightsparklabs.asanti.reader.parser;
 import java.text.ParseException;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionGeneralString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIA5String;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionNumericString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionOctetString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
+import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
  * Logic for parsing a primitive Type Definition from a module within an ASN.1
@@ -196,6 +187,26 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
     {
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         return new AsnSchemaTypeDefinitionGeneralString(name, constraint);
+    }
+
+    /**
+     * Parses a GeneralizedTime type definition from a module from an ASN.1 schema
+     *
+     * @param name
+     *            the name of the defined type (i.e. the text on the left hand
+     *            side of the {@code ::=})
+     *
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    public static AsnSchemaTypeDefinitionGeneralizedTime parseGeneralizedTime(String name)
+            throws ParseException
+    {
+        // Subtype constraints are not applicable to GeneralizedTime.
+        final AsnSchemaConstraint constraint = AsnSchemaConstraint.NULL;
+        return new AsnSchemaTypeDefinitionGeneralizedTime(name, constraint);
     }
 
     /**

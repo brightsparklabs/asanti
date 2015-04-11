@@ -5,23 +5,7 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionBitString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionChoice;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionEnumerated;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionGeneralString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionIA5String;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionNumericString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionOctetString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionPrimitive;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSequence;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSequenceOf;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSet;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionSetOf;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUTF8String;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisibleString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionVisitor;
+import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.brightsparklabs.asanti.validator.rule.PrimitiveValidationRule;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
@@ -123,6 +107,12 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
 
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionGeneralString visitable)
+    {
+        return createPrimitiveValidationRule(visitable);
+    }
+
+    @Override
+    public ValidationRule visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
     {
         return createPrimitiveValidationRule(visitable);
     }
