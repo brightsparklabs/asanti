@@ -10,6 +10,7 @@
 
 package com.brightsparklabs.asanti.validator.bytes;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.*;
@@ -40,7 +41,7 @@ class AsnStringByteValidator
     }
 
     // -------------------------------------------------------------------------
-    //  METHODS
+    //  PACKAGE METHODS
     // -------------------------------------------------------------------------
 
     /*
@@ -58,7 +59,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsBitString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -72,7 +75,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsBmpString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -86,7 +91,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsCharacterString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -100,7 +107,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsGeneralString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -114,7 +123,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsGraphicString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -127,10 +138,10 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsIa5String(byte[] bytes)
     {
-        final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
-        if (bytes == null)
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        if (!result.wasSuccessful())
         {
-            builder.add(AsnByteValidator.FAILURE_MISSING_DATA);
             return builder.build();
         }
 
@@ -138,10 +149,12 @@ class AsnStringByteValidator
         {
             if (b < 0 || b > 127)
             {
-                String error =
+                final String error =
                         "Supplied bytes do not conform to the IA5String format. All bytes must be within the range 0 - 127. Supplied bytes contain a byte with value: "
                                 + b;
-                ValidationFailure failure = new ValidationFailureImpl("", FailureType.DataIncorrectlyFormatted, error);
+                final ValidationFailure failure = new ValidationFailureImpl("",
+                        FailureType.DataIncorrectlyFormatted,
+                        error);
                 builder.add(failure);
             }
         }
@@ -159,7 +172,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsIso646String(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -173,7 +188,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsNumericString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -187,11 +204,8 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsOctetString(byte[] bytes)
     {
-        final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
-        if (bytes == null)
-        {
-            builder.add(AsnByteValidator.FAILURE_MISSING_DATA);
-        }
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
         return builder.build();
     }
 
@@ -207,7 +221,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsPrintableString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -221,7 +237,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsTeletexString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -235,7 +253,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsUniversalString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -249,7 +269,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsUtf8String(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -263,7 +285,9 @@ class AsnStringByteValidator
     static ValidationResult validateAsVideotexString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -277,6 +301,8 @@ class AsnStringByteValidator
     static ValidationResult validateAsVisibleString(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 }

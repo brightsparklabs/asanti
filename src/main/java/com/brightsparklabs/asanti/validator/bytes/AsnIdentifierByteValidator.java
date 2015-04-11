@@ -15,6 +15,7 @@
 
 package com.brightsparklabs.asanti.validator.bytes;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.ValidationResult;
@@ -63,7 +64,9 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsIri(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -77,7 +80,9 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsOid(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -91,7 +96,9 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsOidIri(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -105,7 +112,9 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsRelativeIri(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -119,7 +128,9 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsRelativeOid(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 
     /**
@@ -133,6 +144,8 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsRelativeOidIri(byte[] bytes)
     {
         // TODO: ASN-8
-        return ValidationResultImpl.builder().build();
+        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
+        final ValidationResultImpl.Builder builder = result.getOutput();
+        return builder.build();
     }
 }

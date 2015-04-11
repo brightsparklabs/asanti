@@ -10,6 +10,7 @@
 
 package com.brightsparklabs.asanti.validator.bytes;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.*;
 
@@ -532,5 +533,31 @@ public class AsnByteValidator
     public static ValidationResult validateAsVisibleString(byte[] bytes)
     {
         return AsnStringByteValidator.validateAsVisibleString(bytes);
+    }
+
+    // -------------------------------------------------------------------------
+    //  PACKAGE METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Creates a {@link ValidationResultImpl.Builder} for the supplied bytes. If the bytes are {@code null}, the builder
+     * will contain a null validation failure and return an unsuccessful {@link OperationResult} instance. Otherwise it
+     * will return an empty builder within a successful {@link OperationResult} instance.
+     *
+     * @param bytes
+     *         bytes to create builder for
+     *
+     * @return a successful {@link OperationResult} containing the builder if the bytes are {@code non-null}. an
+     * unsuccessful {@link OperationResult} instance with a builder containing a null validation failure otherwise.
+     */
+    static OperationResult<ValidationResultImpl.Builder> createBuilder(byte[] bytes)
+    {
+        final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
+        if (bytes == null)
+        {
+            builder.add(AsnByteValidator.FAILURE_MISSING_DATA);
+            return OperationResult.createUnsuccessfulInstance(builder, "Supplied byte array was null");
+        }
+        return OperationResult.createSuccessfulInstance(builder);
     }
 }

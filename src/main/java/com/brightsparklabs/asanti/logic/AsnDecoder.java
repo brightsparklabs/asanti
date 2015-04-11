@@ -220,7 +220,7 @@ public class AsnDecoder
             logger.info("\t{}:\t decode {} => {}",
                     result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag,
-                    result.getDecodedData().getTag());
+                    result.getOutput().getTag());
         }
 
         logger.info("Expecting FAIL");
@@ -231,7 +231,7 @@ public class AsnDecoder
             logger.info("\t{}:\t decode {} => {}",
                     result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag,
-                    result.getDecodedData().getTag());
+                    result.getOutput().getTag());
         }
 
         logger.info("User testing:");
@@ -244,7 +244,7 @@ public class AsnDecoder
             logger.info("\t{}:\t decode {} => {}",
                     result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag,
-                    result.getDecodedData().getTag());
+                    result.getOutput().getTag());
         }
     }
 

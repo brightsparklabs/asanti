@@ -95,7 +95,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         for (final String rawTag : asnData.getRawTags())
         {
             final OperationResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag, topLevelTypeName);
-            final DecodedTag decodedTag = decodeResult.getDecodedData();
+            final DecodedTag decodedTag = decodeResult.getOutput();
             if (decodeResult.wasSuccessful())
             {
                 decodedToRawTags.put(decodedTag.getTag(), decodedTag);
