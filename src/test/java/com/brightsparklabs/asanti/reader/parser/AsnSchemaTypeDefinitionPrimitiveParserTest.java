@@ -57,7 +57,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
 
         final AsnSchemaTypeDefinition instance =
                 AsnSchemaTypeDefinitionPrimitiveParser.parseIA5String("TEST_NAME", "TEST_CONSTRAINTS");
-        assertEquals(AsnBuiltinType.IA5String, instance.getBuiltinType());
+        assertEquals(AsnBuiltinType.Ia5String, instance.getBuiltinType());
         assertEquals("TEST_NAME", instance.getName());
         assertEquals("", instance.getTagName(""));
         assertEquals("", instance.getTypeName(""));

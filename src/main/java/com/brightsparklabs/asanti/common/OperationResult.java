@@ -8,15 +8,14 @@ package com.brightsparklabs.asanti.common;
 import com.google.common.base.Strings;
 
 /**
- * A result from an operation which was either successful or not successful. The
- * result contains the output from the operation regardless of whether the
- * operation was successful. If the operation was not successful it also
- * contains a reason as to why it was not.
- *
- * @author brightSPARK Labs
+ * A result from an operation which was either successful or not successful. The result contains the output from the
+ * operation regardless of whether the operation was successful. If the operation was not successful it also contains a
+ * reason as to why it was not.
  *
  * @param <T>
- *            the type of output produced by the operation
+ *         the type of output produced by the operation
+ *
+ * @author brightSPARK Labs
  */
 public class OperationResult<T>
 {
@@ -41,14 +40,11 @@ public class OperationResult<T>
      * Default constructor
      *
      * @param wasSuccessful
-     *            {@code true} if the operation was successful
-     *
+     *         {@code true} if the operation was successful
      * @param output
-     *            the resulting output from the operation
-     *
+     *         the resulting output from the operation
      * @param failureReason
-     *            the reason the operation failed (or an empty string if it did
-     *            not fail)
+     *         the reason the operation failed (or an empty string if it did not fail)
      */
     private OperationResult(boolean wasSuccessful, T output, String failureReason)
     {
@@ -58,18 +54,16 @@ public class OperationResult<T>
     }
 
     /**
-     * Convenience method to create a result indicating the operation was
-     * successful. Results can be created via:<br>
+     * Convenience method to create a result indicating the operation was successful. Results can be created via:<br>
      * {@code OperationResult<String> result = createSuccessfulInstance(outputString);}
-     * <p>
-     * Which is more concise than:<br>
-     * {@code OperationResult<String> result = new OperationResult<String>(true, outputString, "");}
+     * <p/>
+     * Which is more concise than:<br> {@code OperationResult<String> result = new OperationResult<String>(true,
+     * outputString, "");}
      *
      * @param output
-     *            the resulting output from the operation
-     *
+     *         the resulting output from the operation
      * @param <T>
-     *            the type of the result
+     *         the type of the result
      *
      * @return a 'successful' result instance containing the supplied data
      */
@@ -79,21 +73,18 @@ public class OperationResult<T>
     }
 
     /**
-     * Convenience method to create a result indicating the operation was
-     * unsuccessful. Results can be created via:<br>
+     * Convenience method to create a result indicating the operation was unsuccessful. Results can be created via:<br>
      * {@code OperationResult<String> result = createUnsuccessfulInstance(outputString);}
-     * <p>
-     * Which is more concise than:<br>
-     * {@code OperationResult<String> result = new OperationResult<String>(false, outputString, reason);}
+     * <p/>
+     * Which is more concise than:<br> {@code OperationResult<String> result = new OperationResult<String>(false,
+     * outputString, reason);}
      *
      * @param output
-     *            the resulting output from the operation
-     *
+     *         the resulting output from the operation
      * @param failureReason
-     *            the reason the operation failed
-     *
+     *         the reason the operation failed
      * @param <T>
-     *            the type of the result
+     *         the type of the result
      *
      * @return an 'unsuccessful' result instance containing the supplied data
      */
@@ -107,9 +98,9 @@ public class OperationResult<T>
     // -------------------------------------------------------------------------
 
     /**
-     * Returns {@code true} if the decoding attempt was successful
+     * Returns {@code true} if the operation was successful
      *
-     * @return {@code true} if the decoding attempt was successful
+     * @return {@code true} if the operation was successful
      */
     public boolean wasSuccessful()
     {
@@ -117,11 +108,11 @@ public class OperationResult<T>
     }
 
     /**
-     * Returns the resulting data from the decoding attempt
+     * Returns the resulting output from the operation
      *
-     * @return the resulting data from the decoding attempt
+     * @return the resulting output from the operation
      */
-    public T getDecodedData()
+    public T getOutput()
     {
         return output;
     }
@@ -129,8 +120,7 @@ public class OperationResult<T>
     /**
      * Returns the reason the operation failed
      *
-     * @return the reason the operation failed (or an empty string if it did not
-     *         fail)
+     * @return the reason the operation failed (or an empty string if it did not fail)
      */
     public String getFailureReason()
     {
