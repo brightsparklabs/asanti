@@ -76,32 +76,27 @@ For the previous example the name would be:
 generated.IRI-Parameters.callContentLinkInformation
 ```
 
-The text of the `Pseudo Type Definition` is formatted to a single line of text. An
-`AsnSchemaComponentTypeRaw` object is returned from the
-`AsnSchemaComponentTypeParser.parseComponentType` method. It stores the following:
-
-- The `AsnSchemaComponentType`
-- The generated name
-- The text of the `Pseudo Type Definition`
-
-The `AsnSchemaComponentTypeParser.parse` method processes the
-`AsnSchemaComponentTypeRaw` objects to create a `ComponentTypeParseResult`
-object which contains the following:
-
-- `ImmutableList<AsnSchemaComponentType>` - containing all parsed Component
-Types.
-- `ImmutableMap<String, String>` - containing a map of `Pseudo Type
-Definitions` where the generated name is the key and the Type Definition text
-is the value.
+The text of the `Pseudo Type Definition` is formatted to a single line of text
+ An `AsnSchemaComponentTypeGenerated` object is used to store the `Pseudo Type
+ Definition`. The `AsnSchemaComponentTypeGenerated` type extends the
+ `AsnSchemaComponentType` to add an extra instance variable named
+ `typeDefinitionText` which stores the text of the `Pseudo Type Definition`.
 
 ### Parsing Pseudo Type Definitions
 
 When parsing constructed types (SET, SEQUENCE or CHOICE) in the
-`AsnSchemaTypeDefinitionParser` class, the Component Types and `Pseudo Type
-Definitions` are extracted from the `ComponentTypeParseResult` object. The
-constructed Type Definition is created using the parsed Component Types and the
-`Pseudo Type Definitions` are parsed into Type Definitions using the parse methods
-in the `AsnSchemaTypeDefinitionParser` class.
+`AsnSchemaTypeDefinitionParser` class, the `Pseudo Type Definitions` are
+extracted from the `ImmutableList<AsnSchemaComponentType>` returned from the
+`AsnSchemaComponentTypeParser.parse` method by checking whether the instance of
+`AsnSchemaComponentType` is a `AsnSchemaComponentTypeGenerated`. Each instance
+of `AsnSchemaComponentTypeGenerated` is parsed into an
+`AbstractAsnSchemaTypeDefinition` using the `typeDefinitionText` instance
+variable and existing parse methods in the `AsnSchemaTypeDefinitionParser`
+class. An `List<AbstractAsnSchemaTypeDefinition>` is generated for all parsed
+`Pseudo Type Definitions` and the constructed Type Definition itself is added to
+this list before being returned as a
+`ImmutableList<AbstractAsnSchemaTypeDefinition>` by the parse method of the
+constructed type.
 
 All parsed Type Definitions are returned in an
 `ImmutableList<AbstractAsnSchemaTypeDefinition>` object from the

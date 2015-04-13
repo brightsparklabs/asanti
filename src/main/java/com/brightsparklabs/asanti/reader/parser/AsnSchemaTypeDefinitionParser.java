@@ -161,13 +161,13 @@ public final class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_SET.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.of((AbstractAsnSchemaTypeDefinition) parseSet(name, matcher));
+            return parseSet(name, matcher);
         }
 
         // check if defining a CHOICE
         matcher = PATTERN_TYPE_DEFINITION_CHOICE.matcher(value);
         if (matcher.matches()) {
-            return ImmutableList.of((AbstractAsnSchemaTypeDefinition) parseChoice(name, matcher));
+            return parseChoice(name, matcher);
         }
 
         // check if defining an ENUMERATED
@@ -282,8 +282,8 @@ public final class AsnSchemaTypeDefinitionParser
      *         matcher which matched on
      *         {@link #PATTERN_TYPE_DEFINITION_SEQUENCE}
      *
-     * @return an {@link AsnSchemaTypeDefinitionSequence} representing the
-     * parsed data
+     * @return an ImmutableList of {@link AsnSchemaTypeDefinitionSequence}
+     * representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
@@ -316,23 +316,30 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_SET}
      *
-     * @return an {@link AsnSchemaTypeDefinitionSet} representing the parsed
-     * data
+     * @return an ImmutableList of {@link AsnSchemaTypeDefinitionSet}
+     * representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionSet parseSet(String name, Matcher matcher) throws ParseException
+    private static ImmutableList<AbstractAsnSchemaTypeDefinition> parseSet(String name, Matcher matcher)
+            throws ParseException
     {
         final String componentTypesText = matcher.group(1);
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
 
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(name, componentTypesText);
+
+        // parse any pseudo type definitions from returned component types
+        final List<AbstractAsnSchemaTypeDefinition> parsedTypes = parsePseudoTypes(componentTypes);
+
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         final AsnSchemaTypeDefinitionSet typeDefinition =
                 new AsnSchemaTypeDefinitionSet(name, componentTypes, constraint);
-        return typeDefinition;
+        parsedTypes.add(typeDefinition);
+
+        return ImmutableList.copyOf(parsedTypes);
     }
 
     /**
@@ -344,23 +351,30 @@ public final class AsnSchemaTypeDefinitionParser
      *         matcher which matched on
      *         {@link #PATTERN_TYPE_DEFINITION_CHOICE}
      *
-     * @return an {@link AsnSchemaTypeDefinitionChoice} representing the parsed
-     * data
+     * @return an ImmutableList of {@link AsnSchemaTypeDefinitionChoice}
+     * representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionChoice parseChoice(String name, Matcher matcher) throws ParseException
+    private static ImmutableList<AbstractAsnSchemaTypeDefinition> parseChoice(String name, Matcher matcher)
+            throws ParseException
     {
         final String componentTypesText = matcher.group(1);
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
 
         final ImmutableList<AsnSchemaComponentType> componentTypes =
                 AsnSchemaComponentTypeParser.parse(name, componentTypesText);
+
+        // parse any pseudo type definitions from returned component types
+        final List<AbstractAsnSchemaTypeDefinition> parsedTypes = parsePseudoTypes(componentTypes);
+
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         final AsnSchemaTypeDefinitionChoice typeDefinition =
                 new AsnSchemaTypeDefinitionChoice(name, componentTypes, constraint);
-        return typeDefinition;
+        parsedTypes.add(typeDefinition);
+
+        return ImmutableList.copyOf(parsedTypes);
     }
 
     /**
