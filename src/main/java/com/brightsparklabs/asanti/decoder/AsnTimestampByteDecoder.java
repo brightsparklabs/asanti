@@ -5,16 +5,17 @@
 
 package com.brightsparklabs.asanti.decoder;
 
+import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 
 import java.sql.Timestamp;
 
 /**
  * Utility class for decoding bytes from ASN.1 Date/Time Types.
- * <p/>
- * This class was created to prevent {@link AsnByteDecoder} from containing too much logic. The methods in here are
- * designed to be called by {@link AsnByteDecoder} (hence why they use package visibility). Do not call the methods in
- * this class directly. Use {@link AsnByteDecoder} instead.
+ *
+ * <p>This class was created to prevent {@link AsnByteDecoder} from containing too much logic. The
+ * methods in here are designed to be called by {@link AsnByteDecoder} (hence why they use package
+ * visibility). Do not call the methods in this class directly. Use {@link AsnByteDecoder} instead.
  *
  * @author brightSPARK Labs
  */
@@ -49,10 +50,10 @@ class AsnTimestampByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static Timestamp decodeAsDate(byte[] bytes)
+    static Timestamp decodeAsDate(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return new Timestamp(0);
@@ -66,10 +67,10 @@ class AsnTimestampByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static Timestamp decodeAsDateTime(byte[] bytes)
+    static Timestamp decodeAsDateTime(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return new Timestamp(0);
@@ -83,10 +84,10 @@ class AsnTimestampByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static Timestamp decodeAsGeneralizedTime(byte[] bytes)
+    static Timestamp decodeAsGeneralizedTime(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return new Timestamp(0);
@@ -100,10 +101,10 @@ class AsnTimestampByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static Timestamp decodeAsTime(byte[] bytes)
+    static Timestamp decodeAsTime(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return new Timestamp(0);
@@ -117,10 +118,10 @@ class AsnTimestampByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static Timestamp decodeAsTimeOfDay(byte[] bytes)
+    static Timestamp decodeAsTimeOfDay(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return new Timestamp(0);

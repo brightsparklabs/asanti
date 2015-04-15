@@ -17,8 +17,8 @@ public class ValidationFailureImpl implements ValidationFailure
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the tag the validation result pertains to */
-    private final String tag;
+    /** the location (e.g. location) the validation result pertains to */
+    private final String location;
 
     /** the type of failure that occurred */
     private final FailureType failureType;
@@ -33,28 +33,25 @@ public class ValidationFailureImpl implements ValidationFailure
     /**
      * Default constructor.
      *
-     * @param tag
-     *            the tag the validation result pertains to
-     *
+     * @param location
+     *         the location the validation result pertains to
      * @param failureType
-     *            the type of failure that occurred
-     *
+     *         the type of failure that occurred
      * @param failureReason
-     *            the reason for the failure
+     *         the reason for the failure
      *
      * @throws NullPointerException
-     *             if parameters are {@code null}
-     *
+     *         if parameters are {@code null}
      * @throws IllegalArgumentException
-     *             if tag or failureReason are empty
+     *         if location or failureReason are empty
      */
-    public ValidationFailureImpl(String tag, FailureType failureType, String failureReason)
+    public ValidationFailureImpl(String location, FailureType failureType, String failureReason)
     {
-        checkNotNull(tag);
+        checkNotNull(location);
         checkNotNull(failureType);
         checkNotNull(failureReason);
-        this.tag = tag.trim();
-        checkArgument(!this.tag.isEmpty(), "Tag cannot be empty");
+        this.location = location.trim();
+        checkArgument(!this.location.isEmpty(), "Tag cannot be empty");
         this.failureType = failureType;
         this.failureReason = failureReason.trim();
         checkArgument(!this.failureReason.isEmpty(), "Failure reason cannot be empty");
@@ -65,9 +62,9 @@ public class ValidationFailureImpl implements ValidationFailure
     // -------------------------------------------------------------------------
 
     @Override
-    public String getTag()
+    public String getLocation()
     {
-        return tag;
+        return location;
     }
 
     @Override

@@ -5,16 +5,16 @@
 
 package com.brightsparklabs.asanti.decoder;
 
+import com.brightsparklabs.asanti.common.DecodeException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
- * Units tests for {@link AsnByteDecoder}.
- * <p/>
- * Since {@link AsnByteDecoder} delegates to a number of other classes, not all methods are tested directly here. Refer
- * to the following test classes to see the delegated tests: {@link AsnStringByteDecoderTest}, {@link
- * AsnIdentifierByteDecoder}, {@link AsnTimestampByteDecoderTest}.
+ * Units tests for {@link AsnByteDecoder}. <p/> Since {@link AsnByteDecoder} delegates to a number
+ * of other classes, not all methods are tested directly here. Refer to the following test classes
+ * to see the delegated tests: {@link AsnStringByteDecoderTest}, {@link AsnIdentifierByteDecoder},
+ * {@link AsnTimestampByteDecoderTest}.
  *
  * @author brightSPARK Labs
  */
@@ -46,9 +46,9 @@ public class AsnByteDecoderTest
         try
         {
             AsnByteDecoder.decodeAsBoolean(null);
-            fail("NullPointerException not thrown");
+            fail("DecodeException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (DecodeException ex)
         {
         }
 
@@ -59,7 +59,7 @@ public class AsnByteDecoderTest
             AsnByteDecoder.decodeAsBoolean(bytes);
             fail("IllegalArgumentException not thrown");
         }
-        catch (IllegalArgumentException ex)
+        catch (DecodeException ex)
         {
         }
         try
@@ -68,7 +68,7 @@ public class AsnByteDecoderTest
             AsnByteDecoder.decodeAsBoolean(bytes);
             fail("IllegalArgumentException not thrown");
         }
-        catch (IllegalArgumentException ex)
+        catch (DecodeException ex)
         {
         }
         try
@@ -77,7 +77,7 @@ public class AsnByteDecoderTest
             AsnByteDecoder.decodeAsBoolean(bytes);
             fail("IllegalArgumentException not thrown");
         }
-        catch (IllegalArgumentException ex)
+        catch (DecodeException ex)
         {
         }
     }

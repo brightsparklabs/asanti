@@ -5,12 +5,13 @@
 
 package com.brightsparklabs.asanti.decoder;
 
+import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
  * Utility class for decoding bytes in ASN.1 Types
@@ -48,10 +49,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsBitString(byte[] bytes)
+    public static String decodeAsBitString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsBitString(bytes);
     }
@@ -64,10 +65,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsBmpString(byte[] bytes)
+    public static String decodeAsBmpString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsBmpString(bytes);
     }
@@ -80,15 +81,15 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      * @throws IllegalArgumentException
      *         if the byte array is not have a length of 1
      */
-    public static boolean decodeAsBoolean(byte[] bytes)
+    public static boolean decodeAsBoolean(byte[] bytes) throws DecodeException
     {
-        checkNotNull(bytes);
-        checkArgument(bytes.length == 1, "ASN.1 BOOLEAN type can only be one byte long");
+        final ValidationResult validationResult = AsnByteValidator.validateAsBoolean(bytes);
+        DecodeException.throwIfHasFailures(validationResult);
         return bytes[0] != 0;
     }
 
@@ -100,10 +101,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsCharacterString(byte[] bytes)
+    public static String decodeAsCharacterString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsCharacterString(bytes);
     }
@@ -116,10 +117,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsDate(byte[] bytes)
+    public static Timestamp decodeAsDate(byte[] bytes) throws DecodeException
     {
         return AsnTimestampByteDecoder.decodeAsDate(bytes);
     }
@@ -132,10 +133,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsDateTime(byte[] bytes)
+    public static Timestamp decodeAsDateTime(byte[] bytes) throws DecodeException
     {
         return AsnTimestampByteDecoder.decodeAsDateTime(bytes);
     }
@@ -148,10 +149,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsDuration(byte[] bytes)
+    public static String decodeAsDuration(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -165,10 +166,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsEmbeddedPDV(byte[] bytes)
+    public static String decodeAsEmbeddedPDV(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -182,10 +183,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsExternal(byte[] bytes)
+    public static String decodeAsExternal(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -199,10 +200,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsGeneralizedTime(byte[] bytes)
+    public static Timestamp decodeAsGeneralizedTime(byte[] bytes) throws DecodeException
     {
         return AsnTimestampByteDecoder.decodeAsGeneralizedTime(bytes);
     }
@@ -215,10 +216,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsGeneralString(byte[] bytes)
+    public static String decodeAsGeneralString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsGeneralString(bytes);
     }
@@ -231,10 +232,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsGraphicString(byte[] bytes)
+    public static String decodeAsGraphicString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsGraphicString(bytes);
     }
@@ -247,10 +248,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsIa5String(byte[] bytes)
+    public static String decodeAsIa5String(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsIa5String(bytes);
     }
@@ -263,10 +264,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsInstanceOf(byte[] bytes)
+    public static String decodeAsInstanceOf(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -280,10 +281,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static BigInteger decodeAsInteger(byte[] bytes)
+    public static BigInteger decodeAsInteger(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return BigInteger.ZERO;
@@ -297,10 +298,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsIri(byte[] bytes)
+    public static String decodeAsIri(byte[] bytes) throws DecodeException
     {
         return AsnIdentifierByteDecoder.decodeAsIri(bytes);
     }
@@ -313,10 +314,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsIso646String(byte[] bytes)
+    public static String decodeAsIso646String(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsIso646String(bytes);
     }
@@ -329,10 +330,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsNull(byte[] bytes)
+    public static String decodeAsNull(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -346,10 +347,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsNumericString(byte[] bytes)
+    public static String decodeAsNumericString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsNumericString(bytes);
     }
@@ -362,10 +363,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsObjectClassField(byte[] bytes)
+    public static String decodeAsObjectClassField(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -379,14 +380,13 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}. No transformation is done for bytes in an OCTET STRING. I.e. the bytes are returned as
-     * is.
-     *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data. No transformation is done for
+     *         bytes in an OCTET STRING. I.e. the bytes are returned as is.
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static byte[] decodeAsOctetString(byte[] bytes)
+    public static byte[] decodeAsOctetString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsOctetString(bytes);
     }
@@ -399,10 +399,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsOid(byte[] bytes)
+    public static String decodeAsOid(byte[] bytes) throws DecodeException
     {
         return AsnIdentifierByteDecoder.decodeAsOid(bytes);
     }
@@ -415,10 +415,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsOidIri(byte[] bytes)
+    public static String decodeAsOidIri(byte[] bytes) throws DecodeException
     {
         return AsnIdentifierByteDecoder.decodeAsOidIri(bytes);
     }
@@ -431,10 +431,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsPrefixed(byte[] bytes)
+    public static String decodeAsPrefixed(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -448,10 +448,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsPrintableString(byte[] bytes)
+    public static String decodeAsPrintableString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsPrintableString(bytes);
     }
@@ -464,10 +464,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsReal(byte[] bytes)
+    public static String decodeAsReal(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -481,10 +481,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsRelativeIri(byte[] bytes)
+    public static String decodeAsRelativeIri(byte[] bytes) throws DecodeException
     {
         return AsnIdentifierByteDecoder.decodeAsRelativeIri(bytes);
     }
@@ -497,10 +497,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsRelativeOid(byte[] bytes)
+    public static String decodeAsRelativeOid(byte[] bytes) throws DecodeException
     {
         return AsnIdentifierByteDecoder.decodeAsRelativeOid(bytes);
     }
@@ -513,10 +513,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsRelativeOidIri(byte[] bytes)
+    public static String decodeAsRelativeOidIri(byte[] bytes) throws DecodeException
     {
         return AsnIdentifierByteDecoder.decodeAsRelativeOidIri(bytes);
     }
@@ -529,10 +529,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsTeletexString(byte[] bytes)
+    public static String decodeAsTeletexString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsTeletexString(bytes);
     }
@@ -545,10 +545,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsTime(byte[] bytes)
+    public static Timestamp decodeAsTime(byte[] bytes) throws DecodeException
     {
         return AsnTimestampByteDecoder.decodeAsTime(bytes);
     }
@@ -561,10 +561,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsTimeOfDay(byte[] bytes)
+    public static Timestamp decodeAsTimeOfDay(byte[] bytes) throws DecodeException
     {
         return AsnTimestampByteDecoder.decodeAsTimeOfDay(bytes);
     }
@@ -577,10 +577,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsUniversalString(byte[] bytes)
+    public static String decodeAsUniversalString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsUniversalString(bytes);
     }
@@ -593,10 +593,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsUtf8String(byte[] bytes)
+    public static String decodeAsUtf8String(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsUtf8String(bytes);
     }
@@ -609,10 +609,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsVideotexString(byte[] bytes)
+    public static String decodeAsVideotexString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsVideotexString(bytes);
     }
@@ -625,10 +625,10 @@ public class AsnByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsVisibleString(byte[] bytes)
+    public static String decodeAsVisibleString(byte[] bytes) throws DecodeException
     {
         return AsnStringByteDecoder.decodeAsVisibleString(bytes);
     }

@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder;
 
+import com.brightsparklabs.asanti.common.DecodeException;
 import com.google.common.base.Charsets;
 import org.junit.Test;
 
@@ -59,7 +60,8 @@ public class AsnStringByteDecoderTest
         for (byte b = Byte.MAX_VALUE; b >= 0; b--)
         {
             bytes[0] = b;
-            assertEquals(new String(bytes, Charsets.UTF_8), AsnStringByteDecoder.decodeAsIa5String(bytes));
+            assertEquals(new String(bytes, Charsets.UTF_8),
+                    AsnStringByteDecoder.decodeAsIa5String(bytes));
         }
 
         // test invalid
@@ -80,9 +82,9 @@ public class AsnStringByteDecoderTest
         try
         {
             AsnStringByteDecoder.decodeAsIa5String(null);
-            fail("NullPointerException not thrown");
+            fail("DecodeException not thrown");
         }
-        catch (NullPointerException ex)
+        catch (DecodeException ex)
         {
         }
     }

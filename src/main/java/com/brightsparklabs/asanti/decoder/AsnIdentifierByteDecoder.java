@@ -10,16 +10,15 @@
 
 package com.brightsparklabs.asanti.decoder;
 
+import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-
-import java.sql.Timestamp;
 
 /**
  * Utility class for decoding bytes from ASN.1 Identifier Types.
- * <p/>
- * This class was created to prevent {@link AsnByteDecoder} from containing too much logic. The methods in here are
- * designed to be called by {@link AsnByteDecoder} (hence why they use package visibility). Do not call the methods in
- * this class directly. Use {@link AsnByteDecoder} instead.
+ *
+ * <p>This class was created to prevent {@link AsnByteDecoder} from containing too much logic. The
+ * methods in here are designed to be called by {@link AsnByteDecoder} (hence why they use package
+ * visibility). Do not call the methods in this class directly. Use {@link AsnByteDecoder} instead.
  *
  * @author brightSPARK Labs
  */
@@ -54,10 +53,10 @@ class AsnIdentifierByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsIri(byte[] bytes)
+    static String decodeAsIri(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -71,10 +70,10 @@ class AsnIdentifierByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsOid(byte[] bytes)
+    static String decodeAsOid(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -88,10 +87,10 @@ class AsnIdentifierByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsOidIri(byte[] bytes)
+    static String decodeAsOidIri(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -105,10 +104,10 @@ class AsnIdentifierByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsRelativeIri(byte[] bytes)
+    static String decodeAsRelativeIri(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -122,10 +121,10 @@ class AsnIdentifierByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsRelativeOid(byte[] bytes)
+    static String decodeAsRelativeOid(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";
@@ -139,10 +138,10 @@ class AsnIdentifierByteDecoder
      *
      * @return the decoded bytes
      *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsRelativeOidIri(byte[] bytes)
+    static String decodeAsRelativeOidIri(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
         return "";

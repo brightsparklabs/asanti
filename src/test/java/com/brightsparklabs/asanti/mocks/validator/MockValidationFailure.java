@@ -24,7 +24,7 @@ public class MockValidationFailure
      * Returns a mocked instance of a {@link ValidationFailure}
      *
      * @param tag
-     *            tag to return from {@link ValidationFailure#getTag()}
+     *            tag to return from {@link ValidationFailure#getLocation()}
      *
      * @param failureType
      *            tag to return from {@link ValidationFailure#getFailureType()}
@@ -39,7 +39,7 @@ public class MockValidationFailure
             String failureReason)
     {
         final ValidationFailure instance = mock(ValidationFailure.class);
-        when(instance.getTag()).thenReturn(tag);
+        when(instance.getLocation()).thenReturn(tag);
         when(instance.getFailureType()).thenReturn(failureType);
         when(instance.getFailureReason()).thenReturn(failureReason);
         return instance;

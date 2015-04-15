@@ -90,7 +90,7 @@ public class ValidationFailureImplTest
     public void testGetTag() throws Exception
     {
         final ValidationFailureImpl instance = new ValidationFailureImpl("TEST_TAG", FailureType.None, "TEST_REASON");
-        assertEquals("TEST_TAG", instance.getTag());
+        assertEquals("TEST_TAG", instance.getLocation());
     }
 
     @Test
