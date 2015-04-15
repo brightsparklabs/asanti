@@ -1,3 +1,8 @@
+##
+ # Created by brightSPARK Labs
+ # www.brightsparklabs.com
+ ##
+
 language: java
 
 jdk:
@@ -9,7 +14,10 @@ sudo: false
 notifications:
   email:
     on_success: never
+    recipients:
+      - support.insilico@brightsparklabs.com
 
 # there is no signatory on build server, so exclude the 'signArchives' task
 install:
   - ./gradlew assemble -x signArchives
+
