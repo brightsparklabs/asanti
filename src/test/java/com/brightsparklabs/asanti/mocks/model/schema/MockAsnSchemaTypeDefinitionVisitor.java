@@ -134,6 +134,13 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefiniti
     @Override
     public String visit(AsnSchemaTypeDefinitionGeneralString visitable)
     {
+        return visitable.getClass()
+                .getCanonicalName();
+    }
+
+    @Override
+    public String visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
+    {
         return visitable.getClass().getCanonicalName();
     }
 }

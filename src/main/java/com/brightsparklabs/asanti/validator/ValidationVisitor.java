@@ -111,6 +111,12 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
         return createPrimitiveValidationRule(visitable);
     }
 
+    @Override
+    public ValidationRule visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
+    {
+        return createPrimitiveValidationRule(visitable);
+    }
+
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: Validator
     // -------------------------------------------------------------------------

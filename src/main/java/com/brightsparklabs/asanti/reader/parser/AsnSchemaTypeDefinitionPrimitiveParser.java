@@ -174,6 +174,26 @@ public final class AsnSchemaTypeDefinitionPrimitiveParser
     }
 
     /**
+     * Parses a GeneralizedTime type definition from a module from an ASN.1 schema
+     *
+     * @param name
+     *            the name of the defined type (i.e. the text on the left hand
+     *            side of the {@code ::=})
+     *
+     * @return an {@link AbstractAsnSchemaTypeDefinition} representing the parsed data
+     *
+     * @throws ParseException
+     *             if any errors occur while parsing the type
+     */
+    public static AsnSchemaTypeDefinitionGeneralizedTime parseGeneralizedTime(String name)
+            throws ParseException
+    {
+        // Subtype constraints are not applicable to GeneralizedTime.
+        final AsnSchemaConstraint constraint = AsnSchemaConstraint.NULL;
+        return new AsnSchemaTypeDefinitionGeneralizedTime(name, constraint);
+    }
+
+    /**
      * Parses an Integer type definition from a module from an ASN.1 schema
      *
      * @param name
