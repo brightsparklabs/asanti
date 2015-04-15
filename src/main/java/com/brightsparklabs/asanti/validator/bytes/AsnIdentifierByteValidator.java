@@ -15,7 +15,7 @@
 
 package com.brightsparklabs.asanti.validator.bytes;
 
-import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
+import com.brightsparklabs.asanti.decoder.bytes.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.ValidationResult;
 import com.brightsparklabs.asanti.validator.ValidationResultImpl;

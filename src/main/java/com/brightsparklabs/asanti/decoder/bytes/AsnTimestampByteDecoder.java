@@ -3,18 +3,15 @@
  * www.brightsparklabs.com
  */
 
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
-
-package com.brightsparklabs.asanti.decoder;
+package com.brightsparklabs.asanti.decoder.bytes;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 
+import java.sql.Timestamp;
+
 /**
- * Utility class for decoding bytes from ASN.1 Identifier Types.
+ * Utility class for decoding bytes from ASN.1 Date/Time Types.
  *
  * <p>This class was created to prevent {@link AsnByteDecoder} from containing too much logic. The
  * methods in here are designed to be called by {@link AsnByteDecoder} (hence why they use package
@@ -22,7 +19,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
  *
  * @author brightSPARK Labs
  */
-class AsnIdentifierByteDecoder
+class AsnTimestampByteDecoder
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -31,7 +28,7 @@ class AsnIdentifierByteDecoder
     /**
      * Default constructor
      */
-    private AsnIdentifierByteDecoder()
+    private AsnTimestampByteDecoder()
     {
         // constructor should never be called for static class
         assert false;
@@ -46,7 +43,7 @@ class AsnIdentifierByteDecoder
      */
 
     /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#IRI}
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#Date}
      *
      * @param bytes
      *         bytes to decode
@@ -56,14 +53,14 @@ class AsnIdentifierByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsIri(byte[] bytes) throws DecodeException
+    static Timestamp decodeAsDate(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
-        return "";
+        return new Timestamp(0);
     }
 
     /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#Oid}
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#DateTime}
      *
      * @param bytes
      *         bytes to decode
@@ -73,14 +70,14 @@ class AsnIdentifierByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsOid(byte[] bytes) throws DecodeException
+    static Timestamp decodeAsDateTime(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
-        return "";
+        return new Timestamp(0);
     }
 
     /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#OidIri}
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#GeneralizedTime}
      *
      * @param bytes
      *         bytes to decode
@@ -90,14 +87,14 @@ class AsnIdentifierByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsOidIri(byte[] bytes) throws DecodeException
+    static Timestamp decodeAsGeneralizedTime(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
-        return "";
+        return new Timestamp(0);
     }
 
     /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#RelativeIri}
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#Time}
      *
      * @param bytes
      *         bytes to decode
@@ -107,14 +104,14 @@ class AsnIdentifierByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsRelativeIri(byte[] bytes) throws DecodeException
+    static Timestamp decodeAsTime(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
-        return "";
+        return new Timestamp(0);
     }
 
     /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#RelativeOid}
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#TimeOfDay}
      *
      * @param bytes
      *         bytes to decode
@@ -124,26 +121,9 @@ class AsnIdentifierByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    static String decodeAsRelativeOid(byte[] bytes) throws DecodeException
+    static Timestamp decodeAsTimeOfDay(byte[] bytes) throws DecodeException
     {
         // TODO: ASN-8
-        return "";
-    }
-
-    /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#RelativeOidIri}
-     *
-     * @param bytes
-     *         bytes to decode
-     *
-     * @return the decoded bytes
-     *
-     * @throws DecodeException
-     *         if any errors occur while decoding the supplied data
-     */
-    static String decodeAsRelativeOidIri(byte[] bytes) throws DecodeException
-    {
-        // TODO: ASN-8
-        return "";
+        return new Timestamp(0);
     }
 }

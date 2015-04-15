@@ -3,7 +3,7 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.decoder;
+package com.brightsparklabs.asanti.decoder.bytes;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;

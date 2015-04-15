@@ -10,7 +10,7 @@
 
 package com.brightsparklabs.asanti.validator.bytes;
 
-import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
+import com.brightsparklabs.asanti.decoder.bytes.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.ValidationResult;
@@ -18,8 +18,8 @@ import com.brightsparklabs.asanti.validator.ValidationResultImpl;
 
 /**
  * Utility class for decoding bytes from ASN.1 String Types. <p/> This class was created to prevent
- * {@link com.brightsparklabs.asanti.decoder.AsnByteDecoder} from containing too much logic. The
- * methods in here are designed to be called by {@link com.brightsparklabs.asanti.decoder.AsnByteDecoder}
+ * {@link AsnByteDecoder} from containing too much logic. The
+ * methods in here are designed to be called by {@link AsnByteDecoder}
  * (hence why they use package visibility). Do not call the methods in this class directly. Use
  * {@link AsnByteDecoder} instead.
  *

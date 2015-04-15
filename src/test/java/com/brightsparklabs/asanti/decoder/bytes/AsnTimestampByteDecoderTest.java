@@ -3,11 +3,9 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.decoder;
+package com.brightsparklabs.asanti.decoder.bytes;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link AsnTimestampByteDecoder}
