@@ -6,6 +6,8 @@ package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.decoder.typedefinitions.AsnTypeDefinitionDecoder;
+import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
@@ -53,6 +55,9 @@ public class DecodedAsnDataImpl implements DecodedAsnData
      * decodedTag }
      */
     private final ImmutableMap<String, DecodedTag> allTags;
+
+    /** visitor used to determine which decoder to use for decoding data */
+    private final DecoderVisitor decoderVisitor = new DecoderVisitor();
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -176,8 +181,19 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     @Override
     public String getPrintableString(String tag) throws DecodeException
     {
+        final DecodedTag decodedTag = decodedTags.get(tag);
+        if (decodedTag == null)
+        {
+            final String error = String.format("Could not resolve tag '%s' against the schema",
+                    tag);
+            throw new DecodeException(error);
+        }
+
         final byte[] bytes = getBytes(tag);
-        return asnSchema.getPrintableString(tag, bytes);
+        final AsnSchemaTypeDefinition type = decodedTag.getType();
+        final AsnTypeDefinitionDecoder<?> decoder = (AsnTypeDefinitionDecoder<?>) type.visit(
+                decoderVisitor);
+        return decoder.decodeAsString(bytes);
     }
 
     @Override
@@ -203,8 +219,19 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     @Override
     public Object getDecodedObject(String tag) throws DecodeException
     {
+        final DecodedTag decodedTag = decodedTags.get(tag);
+        if (decodedTag == null)
+        {
+            final String error = String.format("Could not resolve tag '%s' against the schema",
+                    tag);
+            throw new DecodeException(error);
+        }
+
         final byte[] bytes = getBytes(tag);
-        return asnSchema.getDecodedObject(tag, bytes);
+        final AsnSchemaTypeDefinition type = decodedTag.getType();
+        final AsnTypeDefinitionDecoder<?> decoder = (AsnTypeDefinitionDecoder<?>) type.visit(
+                decoderVisitor);
+        return decoder.decode(bytes);
     }
 
     @Override

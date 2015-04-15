@@ -8,11 +8,7 @@ import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import org.mockito.ArgumentMatcher;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -141,15 +137,6 @@ public class MockAsnSchema
         }
 
         instance = mock(AsnSchema.class);
-
-        final NonEmptyByteArrayMatcher nonEmptyByteArrayMatcher = new NonEmptyByteArrayMatcher();
-        when(instance.getPrintableString(anyString(), any(byte[].class))).thenReturn("");
-        when(instance.getPrintableString(anyString(),
-                argThat(nonEmptyByteArrayMatcher))).thenReturn("printableString");
-        when(instance.getDecodedObject(anyString(), any(byte[].class))).thenReturn("");
-        when(instance.getDecodedObject(anyString(), argThat(nonEmptyByteArrayMatcher))).thenReturn(
-                "decodedObject");
-
         configureGetDecodedTag(instance,
                 "/1/0/1",
                 "Document",
@@ -176,20 +163,6 @@ public class MockAsnSchema
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: NonEmptyByteArrayMatcher
     // -------------------------------------------------------------------------
-
-    /**
-     * Matches non-empty byte[] arguments
-     */
-    private static class NonEmptyByteArrayMatcher extends ArgumentMatcher<byte[]>
-    {
-        @Override
-        public boolean matches(Object item)
-        {
-            return ((byte[]) item).length > 0;
-        }
-    }
-
-    ;
 
     /**
      * Configures the {@code getDecodedTag()} method on the supplied instance to use the mocked
