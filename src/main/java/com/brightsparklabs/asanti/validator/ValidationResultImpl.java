@@ -98,7 +98,11 @@ public class ValidationResultImpl implements ValidationResult
         // ---------------------------------------------------------------------
 
         /** the results to include in the result set */
-        private final ImmutableSet.Builder<ValidationFailure> failuresBuilder = ImmutableSet.builder();
+        private final ImmutableSet.Builder<ValidationFailure> failuresBuilder
+                = ImmutableSet.builder();
+
+        /** whether this builder contains any {@link ValidationResult ValidationResults} */
+        private boolean containsResults;
 
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -108,9 +112,7 @@ public class ValidationResultImpl implements ValidationResult
          * Default constructor. This is private, use {@link ValidationResultImpl#builder()} to
          * create an instance.
          */
-        private Builder()
-        {
-        }
+        private Builder() {}
 
         // ---------------------------------------------------------------------
         // PUBLIC METHODS
@@ -150,6 +152,7 @@ public class ValidationResultImpl implements ValidationResult
         public Builder add(ValidationFailure failures)
         {
             failuresBuilder.add(failures);
+            containsResults = true;
             return this;
         }
 
@@ -164,6 +167,7 @@ public class ValidationResultImpl implements ValidationResult
         public Builder addAll(Iterable<ValidationFailure> failures)
         {
             failuresBuilder.addAll(failures);
+            containsResults = true;
             return this;
         }
 
@@ -178,6 +182,18 @@ public class ValidationResultImpl implements ValidationResult
         {
             final ImmutableSet<ValidationFailure> failures = failuresBuilder.build();
             return new ValidationResultImpl(failures);
+        }
+
+        /**
+         * Returns {@code true} if this builder contains any {@link ValidationResult
+         * ValidationResults}
+         *
+         * @return {@code true} if this builder contains any {@link ValidationResult
+         * ValidationResults}
+         */
+        public boolean containsResults()
+        {
+            return containsResults;
         }
     }
 }

@@ -71,9 +71,9 @@ public class AsnStringByteDecoderTest
             try
             {
                 AsnStringByteDecoder.decodeAsIa5String(bytes);
-                fail("IllegalArgumentException not thrown");
+                fail("DecodeException not thrown");
             }
-            catch (IllegalArgumentException ex)
+            catch (DecodeException ex)
             {
             }
         }

@@ -10,17 +10,15 @@
 
 package com.brightsparklabs.asanti.validator.bytes;
 
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.ValidationResult;
 import com.brightsparklabs.asanti.validator.ValidationResultImpl;
 
 /**
- * Utility class for decoding bytes from ASN.1 Date/Time Types.
- * <p/>
- * This class was created to prevent {@link AsnByteValidator} from containing too much logic. The methods in here are
- * designed to be called by {@link AsnByteValidator} (hence why they use package visibility). Do not call the methods in
- * this class directly. Use {@link AsnByteValidator} instead.
+ * Utility class for decoding bytes from ASN.1 Date/Time Types. <p/> This class was created to
+ * prevent {@link AsnByteValidator} from containing too much logic. The methods in here are designed
+ * to be called by {@link AsnByteValidator} (hence why they use package visibility). Do not call the
+ * methods in this class directly. Use {@link AsnByteValidator} instead.
  *
  * @author brightSPARK Labs
  */
@@ -58,8 +56,8 @@ class AsnTimestampByteValidator
     static ValidationResult validateAsDate(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
+                bytes);
         return builder.build();
     }
 
@@ -74,8 +72,8 @@ class AsnTimestampByteValidator
     static ValidationResult validateAsDateTime(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
+                bytes);
         return builder.build();
     }
 
@@ -90,8 +88,8 @@ class AsnTimestampByteValidator
     static ValidationResult validateAsGeneralizedTime(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
+                bytes);
         return builder.build();
     }
 
@@ -106,8 +104,8 @@ class AsnTimestampByteValidator
     static ValidationResult validateAsTime(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
+                bytes);
         return builder.build();
     }
 
@@ -122,8 +120,8 @@ class AsnTimestampByteValidator
     static ValidationResult validateAsTimeOfDay(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
+                bytes);
         return builder.build();
     }
 }

@@ -15,18 +15,16 @@
 
 package com.brightsparklabs.asanti.validator.bytes;
 
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.ValidationResult;
 import com.brightsparklabs.asanti.validator.ValidationResultImpl;
 
 /**
- * Utility class for decoding bytes from ASN.1 Identifier Types.
- * <p/>
- * This class was created to prevent {@link AsnByteDecoder} from containing too much logic. The methods in here are
- * designed to be called by {@link AsnByteDecoder} (hence why they use package visibility). Do not call the methods in
- * this class directly. Use {@link AsnByteDecoder} instead.
+ * Utility class for decoding bytes from ASN.1 Identifier Types. <p/> This class was created to
+ * prevent {@link AsnByteDecoder} from containing too much logic. The methods in here are designed
+ * to be called by {@link AsnByteDecoder} (hence why they use package visibility). Do not call the
+ * methods in this class directly. Use {@link AsnByteDecoder} instead.
  *
  * @author brightSPARK Labs
  */
@@ -64,8 +62,8 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsIri(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder
+                = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
     }
 
@@ -80,8 +78,8 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsOid(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder
+                = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
     }
 
@@ -96,8 +94,8 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsOidIri(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder
+                = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
     }
 
@@ -112,8 +110,8 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsRelativeIri(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder
+                = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
     }
 
@@ -128,8 +126,8 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsRelativeOid(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder
+                = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
     }
 
@@ -144,8 +142,8 @@ class AsnIdentifierByteValidator
     static ValidationResult validateAsRelativeOidIri(byte[] bytes)
     {
         // TODO: ASN-8
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
+        final ValidationResultImpl.Builder builder
+                = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
     }
 }

@@ -10,7 +10,6 @@
 
 package com.brightsparklabs.asanti.validator.bytes;
 
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.*;
 
@@ -88,10 +87,15 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsBoolean(byte[] bytes)
     {
-        final OperationResult<ValidationResultImpl.Builder> result = AsnByteValidator.createBuilder(
+        final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
                 bytes);
-        final ValidationResultImpl.Builder builder = result.getOutput();
-        if (result.wasSuccessful() && bytes.length != 1)
+        if (builder.containsResults())
+        {
+            // bytes were null, do not continue validating
+            return builder.build();
+        }
+
+        if (bytes.length != 1)
         {
             final String error = String.format(
                     "ASN.1 BOOLEAN type can only contain one byte. Supplied array contains %d bytes",
@@ -547,27 +551,23 @@ public class AsnByteValidator
     // -------------------------------------------------------------------------
 
     /**
-     * Creates a {@link ValidationResultImpl.Builder} for the supplied bytes. If the bytes are
-     * {@code null}, the builder will contain a null validation failure and return an unsuccessful
-     * {@link OperationResult} instance. Otherwise it will return an empty builder within a
-     * successful {@link OperationResult} instance.
+     * Creates a {@link ValidationResultImpl.Builder} for storing the results of validating the
+     * supplied bytes. If the bytes are {@code null}, the builder will contain a null validation
+     * failure. Otherwise it will be empty.
      *
      * @param bytes
      *         bytes to create builder for
      *
-     * @return a successful {@link OperationResult} containing the builder if the bytes are {@code
-     * non-null}. an unsuccessful {@link OperationResult} instance with a builder containing a null
-     * validation failure otherwise.
+     * @return a {@link ValidationResultImpl.Builder} for storing the results of validating the
+     * supplied bytes
      */
-    static OperationResult<ValidationResultImpl.Builder> createBuilder(byte[] bytes)
+    static ValidationResultImpl.Builder validationResultBuilderFor(byte[] bytes)
     {
         final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
         if (bytes == null)
         {
             builder.add(AsnByteValidator.FAILURE_MISSING_DATA);
-            return OperationResult.createUnsuccessfulInstance(builder,
-                    "Supplied byte array was null");
         }
-        return OperationResult.createSuccessfulInstance(builder);
+        return builder;
     }
 }
