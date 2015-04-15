@@ -56,8 +56,8 @@ public class OperationResult<T>
     /**
      * Convenience method to create a result indicating the operation was successful. Results can be created via:<br>
      * {@code OperationResult<String> result = createSuccessfulInstance(outputString);}
-     * <p/>
-     * Which is more concise than:<br> {@code OperationResult<String> result = new OperationResult<String>(true,
+     *
+     * <p>Which is more concise than:<br> {@code OperationResult<String> result = new OperationResult<String>(true,
      * outputString, "");}
      *
      * @param output
@@ -75,8 +75,8 @@ public class OperationResult<T>
     /**
      * Convenience method to create a result indicating the operation was unsuccessful. Results can be created via:<br>
      * {@code OperationResult<String> result = createUnsuccessfulInstance(outputString);}
-     * <p/>
-     * Which is more concise than:<br> {@code OperationResult<String> result = new OperationResult<String>(false,
+     *
+     * <p>Which is more concise than:<br> {@code OperationResult<String> result = new OperationResult<String>(false,
      * outputString, reason);}
      *
      * @param output
