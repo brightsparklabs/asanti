@@ -4,12 +4,7 @@
  */
 package com.brightsparklabs.asanti.model.data;
 
-import static com.google.common.base.Preconditions.*;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
+import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
@@ -19,6 +14,12 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Default implementation of {@link DecodedAsnData}
@@ -38,20 +39,18 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     private final AsnSchema asnSchema;
 
     /**
-     * all tags which could be decoded. Map is of form: { decodedTagString =>
-     * decodedTag }
+     * all tags which could be decoded. Map is of form: { decodedTagString => decodedTag }
      */
     private final ImmutableMap<String, DecodedTag> decodedTags;
 
     /**
-     * all tags which could not be decoded. Map is of form: { decodedTagString
-     * => decodedTag }
+     * all tags which could not be decoded. Map is of form: { decodedTagString => decodedTag }
      */
     private final ImmutableMap<String, DecodedTag> unmappedTags;
 
     /**
-     * all tags (decoded and unmapped) found in the data. Map is of form: {
-     * decodedTagString => decodedTag }
+     * all tags (decoded and unmapped) found in the data. Map is of form: { decodedTagString =>
+     * decodedTag }
      */
     private final ImmutableMap<String, DecodedTag> allTags;
 
@@ -63,28 +62,24 @@ public class DecodedAsnDataImpl implements DecodedAsnData
      * Default constructor
      *
      * @param asnData
-     *            data to decode
-     *
+     *         data to decode
      * @param asnSchema
-     *            schema to use to decode data
-     *
+     *         schema to use to decode data
      * @param topLevelTypeName
-     *            the name of the top level type in this module from which to
-     *            begin decoding the raw tag
+     *         the name of the top level type in this module from which to begin decoding the raw
+     *         tag
      *
      * @throws NullPointerException
-     *             if any of the parameters are {@code null}
-     *
+     *         if any of the parameters are {@code null}
      * @throws IllegalArgumentException
-     *             if topLevelTypeName is blank
+     *         if topLevelTypeName is blank
      */
     public DecodedAsnDataImpl(AsnData asnData, AsnSchema asnSchema, String topLevelTypeName)
     {
         checkNotNull(asnData);
         checkNotNull(asnSchema);
         checkNotNull(topLevelTypeName);
-        checkArgument(!topLevelTypeName.trim()
-                .isEmpty(), "Top level type name must be specified");
+        checkArgument(!topLevelTypeName.trim().isEmpty(), "Top level type name must be specified");
 
         this.asnData = asnData;
         this.asnSchema = asnSchema;
@@ -94,7 +89,8 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final Map<String, DecodedTag> unmappedTags = Maps.newHashMap();
         for (final String rawTag : asnData.getRawTags())
         {
-            final OperationResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag, topLevelTypeName);
+            final OperationResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag,
+                    topLevelTypeName);
             final DecodedTag decodedTag = decodeResult.getOutput();
             if (decodeResult.wasSuccessful())
             {
@@ -162,8 +158,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     public String getHexString(String tag)
     {
         final byte[] bytes = getBytes(tag);
-        return "0x" + BaseEncoding.base16()
-                .encode(bytes);
+        return "0x" + BaseEncoding.base16().encode(bytes);
     }
 
     @Override
@@ -179,7 +174,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public String getPrintableString(String tag)
+    public String getPrintableString(String tag) throws DecodeException
     {
         final byte[] bytes = getBytes(tag);
         return asnSchema.getPrintableString(tag, bytes);
@@ -187,6 +182,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
     @Override
     public ImmutableMap<String, String> getPrintableStringsMatching(Pattern regex)
+            throws DecodeException
     {
         final Map<String, String> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
@@ -205,7 +201,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public Object getDecodedObject(String tag)
+    public Object getDecodedObject(String tag) throws DecodeException
     {
         final byte[] bytes = getBytes(tag);
         return asnSchema.getDecodedObject(tag, bytes);
@@ -213,6 +209,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
     @Override
     public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex)
+            throws DecodeException
     {
         final Map<String, Object> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
@@ -231,19 +228,21 @@ public class DecodedAsnDataImpl implements DecodedAsnData
      * Returns all tags which match the supplied regular expression
      *
      * @param regex
-     *            regular expression to test tag names against
+     *         regular expression to test tag names against
      *
      * @return all tags which match the supplied regular expression
      */
     private ImmutableSet<String> getMatchingTags(Pattern regex)
     {
-        if (regex == null) { return ImmutableSet.<String>of(); }
+        if (regex == null)
+        {
+            return ImmutableSet.<String>of();
+        }
 
         final Set<String> tags = Sets.newHashSet();
         for (final String tag : allTags.keySet())
         {
-            if (regex.matcher(tag)
-                    .matches())
+            if (regex.matcher(tag).matches())
             {
                 tags.add(tag);
             }
