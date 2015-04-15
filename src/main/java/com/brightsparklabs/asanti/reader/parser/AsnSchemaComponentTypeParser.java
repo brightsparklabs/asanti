@@ -5,20 +5,18 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentTypeGenerated;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Logic for parsing Component Types from a 'constructed' Type Definition
@@ -181,6 +179,7 @@ public class AsnSchemaComponentTypeParser
         final String tag = matcher.group(3);
         final String rawType = matcher.group(4);
         final boolean isOptional = matcher.group(6) != null;
+        final String typeName = matcher.group(7);
 
         // check if type is a pseudo type
         matcher = PATTERN_PSEUDO_TYPE.matcher(rawType);
@@ -190,7 +189,8 @@ public class AsnSchemaComponentTypeParser
             // generated.<containingTypeName>.<componentTypeName>
             final String generatedTypeName = "generated." + containingTypeName + "." + tagName;
             return new AsnSchemaComponentTypeGenerated(tagName, tag, generatedTypeName, rawType, isOptional);
-        } else
+        }
+        else
         {
             matcher = PATTERN_RAW_TYPE.matcher(rawType);
             if (!matcher.matches())
@@ -199,8 +199,6 @@ public class AsnSchemaComponentTypeParser
                 throw new ParseException(error, -1);
             }
         }
-
-        final String typeName = matcher.group(7);
 
         return new AsnSchemaComponentType(tagName, tag, typeName, isOptional);
     }

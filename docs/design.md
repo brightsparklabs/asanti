@@ -5,7 +5,6 @@
 ASN.1 allows Component Types within a constructed type (SEQUENCE, SET, etc) to
 be defined on the fly (i.e. without an explicit Type Definition). For example:
 
-
 ```
 IRI-Parameters ::= SEQUENCE {
   -- component types
@@ -13,7 +12,7 @@ IRI-Parameters ::= SEQUENCE {
 
   callContentLinkInformation  [10] SEQUENCE {
     cCLink1Characteristics    [1] CallContentLinkCharacteristics OPTIONAL,
-      -- Information concerning the Content of Communication Link Tx channel established 
+      -- Information concerning the Content of Communication Link Tx channel established
       -- toward the LEMF (or the sum signal channel, in case of mono mode).
     cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL,
       -- Information concerning the Content of Communication Link Rx channel established
@@ -23,7 +22,7 @@ IRI-Parameters ::= SEQUENCE {
 
   -- component types
   -- ...
-} 
+}
 ```
 
 The type callContentLinkInformation is being defined within the constructed
@@ -31,10 +30,9 @@ type (IRI-Parameters SEQUENCE) as opposed to being defined explicitly as a
 Type Definition.  If it were defined as a Type Definition explicitly, the
 fragment would look like:
 
-
 ```
 IRI-Parameters ::= SEQUENCE {
-  -- component types 
+  -- component types
   -- ...
 
   callContentLinkInformation [10] CallContentLinkInformation OPTIONAL,
@@ -45,9 +43,9 @@ IRI-Parameters ::= SEQUENCE {
 
 -- somewhere else in file CallContentLinkInformation ::= SEQUENCE {
   cCLink1Characteristics    [1] CallContentLinkCharacteristics OPTIONAL,
-  cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL, 
+  cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL,
   ...
-} 
+}
 ```
 
 We'll refer to the first example as an `Pseudo Type Definition`. To be
@@ -61,6 +59,7 @@ Type Definitions.
 The `AsnSchemaComponentTypeParser.parseComponentType` method detects
 the `Pseudo Type Definition` using a regular expression. A name in
 the following format is generated for the `Pseudo Type Definition`:
+
 ```
 generated.<containingTypeName>.<componentTypeName>
 ```
@@ -72,11 +71,26 @@ ASN.1. Using this format:
 1. Makes it explicitly clear that the name was generated.
 
 For the previous example the name would be:
+
 ```
 generated.IRI-Parameters.callContentLinkInformation
 ```
 
-The text of the `Pseudo Type Definition` is formatted to a single line of text
+### Store Pseudo Type Definition
+
+Psuedo code illustration:
+
+```
+class AsnSchemaComponentTypeGenerated extends AsnSchemaComponentType
+{
+    String typeDefinitionText =
+        "cCLink1Characteristics    [1] CallContentLinkCharacteristics OPTIONAL,"
+        + "cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL,"
+        + "...";
+}
+```
+
+The text of the `Pseudo Type Definition` is formatted to a single line of text.
  An `AsnSchemaComponentTypeGenerated` object is used to store the `Pseudo Type
  Definition`. The `AsnSchemaComponentTypeGenerated` type extends the
  `AsnSchemaComponentType` to add an extra instance variable named
@@ -84,19 +98,58 @@ The text of the `Pseudo Type Definition` is formatted to a single line of text
 
 ### Parsing Pseudo Type Definitions
 
-When parsing constructed types (SET, SEQUENCE or CHOICE) in the
+
+Psuedo code illustration:
+
+```
+class AsnSchemaTypeDefinitionParser
+{
+    ImmutableList<AsnSchemaTypeDefinition> parseSequence()
+    {
+        final List<AsnSchemaTypeDefinition> typeDefinitions = Lists.newArrayList();
+
+        // parse raw text
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                AsnSchemaComponentTypeParser.parse(name, componentTypesText);
+
+        // created all generated type definitions
+        for (final AsnSchemaComponentType component : componentTypes)
+        {
+            if (component instanceof AsnSchemaComponentTypeGenerated)
+            {
+                ImmutableList<AsnSchemaTypeDefinition> generated =
+                    parse(component.getTypeName(), component.pseudoTypeDefinitionText);
+                typeDefinitions.addAll(generated);
+            }
+        }
+
+        // create the sequence type definition
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        final AsnSchemaTypeDefinitionChoice typeDefinition =
+                new AsnSchemaTypeDefinitionChoice(name, componentTypes, constraint);
+
+        // return all created type definitions
+        typeDefinitions.add(typeDefinition);
+        return ImmutableList.copyOf(typeDefinitions);
+    }
+}
+```
+
+When parsing constructed types (SET, SEQUENCE, ENUMERATED or CHOICE) in the
 `AsnSchemaTypeDefinitionParser` class, the `Pseudo Type Definitions` are
 extracted from the `ImmutableList<AsnSchemaComponentType>` returned from the
 `AsnSchemaComponentTypeParser.parse` method by checking whether the instance of
-`AsnSchemaComponentType` is a `AsnSchemaComponentTypeGenerated`. Each instance
-of `AsnSchemaComponentTypeGenerated` is parsed into an
-`AbstractAsnSchemaTypeDefinition` using the `typeDefinitionText` instance
-variable and existing parse methods in the `AsnSchemaTypeDefinitionParser`
-class. An `List<AbstractAsnSchemaTypeDefinition>` is generated for all parsed
-`Pseudo Type Definitions` and the constructed Type Definition itself is added to
-this list before being returned as a
-`ImmutableList<AbstractAsnSchemaTypeDefinition>` by the parse method of the
-constructed type.
+`AsnSchemaComponentType` is a `AsnSchemaComponentTypeGenerated`.
+
+Each instance of `AsnSchemaComponentTypeGenerated` is parsed into an
+`AsnSchemaTypeDefinition` using the `typeDefinitionText` instance variable
+and existing parse methods in the `AsnSchemaTypeDefinitionParser` class. An
+list of `AsnSchemaTypeDefinition` objects is generated from all parsed
+`Pseudo Type Definitions`.
+
+The constructed Type Definition is then created. All created type definitions
+are then returned as a `ImmutableList<AbstractAsnSchemaTypeDefinition>`
+by the parse method of the constructed type.
 
 All parsed Type Definitions are returned in an
 `ImmutableList<AbstractAsnSchemaTypeDefinition>` object from the

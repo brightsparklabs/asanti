@@ -5,21 +5,20 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import java.text.ParseException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Logic for parsing a module within an ASN.1 schema
@@ -299,9 +298,9 @@ public class AsnSchemaModuleParser
             {
                 final String name = matcher.group(1);
                 final String value = matcher.group(4);
-                final ImmutableList<AbstractAsnSchemaTypeDefinition> typeDefinitions =
+                final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
                         AsnSchemaTypeDefinitionParser.parse(name, value);
-                for (AbstractAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
+                for (AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
                 {
                     moduleBuilder.addType(typeDefinition);
                 }
