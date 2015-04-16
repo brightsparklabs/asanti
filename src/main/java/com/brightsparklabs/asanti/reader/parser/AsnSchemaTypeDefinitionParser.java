@@ -188,6 +188,7 @@ public final class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             return ImmutableList.<AsnSchemaTypeDefinition>of(parseBitString(name, matcher));
+
         }
 
         // check if defining an Ia5String
@@ -408,7 +409,6 @@ public final class AsnSchemaTypeDefinitionParser
             throws ParseException
     {
         final String enumeratedOptionsText = matcher.group(1);
-
         final ImmutableList<AsnSchemaNamedTag> enumeratedOptions
                 = AsnSchemaNamedTagParser.parseEnumeratedOptions(enumeratedOptionsText);
         return new AsnSchemaTypeDefinitionEnumerated(name, enumeratedOptions);
@@ -569,7 +569,7 @@ public final class AsnSchemaTypeDefinitionParser
     private static AsnSchemaTypeDefinitionGeneralizedTime parseGeneralizedTime(String name)
             throws ParseException
     {
-        // Subtype constraints are not applicable to GeneralizedTime.
+        // sub-type constraints are not applicable to GeneralizedTime.
         return AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralizedTime(name);
     }
 
@@ -590,10 +590,8 @@ public final class AsnSchemaTypeDefinitionParser
             throws ParseException
     {
         final String distinguishedValuesText = matcher.group(2);
-
         final ImmutableList<AsnSchemaNamedTag> distinguishedValues
                 = AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesText);
-
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(name,
                 distinguishedValues,
@@ -677,7 +675,6 @@ public final class AsnSchemaTypeDefinitionParser
                 parsedTypes.addAll(pseudoTypeDefinitions);
             }
         }
-
         return parsedTypes;
     }
 }
