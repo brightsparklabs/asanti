@@ -81,6 +81,14 @@ public final class AsnSchemaTypeDefinitionParser
     private static final Pattern PATTERN_TYPE_DEFINITION_VISIBLE_STRING = Pattern.compile(
             "^VisibleString ?(\\((.+)\\))?$");
 
+    /** pattern to match a GeneralString type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_GENERAL_STRING = Pattern.compile(
+            "^GeneralString ?(\\((.+)\\))?$");
+
+    /** pattern to match a GeneralizedTime type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_GENERALIZED_TIME = Pattern.compile(
+            "^GeneralizedTime$");
+
     /** pattern to match an Integer type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_INTEGER = Pattern.compile(
             "^INTEGER ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
@@ -89,11 +97,11 @@ public final class AsnSchemaTypeDefinitionParser
 
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE = Pattern.compile(
-            "^(GeneralizedTime|BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GeneralString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            "^(BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE
-            = "Parser expected a constructed built-in type (SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS) or a primitive built-in type (BIT STRING, GeneralizedTime, IA5String, INTEGER, NumericString, OCTET STRING, UTF8String, VisibleString, BOOLEAN, DATE, CHARACTER STRING, DATE_TIME, DURATION, EMBEDDED PDV, EXTERNAL, INTEGER, OID-IRI, NULL, OBJECT IDENTIFIER, REAL, RELATIVE-OID-IRI, RELATIVE-OID, BMPString, GeneralString, GraphicString, ISO646String, PrintableString, TeletexString, T61String, UniversalString, VideotexString, TIME, TIME-OF-DAY, CHARACTER STRING) but found: ";
+            = "Parser expected a constructed built-in type (SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS) or a primitive built-in type (BIT STRING, GeneralizedTime, Ia5String, INTEGER, NumericString, OCTET STRING, Utf8String, VisibleString, BOOLEAN, DATE, CHARACTER STRING, DATE_TIME, DURATION, EMBEDDED PDV, EXTERNAL, INTEGER, OID-IRI, NULL, OBJECT IDENTIFIER, REAL, RELATIVE-OID-IRI, RELATIVE-OID, BmpString, GeneralString, GraphicString, Iso646String, PrintableString, TeletexString, T61String, UniversalString, VideotexString, TIME, TIME-OF-DAY, CHARACTER STRING) but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -182,14 +190,14 @@ public final class AsnSchemaTypeDefinitionParser
             return ImmutableList.<AsnSchemaTypeDefinition>of(parseBitString(name, matcher));
         }
 
-        // check if defining an IA5String
+        // check if defining an Ia5String
         matcher = PATTERN_TYPE_DEFINITION_IA5_STRING.matcher(value);
         if (matcher.matches())
         {
             return ImmutableList.<AsnSchemaTypeDefinition>of(parseIA5String(name, matcher));
         }
 
-        // check if defining a UTF8String
+        // check if defining a Utf8String
         matcher = PATTERN_TYPE_DEFINITION_UTF8_STRING.matcher(value);
         if (matcher.matches())
         {
@@ -208,6 +216,20 @@ public final class AsnSchemaTypeDefinitionParser
         if (matcher.matches())
         {
             return ImmutableList.<AsnSchemaTypeDefinition>of(parseVisibleString(name, matcher));
+        }
+
+        // check if defining a GeneralString
+        matcher = PATTERN_TYPE_DEFINITION_GENERAL_STRING.matcher(value);
+        if (matcher.matches())
+        {
+            return ImmutableList.<AsnSchemaTypeDefinition>of(parseGeneralString(name, matcher));
+        }
+
+        // check if defining a GeneralizedTime
+        matcher = PATTERN_TYPE_DEFINITION_GENERALIZED_TIME.matcher(value);
+        if (matcher.matches())
+        {
+            return ImmutableList.<AsnSchemaTypeDefinition>of(parseGeneralizedTime(name));
         }
 
         // check if defining a Integer
@@ -343,7 +365,7 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_CHOICE}
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an {@link AsnSchemaTypeDefinitionChoice} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
@@ -434,19 +456,19 @@ public final class AsnSchemaTypeDefinitionParser
     }
 
     /**
-     * Parses an IA5String type definition
+     * Parses an Ia5String type definition
      *
      * @param name
      *         name of the defined type
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_IA5_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionIA5String} representing the parsed data
+     * @return an {@link AsnSchemaTypeDefinitionIa5String} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionIA5String parseIA5String(String name, Matcher matcher)
+    private static AsnSchemaTypeDefinitionIa5String parseIA5String(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
@@ -454,19 +476,19 @@ public final class AsnSchemaTypeDefinitionParser
     }
 
     /**
-     * Parses a UTF8String type definition
+     * Parses a Utf8String type definition
      *
      * @param name
      *         name of the defined type
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_UTF8_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionUTF8String} representing the parsed data
+     * @return an {@link AsnSchemaTypeDefinitionUtf8String} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionUTF8String parseUTF8String(String name, Matcher matcher)
+    private static AsnSchemaTypeDefinitionUtf8String parseUTF8String(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
@@ -511,6 +533,44 @@ public final class AsnSchemaTypeDefinitionParser
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         return AsnSchemaTypeDefinitionPrimitiveParser.parseVisibleString(name, constraintText);
+    }
+
+    /**
+     * Parses a General type definition
+     *
+     * @param name
+     *         name of the defined type
+     * @param matcher
+     *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_GENERAL_STRING}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionGeneralString} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionGeneralString parseGeneralString(String name,
+            Matcher matcher) throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        return AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralString(name, constraintText);
+    }
+
+    /**
+     * Parses a GeneralizedTime type definition
+     *
+     * @param name
+     *         name of the defined type
+     *
+     * @return an {@link AsnSchemaTypeDefinitionGeneralizedTime} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeDefinitionGeneralizedTime parseGeneralizedTime(String name)
+            throws ParseException
+    {
+        // Subtype constraints are not applicable to GeneralizedTime.
+        return AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralizedTime(name);
     }
 
     /**

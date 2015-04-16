@@ -9,8 +9,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 
 /**
- * Contains the results from running a {@link Validator} over
- * {@link DecodedAsnData}.
+ * Contains the results from running a {@link Validator} over {@link DecodedAsnData}.
  *
  * @author brightSPARK Labs
  */
@@ -21,8 +20,7 @@ public class ValidationResultImpl implements ValidationResult
     // -------------------------------------------------------------------------
 
     /**
-     * all failures that occurred during validation. Map is of form {tag =>
-     * failure}
+     * all failures that occurred during validation. Map is of form {tag => failure}
      */
     private final ImmutableSetMultimap<String, ValidationFailure> tagsToFailures;
 
@@ -31,18 +29,18 @@ public class ValidationResultImpl implements ValidationResult
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor. This is private, use {@link #builder()} to create
-     * instances.
+     * Default constructor. This is private, use {@link #builder()} to create instances.
      *
      * @param failures
-     *            failures to include in this result set
+     *         failures to include in this result set
      */
     private ValidationResultImpl(Iterable<ValidationFailure> failures)
     {
-        final ImmutableSetMultimap.Builder<String, ValidationFailure> builder = ImmutableSetMultimap.builder();
+        final ImmutableSetMultimap.Builder<String, ValidationFailure> builder = ImmutableSetMultimap
+                .builder();
         for (final ValidationFailure failure : failures)
         {
-            final String tag = failure.getTag();
+            final String tag = failure.getLocation();
             builder.put(tag, failure);
         }
         this.tagsToFailures = builder.build();
@@ -77,8 +75,7 @@ public class ValidationResultImpl implements ValidationResult
     @Override
     public boolean hasFailures(String tag)
     {
-        return !tagsToFailures.get(tag)
-                .isEmpty();
+        return !tagsToFailures.get(tag).isEmpty();
     }
 
     @Override
@@ -101,19 +98,21 @@ public class ValidationResultImpl implements ValidationResult
         // ---------------------------------------------------------------------
 
         /** the results to include in the result set */
-        private final ImmutableSet.Builder<ValidationFailure> failuresBuilder = ImmutableSet.builder();
+        private final ImmutableSet.Builder<ValidationFailure> failuresBuilder
+                = ImmutableSet.builder();
+
+        /** whether this builder contains any {@link ValidationResult ValidationResults} */
+        private boolean containsResults;
 
         // ---------------------------------------------------------------------
         // CONSTRUCTION
         // ---------------------------------------------------------------------
 
         /**
-         * Default constructor. This is private, use
-         * {@link ValidationResultImpl#builder()} to create an instance.
+         * Default constructor. This is private, use {@link ValidationResultImpl#builder()} to
+         * create an instance.
          */
-        private Builder()
-        {
-        }
+        private Builder() {}
 
         // ---------------------------------------------------------------------
         // PUBLIC METHODS
@@ -122,14 +121,40 @@ public class ValidationResultImpl implements ValidationResult
         /**
          * Adds a failure to the result set
          *
+         * @param location
+         *         the location of the failure
+         * @param failureType
+         *         the type of failure that occurred
+         * @param failureReason
+         *         the reason for the failure
+         *
+         * @return this builder
+         *
+         * @throws NullPointerException
+         *         if parameters are {@code null}
+         * @throws IllegalArgumentException
+         *         if tag or failureReason are empty
+         */
+        public Builder add(String location, FailureType failureType, String failureReason)
+        {
+            final ValidationFailure failure = new ValidationFailureImpl(location,
+                    failureType,
+                    failureReason);
+            return add(failure);
+        }
+
+        /**
+         * Adds a failure to the result set
+         *
          * @param failures
-         *            result to add
+         *         result to add
          *
          * @return this builder
          */
         public Builder add(ValidationFailure failures)
         {
             failuresBuilder.add(failures);
+            containsResults = true;
             return this;
         }
 
@@ -137,27 +162,40 @@ public class ValidationResultImpl implements ValidationResult
          * Adds a failure to the result set
          *
          * @param failures
-         *            failures to add
+         *         failures to add
          *
          * @return this builder
          */
         public Builder addAll(Iterable<ValidationFailure> failures)
         {
             failuresBuilder.addAll(failures);
+            containsResults = true;
             return this;
         }
 
         /**
-         * Creates a new instance of {@link ValidationResultImpl} containing all
-         * the results which have been added to this builder
+         * Creates a new instance of {@link ValidationResultImpl} containing all the results which
+         * have been added to this builder
          *
-         * @return a new instance of {@link ValidationResultImpl} containing all
-         *         the results which have been added to this builder
+         * @return a new instance of {@link ValidationResultImpl} containing all the results which
+         * have been added to this builder
          */
         public ValidationResultImpl build()
         {
             final ImmutableSet<ValidationFailure> failures = failuresBuilder.build();
             return new ValidationResultImpl(failures);
+        }
+
+        /**
+         * Returns {@code true} if this builder contains any {@link ValidationResult
+         * ValidationResults}
+         *
+         * @return {@code true} if this builder contains any {@link ValidationResult
+         * ValidationResults}
+         */
+        public boolean containsResults()
+        {
+            return containsResults;
         }
     }
 }
