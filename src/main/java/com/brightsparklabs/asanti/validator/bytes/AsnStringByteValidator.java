@@ -58,7 +58,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsBitString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -74,7 +74,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsBmpString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -90,7 +90,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsCharacterString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -106,7 +106,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsGeneralString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -122,7 +122,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsGraphicString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -169,7 +169,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsIso646String(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -185,7 +185,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsNumericString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -218,7 +218,7 @@ class AsnStringByteValidator
 
     static ValidationResult validateAsPrintableString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -234,7 +234,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsTeletexString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -250,7 +250,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsUniversalString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -266,7 +266,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsUtf8String(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -282,7 +282,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsVideotexString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -298,7 +298,7 @@ class AsnStringByteValidator
      */
     static ValidationResult validateAsVisibleString(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();

@@ -61,7 +61,7 @@ class AsnIdentifierByteValidator
      */
     static ValidationResult validateAsIri(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -77,7 +77,7 @@ class AsnIdentifierByteValidator
      */
     static ValidationResult validateAsOid(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -93,7 +93,7 @@ class AsnIdentifierByteValidator
      */
     static ValidationResult validateAsOidIri(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -109,7 +109,7 @@ class AsnIdentifierByteValidator
      */
     static ValidationResult validateAsRelativeIri(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -125,7 +125,7 @@ class AsnIdentifierByteValidator
      */
     static ValidationResult validateAsRelativeOid(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();
@@ -141,7 +141,7 @@ class AsnIdentifierByteValidator
      */
     static ValidationResult validateAsRelativeOidIri(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder
                 = AsnByteValidator.validationResultBuilderFor(bytes);
         return builder.build();

@@ -157,7 +157,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsDuration(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 
@@ -171,7 +171,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsEmbeddedPDV(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 
@@ -185,7 +185,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsExternal(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 
@@ -251,7 +251,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsInstanceOf(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 
@@ -265,7 +265,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsInteger(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 
@@ -305,7 +305,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsNull(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 
@@ -332,7 +332,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsObjectClassField(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 
@@ -385,7 +385,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsPrefixed(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 
@@ -412,7 +412,7 @@ public class AsnByteValidator
      */
     public static ValidationResult validateAsReal(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         return ValidationResultImpl.builder().build();
     }
 

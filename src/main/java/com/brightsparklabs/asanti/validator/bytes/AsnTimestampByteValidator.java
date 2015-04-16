@@ -55,7 +55,7 @@ class AsnTimestampByteValidator
      */
     static ValidationResult validateAsDate(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
                 bytes);
         return builder.build();
@@ -71,7 +71,7 @@ class AsnTimestampByteValidator
      */
     static ValidationResult validateAsDateTime(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
                 bytes);
         return builder.build();
@@ -87,7 +87,7 @@ class AsnTimestampByteValidator
      */
     static ValidationResult validateAsGeneralizedTime(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
                 bytes);
         return builder.build();
@@ -103,7 +103,7 @@ class AsnTimestampByteValidator
      */
     static ValidationResult validateAsTime(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
                 bytes);
         return builder.build();
@@ -119,7 +119,7 @@ class AsnTimestampByteValidator
      */
     static ValidationResult validateAsTimeOfDay(byte[] bytes)
     {
-        // TODO: ASN-8
+        // TODO: ASN-105
         final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
                 bytes);
         return builder.build();
