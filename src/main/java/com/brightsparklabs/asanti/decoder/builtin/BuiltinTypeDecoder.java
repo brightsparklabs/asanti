@@ -20,7 +20,7 @@ import com.brightsparklabs.asanti.common.DecodeException;
  *
  * @author brightSPARK Labs
  */
-public interface AsnTypeDecoder<T>
+public interface BuiltinTypeDecoder<T>
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS

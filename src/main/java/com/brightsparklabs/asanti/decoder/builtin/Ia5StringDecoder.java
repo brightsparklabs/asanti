@@ -16,7 +16,7 @@ import com.google.common.base.Charsets;
  *
  * @author brightSPARK Labs
  */
-public class Ia5StringDecoder implements AsnTypeDecoder
+public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -34,7 +34,7 @@ public class Ia5StringDecoder implements AsnTypeDecoder
      *
      * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
      */
-    private Ia5StringDecoder() { }
+    private Ia5StringDecoder() {}
 
     /**
      * Returns a singleton instance of this class
@@ -51,20 +51,14 @@ public class Ia5StringDecoder implements AsnTypeDecoder
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnTypeDecoder
+    // IMPLEMENTATION: AbstractBuiltinTypeDecoder
     // -------------------------------------------------------------------------
 
     @Override
-    public String decode(final byte[] bytes) throws DecodeException
+    public String decodeValidatedBytes(final byte[] bytes) throws DecodeException
     {
         final ValidationResult validationResult = AsnByteValidator.validateAsIa5String(bytes);
         DecodeException.throwIfHasFailures(validationResult);
         return new String(bytes, Charsets.UTF_8);
-    }
-
-    @Override
-    public String decodeAsString(final byte[] data) throws DecodeException
-    {
-        return decode(data);
     }
 }
