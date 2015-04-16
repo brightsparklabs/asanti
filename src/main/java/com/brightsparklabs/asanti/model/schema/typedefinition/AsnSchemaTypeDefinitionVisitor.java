@@ -71,7 +71,7 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(AsnSchemaTypeDefinitionIA5String visitable);
+    public T visit(AsnSchemaTypeDefinitionIa5String visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -151,7 +151,7 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(AsnSchemaTypeDefinitionUTF8String visitable);
+    public T visit(AsnSchemaTypeDefinitionUtf8String visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -162,4 +162,24 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionVisibleString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionGeneralString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionGeneralizedTime visitable);
 }

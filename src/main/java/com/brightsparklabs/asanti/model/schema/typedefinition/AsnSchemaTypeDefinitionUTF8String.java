@@ -9,12 +9,12 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 
 /**
- * An {@code UTF8String} type definition from a within a module specification
+ * An {@code Utf8String} type definition from a within a module specification
  * within an ASN.1 schema.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionUTF8String extends AsnSchemaTypeDefinitionPrimitive
+public class AsnSchemaTypeDefinitionUtf8String extends AsnSchemaTypeDefinitionPrimitive
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -24,13 +24,13 @@ public class AsnSchemaTypeDefinitionUTF8String extends AsnSchemaTypeDefinitionPr
      * Default constructor.
      *
      * @param name
-     *            name of the UTF8String type definition
+     *            name of the Utf8String type definition
      *
      * @param constraint
      *            The constraint on the type. Use
      *            {@link AsnSchemaConstraint#NULL} if no constraint.
      *            <p>
-     *            E.g. For {@code UTF8String (SIZE (1..50))} this would be
+     *            E.g. For {@code Utf8String (SIZE (1..50))} this would be
      *            {@code SIZE (1..50)}
      *
      * @throws NullPointerException
@@ -39,9 +39,9 @@ public class AsnSchemaTypeDefinitionUTF8String extends AsnSchemaTypeDefinitionPr
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeDefinitionUTF8String(String name, AsnSchemaConstraint constraint)
+    public AsnSchemaTypeDefinitionUtf8String(String name, AsnSchemaConstraint constraint)
     {
-        super(name, AsnBuiltinType.UTF8String, constraint);
+        super(name, AsnBuiltinType.Utf8String, constraint);
     }
 
     // -------------------------------------------------------------------------

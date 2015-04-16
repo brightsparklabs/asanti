@@ -10,8 +10,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionPrimitiveParser}
@@ -57,7 +56,7 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
 
         final AsnSchemaTypeDefinition instance =
                 AsnSchemaTypeDefinitionPrimitiveParser.parseIA5String("TEST_NAME", "TEST_CONSTRAINTS");
-        assertEquals(AsnBuiltinType.IA5String, instance.getBuiltinType());
+        assertEquals(AsnBuiltinType.Ia5String, instance.getBuiltinType());
         assertEquals("TEST_NAME", instance.getName());
         assertEquals("", instance.getTagName(""));
         assertEquals("", instance.getTypeName(""));
@@ -214,6 +213,46 @@ public class AsnSchemaTypeDefinitionPrimitiveParserTest
         final AsnSchemaTypeDefinition instance =
                 AsnSchemaTypeDefinitionPrimitiveParser.parseVisibleString("TEST_NAME", "TEST_CONSTRAINTS");
         assertEquals(AsnBuiltinType.VisibleString, instance.getBuiltinType());
+        assertEquals("TEST_NAME", instance.getName());
+        assertEquals("", instance.getTagName(""));
+        assertEquals("", instance.getTypeName(""));
+    }
+
+    @Test
+    public void testParseGeneralString() throws Exception
+    {
+        // null name
+        try
+        {
+            AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralString(null, "TEST_CONSTRAINTS");
+            fail("NullPointerException not thrown");
+        }
+        catch (final NullPointerException ex)
+        {
+        }
+
+        // blank name
+        try
+        {
+            AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralString("", "TEST_CONSTRAINTS");
+            fail("IllegalArgumentException not thrown");
+        }
+        catch (final IllegalArgumentException ex)
+        {
+        }
+        try
+        {
+            AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralString(" ", "TEST_CONSTRAINTS");
+            fail("IllegalArgumentException not thrown");
+        }
+        catch (final IllegalArgumentException ex)
+        {
+        }
+
+        final AsnSchemaTypeDefinition instance
+                = AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralString("TEST_NAME",
+                "TEST_CONSTRAINTS");
+        assertEquals(AsnBuiltinType.GeneralString, instance.getBuiltinType());
         assertEquals("TEST_NAME", instance.getName());
         assertEquals("", instance.getTagName(""));
         assertEquals("", instance.getTypeName(""));

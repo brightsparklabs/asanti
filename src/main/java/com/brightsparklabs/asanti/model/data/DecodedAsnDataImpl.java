@@ -4,12 +4,6 @@
  */
 package com.brightsparklabs.asanti.model.data;
 
-import static com.google.common.base.Preconditions.*;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
@@ -19,6 +13,12 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Default implementation of {@link DecodedAsnData}
@@ -95,7 +95,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         for (final String rawTag : asnData.getRawTags())
         {
             final OperationResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag, topLevelTypeName);
-            final DecodedTag decodedTag = decodeResult.getDecodedData();
+            final DecodedTag decodedTag = decodeResult.getOutput();
             if (decodeResult.wasSuccessful())
             {
                 decodedToRawTags.put(decodedTag.getTag(), decodedTag);

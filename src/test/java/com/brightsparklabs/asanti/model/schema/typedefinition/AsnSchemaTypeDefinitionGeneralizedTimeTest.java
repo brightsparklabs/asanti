@@ -12,27 +12,26 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for {@link AsnSchemaTypeDefinitionUtf8String}
+ * Unit tests for {@link AsnSchemaTypeDefinitionGeneralizedTime}
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionUTF8StringTest
+public class AsnSchemaTypeDefinitionGeneralizedTimeTest
 {
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
     @Test
-    public void testAsnSchemaTypeDefinitionUTF8String() throws Exception
+    public void testAsnSchemaTypeDefinitionGeneralizedTime() throws Exception
     {
         // test valid
-        new AsnSchemaTypeDefinitionUtf8String("TEST_NAME", AsnSchemaConstraint.NULL);
-        new AsnSchemaTypeDefinitionUtf8String("TEST_NAME", AsnSchemaConstraint.NULL);
+        new AsnSchemaTypeDefinitionGeneralizedTime("TEST_NAME", AsnSchemaConstraint.NULL);
 
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionUtf8String(null, AsnSchemaConstraint.NULL);
+            new AsnSchemaTypeDefinitionGeneralizedTime(null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -40,7 +39,7 @@ public class AsnSchemaTypeDefinitionUTF8StringTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionUtf8String("TEST_NAME", null);
+            new AsnSchemaTypeDefinitionGeneralizedTime("TEST_NAME", null);
         }
         catch (final NullPointerException ex)
         {
@@ -50,7 +49,7 @@ public class AsnSchemaTypeDefinitionUTF8StringTest
         // test empty
         try
         {
-            new AsnSchemaTypeDefinitionUtf8String("", AsnSchemaConstraint.NULL);
+            new AsnSchemaTypeDefinitionGeneralizedTime("", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -58,7 +57,7 @@ public class AsnSchemaTypeDefinitionUTF8StringTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionUtf8String(" ", AsnSchemaConstraint.NULL);
+            new AsnSchemaTypeDefinitionGeneralizedTime(" ", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -69,19 +68,17 @@ public class AsnSchemaTypeDefinitionUTF8StringTest
     @Test
     public void testGetBuiltinType() throws Exception
     {
-        final AsnSchemaTypeDefinitionUtf8String instance = new AsnSchemaTypeDefinitionUtf8String(
-                "TEST_NAME",
-                AsnSchemaConstraint.NULL);
-        assertEquals(AsnBuiltinType.Utf8String, instance.getBuiltinType());
+        final AsnSchemaTypeDefinitionGeneralizedTime instance
+                = new AsnSchemaTypeDefinitionGeneralizedTime("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals(AsnBuiltinType.GeneralizedTime, instance.getBuiltinType());
     }
 
     @Test
     public void testVisit() throws Exception
     {
-        final AsnSchemaTypeDefinitionUtf8String instance = new AsnSchemaTypeDefinitionUtf8String(
-                "TEST_NAME",
-                AsnSchemaConstraint.NULL);
-        assertEquals(AsnSchemaTypeDefinitionUtf8String.class.getCanonicalName(),
+        final AsnSchemaTypeDefinitionGeneralizedTime instance
+                = new AsnSchemaTypeDefinitionGeneralizedTime("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals(AsnSchemaTypeDefinitionGeneralizedTime.class.getCanonicalName(),
                 instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }
