@@ -6,10 +6,9 @@
 package com.brightsparklabs.asanti.decoder.bytes;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.decoder.builtin.BooleanDecoder;
 import com.brightsparklabs.asanti.decoder.builtin.Ia5StringDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.ValidationResult;
-import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -84,14 +83,10 @@ public class AsnByteDecoder
      *
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
-     * @throws IllegalArgumentException
-     *         if the byte array is not have a length of 1
      */
     public static boolean decodeAsBoolean(byte[] bytes) throws DecodeException
     {
-        final ValidationResult validationResult = AsnByteValidator.validateAsBoolean(bytes);
-        DecodeException.throwIfHasFailures(validationResult);
-        return bytes[0] != 0;
+        return BooleanDecoder.getInstance().decode(bytes);
     }
 
     /**

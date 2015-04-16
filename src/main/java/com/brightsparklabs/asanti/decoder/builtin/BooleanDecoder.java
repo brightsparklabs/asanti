@@ -7,21 +7,20 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.google.common.base.Charsets;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#Ia5String}
+ * Decoder for data of type {@link AsnBuiltinType#Boolean}
  *
  * @author brightSPARK Labs
  */
-public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
+public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean>
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
     /** singleton instance */
-    private static Ia5StringDecoder instance;
+    private static BooleanDecoder instance;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -32,18 +31,18 @@ public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
      *
      * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
      */
-    private Ia5StringDecoder() {}
+    private BooleanDecoder() {}
 
     /**
      * Returns a singleton instance of this class
      *
      * @return a singleton instance of this class
      */
-    public static Ia5StringDecoder getInstance()
+    public static BooleanDecoder getInstance()
     {
         if (instance == null)
         {
-            instance = new Ia5StringDecoder();
+            instance = new BooleanDecoder();
         }
         return instance;
     }
@@ -53,8 +52,8 @@ public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
     // -------------------------------------------------------------------------
 
     @Override
-    protected String decodeValidatedBytes(final byte[] bytes) throws DecodeException
+    protected Boolean decodeValidatedBytes(final byte[] bytes) throws DecodeException
     {
-        return new String(bytes, Charsets.UTF_8);
+        return bytes[0] != 0;
     }
 }
