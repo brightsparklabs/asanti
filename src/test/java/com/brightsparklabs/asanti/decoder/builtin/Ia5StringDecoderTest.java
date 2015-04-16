@@ -3,7 +3,7 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.decoder.typedefinition;
+package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.google.common.base.Charsets;

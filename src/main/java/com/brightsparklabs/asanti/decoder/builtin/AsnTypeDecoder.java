@@ -8,7 +8,7 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.decoder.typedefinition;
+package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 
@@ -20,7 +20,7 @@ import com.brightsparklabs.asanti.common.DecodeException;
  *
  * @author brightSPARK Labs
  */
-public interface AsnTypeDefinitionDecoder<T>
+public interface AsnTypeDecoder<T>
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS

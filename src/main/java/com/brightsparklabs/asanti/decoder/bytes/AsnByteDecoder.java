@@ -6,7 +6,7 @@
 package com.brightsparklabs.asanti.decoder.bytes;
 
 import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.decoder.typedefinition.Ia5StringDecoder;
+import com.brightsparklabs.asanti.decoder.builtin.Ia5StringDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.ValidationResult;
 import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;

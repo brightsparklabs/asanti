@@ -3,7 +3,7 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.decoder.typedefinition;
+package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -16,7 +16,7 @@ import com.google.common.base.Charsets;
  *
  * @author brightSPARK Labs
  */
-public class Ia5StringDecoder implements AsnTypeDefinitionDecoder
+public class Ia5StringDecoder implements AsnTypeDecoder
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -51,7 +51,7 @@ public class Ia5StringDecoder implements AsnTypeDefinitionDecoder
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnTypeDefinitionDecoder
+    // IMPLEMENTATION: AsnTypeDecoder
     // -------------------------------------------------------------------------
 
     @Override

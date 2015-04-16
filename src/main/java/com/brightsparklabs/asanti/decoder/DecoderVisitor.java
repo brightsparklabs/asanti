@@ -10,101 +10,101 @@
 
 package com.brightsparklabs.asanti.decoder;
 
-import com.brightsparklabs.asanti.decoder.typedefinition.AsnTypeDefinitionDecoder;
+import com.brightsparklabs.asanti.decoder.builtin.AsnTypeDecoder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
  * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the most appropriate
- * {@link AsnTypeDefinitionDecoder} pertaining to it.
+ * {@link AsnTypeDecoder} pertaining to it.
  *
  * @author brightSPARK Labs
  */
-public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<AsnTypeDefinitionDecoder<?>>
+public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<AsnTypeDecoder<?>>
 {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: Validator
     // -------------------------------------------------------------------------
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinition.Null visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinition.Null visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionBitString visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionBitString visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionChoice visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionChoice visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionEnumerated visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionEnumerated visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionInteger visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionInteger visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionIa5String visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionIa5String visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionNumericString visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionNumericString visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionOctetString visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionOctetString visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionSequence visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionSequence visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionSequenceOf visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionSequenceOf visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionSet visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionSet visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionSetOf visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionSetOf visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionUtf8String visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionUtf8String visitable)
     {
         return null;
     }
 
     @Override
-    public AsnTypeDefinitionDecoder<?> visit(AsnSchemaTypeDefinitionVisibleString visitable)
+    public AsnTypeDecoder<?> visit(AsnSchemaTypeDefinitionVisibleString visitable)
     {
         return null;
     }

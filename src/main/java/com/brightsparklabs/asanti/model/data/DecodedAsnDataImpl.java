@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.decoder.typedefinition.AsnTypeDefinitionDecoder;
+import com.brightsparklabs.asanti.decoder.builtin.AsnTypeDecoder;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
@@ -191,7 +191,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
         final byte[] bytes = getBytes(tag);
         final AsnSchemaTypeDefinition type = decodedTag.getType();
-        final AsnTypeDefinitionDecoder<?> decoder = (AsnTypeDefinitionDecoder<?>) type.visit(
+        final AsnTypeDecoder<?> decoder = (AsnTypeDecoder<?>) type.visit(
                 decoderVisitor);
         return decoder.decodeAsString(bytes);
     }
@@ -229,7 +229,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
         final byte[] bytes = getBytes(tag);
         final AsnSchemaTypeDefinition type = decodedTag.getType();
-        final AsnTypeDefinitionDecoder<?> decoder = (AsnTypeDefinitionDecoder<?>) type.visit(
+        final AsnTypeDecoder<?> decoder = (AsnTypeDecoder<?>) type.visit(
                 decoderVisitor);
         return decoder.decode(bytes);
     }
