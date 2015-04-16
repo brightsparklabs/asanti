@@ -10,8 +10,8 @@
 
 package com.brightsparklabs.asanti.common;
 
-import com.brightsparklabs.asanti.validator.ValidationFailure;
-import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
+import com.brightsparklabs.asanti.validator.result.DecodedDataValidationResult;
 
 /**
  * Signals that invalid data was supplied to a decoder
@@ -49,7 +49,7 @@ public class DecodeException extends Exception
      * @throws DecodeException
      *         if the validation result contains failures
      */
-    public static void throwIfHasFailures(ValidationResult validationResult) throws DecodeException
+    public static void throwIfHasFailures(DecodedDataValidationResult validationResult) throws DecodeException
     {
         if (!validationResult.hasFailures())
         {

@@ -11,7 +11,10 @@
 package com.brightsparklabs.asanti.validator.bytes;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.*;
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.brightsparklabs.asanti.validator.result.ByteValidationResult;
+import com.brightsparklabs.asanti.validator.result.DecodedAsnDataValidationResultImpl;
 
 /**
  * Utility class for validating bytes in ASN.1 Types
@@ -25,8 +28,7 @@ public class AsnByteValidator
     // -------------------------------------------------------------------------
 
     /** failure indicating that data was missing */
-    static final ValidationFailure FAILURE_MISSING_DATA = new ValidationFailureImpl(
-            "Byte at index [0]",
+    static final ByteValidationFailure FAILURE_MISSING_DATA = new ByteValidationFailure(-1,
             FailureType.DataMissing,
             "No data present");
 
@@ -59,9 +61,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsBitString(byte[] bytes)
+    public static ByteValidationResult validateAsBitString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsBitString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -72,9 +75,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsBmpString(byte[] bytes)
+    public static ByteValidationResult validateAsBmpString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsBmpString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -85,14 +89,15 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsBoolean(byte[] bytes)
+    public static ByteValidationResult validateAsBoolean(byte[] bytes)
     {
-        final ValidationResultImpl.Builder builder = AsnByteValidator.validationResultBuilderFor(
+        final ByteValidationResult.Builder builder = AsnByteValidator.validationResultBuilderFor(
                 bytes);
         if (builder.containsResults())
         {
             // bytes were null, do not continue validating
-            return builder.build();
+            // TODO: ASN-92
+            return null;
         }
 
         if (bytes.length != 1)
@@ -100,9 +105,10 @@ public class AsnByteValidator
             final String error = String.format(
                     "ASN.1 BOOLEAN type can only contain one byte. Supplied array contains %d bytes",
                     bytes.length);
-            builder.add("Byte at index [1]", FailureType.DataIncorrectlyFormatted, error);
+            builder.add(bytes.length, FailureType.DataIncorrectlyFormatted, error);
         }
-        return builder.build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -116,9 +122,10 @@ public class AsnByteValidator
      * @throws NullPointerException
      *         if parameters are {@code null}
      */
-    public static ValidationResult validateAsCharacterString(byte[] bytes)
+    public static ByteValidationResult validateAsCharacterString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsCharacterString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -129,9 +136,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsDate(byte[] bytes)
+    public static ByteValidationResult validateAsDate(byte[] bytes)
     {
-        return AsnTimestampByteValidator.validateAsDate(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -142,9 +150,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsDateTime(byte[] bytes)
+    public static ByteValidationResult validateAsDateTime(byte[] bytes)
     {
-        return AsnTimestampByteValidator.validateAsDateTime(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -155,10 +164,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsDuration(byte[] bytes)
+    public static ByteValidationResult validateAsDuration(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -169,10 +179,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsEmbeddedPDV(byte[] bytes)
+    public static ByteValidationResult validateAsEmbeddedPDV(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -183,10 +194,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsExternal(byte[] bytes)
+    public static ByteValidationResult validateAsExternal(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -197,9 +209,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsGeneralizedTime(byte[] bytes)
+    public static ByteValidationResult validateAsGeneralizedTime(byte[] bytes)
     {
-        return AsnTimestampByteValidator.validateAsGeneralizedTime(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -210,9 +223,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsGeneralString(byte[] bytes)
+    public static ByteValidationResult validateAsGeneralString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsGeneralString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -223,9 +237,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsGraphicString(byte[] bytes)
+    public static ByteValidationResult validateAsGraphicString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsGraphicString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -236,9 +251,29 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsIa5String(byte[] bytes)
+    public static ByteValidationResult validateAsIa5String(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsIa5String(bytes);
+        // TODO: ASN-92
+        final ByteValidationResult.Builder builder = AsnByteValidator.validationResultBuilderFor(
+                bytes);
+        if (builder.containsResults())
+        {
+            // bytes were null, do not continue validating
+            return builder.build();
+        }
+
+        for (int i = 0; i < bytes.length; i++)
+        {
+            byte b = bytes[i];
+            if (b < 0 || b > 127)
+            {
+                final String error =
+                        "Supplied bytes do not conform to the IA5String format. All bytes must be within the range 0 - 127. Supplied bytes contain a byte with value: "
+                                + b;
+                builder.add(i, FailureType.DataIncorrectlyFormatted, error);
+            }
+        }
+        return builder.build();
     }
 
     /**
@@ -249,10 +284,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsInstanceOf(byte[] bytes)
+    public static ByteValidationResult validateAsInstanceOf(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -263,10 +299,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsInteger(byte[] bytes)
+    public static ByteValidationResult validateAsInteger(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -277,9 +314,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsIri(byte[] bytes)
+    public static ByteValidationResult validateAsIri(byte[] bytes)
     {
-        return AsnIdentifierByteValidator.validateAsIri(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -290,9 +328,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsIso646String(byte[] bytes)
+    public static ByteValidationResult validateAsIso646String(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsIso646String(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -303,10 +342,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsNull(byte[] bytes)
+    public static ByteValidationResult validateAsNull(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -317,9 +357,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsNumericString(byte[] bytes)
+    public static ByteValidationResult validateAsNumericString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsNumericString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -330,10 +371,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsObjectClassField(byte[] bytes)
+    public static ByteValidationResult validateAsObjectClassField(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -344,9 +386,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsOctetString(byte[] bytes)
+    public static ByteValidationResult validateAsOctetString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsOctetString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -357,9 +400,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsOid(byte[] bytes)
+    public static ByteValidationResult validateAsOid(byte[] bytes)
     {
-        return AsnIdentifierByteValidator.validateAsOid(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -370,9 +414,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsOidIri(byte[] bytes)
+    public static ByteValidationResult validateAsOidIri(byte[] bytes)
     {
-        return AsnIdentifierByteValidator.validateAsOidIri(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -383,10 +428,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsPrefixed(byte[] bytes)
+    public static ByteValidationResult validateAsPrefixed(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -397,9 +443,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsPrintableString(byte[] bytes)
+    public static ByteValidationResult validateAsPrintableString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsPrintableString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -410,10 +457,11 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsReal(byte[] bytes)
+    public static ByteValidationResult validateAsReal(byte[] bytes)
     {
         // TODO: ASN-105
-        return ValidationResultImpl.builder().build();
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -424,9 +472,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsRelativeIri(byte[] bytes)
+    public static ByteValidationResult validateAsRelativeIri(byte[] bytes)
     {
-        return AsnIdentifierByteValidator.validateAsRelativeIri(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -437,9 +486,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsRelativeOid(byte[] bytes)
+    public static ByteValidationResult validateAsRelativeOid(byte[] bytes)
     {
-        return AsnIdentifierByteValidator.validateAsRelativeOid(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -450,9 +500,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsRelativeOidIri(byte[] bytes)
+    public static ByteValidationResult validateAsRelativeOidIri(byte[] bytes)
     {
-        return AsnIdentifierByteValidator.validateAsRelativeOidIri(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -463,9 +514,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsTeletexString(byte[] bytes)
+    public static ByteValidationResult validateAsTeletexString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsTeletexString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -476,9 +528,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsTime(byte[] bytes)
+    public static ByteValidationResult validateAsTime(byte[] bytes)
     {
-        return AsnTimestampByteValidator.validateAsTime(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -489,9 +542,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsTimeOfDay(byte[] bytes)
+    public static ByteValidationResult validateAsTimeOfDay(byte[] bytes)
     {
-        return AsnTimestampByteValidator.validateAsTimeOfDay(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -502,9 +556,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsUniversalString(byte[] bytes)
+    public static ByteValidationResult validateAsUniversalString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsUniversalString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -515,9 +570,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsUtf8String(byte[] bytes)
+    public static ByteValidationResult validateAsUtf8String(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsUtf8String(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -528,9 +584,10 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsVideotexString(byte[] bytes)
+    public static ByteValidationResult validateAsVideotexString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsVideotexString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     /**
@@ -541,33 +598,35 @@ public class AsnByteValidator
      *
      * @return the validation result
      */
-    public static ValidationResult validateAsVisibleString(byte[] bytes)
+    public static ByteValidationResult validateAsVisibleString(byte[] bytes)
     {
-        return AsnStringByteValidator.validateAsVisibleString(bytes);
+        // TODO: ASN-92
+        return null;
     }
 
     // -------------------------------------------------------------------------
-    //  PACKAGE METHODS
+    // PACKAGE METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * Creates a {@link ValidationResultImpl.Builder} for storing the results of validating the
-     * supplied bytes. If the bytes are {@code null}, the builder will contain a null validation
-     * failure. Otherwise it will be empty.
+     * Creates a {@link DecodedAsnDataValidationResultImpl.Builder} for storing the results of
+     * validating the supplied bytes. If the bytes are {@code null}, the builder will contain a null
+     * validation failure. Otherwise it will be empty.
      *
      * @param bytes
      *         bytes to create builder for
      *
-     * @return a {@link ValidationResultImpl.Builder} for storing the results of validating the
-     * supplied bytes
+     * @return a {@link DecodedAsnDataValidationResultImpl.Builder} for storing the results of
+     * validating the supplied bytes
      */
-    static ValidationResultImpl.Builder validationResultBuilderFor(byte[] bytes)
+    static ByteValidationResult.Builder validationResultBuilderFor(byte[] bytes)
     {
-        final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
+        final ByteValidationResult.Builder builder = ByteValidationResult.builder();
         if (bytes == null)
         {
             builder.add(AsnByteValidator.FAILURE_MISSING_DATA);
         }
-        return builder;
+        // TODO: ASN-92
+        return null;
     }
 }

@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.result.DecodedDataValidationResult;
 import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
 
 /**
@@ -56,7 +56,7 @@ public class InstanceOfDecoder extends AbstractBuiltinTypeDecoder<String>
     @Override
     public String decode(final byte[] bytes) throws DecodeException
     {
-        final ValidationResult validationResult = AsnByteValidator.validateAsInstanceOf(bytes);
+        final DecodedDataValidationResult validationResult = AsnByteValidator.validateAsInstanceOf(bytes);
         DecodeException.throwIfHasFailures(validationResult);
         // TODO: ASN-107 implement
         return null;

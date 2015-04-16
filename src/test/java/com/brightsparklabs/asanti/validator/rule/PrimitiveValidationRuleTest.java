@@ -5,10 +5,11 @@
 
 package com.brightsparklabs.asanti.validator.rule;
 
+import com.brightsparklabs.asanti.validator.builtin.PrimitiveBuiltinTypeValidator;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link PrimitiveValidationRule}
+ * Unit tests for {@link PrimitiveBuiltinTypeValidator}
  *
  * @author brightSPARK Labs
  */
@@ -22,7 +23,7 @@ public class PrimitiveValidationRuleTest
     public void testValidate() throws Exception
     {
         // TODO: ASN-93
-        //final PrimitiveValidationRule instance = new PrimitiveValidationRule(AsnSchemaConstraint.NULL);
+        //final PrimitiveBuiltinTypeValidator instance = new PrimitiveBuiltinTypeValidator(AsnSchemaConstraint.NULL);
         //instance.validate(tag, decodedAsnData);
     }
 }

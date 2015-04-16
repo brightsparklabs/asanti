@@ -4,12 +4,14 @@
  */
 package com.brightsparklabs.asanti.validator;
 
-import static org.junit.Assert.*;
-
+import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.asanti.validator.failure.ValidationFailureImpl;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
- * Unit tests for {@link ValidationFailureImpl}
+ * Unit tests for {@link DecodedTagValidationFailure}
  *
  * @author brightSPARK Labs
  */
@@ -23,12 +25,12 @@ public class ValidationFailureImplTest
     public void testValidationResultImpl() throws Exception
     {
         // test valid
-        new ValidationFailureImpl("TEST_TAG", FailureType.None, "TEST_REASON");
+        new DecodedTagValidationFailure("TEST_TAG", FailureType.None, "TEST_REASON");
 
         // test null
         try
         {
-            new ValidationFailureImpl(null, FailureType.None, "TEST_REASON");
+            new DecodedTagValidationFailure(null, FailureType.None, "TEST_REASON");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -36,7 +38,7 @@ public class ValidationFailureImplTest
         }
         try
         {
-            new ValidationFailureImpl("TEST_TAG", null, "TEST_REASON");
+            new DecodedTagValidationFailure("TEST_TAG", null, "TEST_REASON");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -44,7 +46,7 @@ public class ValidationFailureImplTest
         }
         try
         {
-            new ValidationFailureImpl("TEST_TAG", FailureType.None, null);
+            new DecodedTagValidationFailure("TEST_TAG", FailureType.None, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -54,7 +56,7 @@ public class ValidationFailureImplTest
         // test empty
         try
         {
-            new ValidationFailureImpl("", FailureType.None, "TEST_REASON");
+            new DecodedTagValidationFailure("", FailureType.None, "TEST_REASON");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -62,7 +64,7 @@ public class ValidationFailureImplTest
         }
         try
         {
-            new ValidationFailureImpl(" ", FailureType.None, "TEST_REASON");
+            new DecodedTagValidationFailure(" ", FailureType.None, "TEST_REASON");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -70,7 +72,7 @@ public class ValidationFailureImplTest
         }
         try
         {
-            new ValidationFailureImpl("TEST_TAG", FailureType.None, "");
+            new DecodedTagValidationFailure("TEST_TAG", FailureType.None, "");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -78,7 +80,7 @@ public class ValidationFailureImplTest
         }
         try
         {
-            new ValidationFailureImpl("TEST_TAG", FailureType.None, " ");
+            new DecodedTagValidationFailure("TEST_TAG", FailureType.None, " ");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -89,23 +91,23 @@ public class ValidationFailureImplTest
     @Test
     public void testGetTag() throws Exception
     {
-        final ValidationFailureImpl instance = new ValidationFailureImpl("TEST_TAG", FailureType.None, "TEST_REASON");
+        final DecodedTagValidationFailure instance = new DecodedTagValidationFailure("TEST_TAG", FailureType.None, "TEST_REASON");
         assertEquals("TEST_TAG", instance.getLocation());
     }
 
     @Test
     public void testGetFailureType() throws Exception
     {
-        ValidationFailureImpl instance = new ValidationFailureImpl("TEST_TAG", FailureType.None, "TEST_REASON");
+        DecodedTagValidationFailure instance = new DecodedTagValidationFailure("TEST_TAG", FailureType.None, "TEST_REASON");
         assertEquals(FailureType.None, instance.getFailureType());
-        instance = new ValidationFailureImpl("TEST_TAG", FailureType.MandatoryFieldMissing, "TEST_REASON");
+        instance = new DecodedTagValidationFailure("TEST_TAG", FailureType.MandatoryFieldMissing, "TEST_REASON");
         assertEquals(FailureType.MandatoryFieldMissing, instance.getFailureType());
     }
 
     @Test
     public void testGetFailureReason() throws Exception
     {
-        final ValidationFailureImpl instance = new ValidationFailureImpl("TEST_TAG", FailureType.None, "TEST_REASON");
+        final DecodedTagValidationFailure instance = new DecodedTagValidationFailure("TEST_TAG", FailureType.None, "TEST_REASON");
         assertEquals("TEST_REASON", instance.getFailureReason());
     }
 }

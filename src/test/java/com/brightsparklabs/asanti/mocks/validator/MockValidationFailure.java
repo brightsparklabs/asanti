@@ -5,7 +5,7 @@
 package com.brightsparklabs.asanti.mocks.validator;
 
 import com.brightsparklabs.asanti.validator.FailureType;
-import com.brightsparklabs.asanti.validator.ValidationFailure;
+import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
 
 import static org.mockito.Mockito.*;
 

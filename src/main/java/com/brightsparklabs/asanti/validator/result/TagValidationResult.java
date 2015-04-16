@@ -2,9 +2,18 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.validator;
+
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+package com.brightsparklabs.asanti.validator.result;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.Validator;
+import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 
@@ -13,7 +22,7 @@ import com.google.common.collect.ImmutableSetMultimap;
  *
  * @author brightSPARK Labs
  */
-public class ValidationResultImpl implements ValidationResult
+public class TagValidationResult implements ValidationResult
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -34,7 +43,7 @@ public class ValidationResultImpl implements ValidationResult
      * @param failures
      *         failures to include in this result set
      */
-    private ValidationResultImpl(Iterable<ValidationFailure> failures)
+    private TagValidationResult(Iterable<ValidationFailure> failures)
     {
         final ImmutableSetMultimap.Builder<String, ValidationFailure> builder = ImmutableSetMultimap
                 .builder();
@@ -47,9 +56,9 @@ public class ValidationResultImpl implements ValidationResult
     }
 
     /**
-     * Returns a builder for creating instances of {@link ValidationResultImpl}
+     * Returns a builder for creating instances of {@link TagValidationResult}
      *
-     * @return a builder for creating instances of {@link ValidationResultImpl}
+     * @return a builder for creating instances of {@link TagValidationResult}
      */
     public static Builder builder()
     {
@@ -89,7 +98,7 @@ public class ValidationResultImpl implements ValidationResult
     // -------------------------------------------------------------------------
 
     /**
-     * Builder for creating instances of {@link ValidationResultImpl}
+     * Builder for creating instances of {@link TagValidationResult}
      */
     public static class Builder
     {
@@ -101,7 +110,7 @@ public class ValidationResultImpl implements ValidationResult
         private final ImmutableSet.Builder<ValidationFailure> failuresBuilder
                 = ImmutableSet.builder();
 
-        /** whether this builder contains any {@link ValidationResult ValidationResults} */
+        /** whether this builder contains any {@link DecodedDataValidationResult ValidationResults} */
         private boolean containsResults;
 
         // ---------------------------------------------------------------------
@@ -109,8 +118,8 @@ public class ValidationResultImpl implements ValidationResult
         // ---------------------------------------------------------------------
 
         /**
-         * Default constructor. This is private, use {@link ValidationResultImpl#builder()} to
-         * create an instance.
+         * Default constructor. This is private, use {@link TagValidationResult#builder()} to create
+         * an instance.
          */
         private Builder() {}
 
@@ -137,7 +146,7 @@ public class ValidationResultImpl implements ValidationResult
          */
         public Builder add(String location, FailureType failureType, String failureReason)
         {
-            final ValidationFailure failure = new ValidationFailureImpl(location,
+            final ValidationFailure failure = new DecodedTagValidationFailure(location,
                     failureType,
                     failureReason);
             return add(failure);
@@ -174,23 +183,23 @@ public class ValidationResultImpl implements ValidationResult
         }
 
         /**
-         * Creates a new instance of {@link ValidationResultImpl} containing all the results which
+         * Creates a new instance of {@link TagValidationResult} containing all the results which
          * have been added to this builder
          *
-         * @return a new instance of {@link ValidationResultImpl} containing all the results which
+         * @return a new instance of {@link TagValidationResult} containing all the results which
          * have been added to this builder
          */
-        public ValidationResultImpl build()
+        public TagValidationResult build()
         {
             final ImmutableSet<ValidationFailure> failures = failuresBuilder.build();
-            return new ValidationResultImpl(failures);
+            return new TagValidationResult(failures);
         }
 
         /**
-         * Returns {@code true} if this builder contains any {@link ValidationResult
+         * Returns {@code true} if this builder contains any {@link DecodedDataValidationResult
          * ValidationResults}
          *
-         * @return {@code true} if this builder contains any {@link ValidationResult
+         * @return {@code true} if this builder contains any {@link DecodedDataValidationResult
          * ValidationResults}
          */
         public boolean containsResults()

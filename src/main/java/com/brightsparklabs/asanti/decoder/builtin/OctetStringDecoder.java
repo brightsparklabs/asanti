@@ -8,7 +8,7 @@ package com.brightsparklabs.asanti.decoder.builtin;
 import com.brightsparklabs.asanti.common.ByteArrays;
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.result.DecodedDataValidationResult;
 import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
 
 /**
@@ -57,7 +57,7 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
     @Override
     public byte[] decode(final byte[] bytes) throws DecodeException
     {
-        final ValidationResult validationResult = AsnByteValidator.validateAsOctetString(bytes);
+        final DecodedDataValidationResult validationResult = AsnByteValidator.validateAsOctetString(bytes);
         DecodeException.throwIfHasFailures(validationResult);
         return bytes;
     }

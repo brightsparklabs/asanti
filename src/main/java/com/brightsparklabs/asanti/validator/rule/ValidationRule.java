@@ -5,7 +5,7 @@
 package com.brightsparklabs.asanti.validator.rule;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.validator.ValidationFailure;
+import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**

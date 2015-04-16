@@ -6,12 +6,13 @@ package com.brightsparklabs.asanti.validator;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.validator.result.DecodedAsnDataValidationResultImpl;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.mocks.validator.MockValidationFailure;
 
 /**
- * Unit tests for {@link ValidationResultImpl}
+ * Unit tests for {@link DecodedAsnDataValidationResultImpl}
  *
  * @author brightSPARK Labs
  */
@@ -21,16 +22,19 @@ public class ValidationResultImplTest
     // FIXTURES
     // -------------------------------------------------------------------------
 
-    private static final ValidationResultImpl noFailures = ValidationResultImpl.builder()
+    private static final DecodedAsnDataValidationResultImpl noFailures = DecodedAsnDataValidationResultImpl
+            .builder()
             .build();
 
-    private static final ValidationResultImpl oneFailure = ValidationResultImpl.builder()
+    private static final DecodedAsnDataValidationResultImpl oneFailure = DecodedAsnDataValidationResultImpl
+            .builder()
             .add(MockValidationFailure.createFailedValidationResult("TEST_TAG1",
                     FailureType.MandatoryFieldMissing,
                     "Field missing"))
             .build();
 
-    private static final ValidationResultImpl multipleFailures = ValidationResultImpl.builder()
+    private static final DecodedAsnDataValidationResultImpl multipleFailures = DecodedAsnDataValidationResultImpl
+            .builder()
             .add(MockValidationFailure.createFailedValidationResult("TEST_TAG1",
                     FailureType.MandatoryFieldMissing,
                     "Field missing"))

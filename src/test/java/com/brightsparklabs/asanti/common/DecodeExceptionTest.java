@@ -6,8 +6,8 @@
 package com.brightsparklabs.asanti.common;
 
 import com.brightsparklabs.asanti.validator.FailureType;
-import com.brightsparklabs.asanti.validator.ValidationResult;
-import com.brightsparklabs.asanti.validator.ValidationResultImpl;
+import com.brightsparklabs.asanti.validator.result.DecodedDataValidationResult;
+import com.brightsparklabs.asanti.validator.result.DecodedAsnDataValidationResultImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -38,12 +38,12 @@ public class DecodeExceptionTest
     public void testThrowIfHasFailures() throws Exception
     {
         // test with no validation failures
-        ValidationResult validationResult = ValidationResultImpl.builder().build();
+        DecodedDataValidationResult validationResult = DecodedAsnDataValidationResultImpl.builder().build();
         DecodeException.throwIfHasFailures(validationResult);
 
         // test with validation failures
         validationResult =
-                ValidationResultImpl.builder()
+                DecodedAsnDataValidationResultImpl.builder()
                         .add("TEST_LOCATION", FailureType.DataIncorrectlyFormatted, "TEST_REASON")
                         .build();
         try
