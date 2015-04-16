@@ -13,7 +13,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 
 /**
- * Unit tests for {@link AsnSchemaTypeDefinitionIA5String}
+ * Unit tests for {@link AsnSchemaTypeDefinitionIa5String}
  *
  * @author brightSPARK Labs
  */
@@ -27,13 +27,13 @@ public class AsnSchemaTypeDefinitionIA5StringTest
     public void testAsnSchemaTypeDefinitionIA5String() throws Exception
     {
         // test valid
-        new AsnSchemaTypeDefinitionIA5String("TEST_NAME", AsnSchemaConstraint.NULL);
-        new AsnSchemaTypeDefinitionIA5String("TEST_NAME", AsnSchemaConstraint.NULL);
+        new AsnSchemaTypeDefinitionIa5String("TEST_NAME", AsnSchemaConstraint.NULL);
+        new AsnSchemaTypeDefinitionIa5String("TEST_NAME", AsnSchemaConstraint.NULL);
 
         // test null
         try
         {
-            new AsnSchemaTypeDefinitionIA5String(null, AsnSchemaConstraint.NULL);
+            new AsnSchemaTypeDefinitionIa5String(null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -41,7 +41,7 @@ public class AsnSchemaTypeDefinitionIA5StringTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionIA5String("TEST_NAME", null);
+            new AsnSchemaTypeDefinitionIa5String("TEST_NAME", null);
         }
         catch (final NullPointerException ex)
         {
@@ -51,7 +51,7 @@ public class AsnSchemaTypeDefinitionIA5StringTest
         // test empty
         try
         {
-            new AsnSchemaTypeDefinitionIA5String("", AsnSchemaConstraint.NULL);
+            new AsnSchemaTypeDefinitionIa5String("", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -59,7 +59,7 @@ public class AsnSchemaTypeDefinitionIA5StringTest
         }
         try
         {
-            new AsnSchemaTypeDefinitionIA5String(" ", AsnSchemaConstraint.NULL);
+            new AsnSchemaTypeDefinitionIa5String(" ", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -70,17 +70,17 @@ public class AsnSchemaTypeDefinitionIA5StringTest
     @Test
     public void testGetBuiltinType() throws Exception
     {
-        final AsnSchemaTypeDefinitionIA5String instance =
-                new AsnSchemaTypeDefinitionIA5String("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(AsnBuiltinType.IA5String, instance.getBuiltinType());
+        final AsnSchemaTypeDefinitionIa5String instance =
+                new AsnSchemaTypeDefinitionIa5String("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals(AsnBuiltinType.Ia5String, instance.getBuiltinType());
     }
 
     @Test
     public void testVisit() throws Exception
     {
-        final AsnSchemaTypeDefinitionIA5String instance =
-                new AsnSchemaTypeDefinitionIA5String("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(AsnSchemaTypeDefinitionIA5String.class.getCanonicalName(),
+        final AsnSchemaTypeDefinitionIa5String instance =
+                new AsnSchemaTypeDefinitionIa5String("TEST_NAME", AsnSchemaConstraint.NULL);
+        assertEquals(AsnSchemaTypeDefinitionIa5String.class.getCanonicalName(),
                 instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 }

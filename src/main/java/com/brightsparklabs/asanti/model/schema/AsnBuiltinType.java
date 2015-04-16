@@ -13,6 +13,7 @@ package com.brightsparklabs.asanti.model.schema;
 public enum AsnBuiltinType
 {
     BitString,
+    BmpString,
     Boolean,
     CharacterString,
     Choice,
@@ -23,25 +24,40 @@ public enum AsnBuiltinType
     Enumerated,
     External,
     GeneralizedTime,
-    IA5String,
+    GeneralString,
+    GraphicString,
+    Ia5String,
     InstanceOf,
     Integer,
-    IRI,
+    /** Internationalized Resource Identifier */
+    Iri,
+    Iso646String,
     Null,
     NumericString,
     ObjectClassField,
-    ObjectIdentifier,
     OctetString,
+    /** Object Identifier */
+    Oid,
+    /** Object Identifier (Internationalized Resource Identifier) */
+    OidIri,
+    Prefixed,
+    PrintableString,
     Real,
-    RelativeIRI,
-    RelativeOID,
+    /** Relative Internationalized Resource Identifier */
+    RelativeIri,
+    /** Relative Object Identifier */
+    RelativeOid,
+    /** Relative Object Identifier (Internationalized Resource Identifier) */
+    RelativeOidIri,
     Sequence,
     SequenceOf,
     Set,
     SetOf,
-    Prefixed,
+    TeletexString,
     Time,
     TimeOfDay,
-    UTF8String,
+    UniversalString,
+    Utf8String,
+    VideotexString,
     VisibleString
 }

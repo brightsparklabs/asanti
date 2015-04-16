@@ -4,10 +4,10 @@
  */
 package com.brightsparklabs.asanti.mocks.validator;
 
-import static org.mockito.Mockito.*;
-
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.ValidationFailure;
+
+import static org.mockito.Mockito.*;
 
 /**
  * Utility class for obtaining mocked instances of {@link ValidationFailure}
@@ -23,8 +23,8 @@ public class MockValidationFailure
     /**
      * Returns a mocked instance of a {@link ValidationFailure}
      *
-     * @param tag
-     *            tag to return from {@link ValidationFailure#getTag()}
+     * @param location
+     *            location to return from {@link ValidationFailure#getLocation()}
      *
      * @param failureType
      *            tag to return from {@link ValidationFailure#getFailureType()}
@@ -35,11 +35,11 @@ public class MockValidationFailure
      *
      * @return a successful {@link ValidationFailure}
      */
-    public static ValidationFailure createFailedValidationResult(String tag, FailureType failureType,
+    public static ValidationFailure createFailedValidationResult(String location, FailureType failureType,
             String failureReason)
     {
         final ValidationFailure instance = mock(ValidationFailure.class);
-        when(instance.getTag()).thenReturn(tag);
+        when(instance.getLocation()).thenReturn(location);
         when(instance.getFailureType()).thenReturn(failureType);
         when(instance.getFailureReason()).thenReturn(failureReason);
         return instance;

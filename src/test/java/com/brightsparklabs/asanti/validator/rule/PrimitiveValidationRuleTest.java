@@ -5,10 +5,7 @@
 
 package com.brightsparklabs.asanti.validator.rule;
 
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link PrimitiveValidationRule}
@@ -24,8 +21,8 @@ public class PrimitiveValidationRuleTest
     @Test
     public void testValidate() throws Exception
     {
-        final PrimitiveValidationRule instance = new PrimitiveValidationRule(AsnSchemaConstraint.NULL);
-        // TODO:
+        // TODO: ASN-93
+        //final PrimitiveValidationRule instance = new PrimitiveValidationRule(AsnSchemaConstraint.NULL);
         //instance.validate(tag, decodedAsnData);
     }
 }

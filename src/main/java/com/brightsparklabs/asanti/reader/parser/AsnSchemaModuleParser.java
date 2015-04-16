@@ -8,8 +8,9 @@ package com.brightsparklabs.asanti.reader.parser;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,7 +55,7 @@ public class AsnSchemaModuleParser
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger log = Logger.getLogger(AsnSchemaModuleParser.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaModuleParser.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -121,7 +122,7 @@ public class AsnSchemaModuleParser
         {
             final String moduleName = lineIterator.next()
                     .split(" ")[0];
-            log.log(Level.INFO, "Found module: {0}", moduleName);
+            logger.info("Found module: {}", moduleName);
             moduleBuilder.setName(moduleName);
 
             // skip through to the BEGIN keyword
@@ -289,7 +290,7 @@ public class AsnSchemaModuleParser
 
             final String content = builder.toString()
                     .trim();
-            log.log(Level.FINER, "Found content: {0}", content);
+            logger.debug("Found content: {}", content);
 
             // check if content is a type definition
             Matcher matcher = PATTERN_TYPE_DEFINITION.matcher(content);
@@ -330,7 +331,7 @@ public class AsnSchemaModuleParser
     {
         final String name = valueAssignmentMatcher.group(1);
         final String value = valueAssignmentMatcher.group(5);
-        log.log(Level.FINE, "Found value assignment: {0} - {1}", new Object[] { name, value });
+        logger.debug("Found value assignment: {} - {}", name, value);
         // TODO ASN-79 - parse value assignment
     }
 }

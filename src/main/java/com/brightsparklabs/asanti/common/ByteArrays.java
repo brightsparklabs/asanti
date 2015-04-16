@@ -1,0 +1,130 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
+package com.brightsparklabs.asanti.common;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.BaseEncoding;
+
+/**
+ * Utility class for manipulating bytes
+ *
+ * @author brightSPARK Labs
+ */
+public class ByteArrays
+{
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+
+    /** basic hex encoding in lowercase */
+    private static BaseEncoding hexEncoding = BaseEncoding.base16().lowerCase();
+
+    // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+
+    /**
+     * Default constructor.
+     *
+     * <p>This should never be called as this is a utility class.</p>
+     */
+    private ByteArrays()
+    {
+        assert false;
+    }
+
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns a hex representation of the bytes in the supplied array, with "0x" prepended to it.
+     * If the byte array only contains printable ASCII characters, then decodes the byte array as a
+     * string using UTF8 and appends it to the end of the returned string in parentheses.
+     *
+     * <p>Example 1:<br>Calling this methods with byte array {@code [0x48, 0x45, 0x4C, 0x4C, 0x4F]}
+     * will return {@code "0x48454C4C4F ("HELLO")"}</p>
+     *
+     * <p>Example 2:<br>Calling this methods with byte array {@code [0x00, 0x48, 0x45, 0x4C, 0x4C,
+     * 0x4F]} will return {@code "0x0048454C4C4F"}</p>
+     *
+     * @param bytes
+     *         bytes to convert to string
+     *
+     * @return the bytes represented as hex (with ASCII after if appropriate) or an empty string if
+     * byte array was {@code null}/empty
+     */
+    public static String toHexWithAsciiString(byte[] bytes)
+    {
+        if (bytes == null || bytes.length == 0)
+        {
+            return "";
+        }
+
+        final StringBuilder result = new StringBuilder(toHexString(bytes));
+        if (!containsNonPrintableChars(bytes))
+        {
+            result.append(" (\"").append(toString(bytes)).append("\")");
+        }
+        return result.toString();
+    }
+
+    /**
+     * Checks whether the byte array contains non-printable ASCII characters
+     *
+     * @param bytes
+     *         bytes to check
+     *
+     * @return {@code true} if array contains non-printable ASCII characters. {@code false}
+     * otherwise
+     */
+    public static boolean containsNonPrintableChars(byte[] bytes)
+    {
+        if (bytes != null)
+        {
+            for (byte x : bytes)
+            {
+                if (x < 32 || x > 126)
+                {
+                    // byte is outside printable range
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Decodes the byte array as a string using UTF8
+     *
+     * @param bytes
+     *         bytes to convert to string
+     *
+     * @return string represented by the bytes or an empty string if byte array was {@code null}
+     */
+    public static String toString(byte[] bytes)
+    {
+        return bytes == null ? "" : new String(bytes, Charsets.UTF_8);
+    }
+
+    /**
+     * Returns a hex representation of the bytes in the supplied array, with "0x" prepended to it
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the bytes represented as hex or an empty string if byte array was {@code null}
+     */
+    public static String toHexString(byte[] bytes)
+    {
+        return (bytes == null) ? "" : "0x" + hexEncoding.encode(bytes);
+    }
+}
