@@ -3,11 +3,10 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.decoder.bytes;
+package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.decoder.builtin.BooleanDecoder;
-import com.brightsparklabs.asanti.decoder.builtin.Ia5StringDecoder;
+import com.brightsparklabs.asanti.decoder.builtin.*;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 
 import java.math.BigInteger;
@@ -54,7 +53,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsBitString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsBitString(bytes);
+        return BitStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -70,7 +69,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsBmpString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsBmpString(bytes);
+        return BmpStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -102,7 +101,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsCharacterString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsCharacterString(bytes);
+        return CharacterStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -118,7 +117,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsDate(byte[] bytes) throws DecodeException
     {
-        return AsnTimestampByteDecoder.decodeAsDate(bytes);
+        return DateDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -134,7 +133,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsDateTime(byte[] bytes) throws DecodeException
     {
-        return AsnTimestampByteDecoder.decodeAsDateTime(bytes);
+        return DateTimeDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -150,8 +149,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsDuration(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
-        return "";
+        return DurationDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -167,8 +165,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsEmbeddedPDV(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
-        return "";
+        return EmbeddedPDVDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -184,8 +181,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsExternal(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
-        return "";
+        return ExternalDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -201,7 +197,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsGeneralizedTime(byte[] bytes) throws DecodeException
     {
-        return AsnTimestampByteDecoder.decodeAsGeneralizedTime(bytes);
+        return GeneralizedTimeDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -217,7 +213,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsGeneralString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsGeneralString(bytes);
+        return GeneralStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -233,7 +229,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsGraphicString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsGraphicString(bytes);
+        return GraphicStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -265,8 +261,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsInstanceOf(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
-        return "";
+        return InstanceOfDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -282,7 +277,6 @@ public class AsnByteDecoder
      */
     public static BigInteger decodeAsInteger(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
         return BigInteger.ZERO;
     }
 
@@ -299,7 +293,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsIri(byte[] bytes) throws DecodeException
     {
-        return AsnIdentifierByteDecoder.decodeAsIri(bytes);
+        return IriDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -315,7 +309,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsIso646String(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsIso646String(bytes);
+        return Iso646StringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -331,8 +325,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsNull(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
-        return "";
+        return NullDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -348,7 +341,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsNumericString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsNumericString(bytes);
+        return NumericStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -364,8 +357,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsObjectClassField(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
-        return "";
+        return ObjectClassFieldDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -384,7 +376,7 @@ public class AsnByteDecoder
      */
     public static byte[] decodeAsOctetString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsOctetString(bytes);
+        return OctetStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -400,7 +392,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsOid(byte[] bytes) throws DecodeException
     {
-        return AsnIdentifierByteDecoder.decodeAsOid(bytes);
+        return OidDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -416,7 +408,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsOidIri(byte[] bytes) throws DecodeException
     {
-        return AsnIdentifierByteDecoder.decodeAsOidIri(bytes);
+        return OidIriDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -432,8 +424,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsPrefixed(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
-        return "";
+        return PrefixedDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -449,7 +440,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsPrintableString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsPrintableString(bytes);
+        return PrintableStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -465,8 +456,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsReal(byte[] bytes) throws DecodeException
     {
-        // TODO: ASN-8
-        return "";
+        return RealDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -482,7 +472,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsRelativeIri(byte[] bytes) throws DecodeException
     {
-        return AsnIdentifierByteDecoder.decodeAsRelativeIri(bytes);
+        return RelativeIriDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -498,7 +488,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsRelativeOid(byte[] bytes) throws DecodeException
     {
-        return AsnIdentifierByteDecoder.decodeAsRelativeOid(bytes);
+        return RelativeOidDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -514,7 +504,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsRelativeOidIri(byte[] bytes) throws DecodeException
     {
-        return AsnIdentifierByteDecoder.decodeAsRelativeOidIri(bytes);
+        return RelativeOidIriDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -530,7 +520,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsTeletexString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsTeletexString(bytes);
+        return TeletexStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -546,7 +536,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsTime(byte[] bytes) throws DecodeException
     {
-        return AsnTimestampByteDecoder.decodeAsTime(bytes);
+        return TimeDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -562,7 +552,7 @@ public class AsnByteDecoder
      */
     public static Timestamp decodeAsTimeOfDay(byte[] bytes) throws DecodeException
     {
-        return AsnTimestampByteDecoder.decodeAsTimeOfDay(bytes);
+        return TimeOfDayDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -578,7 +568,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsUniversalString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsUniversalString(bytes);
+        return UniversalStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -594,7 +584,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsUtf8String(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsUtf8String(bytes);
+        return Utf8StringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -610,7 +600,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsVideotexString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsVideotexString(bytes);
+        return VideotexStringDecoder.getInstance().decode(bytes);
     }
 
     /**
@@ -626,6 +616,6 @@ public class AsnByteDecoder
      */
     public static String decodeAsVisibleString(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsVisibleString(bytes);
+        return VisibleStringDecoder.getInstance().decode(bytes);
     }
 }
