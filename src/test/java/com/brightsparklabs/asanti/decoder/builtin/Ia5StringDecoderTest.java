@@ -18,6 +18,16 @@ import static org.junit.Assert.*;
  */
 public class Ia5StringDecoderTest
 {
+    // -------------------------------------------------------------------------
+    // FIXTURES
+    // -------------------------------------------------------------------------
+
+    /** instance under test */
+    private static final Ia5StringDecoder instance = Ia5StringDecoder.getInstance();
+
+    // -------------------------------------------------------------------------
+    // TESTS
+    // -------------------------------------------------------------------------
 
     @Test
     public void testDecode() throws Exception
@@ -27,8 +37,7 @@ public class Ia5StringDecoderTest
         for (byte b = Byte.MAX_VALUE; b >= 0; b--)
         {
             bytes[0] = b;
-            assertEquals(new String(bytes, Charsets.UTF_8),
-                    Ia5StringDecoder.getInstance().decode(bytes));
+            assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
         }
 
         // test invalid
@@ -37,7 +46,7 @@ public class Ia5StringDecoderTest
             bytes[0] = b;
             try
             {
-                Ia5StringDecoder.getInstance().decode(bytes);
+                instance.decode(bytes);
                 fail("DecodeException not thrown");
             }
             catch (DecodeException ex)
@@ -48,7 +57,7 @@ public class Ia5StringDecoderTest
         // test null
         try
         {
-            Ia5StringDecoder.getInstance().decode(null);
+            instance.decode(null);
             fail("DecodeException not thrown");
         }
         catch (DecodeException ex)
@@ -61,7 +70,7 @@ public class Ia5StringDecoderTest
     {
         // test valid
         byte[] bytes = "TEST".getBytes(Charsets.UTF_8);
-        assertEquals("TEST", Ia5StringDecoder.getInstance().decodeAsString(bytes));
+        assertEquals("TEST", instance.decodeAsString(bytes));
 
         // test invalid
         for (byte b = Byte.MIN_VALUE; b < 0; b++)
@@ -69,7 +78,7 @@ public class Ia5StringDecoderTest
             bytes[0] = b;
             try
             {
-                Ia5StringDecoder.getInstance().decodeAsString(bytes);
+                instance.decodeAsString(bytes);
                 fail("DecodeException not thrown");
             }
             catch (DecodeException ex)
@@ -80,7 +89,7 @@ public class Ia5StringDecoderTest
         // test null
         try
         {
-            Ia5StringDecoder.getInstance().decodeAsString(null);
+            instance.decodeAsString(null);
             fail("DecodeException not thrown");
         }
         catch (DecodeException ex)

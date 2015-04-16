@@ -33,15 +33,15 @@ public abstract class AbstractBuiltinTypeDecoder<T> implements BuiltinTypeDecode
     @Override
     public T decode(final byte[] bytes) throws DecodeException
     {
-        final ValidationResult validationResult = AsnByteValidator.validateAsIa5String(bytes);
+        final ValidationResult validationResult = AsnByteValidator.validateAsBoolean(bytes);
         DecodeException.throwIfHasFailures(validationResult);
         return decodeValidatedBytes(bytes);
     }
 
     @Override
-    public String decodeAsString(final byte[] data) throws DecodeException
+    public String decodeAsString(final byte[] bytes) throws DecodeException
     {
-        return decode(data).toString();
+        return decode(bytes).toString();
     }
 
     // -------------------------------------------------------------------------

@@ -5,10 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.bytes;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Units tests for {@link AsnByteDecoder}. <p/> Since {@link AsnByteDecoder} delegates to a number
@@ -23,64 +20,6 @@ public class AsnByteDecoderTest
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
-
-    @Test
-    public void testDecodeAsBoolean() throws Exception
-    {
-        // test valid
-        byte[] bytes = new byte[1];
-        bytes[0] = 0;
-        assertFalse(AsnByteDecoder.decodeAsBoolean(bytes));
-        for (byte b = 1; b < Byte.MAX_VALUE; b++)
-        {
-            bytes[0] = b;
-            assertTrue(AsnByteDecoder.decodeAsBoolean(bytes));
-        }
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
-        {
-            bytes[0] = b;
-            assertTrue(AsnByteDecoder.decodeAsBoolean(bytes));
-        }
-
-        // test null
-        try
-        {
-            AsnByteDecoder.decodeAsBoolean(null);
-            fail("DecodeException not thrown");
-        }
-        catch (DecodeException ex)
-        {
-        }
-
-        // test invalid
-        try
-        {
-            bytes = new byte[0];
-            AsnByteDecoder.decodeAsBoolean(bytes);
-            fail("IllegalArgumentException not thrown");
-        }
-        catch (DecodeException ex)
-        {
-        }
-        try
-        {
-            bytes = new byte[2];
-            AsnByteDecoder.decodeAsBoolean(bytes);
-            fail("IllegalArgumentException not thrown");
-        }
-        catch (DecodeException ex)
-        {
-        }
-        try
-        {
-            bytes = new byte[100];
-            AsnByteDecoder.decodeAsBoolean(bytes);
-            fail("IllegalArgumentException not thrown");
-        }
-        catch (DecodeException ex)
-        {
-        }
-    }
 
     @Test
     public void testDecodeAsDuration() throws Exception
