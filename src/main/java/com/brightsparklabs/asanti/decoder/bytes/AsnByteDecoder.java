@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.decoder.bytes;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.decoder.typedefinitions.Ia5StringDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.ValidationResult;
 import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
@@ -253,7 +254,7 @@ public class AsnByteDecoder
      */
     public static String decodeAsIa5String(byte[] bytes) throws DecodeException
     {
-        return AsnStringByteDecoder.decodeAsIa5String(bytes);
+        return Ia5StringDecoder.getInstance().decode(bytes);
     }
 
     /**

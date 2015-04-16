@@ -10,6 +10,8 @@
 
 package com.brightsparklabs.asanti.decoder.typedefinitions;
 
+import com.brightsparklabs.asanti.common.DecodeException;
+
 /**
  * Used to decode bytes based on the kind of Type Definition they come from
  *
@@ -27,21 +29,27 @@ public interface AsnTypeDefinitionDecoder<T>
     /**
      * Decodes supplied data based on the the kind of Type Definition represented by this decoder
      *
-     * @param data
-     *         data to decode
+     * @param bytes
+     *         bytes to decode
      *
-     * @return the results from decoding the data
+     * @return the results from decoding the bytes
+     *
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied bytes
      */
-    public T decode(byte[] data);
+    public T decode(byte[] bytes) throws DecodeException;
 
     /**
      * Decodes supplied data as a string based on the the kind of Type Definition represented by
      * this decoder
      *
-     * @param data
-     *         data to decode
+     * @param bytes
+     *         bytes to decode
      *
-     * @return the results from decoding the data
+     * @return the results from decoding the bytes
+     *
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied bytes
      */
-    public String decodeAsString(byte[] data);
+    public String decodeAsString(byte[] bytes) throws DecodeException;
 }

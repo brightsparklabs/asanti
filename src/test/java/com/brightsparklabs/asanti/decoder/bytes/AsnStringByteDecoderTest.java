@@ -5,8 +5,6 @@
 
 package com.brightsparklabs.asanti.decoder.bytes;
 
-import com.brightsparklabs.asanti.common.DecodeException;
-import com.google.common.base.Charsets;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -50,43 +48,6 @@ public class AsnStringByteDecoderTest
     public void testDecodeAsGraphicString() throws Exception
     {
         // TODO: ASN-8
-    }
-
-    @Test
-    public void testDecodeAsIa5String() throws Exception
-    {
-        // test valid
-        byte[] bytes = new byte[1];
-        for (byte b = Byte.MAX_VALUE; b >= 0; b--)
-        {
-            bytes[0] = b;
-            assertEquals(new String(bytes, Charsets.UTF_8),
-                    AsnStringByteDecoder.decodeAsIa5String(bytes));
-        }
-
-        // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
-        {
-            bytes[0] = b;
-            try
-            {
-                AsnStringByteDecoder.decodeAsIa5String(bytes);
-                fail("DecodeException not thrown");
-            }
-            catch (DecodeException ex)
-            {
-            }
-        }
-
-        // test null
-        try
-        {
-            AsnStringByteDecoder.decodeAsIa5String(null);
-            fail("DecodeException not thrown");
-        }
-        catch (DecodeException ex)
-        {
-        }
     }
 
     @Test

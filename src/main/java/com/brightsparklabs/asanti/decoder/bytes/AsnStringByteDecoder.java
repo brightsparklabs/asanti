@@ -7,9 +7,6 @@ package com.brightsparklabs.asanti.decoder.bytes;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.ValidationResult;
-import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
-import com.google.common.base.Charsets;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -128,26 +125,6 @@ class AsnStringByteDecoder
     {
         // TODO: ASN-8
         return "";
-    }
-
-    /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#Ia5String}
-     *
-     * @param bytes
-     *         bytes to decode
-     *
-     * @return the decoded bytes
-     *
-     * @throws DecodeException
-     *         if any errors occur while decoding the supplied data
-     * @throws IllegalArgumentException
-     *         if the array contains bytes not in the range 0 - 127
-     */
-    static String decodeAsIa5String(byte[] bytes) throws DecodeException
-    {
-        final ValidationResult validationResult = AsnByteValidator.validateAsIa5String(bytes);
-        DecodeException.throwIfHasFailures(validationResult);
-        return new String(bytes, Charsets.UTF_8);
     }
 
     /**
