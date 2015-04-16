@@ -11,12 +11,9 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.validator.ValidationResult;
-import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
 
 /**
- * Convenience class to simplify implementing the {@link BuiltinTypeDecoder} interface. Sub-classes
- * should override {@link #decodeValidatedBytes(byte[])}.
+ * Convenience class to simplify implementing the {@link BuiltinTypeDecoder} interface.
  *
  * <p>This class provides a default implementation of {@link #decodeAsString} which simply returns
  * {@code decode(data).toString()}. Sub-classes should override {@link #decodeAsString} if more
@@ -31,34 +28,8 @@ public abstract class AbstractBuiltinTypeDecoder<T> implements BuiltinTypeDecode
     // -------------------------------------------------------------------------
 
     @Override
-    public T decode(final byte[] bytes) throws DecodeException
-    {
-        final ValidationResult validationResult = AsnByteValidator.validateAsBoolean(bytes);
-        DecodeException.throwIfHasFailures(validationResult);
-        return decodeValidatedBytes(bytes);
-    }
-
-    @Override
     public String decodeAsString(final byte[] bytes) throws DecodeException
     {
         return decode(bytes).toString();
     }
-
-    // -------------------------------------------------------------------------
-    // PROTECTED METHODS
-    // -------------------------------------------------------------------------
-
-    /**
-     * Decodes supplied data based on the the kind of Type Definition represented by this decoder.
-     * The bytes will have already been validated prior to calling this method.
-     *
-     * @param bytes
-     *         bytes to decode
-     *
-     * @return the results from decoding the bytes
-     *
-     * @throws DecodeException
-     *         if any errors occur while decoding the supplied bytes
-     */
-    protected abstract T decodeValidatedBytes(final byte[] bytes) throws DecodeException;
 }

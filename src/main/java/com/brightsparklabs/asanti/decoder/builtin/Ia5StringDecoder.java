@@ -7,6 +7,8 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
 import com.google.common.base.Charsets;
 
 /**
@@ -53,8 +55,10 @@ public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
     // -------------------------------------------------------------------------
 
     @Override
-    protected String decodeValidatedBytes(final byte[] bytes) throws DecodeException
+    public String decode(final byte[] bytes) throws DecodeException
     {
+        final ValidationResult validationResult = AsnByteValidator.validateAsIa5String(bytes);
+        DecodeException.throwIfHasFailures(validationResult);
         return new String(bytes, Charsets.UTF_8);
     }
 }

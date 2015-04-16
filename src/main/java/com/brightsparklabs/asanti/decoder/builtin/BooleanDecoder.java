@@ -7,6 +7,8 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
 
 /**
  * Decoder for data of type {@link AsnBuiltinType#Boolean}
@@ -52,8 +54,10 @@ public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean>
     // -------------------------------------------------------------------------
 
     @Override
-    protected Boolean decodeValidatedBytes(final byte[] bytes) throws DecodeException
+    public Boolean decode(final byte[] bytes) throws DecodeException
     {
+        final ValidationResult validationResult = AsnByteValidator.validateAsBoolean(bytes);
+        DecodeException.throwIfHasFailures(validationResult);
         return bytes[0] != 0;
     }
 }
