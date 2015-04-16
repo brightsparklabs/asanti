@@ -43,6 +43,9 @@ public class DecodeException extends Exception
      * Throws a DecodeException if the supplied validation results contain any failures. The
      * exception will contain details of the failures.
      *
+     * @param validationResult
+     *         result to check through for failures
+     *
      * @throws DecodeException
      *         if the validation result contains failures
      */

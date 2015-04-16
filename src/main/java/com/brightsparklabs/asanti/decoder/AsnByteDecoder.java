@@ -281,7 +281,7 @@ public class AsnByteDecoder
     }
 
     /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#IRI}
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#Iri}
      *
      * @param bytes
      *         bytes to decode

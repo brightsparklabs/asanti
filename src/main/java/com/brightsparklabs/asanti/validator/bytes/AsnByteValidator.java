@@ -270,7 +270,7 @@ public class AsnByteValidator
     }
 
     /**
-     * Decodes the supplied bytes as an {@link AsnBuiltinType#IRI}
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#Iri}
      *
      * @param bytes
      *         bytes to validate

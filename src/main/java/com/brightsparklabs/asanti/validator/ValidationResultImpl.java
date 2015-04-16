@@ -128,6 +128,8 @@ public class ValidationResultImpl implements ValidationResult
          * @param failureReason
          *         the reason for the failure
          *
+         * @return this builder
+         *
          * @throws NullPointerException
          *         if parameters are {@code null}
          * @throws IllegalArgumentException

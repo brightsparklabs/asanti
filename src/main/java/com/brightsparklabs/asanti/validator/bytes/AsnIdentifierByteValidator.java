@@ -52,7 +52,7 @@ class AsnIdentifierByteValidator
      */
 
     /**
-     * Validates the supplied bytes as an {@link AsnBuiltinType#IRI}
+     * Validates the supplied bytes as an {@link AsnBuiltinType#Iri}
      *
      * @param bytes
      *         bytes to validate

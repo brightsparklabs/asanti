@@ -30,7 +30,7 @@ public enum AsnBuiltinType
     InstanceOf,
     Integer,
     /** Internationalized Resource Identifier */
-    IRI,
+    Iri,
     Iso646String,
     Null,
     NumericString,
