@@ -8,4 +8,4 @@
  *
  * @author brightSPARK Labs
  */
-package com.brightsparklabs.asanti.decoder.typedefinitions;
+package com.brightsparklabs.asanti.decoder.typedefinition;

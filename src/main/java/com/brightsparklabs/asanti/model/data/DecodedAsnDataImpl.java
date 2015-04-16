@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.decoder.typedefinitions.AsnTypeDefinitionDecoder;
+import com.brightsparklabs.asanti.decoder.typedefinition.AsnTypeDefinitionDecoder;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;

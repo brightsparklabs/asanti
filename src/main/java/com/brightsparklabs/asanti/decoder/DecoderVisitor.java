@@ -10,7 +10,7 @@
 
 package com.brightsparklabs.asanti.decoder;
 
-import com.brightsparklabs.asanti.decoder.typedefinitions.AsnTypeDefinitionDecoder;
+import com.brightsparklabs.asanti.decoder.typedefinition.AsnTypeDefinitionDecoder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**

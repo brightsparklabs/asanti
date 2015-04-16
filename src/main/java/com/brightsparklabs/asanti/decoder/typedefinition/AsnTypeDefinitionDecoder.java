@@ -8,7 +8,7 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.decoder.typedefinitions;
+package com.brightsparklabs.asanti.decoder.typedefinition;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 
