@@ -8,6 +8,7 @@ package com.brightsparklabs.asanti;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnDecoder;
 import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
@@ -52,16 +53,52 @@ public class Asanti
     {
         try
         {
-            final String filename = args[0];
-            final File file = new File(filename);
+            switch (args.length)
+            {
+                case 1:
+                    final String filename = args[0];
+                    final File file = new File(filename);
 
-            if (filename.endsWith(".asn"))
-            {
-                testReadingAsnFile(file);
-            }
-            else
-            {
-                testReadingBerFile(file);
+                    if (filename.endsWith(".asn"))
+                    {
+                        testReadingAsnFile(file);
+                    }
+                    else
+                    {
+                        testReadingBerFile(file);
+                    }
+                    break;
+
+                case 2:
+                    throw new Exception("Top level type name not supplied");
+
+                case 3:
+                    final String asnFilename = args[0].endsWith(".asn") ? args[0] : args[1];
+                    final String berFilename = args[0].endsWith(".asn") ? args[1] : args[0];
+                    String topLevelTYpe = args[2];
+                    final File asnFile = new File(asnFilename);
+                    final File berFile = new File(berFilename);
+                    final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                            asnFile,
+                            topLevelTYpe);
+                    for (int i = 0; i < pdus.size(); i++)
+                    {
+
+                        logger.info("Parsing PDU[{}]", i);
+                        final DecodedAsnData pdu = pdus.get(i);
+                        for (String tag : pdu.getTags())
+                        {
+                            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                        }
+                        for (String tag : pdu.getUnmappedTags())
+                        {
+                            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                        }
+                    }
+                    break;
+
+                default:
+                    throw new Exception("No ASN Schema (.asn) or ASN Data (.ber) file supplied");
             }
         }
         catch (final Exception ex)

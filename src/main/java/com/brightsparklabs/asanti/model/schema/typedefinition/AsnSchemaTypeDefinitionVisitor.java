@@ -162,4 +162,24 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionVisibleString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *            the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionGeneralString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *            the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionGeneralizedTime visitable);
 }

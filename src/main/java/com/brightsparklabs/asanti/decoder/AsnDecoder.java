@@ -13,8 +13,6 @@ import com.brightsparklabs.asanti.reader.AsnBerFileReader;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,13 +25,6 @@ import java.util.List;
  */
 public class AsnDecoder
 {
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static Logger logger = LoggerFactory.getLogger(AsnDecoder.class);
-
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------

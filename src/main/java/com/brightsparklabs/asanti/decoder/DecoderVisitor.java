@@ -10,7 +10,7 @@
 
 package com.brightsparklabs.asanti.decoder;
 
-import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
+import com.brightsparklabs.asanti.decoder.builtin.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
@@ -26,86 +26,104 @@ public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<BuiltinTyp
     // -------------------------------------------------------------------------
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinition.Null visitable)
+    public NullDecoder visit(final AsnSchemaTypeDefinition.Null visitable)
     {
+        return NullDecoder.getInstance();
+    }
+
+    @Override
+    public BitStringDecoder visit(final AsnSchemaTypeDefinitionBitString visitable)
+    {
+        return BitStringDecoder.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionChoice visitable)
+    {
+        // TODO: ASN-8 not decodable
         return null;
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionBitString visitable)
+    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionEnumerated visitable)
     {
+        // TODO: ASN-8 not decodable
         return null;
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionChoice visitable)
+    public Ia5StringDecoder visit(final AsnSchemaTypeDefinitionIa5String visitable)
     {
+        return Ia5StringDecoder.getInstance();
+    }
+
+    @Override
+    public IntegerDecoder visit(final AsnSchemaTypeDefinitionInteger visitable)
+    {
+        return IntegerDecoder.getInstance();
+    }
+
+    @Override
+    public NumericStringDecoder visit(final AsnSchemaTypeDefinitionNumericString visitable)
+    {
+        return NumericStringDecoder.getInstance();
+    }
+
+    @Override
+    public OctetStringDecoder visit(final AsnSchemaTypeDefinitionOctetString visitable)
+    {
+        return OctetStringDecoder.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionSequence visitable)
+    {
+        // TODO: ASN-8 not decodable
         return null;
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionEnumerated visitable)
+    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionSequenceOf visitable)
     {
+        // TODO: ASN-8 not decodable
         return null;
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionInteger visitable)
+    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionSet visitable)
     {
+        // TODO: ASN-8 not decodable
         return null;
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionIa5String visitable)
+    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionSetOf visitable)
     {
+        // TODO: ASN-8 not decodable
         return null;
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionNumericString visitable)
+    public Utf8StringDecoder visit(final AsnSchemaTypeDefinitionUtf8String visitable)
     {
-        return null;
+        return Utf8StringDecoder.getInstance();
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionOctetString visitable)
+    public VisibleStringDecoder visit(final AsnSchemaTypeDefinitionVisibleString visitable)
     {
-        return null;
+        return VisibleStringDecoder.getInstance();
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionSequence visitable)
+    public GeneralStringDecoder visit(final AsnSchemaTypeDefinitionGeneralString visitable)
     {
-        return null;
+        return GeneralStringDecoder.getInstance();
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionSequenceOf visitable)
+    public GeneralizedTimeDecoder visit(final AsnSchemaTypeDefinitionGeneralizedTime visitable)
     {
-        return null;
-    }
-
-    @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionSet visitable)
-    {
-        return null;
-    }
-
-    @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionSetOf visitable)
-    {
-        return null;
-    }
-
-    @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionUtf8String visitable)
-    {
-        return null;
-    }
-
-    @Override
-    public BuiltinTypeDecoder<?> visit(AsnSchemaTypeDefinitionVisibleString visitable)
-    {
-        return null;
+        return GeneralizedTimeDecoder.getInstance();
     }
 }
