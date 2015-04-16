@@ -40,7 +40,7 @@ public class ValidatorImpl implements Validator
             builder.addAll(failures);
         }
 
-        // process unmapped tags
+        // TODO: ASN-92 process unmapped tags
         decodedAsnData.getUnmappedTags();
 
         return builder.build();
