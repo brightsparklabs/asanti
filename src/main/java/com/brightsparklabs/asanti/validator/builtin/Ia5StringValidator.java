@@ -24,7 +24,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#OctetString}
+ * Validator for data of type {@link AsnBuiltinType#Ia5String}
  *
  * @author brightSPARK Labs
  */

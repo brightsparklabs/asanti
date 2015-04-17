@@ -46,9 +46,9 @@ public class Ia5StringValidatorTest
     {
         // test valid
         byte[] bytes = new byte[1];
-        for (byte b = 0; b < 128; b++)
+        for (int b = 127; b >= 0; b--)
         {
-            bytes[1] = b;
+            bytes[0] = (byte) b;
             assertEquals(0, instance.validate(bytes).size());
         }
 
@@ -57,8 +57,8 @@ public class Ia5StringValidatorTest
                 = "Supplied bytes do not conform to the IA5String format. All bytes must be within the range 0 - 127. Supplied bytes contain a byte with value: ";
         for (byte b = Byte.MIN_VALUE; b < 0; b++)
         {
-            bytes[1] = b;
-            final ImmutableSet<ByteValidationFailure> failures = instance.validate(null);
+            bytes[0] = b;
+            final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
