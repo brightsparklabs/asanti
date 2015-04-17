@@ -3,16 +3,6 @@
  * www.brightsparklabs.com
  */
 
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
-
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
-
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
