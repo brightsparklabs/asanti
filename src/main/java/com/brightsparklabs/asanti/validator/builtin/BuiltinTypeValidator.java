@@ -12,7 +12,8 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.validator.Validator;
-import com.brightsparklabs.asanti.validator.result.DecodedTagValidationResult;
+import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Default implementation of {@link Validator}.
@@ -25,5 +26,6 @@ public interface BuiltinTypeValidator
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    public DecodedTagValidationResult validate(String tag, DecodedAsnData decodedAsnData);
+    public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
+            DecodedAsnData decodedAsnData);
 }

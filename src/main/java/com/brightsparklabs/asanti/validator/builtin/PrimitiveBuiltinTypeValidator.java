@@ -11,7 +11,11 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
-import com.brightsparklabs.asanti.validator.result.DecodedTagValidationResult;
+import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import java.util.Set;
 
 /**
  * Convenience class to simplify implementing {@link BuiltinTypeValidator} for {@link AsnBuiltinType
@@ -26,16 +30,20 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
     // -------------------------------------------------------------------------
 
     @Override
-    public DecodedTagValidationResult validate(String tag, DecodedAsnData decodedAsnData)
+    public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
+            DecodedAsnData decodedAsnData)
     {
-        final DecodedTagValidationResult.Builder result = DecodedTagValidationResult.builder(tag);
+        final Set<DecodedTagValidationFailure> tagFailures = Sets.newHashSet();
 
         // validate data
         final byte[] bytes = decodedAsnData.getBytes(tag);
-        final Iterable<ByteValidationFailure> failures = validate(bytes);
-        for (ByteValidationFailure failure : failures)
+        final Iterable<ByteValidationFailure> byteFailures = validate(bytes);
+        for (ByteValidationFailure byteFailure : byteFailures)
         {
-            result.add(failure.getFailureType(), failure.getFailureReason());
+            final DecodedTagValidationFailure tagFailure = new DecodedTagValidationFailure(tag,
+                    byteFailure.getFailureType(),
+                    byteFailure.getFailureReason());
+            tagFailures.add(tagFailure);
         }
 
         // validate against the tag's constraint
@@ -44,10 +52,13 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         final OperationResult<byte[]> constraintResult = constraint.apply(bytes);
         if (!constraintResult.wasSuccessful())
         {
-            result.add(FailureType.MandatoryFieldMissing, constraintResult.getFailureReason());
+            final DecodedTagValidationFailure tagFailure = new DecodedTagValidationFailure(tag,
+                    FailureType.MandatoryFieldMissing,
+                    constraintResult.getFailureReason());
+            tagFailures.add(tagFailure);
         }
 
-        return result.build();
+        return ImmutableSet.copyOf(tagFailures);
     }
 
     // -------------------------------------------------------------------------
@@ -63,5 +74,5 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
      *
      * @return any failures encountered while validating the bytes
      */
-    protected abstract Iterable<ByteValidationFailure> validate(byte[] bytes);
+    protected abstract ImmutableSet<ByteValidationFailure> validate(byte[] bytes);
 }
