@@ -11,6 +11,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.validator.builtin.BooleanValidator;
 import com.brightsparklabs.asanti.validator.builtin.Ia5StringValidator;
 import com.brightsparklabs.asanti.validator.builtin.OctetStringValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -96,24 +97,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsBoolean(byte[] bytes)
     {
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        if (!failures.isEmpty())
-        {
-            // bytes were null, do not continue validating
-            return ImmutableSet.copyOf(failures);
-        }
-
-        if (bytes.length != 1)
-        {
-            final String error = String.format(
-                    "ASN.1 BOOLEAN type can only contain one byte. Supplied array contains %d bytes",
-                    bytes.length);
-            final ByteValidationFailure failure = new ByteValidationFailure(bytes.length,
-                    FailureType.DataIncorrectlyFormatted,
-                    error);
-            failures.add(failure);
-        }
-        return ImmutableSet.copyOf(failures);
+        return BooleanValidator.getInstance().validate(bytes);
     }
 
     /**
