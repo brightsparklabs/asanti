@@ -11,6 +11,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.validator.builtin.Ia5StringValidator;
 import com.brightsparklabs.asanti.validator.builtin.OctetStringValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
@@ -263,28 +264,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsIa5String(byte[] bytes)
     {
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        if (!failures.isEmpty())
-        {
-            // bytes were null, do not continue validating
-            return ImmutableSet.copyOf(failures);
-        }
-
-        for (int i = 0; i < bytes.length; i++)
-        {
-            byte b = bytes[i];
-            if (b < 0 || b > 127)
-            {
-                final String error =
-                        "Supplied bytes do not conform to the IA5String format. All bytes must be within the range 0 - 127. Supplied bytes contain a byte with value: "
-                                + b;
-                final ByteValidationFailure failure = new ByteValidationFailure(i,
-                        FailureType.DataIncorrectlyFormatted,
-                        error);
-                failures.add(failure);
-            }
-        }
-        return ImmutableSet.copyOf(failures);
+        return Ia5StringValidator.getInstance().validate(bytes);
     }
 
     /**
