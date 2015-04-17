@@ -11,14 +11,9 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.builtin.BooleanValidator;
-import com.brightsparklabs.asanti.validator.builtin.Ia5StringValidator;
-import com.brightsparklabs.asanti.validator.builtin.OctetStringValidator;
+import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-
-import java.util.Set;
 
 /**
  * Utility class for validating bytes in ASN.1 Types
@@ -27,15 +22,6 @@ import java.util.Set;
  */
 public class AsnByteValidator
 {
-    // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    /** failure indicating that data was missing */
-    private static final ByteValidationFailure FAILURE_MISSING_DATA = new ByteValidationFailure(0,
-            FailureType.DataMissing,
-            "No data present");
-
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -67,9 +53,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsBitString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return BitStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -82,9 +66,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsBmpString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return BmpStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -113,9 +95,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsCharacterString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return CharacterStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -128,9 +108,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsDate(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return DateValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -143,9 +121,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsDateTime(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return DateTimeValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -158,9 +134,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsDuration(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return DurationValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -173,9 +147,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsEmbeddedPDV(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return EmbeddedPDVValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -188,9 +160,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsExternal(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return ExternalValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -203,9 +173,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsGeneralizedTime(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return GeneralizedTimeValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -218,9 +186,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsGeneralString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return GeneralStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -233,9 +199,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsGraphicString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return GraphicStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -261,9 +225,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsInstanceOf(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return InstanceOfValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -276,9 +238,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsInteger(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return IntegerValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -291,9 +251,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsIri(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return IriValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -306,9 +264,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsIso646String(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return Iso646StringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -321,9 +277,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsNull(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return NullValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -336,9 +290,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsNumericString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return NumericStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -351,9 +303,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsObjectClassField(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return ObjectClassFieldValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -379,9 +329,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsOid(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return OidValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -394,9 +342,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsOidIri(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return OidIriValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -409,9 +355,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsPrefixed(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return PrefixedValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -424,9 +368,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsPrintableString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return PrintableStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -439,9 +381,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsReal(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return RealValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -454,9 +394,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsRelativeIri(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return RelativeIriValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -469,9 +407,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsRelativeOid(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return RelativeOidValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -484,9 +420,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsRelativeOidIri(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return RelativeOidIriValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -499,9 +433,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsTeletexString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return TeletexStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -514,9 +446,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsTime(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return TimeValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -529,9 +459,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsTimeOfDay(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return TimeOfDayValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -544,9 +472,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsUniversalString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return UniversalStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -559,9 +485,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsUtf8String(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return Utf8StringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -574,9 +498,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsVideotexString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return VideotexStringValidator.getInstance().validate(bytes);
     }
 
     /**
@@ -589,30 +511,6 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsVisibleString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
-    }
-
-    // -------------------------------------------------------------------------
-    // PACKAGE METHODS
-    // -------------------------------------------------------------------------
-
-    /**
-     * Checks if the supplied byte array is {@code null}.
-     *
-     * @param bytes
-     *         bytes to check
-     *
-     * @return a set containing a failure if the bytes were {@code null}. An empty set otherwise.
-     */
-    private static Set<ByteValidationFailure> validateNotNull(byte[] bytes)
-    {
-        final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        if (bytes == null)
-        {
-            failures.add(AsnByteValidator.FAILURE_MISSING_DATA);
-        }
-        return failures;
+        return VisibleStringValidator.getInstance().validate(bytes);
     }
 }
