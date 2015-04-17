@@ -11,12 +11,12 @@ package com.brightsparklabs.asanti.validator;
  */
 public enum FailureType
 {
-    // a mandatory field is missing
-    MandatoryFieldMissing,
-    // no data to validate
-    DataMissing,
-    // data is not in the correct format
+    /** data is not in the correct format */
     DataIncorrectlyFormatted,
-    // no failure occurred
-    None,
+    /** no data to validate */
+    DataMissing,
+    /** a mandatory field is missing */
+    MandatoryFieldMissing,
+    /** could not decode raw tag against schema */
+    UnknownTag
 }

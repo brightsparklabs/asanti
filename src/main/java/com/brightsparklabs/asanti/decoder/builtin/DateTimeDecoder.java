@@ -7,8 +7,9 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.ValidationResult;
-import com.brightsparklabs.asanti.validator.bytes.AsnByteValidator;
+import com.brightsparklabs.asanti.validator.AsnByteValidator;
+import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.google.common.collect.ImmutableSet;
 
 import java.sql.Timestamp;
 
@@ -58,8 +59,9 @@ public class DateTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
     @Override
     public Timestamp decode(final byte[] bytes) throws DecodeException
     {
-        final ValidationResult validationResult = AsnByteValidator.validateAsDateTime(bytes);
-        DecodeException.throwIfHasFailures(validationResult);
+        final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsDateTime(
+                bytes);
+        DecodeException.throwIfHasFailures(failures);
         // TODO: ASN-107 implement
         return null;
     }

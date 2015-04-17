@@ -13,7 +13,7 @@ package com.brightsparklabs.asanti.decoder.builtin;
 import com.brightsparklabs.asanti.common.DecodeException;
 
 /**
- * Used to decode bytes based on the kind of Type Definition they come from
+ * Used to decode bytes based on the kind of ASN.1 Built-in Type they came from
  *
  * @param <T>
  *         type of object returned by this decoder
@@ -27,7 +27,8 @@ public interface BuiltinTypeDecoder<T>
     // -------------------------------------------------------------------------
 
     /**
-     * Decodes supplied data based on the the kind of Type Definition represented by this decoder
+     * Decodes the supplied bytes based on the kind of ASN.1 Built-in Type represented by this
+     * decoder
      *
      * @param bytes
      *         bytes to decode
@@ -40,8 +41,8 @@ public interface BuiltinTypeDecoder<T>
     public T decode(byte[] bytes) throws DecodeException;
 
     /**
-     * Decodes supplied data as a string based on the the kind of Type Definition represented by
-     * this decoder
+     * Decodes the supplied bytes as a string based on the the kind of ASN.1 Built-in Type
+     * represented by this validator
      *
      * @param bytes
      *         bytes to decode

@@ -10,8 +10,8 @@
 
 package com.brightsparklabs.asanti.common;
 
-import com.brightsparklabs.asanti.validator.ValidationFailure;
-import com.brightsparklabs.asanti.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
+import com.google.common.collect.Iterables;
 
 /**
  * Signals that invalid data was supplied to a decoder
@@ -40,24 +40,25 @@ public class DecodeException extends Exception
     // -------------------------------------------------------------------------
 
     /**
-     * Throws a DecodeException if the supplied validation results contain any failures. The
-     * exception will contain details of the failures.
+     * Throws a DecodeException if the supplied iterable is non-empty (i.e. it contains failures).
+     * The exception will contain details of the failures.
      *
-     * @param validationResult
-     *         result to check through for failures
+     * @param failures
+     *         iterable to check through for failures
      *
      * @throws DecodeException
-     *         if the validation result contains failures
+     *         if the iterable is non-empty
      */
-    public static void throwIfHasFailures(ValidationResult validationResult) throws DecodeException
+    public static void throwIfHasFailures(Iterable<? extends ValidationFailure> failures)
+            throws DecodeException
     {
-        if (!validationResult.hasFailures())
+        if (Iterables.isEmpty(failures))
         {
             return;
         }
 
         final StringBuilder builder = new StringBuilder();
-        for (ValidationFailure failure : validationResult.getFailures())
+        for (ValidationFailure failure : failures)
         {
             builder.append(failure.getFailureReason()).append("\n");
         }

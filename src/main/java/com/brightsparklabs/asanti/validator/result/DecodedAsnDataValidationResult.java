@@ -2,9 +2,11 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.validator;
+package com.brightsparklabs.asanti.validator.result;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.validator.Validator;
+import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 
@@ -13,7 +15,7 @@ import com.google.common.collect.ImmutableSetMultimap;
  *
  * @author brightSPARK Labs
  */
-public class ValidationResultImpl implements ValidationResult
+public class DecodedAsnDataValidationResult implements ValidationResult
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -22,7 +24,7 @@ public class ValidationResultImpl implements ValidationResult
     /**
      * all failures that occurred during validation. Map is of form {tag => failure}
      */
-    private final ImmutableSetMultimap<String, ValidationFailure> tagsToFailures;
+    private final ImmutableSetMultimap<String, DecodedTagValidationFailure> tagsToFailures;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -34,22 +36,22 @@ public class ValidationResultImpl implements ValidationResult
      * @param failures
      *         failures to include in this result set
      */
-    private ValidationResultImpl(Iterable<ValidationFailure> failures)
+    private DecodedAsnDataValidationResult(Iterable<DecodedTagValidationFailure> failures)
     {
-        final ImmutableSetMultimap.Builder<String, ValidationFailure> builder = ImmutableSetMultimap
-                .builder();
-        for (final ValidationFailure failure : failures)
+        final ImmutableSetMultimap.Builder<String, DecodedTagValidationFailure> builder
+                = ImmutableSetMultimap.builder();
+        for (final DecodedTagValidationFailure failure : failures)
         {
-            final String tag = failure.getLocation();
+            final String tag = failure.getTag();
             builder.put(tag, failure);
         }
         this.tagsToFailures = builder.build();
     }
 
     /**
-     * Returns a builder for creating instances of {@link ValidationResultImpl}
+     * Returns a builder for creating instances of {@link DecodedAsnDataValidationResult}
      *
-     * @return a builder for creating instances of {@link ValidationResultImpl}
+     * @return a builder for creating instances of {@link DecodedAsnDataValidationResult}
      */
     public static Builder builder()
     {
@@ -57,7 +59,7 @@ public class ValidationResultImpl implements ValidationResult
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: ValidationResults
+    // IMPLEMENTATION: ValidationResult
     // -------------------------------------------------------------------------
 
     @Override
@@ -67,7 +69,7 @@ public class ValidationResultImpl implements ValidationResult
     }
 
     @Override
-    public ImmutableSet<ValidationFailure> getFailures()
+    public ImmutableSet<DecodedTagValidationFailure> getFailures()
     {
         return ImmutableSet.copyOf(tagsToFailures.values());
     }
@@ -79,7 +81,7 @@ public class ValidationResultImpl implements ValidationResult
     }
 
     @Override
-    public ImmutableSet<ValidationFailure> getFailures(String tag)
+    public ImmutableSet<DecodedTagValidationFailure> getFailures(String tag)
     {
         return tagsToFailures.get(tag);
     }
@@ -89,7 +91,7 @@ public class ValidationResultImpl implements ValidationResult
     // -------------------------------------------------------------------------
 
     /**
-     * Builder for creating instances of {@link ValidationResultImpl}
+     * Builder for creating instances of {@link DecodedAsnDataValidationResult}
      */
     public static class Builder
     {
@@ -98,19 +100,16 @@ public class ValidationResultImpl implements ValidationResult
         // ---------------------------------------------------------------------
 
         /** the results to include in the result set */
-        private final ImmutableSet.Builder<ValidationFailure> failuresBuilder
+        private final ImmutableSet.Builder<DecodedTagValidationFailure> failuresBuilder
                 = ImmutableSet.builder();
-
-        /** whether this builder contains any {@link ValidationResult ValidationResults} */
-        private boolean containsResults;
 
         // ---------------------------------------------------------------------
         // CONSTRUCTION
         // ---------------------------------------------------------------------
 
         /**
-         * Default constructor. This is private, use {@link ValidationResultImpl#builder()} to
-         * create an instance.
+         * Default constructor. This is private, use {@link DecodedAsnDataValidationResult#builder()}
+         * to create an instance.
          */
         private Builder() {}
 
@@ -121,40 +120,14 @@ public class ValidationResultImpl implements ValidationResult
         /**
          * Adds a failure to the result set
          *
-         * @param location
-         *         the location of the failure
-         * @param failureType
-         *         the type of failure that occurred
-         * @param failureReason
-         *         the reason for the failure
-         *
-         * @return this builder
-         *
-         * @throws NullPointerException
-         *         if parameters are {@code null}
-         * @throws IllegalArgumentException
-         *         if tag or failureReason are empty
-         */
-        public Builder add(String location, FailureType failureType, String failureReason)
-        {
-            final ValidationFailure failure = new ValidationFailureImpl(location,
-                    failureType,
-                    failureReason);
-            return add(failure);
-        }
-
-        /**
-         * Adds a failure to the result set
-         *
          * @param failures
          *         result to add
          *
          * @return this builder
          */
-        public Builder add(ValidationFailure failures)
+        public Builder add(DecodedTagValidationFailure failures)
         {
             failuresBuilder.add(failures);
-            containsResults = true;
             return this;
         }
 
@@ -166,36 +139,23 @@ public class ValidationResultImpl implements ValidationResult
          *
          * @return this builder
          */
-        public Builder addAll(Iterable<ValidationFailure> failures)
+        public Builder addAll(Iterable<DecodedTagValidationFailure> failures)
         {
             failuresBuilder.addAll(failures);
-            containsResults = true;
             return this;
         }
 
         /**
-         * Creates a new instance of {@link ValidationResultImpl} containing all the results which
-         * have been added to this builder
+         * Creates a new instance of {@link DecodedAsnDataValidationResult} containing all the
+         * results which have been added to this builder
          *
-         * @return a new instance of {@link ValidationResultImpl} containing all the results which
-         * have been added to this builder
+         * @return a new instance of {@link DecodedAsnDataValidationResult} containing all the
+         * results which have been added to this builder
          */
-        public ValidationResultImpl build()
+        public DecodedAsnDataValidationResult build()
         {
-            final ImmutableSet<ValidationFailure> failures = failuresBuilder.build();
-            return new ValidationResultImpl(failures);
-        }
-
-        /**
-         * Returns {@code true} if this builder contains any {@link ValidationResult
-         * ValidationResults}
-         *
-         * @return {@code true} if this builder contains any {@link ValidationResult
-         * ValidationResults}
-         */
-        public boolean containsResults()
-        {
-            return containsResults;
+            final ImmutableSet<DecodedTagValidationFailure> failures = failuresBuilder.build();
+            return new DecodedAsnDataValidationResult(failures);
         }
     }
 }

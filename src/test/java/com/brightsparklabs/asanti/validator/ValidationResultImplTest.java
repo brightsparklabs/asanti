@@ -6,12 +6,13 @@ package com.brightsparklabs.asanti.validator;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.validator.result.DecodedAsnDataValidationResult;
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.mocks.validator.MockValidationFailure;
+import com.brightsparklabs.asanti.mocks.validator.MockDecodedTagValidationFailure;
 
 /**
- * Unit tests for {@link ValidationResultImpl}
+ * Unit tests for {@link DecodedAsnDataValidationResult}
  *
  * @author brightSPARK Labs
  */
@@ -21,23 +22,26 @@ public class ValidationResultImplTest
     // FIXTURES
     // -------------------------------------------------------------------------
 
-    private static final ValidationResultImpl noFailures = ValidationResultImpl.builder()
+    private static final DecodedAsnDataValidationResult noFailures = DecodedAsnDataValidationResult
+            .builder()
             .build();
 
-    private static final ValidationResultImpl oneFailure = ValidationResultImpl.builder()
-            .add(MockValidationFailure.createFailedValidationResult("TEST_TAG1",
+    private static final DecodedAsnDataValidationResult oneFailure = DecodedAsnDataValidationResult
+            .builder()
+            .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG1",
                     FailureType.MandatoryFieldMissing,
                     "Field missing"))
             .build();
 
-    private static final ValidationResultImpl multipleFailures = ValidationResultImpl.builder()
-            .add(MockValidationFailure.createFailedValidationResult("TEST_TAG1",
+    private static final DecodedAsnDataValidationResult multipleFailures = DecodedAsnDataValidationResult
+            .builder()
+            .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG1",
                     FailureType.MandatoryFieldMissing,
                     "Field missing"))
-            .add(MockValidationFailure.createFailedValidationResult("TEST_TAG1",
+            .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG1",
                     FailureType.MandatoryFieldMissing,
                     "Field missing"))
-            .add(MockValidationFailure.createFailedValidationResult("TEST_TAG3",
+            .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG3",
                     FailureType.MandatoryFieldMissing,
                     "Field missing"))
             .build();

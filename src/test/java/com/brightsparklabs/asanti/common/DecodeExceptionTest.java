@@ -5,9 +5,10 @@
 
 package com.brightsparklabs.asanti.common;
 
+import com.brightsparklabs.asanti.mocks.validator.MockDecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.FailureType;
-import com.brightsparklabs.asanti.validator.ValidationResult;
-import com.brightsparklabs.asanti.validator.ValidationResultImpl;
+import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -38,17 +39,16 @@ public class DecodeExceptionTest
     public void testThrowIfHasFailures() throws Exception
     {
         // test with no validation failures
-        ValidationResult validationResult = ValidationResultImpl.builder().build();
-        DecodeException.throwIfHasFailures(validationResult);
+        DecodeException.throwIfHasFailures(ImmutableSet.<DecodedTagValidationFailure>of());
 
         // test with validation failures
-        validationResult =
-                ValidationResultImpl.builder()
-                        .add("TEST_LOCATION", FailureType.DataIncorrectlyFormatted, "TEST_REASON")
-                        .build();
+        final DecodedTagValidationFailure failure
+                = MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG",
+                FailureType.UnknownTag,
+                "TEST_REASON");
         try
         {
-            DecodeException.throwIfHasFailures(validationResult);
+            DecodeException.throwIfHasFailures(ImmutableSet.<DecodedTagValidationFailure>of(failure));
             fail("DecodeException not thrown");
         }
         catch (DecodeException ex)
