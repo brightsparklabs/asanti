@@ -8,10 +8,10 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.validator.bytes;
+package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.builtin.OctetStringValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -402,9 +402,7 @@ public class AsnByteValidator
      */
     public static ImmutableSet<ByteValidationFailure> validateAsOctetString(byte[] bytes)
     {
-        // TODO: ASN-105
-        final Set<ByteValidationFailure> failures = validateNotNull(bytes);
-        return ImmutableSet.copyOf(failures);
+        return OctetStringValidator.getInstance().validate(bytes);
     }
 
     /**

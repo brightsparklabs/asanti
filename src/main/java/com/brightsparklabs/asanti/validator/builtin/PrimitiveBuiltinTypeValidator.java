@@ -19,7 +19,7 @@ import java.util.Set;
 
 /**
  * Convenience class to simplify implementing {@link BuiltinTypeValidator} for {@link AsnBuiltinType
- * ASN.1 Built-in Types}. Sub-classes should override {@link #validate(byte[])}.
+ * ASN.1 Built-in Types}. Sub-classes should override {@link #validateNonNullBytes(byte[])}.
  *
  * @author brightSPARK Labs
  */
@@ -61,18 +61,31 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         return ImmutableSet.copyOf(tagFailures);
     }
 
+    @Override
+    public ImmutableSet<ByteValidationFailure> validate(final byte[] bytes)
+    {
+        if (bytes == null)
+        {
+            final ByteValidationFailure failure = new ByteValidationFailure(0,
+                    FailureType.DataMissing,
+                    "No data present");
+            return ImmutableSet.of(failure);
+        }
+        return validateNonNullBytes(bytes);
+    }
+
     // -------------------------------------------------------------------------
     // PROTECTED METHODS
     // -------------------------------------------------------------------------
 
     /**
      * Validates the supplied bytes based on the the kind of ASN.1 Built-in Type represented by this
-     * validator
+     * validator. The bytes parameter is guaranteed to be non-{@code null}.
      *
      * @param bytes
      *         bytes to validate
      *
      * @return any failures encountered while validating the bytes
      */
-    protected abstract ImmutableSet<ByteValidationFailure> validate(byte[] bytes);
+    protected abstract ImmutableSet<ByteValidationFailure> validateNonNullBytes(byte[] bytes);
 }
