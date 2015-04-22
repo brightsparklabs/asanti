@@ -10,8 +10,8 @@ import com.brightsparklabs.asanti.validator.rule.PrimitiveValidationRule;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
 /**
- * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the most appropriate {@link ValidationRule}
- * pertaining to it.
+ * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the most appropriate
+ * {@link ValidationRule} pertaining to it.
  *
  * @author brightSPARK Labs
  */
@@ -46,13 +46,25 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
     }
 
     @Override
-    public ValidationRule visit(AsnSchemaTypeDefinitionInteger visitable)
+    public ValidationRule visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
+    {
+        return createPrimitiveValidationRule(visitable);
+    }
+
+    @Override
+    public ValidationRule visit(AsnSchemaTypeDefinitionGeneralString visitable)
     {
         return createPrimitiveValidationRule(visitable);
     }
 
     @Override
     public ValidationRule visit(AsnSchemaTypeDefinitionIa5String visitable)
+    {
+        return createPrimitiveValidationRule(visitable);
+    }
+
+    @Override
+    public ValidationRule visit(AsnSchemaTypeDefinitionInteger visitable)
     {
         return createPrimitiveValidationRule(visitable);
     }
@@ -105,25 +117,13 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Validat
         return createPrimitiveValidationRule(visitable);
     }
 
-    @Override
-    public ValidationRule visit(AsnSchemaTypeDefinitionGeneralString visitable)
-    {
-        return createPrimitiveValidationRule(visitable);
-    }
-
-    @Override
-    public ValidationRule visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
-    {
-        return createPrimitiveValidationRule(visitable);
-    }
-
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: Validator
     // -------------------------------------------------------------------------
 
     /**
-     * Creates a {@link ValidationRule} to validate data from ASN.1 primitives by applying the constraints defined in
-     * the supplied primitive type definition.
+     * Creates a {@link ValidationRule} to validate data from ASN.1 primitives by applying the
+     * constraints defined in the supplied primitive type definition.
      *
      * @param primitive
      *         the primitive type definition to create the validation rule from

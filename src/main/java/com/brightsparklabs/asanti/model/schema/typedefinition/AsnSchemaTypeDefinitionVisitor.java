@@ -9,11 +9,10 @@ import com.brightsparklabs.asanti.common.Visitor;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
 
 /**
- * Interface for visitors that can visit {@link AbstractAsnSchemaTypeDefinition}
- * objects
+ * Interface for visitors that can visit {@link AbstractAsnSchemaTypeDefinition} objects
  *
  * @param <T>
- *            type of value returned by this {@link Visitor}
+ *         type of value returned by this {@link Visitor}
  *
  * @author brightSPARK Labs
  */
@@ -27,7 +26,7 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * Processes the supplied object with this visitor
      *
      * @param visitable
-     *            the object to process
+     *         the object to process
      *
      * @return the results from processing the supplied object
      */
@@ -37,7 +36,7 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * Processes the supplied object with this visitor
      *
      * @param visitable
-     *            the object to process
+     *         the object to process
      *
      * @return the results from processing the supplied object
      */
@@ -47,7 +46,7 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * Processes the supplied object with this visitor
      *
      * @param visitable
-     *            the object to process
+     *         the object to process
      *
      * @return the results from processing the supplied object
      */
@@ -57,7 +56,7 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * Processes the supplied object with this visitor
      *
      * @param visitable
-     *            the object to process
+     *         the object to process
      *
      * @return the results from processing the supplied object
      */
@@ -67,107 +66,17 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * Processes the supplied object with this visitor
      *
      * @param visitable
-     *            the object to process
+     *         the object to process
      *
      * @return the results from processing the supplied object
      */
-    public T visit(AsnSchemaTypeDefinitionIa5String visitable);
+    public T visit(AsnSchemaTypeDefinitionGeneralizedTime visitable);
 
     /**
      * Processes the supplied object with this visitor
      *
      * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionInteger visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionNumericString visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionOctetString visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionSequence visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionSequenceOf visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionSet visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionSetOf visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionUtf8String visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnSchemaTypeDefinitionVisibleString visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *            the object to process
+     *         the object to process
      *
      * @return the results from processing the supplied object
      */
@@ -177,9 +86,99 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * Processes the supplied object with this visitor
      *
      * @param visitable
-     *            the object to process
+     *         the object to process
      *
      * @return the results from processing the supplied object
      */
-    public T visit(AsnSchemaTypeDefinitionGeneralizedTime visitable);
+    public T visit(AsnSchemaTypeDefinitionIa5String visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionInteger visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionNumericString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionOctetString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionSequence visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionSequenceOf visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionSet visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionSetOf visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionUtf8String visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTypeDefinitionVisibleString visitable);
 }

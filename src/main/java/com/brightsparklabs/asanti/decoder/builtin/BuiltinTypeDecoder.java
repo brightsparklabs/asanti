@@ -52,4 +52,61 @@ public interface BuiltinTypeDecoder<T>
      *         if any errors occur while decoding the supplied bytes
      */
     public String decodeAsString(byte[] bytes) throws DecodeException;
+
+    // -------------------------------------------------------------------------
+    // INTERNAL CLASS: Null
+    // -------------------------------------------------------------------------
+
+    /**
+     * Null instance of {@link BuiltinTypeDecoder}.
+     *
+     * <p>The decode methods will throw a {@link DecodeException} when called. The error message in
+     * the exception will be as supplied to the constructor.</p>
+     *
+     * @author brightSPARK Labs
+     */
+    public static class Null implements BuiltinTypeDecoder<Object>
+    {
+        // ---------------------------------------------------------------------
+        // INSTANCE VARIABLES
+        // ---------------------------------------------------------------------
+
+        /**
+         * error message to use in the exceptions which will be thrown when any of the implemented
+         * methods are called
+         */
+        private final String errorMessage;
+
+        // ---------------------------------------------------------------------
+        // CONSTRUCTION
+        // ---------------------------------------------------------------------
+
+        /**
+         * Default constructor.
+         *
+         * @param errorMessage
+         *         error message to use in the exceptions which will be thrown when any of the
+         *         implemented methods are called.
+         */
+        public Null(String errorMessage)
+        {
+            this.errorMessage = errorMessage;
+        }
+
+        // ---------------------------------------------------------------------
+        // IMPLEMENTATION: BuiltinTypeDecoder
+        // ---------------------------------------------------------------------
+
+        @Override
+        public Object decode(final byte[] bytes) throws DecodeException
+        {
+            throw new DecodeException(errorMessage);
+        }
+
+        @Override
+        public String decodeAsString(final byte[] bytes) throws DecodeException
+        {
+            throw new DecodeException(errorMessage);
+        }
+    }
 }
