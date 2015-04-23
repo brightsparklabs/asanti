@@ -317,7 +317,7 @@ public class DecodedAsnDataImplTest
     @Test
     public void testGetPrintableString() throws Exception
     {
-        // TODO: ASN-8 - Need to mock DecoderVisitor
+        // TODO: ASN-107 - requires decoder logic to be complete
         /*
         assertEquals("printableString",
                 instance.getPrintableString("/Document/header/published/date"));
@@ -350,7 +350,7 @@ public class DecodedAsnDataImplTest
     @Test
     public void testGetPrintableStringsMatching() throws Exception
     {
-        // TODO: ASN-8 - Need to mock DecoderVisitor
+        // TODO: ASN-107 - requires decoder logic to be complete
         /*
         Pattern regex = Pattern.compile(".+text");
         ImmutableMap<String, String> result = instance.getPrintableStringsMatching(regex);
@@ -420,7 +420,7 @@ public class DecodedAsnDataImplTest
     @Test
     public void testGetDecodedObject() throws Exception
     {
-        // TODO: ASN-8 - Need to mock DecoderVisitor
+        // TODO: ASN-107 - requires decoder logic to be complete
         /*
         assertEquals("decodedObject", instance.getDecodedObject("/Document/header/published/date"));
         assertEquals("decodedObject",
@@ -451,7 +451,7 @@ public class DecodedAsnDataImplTest
     @Test
     public void testGetDecodedObjectsMatching() throws Exception
     {
-        // TODO: ASN-8 - Need to mock DecoderVisitor
+        // TODO: ASN-107 - requires decoder logic to be complete
         /*
         Pattern regex = Pattern.compile(".+dy.+");
         ImmutableMap<String, Object> result = instance.getDecodedObjectsMatching(regex);
