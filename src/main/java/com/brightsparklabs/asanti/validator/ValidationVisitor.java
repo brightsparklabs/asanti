@@ -46,13 +46,24 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Builtin
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionInteger visitable)
+    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
+    {
+        return null;
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionGeneralString visitable)
     {
         return null;
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionIa5String visitable)
+    {
+        return null;
+    }
+
+    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionInteger visitable)
     {
         return null;
     }
@@ -101,18 +112,6 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Builtin
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionVisibleString visitable)
-    {
-        return null;
-    }
-
-    @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionGeneralString visitable)
-    {
-        return null;
-    }
-
-    @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
     {
         return null;
     }

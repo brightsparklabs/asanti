@@ -26,9 +26,10 @@ public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<BuiltinTyp
     // -------------------------------------------------------------------------
 
     @Override
-    public NullDecoder visit(final AsnSchemaTypeDefinition.Null visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinition.Null visitable)
     {
-        return NullDecoder.getInstance();
+        return new BuiltinTypeDecoder.Null(
+                "null instances of AsnSchemaTypeDefinition cannot be decoded");
     }
 
     @Override
@@ -38,17 +39,27 @@ public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<BuiltinTyp
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionChoice visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionChoice visitable)
     {
-        // TODO: ASN-8 not decodable
-        return null;
+        return new BuiltinTypeDecoder.Null("ASN.1 CHOICE types cannot be decoded");
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionEnumerated visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionEnumerated visitable)
     {
-        // TODO: ASN-8 not decodable
-        return null;
+        return new BuiltinTypeDecoder.Null("ASN.1 ENUMERATED types cannot be decoded");
+    }
+
+    @Override
+    public GeneralizedTimeDecoder visit(final AsnSchemaTypeDefinitionGeneralizedTime visitable)
+    {
+        return GeneralizedTimeDecoder.getInstance();
+    }
+
+    @Override
+    public GeneralStringDecoder visit(final AsnSchemaTypeDefinitionGeneralString visitable)
+    {
+        return GeneralStringDecoder.getInstance();
     }
 
     @Override
@@ -76,31 +87,27 @@ public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<BuiltinTyp
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionSequence visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSequence visitable)
     {
-        // TODO: ASN-8 not decodable
-        return null;
+        return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE types cannot be decoded");
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionSequenceOf visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSequenceOf visitable)
     {
-        // TODO: ASN-8 not decodable
-        return null;
+        return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE OF types cannot be decoded");
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionSet visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSet visitable)
     {
-        // TODO: ASN-8 not decodable
-        return null;
+        return new BuiltinTypeDecoder.Null("ASN.1 SET types cannot be decoded");
     }
 
     @Override
-    public BuiltinTypeDecoder<?> visit(final AsnSchemaTypeDefinitionSetOf visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSetOf visitable)
     {
-        // TODO: ASN-8 not decodable
-        return null;
+        return new BuiltinTypeDecoder.Null("ASN.1 SET OF types cannot be decoded");
     }
 
     @Override
@@ -113,17 +120,5 @@ public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<BuiltinTyp
     public VisibleStringDecoder visit(final AsnSchemaTypeDefinitionVisibleString visitable)
     {
         return VisibleStringDecoder.getInstance();
-    }
-
-    @Override
-    public GeneralStringDecoder visit(final AsnSchemaTypeDefinitionGeneralString visitable)
-    {
-        return GeneralStringDecoder.getInstance();
-    }
-
-    @Override
-    public GeneralizedTimeDecoder visit(final AsnSchemaTypeDefinitionGeneralizedTime visitable)
-    {
-        return GeneralizedTimeDecoder.getInstance();
     }
 }
