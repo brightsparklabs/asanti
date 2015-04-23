@@ -6,6 +6,7 @@ package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
+import com.brightsparklabs.asanti.validator.builtin.*;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
@@ -33,7 +34,8 @@ public class ValidationVisitorTest
     public void testVisitAsnSchemaTypeDefinitionNull()
     {
         final AsnSchemaTypeDefinition.Null visitable = AsnSchemaTypeDefinition.NULL;
-        assertEquals(null, instance.visit(visitable));
+        final BuiltinTypeValidator.Null result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -42,7 +44,8 @@ public class ValidationVisitorTest
         final AsnSchemaTypeDefinitionBitString visitable = new AsnSchemaTypeDefinitionBitString(
                 "TEST_NAME",
                 AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final BitStringValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -52,7 +55,9 @@ public class ValidationVisitorTest
                 "TEST_NAME",
                 ImmutableList.<AsnSchemaComponentType>of(),
                 AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        // TODO: ASN-113
+        final Object result = instance.visit(visitable);
+        assertNull(result);
     }
 
     @Test
@@ -61,7 +66,9 @@ public class ValidationVisitorTest
         final AsnSchemaTypeDefinitionEnumerated visitable = new AsnSchemaTypeDefinitionEnumerated(
                 "TEST_NAME",
                 ImmutableList.<AsnSchemaNamedTag>of());
-        assertEquals(null, instance.visit(visitable));
+        // TODO: ASN-113
+        final Object result = instance.visit(visitable);
+        assertNull(result);
     }
 
     @Test
@@ -69,7 +76,8 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionGeneralizedTime visitable
                 = new AsnSchemaTypeDefinitionGeneralizedTime("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final GeneralizedTimeValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -77,7 +85,8 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionGeneralString visitable
                 = new AsnSchemaTypeDefinitionGeneralString("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final GeneralStringValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -86,7 +95,8 @@ public class ValidationVisitorTest
         final AsnSchemaTypeDefinitionIa5String visitable = new AsnSchemaTypeDefinitionIa5String(
                 "TEST_NAME",
                 AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final Ia5StringValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -96,7 +106,8 @@ public class ValidationVisitorTest
                 "TEST_NAME",
                 ImmutableList.<AsnSchemaNamedTag>of(),
                 AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final IntegerValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -104,7 +115,8 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionNumericString visitable
                 = new AsnSchemaTypeDefinitionNumericString("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final NumericStringValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -113,7 +125,8 @@ public class ValidationVisitorTest
         final AsnSchemaTypeDefinitionOctetString visitable = new AsnSchemaTypeDefinitionOctetString(
                 "TEST_NAME",
                 AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final OctetStringValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -123,7 +136,9 @@ public class ValidationVisitorTest
                 "TEST_NAME",
                 ImmutableList.<AsnSchemaComponentType>of(),
                 AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        // TODO: ASN-113
+        final Object result = instance.visit(visitable);
+        assertNull(result);
     }
 
     @Test
@@ -142,7 +157,9 @@ public class ValidationVisitorTest
         final AsnSchemaTypeDefinitionSet visitable = new AsnSchemaTypeDefinitionSet("TEST_NAME",
                 ImmutableList.<AsnSchemaComponentType>of(),
                 AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        // TODO: ASN-113
+        final Object result = instance.visit(visitable);
+        assertNull(result);
     }
 
     @Test
@@ -160,7 +177,8 @@ public class ValidationVisitorTest
         final AsnSchemaTypeDefinitionUtf8String visitable = new AsnSchemaTypeDefinitionUtf8String(
                 "TEST_NAME",
                 AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final Utf8StringValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 
     @Test
@@ -168,6 +186,7 @@ public class ValidationVisitorTest
     {
         final AsnSchemaTypeDefinitionVisibleString visitable
                 = new AsnSchemaTypeDefinitionVisibleString("TEST_NAME", AsnSchemaConstraint.NULL);
-        assertEquals(null, instance.visit(visitable));
+        final VisibleStringValidator result = instance.visit(visitable);
+        assertNotNull(result);
     }
 }

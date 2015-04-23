@@ -6,7 +6,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
-import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
+import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
 /**
@@ -22,97 +22,103 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Builtin
     // -------------------------------------------------------------------------
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinition.Null visitable)
+    public BuiltinTypeValidator.Null visit(AsnSchemaTypeDefinition.Null visitable)
     {
-        return null;
+        return BuiltinTypeValidator.NULL;
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionBitString visitable)
+    public BitStringValidator visit(AsnSchemaTypeDefinitionBitString visitable)
     {
-        return null;
+        return BitStringValidator.getInstance();
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionChoice visitable)
     {
+        // TODO ASN-113
         return null;
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionEnumerated visitable)
     {
+        // TODO ASN-113
         return null;
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
+    public GeneralizedTimeValidator visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
     {
-        return null;
+        return GeneralizedTimeValidator.getInstance();
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionGeneralString visitable)
+    public GeneralStringValidator visit(AsnSchemaTypeDefinitionGeneralString visitable)
     {
-        return null;
+        return GeneralStringValidator.getInstance();
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionIa5String visitable)
+    public Ia5StringValidator visit(AsnSchemaTypeDefinitionIa5String visitable)
     {
-        return null;
+        return Ia5StringValidator.getInstance();
     }
 
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionInteger visitable)
+    public IntegerValidator visit(AsnSchemaTypeDefinitionInteger visitable)
     {
-        return null;
-    }
-
-    @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionNumericString visitable)
-    {
-        return null;
+        return IntegerValidator.getInstance();
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionOctetString visitable)
+    public NumericStringValidator visit(AsnSchemaTypeDefinitionNumericString visitable)
     {
-        return null;
+        return NumericStringValidator.getInstance();
+    }
+
+    @Override
+    public OctetStringValidator visit(AsnSchemaTypeDefinitionOctetString visitable)
+    {
+        return OctetStringValidator.getInstance();
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSequence visitable)
     {
+        // TODO ASN-113
         return null;
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSequenceOf visitable)
     {
+        // TODO ASN-113
         return null;
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSet visitable)
     {
+        // TODO ASN-113
         return null;
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSetOf visitable)
     {
+        // TODO ASN-113
         return null;
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionUtf8String visitable)
+    public Utf8StringValidator visit(AsnSchemaTypeDefinitionUtf8String visitable)
     {
-        return null;
+        return Utf8StringValidator.getInstance();
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionVisibleString visitable)
+    public VisibleStringValidator visit(AsnSchemaTypeDefinitionVisibleString visitable)
     {
-        return null;
+        return VisibleStringValidator.getInstance();
     }
 }

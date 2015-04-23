@@ -10,6 +10,7 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -22,6 +23,13 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface BuiltinTypeValidator
 {
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+
+    /** null instance */
+    public static final BuiltinTypeValidator.Null NULL = new BuiltinTypeValidator.Null();
+
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -50,4 +58,47 @@ public interface BuiltinTypeValidator
      * @return any failures encountered while validating the bytes
      */
     public ImmutableSet<ByteValidationFailure> validate(byte[] bytes);
+
+    // -------------------------------------------------------------------------
+    // INTERNAL CLASS: Null
+    // -------------------------------------------------------------------------
+
+    /**
+     * Null instance of {@link BuiltinTypeDecoder}.
+     *
+     * <p>The {@code validate} methods will return an empty set.</p>
+     *
+     * @author brightSPARK Labs
+     */
+    public static class Null implements BuiltinTypeValidator
+    {
+        // ---------------------------------------------------------------------
+        // CONSTRUCTION
+        // ---------------------------------------------------------------------
+
+        /**
+         * Default constructor. This is private, use {@link BuiltinTypeValidator#NULL} to obtain an
+         * instance
+         */
+        private Null()
+        {
+        }
+
+        // ---------------------------------------------------------------------
+        // IMPLEMENTATION: BuiltinTypeValidator
+        // ---------------------------------------------------------------------
+
+        @Override
+        public ImmutableSet<DecodedTagValidationFailure> validate(final String tag,
+                final DecodedAsnData decodedAsnData)
+        {
+            return ImmutableSet.of();
+        }
+
+        @Override
+        public ImmutableSet<ByteValidationFailure> validate(final byte[] bytes)
+        {
+            return ImmutableSet.of();
+        }
+    }
 }
