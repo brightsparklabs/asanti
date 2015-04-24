@@ -8,7 +8,7 @@ modeled with concrete classes. This allows data to be validated for conformance
 against a schema, whilst still allowing the ability to process and manipulate
 non-conforming data.
 
-## Setup and Build
+## Setup, Build and Run
 
 ```bash
 git clone git@github.com:brightsparklabs/asanti.git
@@ -18,6 +18,14 @@ cd asanti
 ./gradlew eclipse
 # generate intellij classpath (optional)
 ./gradlew idea
+
+# parse a schema
+./gradlew installDist
+./build/install/asanti/asanti.sh /path/to/example.asn
+# parse a BER file
+./build/install/asanti/asanti.sh /path/to/example.ber
+# decode a BER file against schema
+./build/install/asanti/asanti.sh /path/to/example.asn /path/to/example.ber TopLevelType
 ```
 
 ## Usage
