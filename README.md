@@ -85,12 +85,22 @@ BEGIN
         header  [1] Header,
         body    [2] Body,
         footer  [3] Footer,
-        dueDate [4] Date-Due
+        dueDate [4] Date-Due,
+        version [5] SEQUENCE
+        {
+            majorVersion [0] INTEGER,
+            minorVersion [1] INTEGER
+        },
+        description [6] SET
+        {
+            numberLines [0] INTEGER,
+            summary     [1] OCTET STRING
+        } OPTIONAL
     }
 
     Header ::= SEQUENCE
     {
-        published [0] PublishedMetadata
+        published [0] PublishedMetadata,
     }
 
     Body ::= SEQUENCE
@@ -126,7 +136,13 @@ BEGIN
     Section-Main ::= SEQUENCE
     {
         text       [1] OCTET STRING OPTIONAL,
-        paragraphs [2] SEQUENCE OF Paragraph
+        paragraphs [2] SEQUENCE OF Paragraph,
+        sections   [3] SET OF
+                       SET
+                       {
+                            number [1] INTEGER,
+                            text   [2] OCTET STRING
+                       }
     }
 
     Paragraph ::=  SEQUENCE
@@ -134,6 +150,13 @@ BEGIN
         title        [1] OCTET STRING,
         contributor  [2] Person OPTIONAL,
         points       [3] SEQUENCE OF OCTET STRING
+    }
+
+    References ::= SEQUENCE (SIZE (1..50)) OF
+    SEQUENCE
+    {
+        title [1] OCTET STRING,
+        url   [2] OCTET STRING
     }
 
     Date-Due ::= INTEGER
@@ -163,7 +186,9 @@ BEGIN
         lastName  [2] OCTET STRING,
         title     [3] ENUMERATED
             { mr, mrs, ms, dr, rev } OPTIONAL,
-        gender        Gender OPTIONAL
+        gender        Gender OPTIONAL,
+        maritalStatus CHOICE
+            { Married [0], Single [1] }
     }
 
     Gender ::= ENUMERATED

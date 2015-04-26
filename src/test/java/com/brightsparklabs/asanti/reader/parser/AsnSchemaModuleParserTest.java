@@ -275,7 +275,7 @@ public class AsnSchemaModuleParserTest
         // return mocked AsnSchemaTypeDefinition instances when expected inputs are received
         PowerMockito.mockStatic(AsnSchemaTypeDefinitionParser.class);
         when(AsnSchemaTypeDefinitionParser.parse("Document",
-                "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due }"))
+                "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL }"))
                 .thenReturn(ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions
                         .get(0)));
 
@@ -305,7 +305,7 @@ public class AsnSchemaModuleParserTest
                 mockedAsnSchemaTypeDefinitions.get(6)));
 
         when(AsnSchemaTypeDefinitionParser.parse("Section-Main",
-                "SEQUENCE { text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph }"))
+                "SEQUENCE { text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph, sections [3] SET OF SET { number [1] INTEGER, text [2] OCTET STRING } }"))
                 .thenReturn(ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions
                         .get(7)));
 
@@ -314,9 +314,14 @@ public class AsnSchemaModuleParserTest
                 .thenReturn(ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions
                         .get(8)));
 
+        when(AsnSchemaTypeDefinitionParser.parse("References",
+                "SEQUENCE (SIZE (1..50)) OF SEQUENCE { title [1] OCTET STRING, url [2] OCTET STRING }"))
+                .thenReturn(ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions
+                        .get(9)));
+
         when(AsnSchemaTypeDefinitionParser.parse("Date-Due",
                 "INTEGER { tomorrow(0), three-day(1), week(2) } DEFAULT week")).thenReturn(
-                ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions.get(9)));
+                ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions.get(10)));
 
         final AsnSchemaModule actualModule
                 = AsnSchemaModuleParser.parse(MockAsnSchemaModule.TEST_MODULE_DOCUMENT_PDU);
@@ -337,7 +342,7 @@ public class AsnSchemaModuleParserTest
                 ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions.get(0)));
 
         when(AsnSchemaTypeDefinitionParser.parse("Person",
-                "SEQUENCE { firstName [1] OCTET STRING, lastName [2] OCTET STRING, title [3] ENUMERATED { mr, mrs, ms, dr, rev } OPTIONAL, gender OPTIONAL }"))
+                "SEQUENCE { firstName [1] OCTET STRING, lastName [2] OCTET STRING, title [3] ENUMERATED { mr, mrs, ms, dr, rev } OPTIONAL, gender Gender OPTIONAL, maritalStatus CHOICE { Married [0], Single [1] } }"))
                 .thenReturn(ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions
                         .get(1)));
 
