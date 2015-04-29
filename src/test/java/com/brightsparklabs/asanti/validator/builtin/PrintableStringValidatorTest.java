@@ -39,21 +39,71 @@ public class PrintableStringValidatorTest
     @Test
     public void testValidateBytes() throws Exception
     {
-        // TODO: ASN-105 implement
         // test valid
-        byte[] bytes = new byte[] { 0x00 };
+        byte[] bytes = new byte[1];
+        for (int b = 'Z'; b >= 'A'; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(0, instance.validate(bytes).size());
+        }
+        for (int b = 'z'; b >= 'a'; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(0, instance.validate(bytes).size());
+        }
+        for (int b = '9'; b >= '0'; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(0, instance.validate(bytes).size());
+        }
+        bytes[0] = (byte) ' ';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) '\'';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) '(';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) ')';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) '+';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) ',';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) '-';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) '.';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) '/';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) ':';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) '=';
+        assertEquals(0, instance.validate(bytes).size());
+
+        bytes[0] = (byte) '?';
         assertEquals(0, instance.validate(bytes).size());
 
         // test invalid
-        /*
-        final String errorPrefix = "";
-        bytes[0] = new byte[] { 0x00 };
-        final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
-        assertEquals(1, failures.size());
-        final ByteValidationFailure failure = failures.iterator().next();
-        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(errorPrefix + b, failure.getFailureReason());
-        */
+        final String errorPrefix = "Supplied bytes do not conform to the PrintableString format.";
+
+        for (byte b = Byte.MIN_VALUE; b < 32; b++)
+        {
+            bytes[0] = b;
+            final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
+            assertEquals(1, failures.size());
+            final ByteValidationFailure failure = failures.iterator().next();
+            assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+            assertEquals(errorPrefix, failure.getFailureReason());
+        }
 
         // test empty
         bytes = new byte[0];
