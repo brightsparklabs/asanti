@@ -141,12 +141,21 @@ public final class AsnSchemaTypeDefinitionParser
      * type definitions
      *
      * @throws ParseException
-     *         if any errors occur while parsing the type
+     *         if either of the parameters are {@code null}/empty or any errors occur while parsing
+     *         the type
      */
     public static ImmutableList<AsnSchemaTypeDefinition> parse(String name, String value)
             throws ParseException
     {
         logger.debug("Found type definition: {} = {}", name, value);
+        if (name == null || name.trim().isEmpty())
+        {
+            throw new ParseException("A name must be supplied for a Type Definition", -1);
+        }
+        if (value == null || value.trim().isEmpty())
+        {
+            throw new ParseException("A value must be supplied for a Type Definition", -1);
+        }
 
         // check if defining a SEQUENCE
         Matcher matcher = PATTERN_TYPE_DEFINITION_SEQUENCE.matcher(value);
@@ -431,7 +440,8 @@ public final class AsnSchemaTypeDefinitionParser
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseOctetString(name, constraintText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionOctetString(name, constraint);
     }
 
     /**
@@ -452,7 +462,8 @@ public final class AsnSchemaTypeDefinitionParser
     {
         // TODO ASN-87 - parse list of named bits
         final String constraintText = Strings.nullToEmpty(matcher.group(6));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseBitString(name, constraintText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionBitString(name, constraint);
     }
 
     /**
@@ -472,7 +483,8 @@ public final class AsnSchemaTypeDefinitionParser
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseIA5String(name, constraintText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionIa5String(name, constraint);
     }
 
     /**
@@ -492,7 +504,8 @@ public final class AsnSchemaTypeDefinitionParser
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseUTF8String(name, constraintText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionUtf8String(name, constraint);
     }
 
     /**
@@ -512,7 +525,8 @@ public final class AsnSchemaTypeDefinitionParser
             Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseNumericString(name, constraintText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionNumericString(name, constraint);
     }
 
     /**
@@ -532,7 +546,8 @@ public final class AsnSchemaTypeDefinitionParser
             Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseVisibleString(name, constraintText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionVisibleString(name, constraint);
     }
 
     /**
@@ -552,7 +567,8 @@ public final class AsnSchemaTypeDefinitionParser
             Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralString(name, constraintText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionGeneralString(name, constraint);
     }
 
     /**
@@ -570,7 +586,8 @@ public final class AsnSchemaTypeDefinitionParser
             throws ParseException
     {
         // sub-type constraints are not applicable to GeneralizedTime.
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseGeneralizedTime(name);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraint.NULL;
+        return new AsnSchemaTypeDefinitionGeneralizedTime(name, constraint);
     }
 
     /**
@@ -593,9 +610,8 @@ public final class AsnSchemaTypeDefinitionParser
         final ImmutableList<AsnSchemaNamedTag> distinguishedValues
                 = AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesText);
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
-        return AsnSchemaTypeDefinitionPrimitiveParser.parseInteger(name,
-                distinguishedValues,
-                constraintText);
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTypeDefinitionInteger(name, distinguishedValues, constraint);
     }
 
     /**
