@@ -1,4 +1,4 @@
-# Asanti Design Decisions
+# Design Decisions - ASN.1 Schema Parsing 
 
 ## Component Type Pseudo Type Definitions
 
@@ -41,7 +41,8 @@ IRI-Parameters ::= SEQUENCE {
   -- ...
 }
 
--- somewhere else in file CallContentLinkInformation ::= SEQUENCE {
+-- somewhere else in file
+CallContentLinkInformation ::= SEQUENCE {
   cCLink1Characteristics    [1] CallContentLinkCharacteristics OPTIONAL,
   cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL,
   ...
@@ -74,6 +75,25 @@ For the previous example the name would be:
 
 ```
 generated.IRI-Parameters.callContentLinkInformation
+```
+
+Conceptually, the schema now looks like the following:
+```
+IRI-Parameters ::= SEQUENCE {
+  -- component types
+  -- ...
+
+  callContentLinkInformation [10] generated.IRI-Parameters.CallContentLinkInformation OPTIONAL,
+
+  -- component types
+  -- ...
+}
+
+generated.IRI-Parameters.CallContentLinkInformation ::= SEQUENCE {
+  cCLink1Characteristics    [1] CallContentLinkCharacteristics OPTIONAL,
+  cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL,
+  ...
+}
 ```
 
 ### Store Pseudo Type Definition
