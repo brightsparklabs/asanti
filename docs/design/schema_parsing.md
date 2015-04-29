@@ -1,4 +1,27 @@
-# Design Decisions - ASN.1 Schema Parsing 
+# Design Decisions - ASN.1 Schema Parsing
+
+## Architecture
+
+The components which handle parsing an ASN.1 Schema file have been broken out
+into a series of nested classes. Each class handles a specific area of the
+schema and delegates downwards to lower level parsers.
+
+The hierarchy is as follows:
+
+- `AsnSchemaParser`
+    - `AsnSchemaModuleParser`
+        - `AsnSchemaImportsParser`
+        - `AsnSchemaTypeDefinitionParser`
+            - `AsnSchemaConstraintParser`
+            - `AsnSchemaComponentTypeParser`
+            - `AsnSchemaNamedTagParser`
+
+The general entry point to the parser framework is `AsnSchemaParser`. It
+delegates downwards to each parser as required. Each parser is responsible for
+returning objects as indicated by its name. E.g.
+
+- `AsnSchemaModuleParser` returns `AsnSchemaModule` objects
+- `AsnSchemaTypeDefinitionParser` returns `AsnSchemaTypeDefinition` objects
 
 ## Component Type Pseudo Type Definitions
 
@@ -6,17 +29,15 @@ ASN.1 allows Component Types within a constructed type (SEQUENCE, SET, etc) to
 be defined on the fly (i.e. without an explicit Type Definition). For example:
 
 ```
-IRI-Parameters ::= SEQUENCE {
+IRI-Parameters ::= SEQUENCE
+{
   -- component types
   -- ...
 
-  callContentLinkInformation  [10] SEQUENCE {
+  callContentLinkInformation  [10] SEQUENCE
+  {
     cCLink1Characteristics    [1] CallContentLinkCharacteristics OPTIONAL,
-      -- Information concerning the Content of Communication Link Tx channel established
-      -- toward the LEMF (or the sum signal channel, in case of mono mode).
     cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL,
-      -- Information concerning the Content of Communication Link Rx channel established
-      -- toward the LEMF.
     ...
   } OPTIONAL,
 
@@ -31,7 +52,8 @@ Type Definition.  If it were defined as a Type Definition explicitly, the
 fragment would look like:
 
 ```
-IRI-Parameters ::= SEQUENCE {
+IRI-Parameters ::= SEQUENCE
+{
   -- component types
   -- ...
 
@@ -42,7 +64,8 @@ IRI-Parameters ::= SEQUENCE {
 }
 
 -- somewhere else in file
-CallContentLinkInformation ::= SEQUENCE {
+CallContentLinkInformation ::= SEQUENCE
+{
   cCLink1Characteristics    [1] CallContentLinkCharacteristics OPTIONAL,
   cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL,
   ...
@@ -79,7 +102,8 @@ generated.IRI-Parameters.callContentLinkInformation
 
 Conceptually, the schema now looks like the following:
 ```
-IRI-Parameters ::= SEQUENCE {
+IRI-Parameters ::= SEQUENCE
+{
   -- component types
   -- ...
 
@@ -89,7 +113,8 @@ IRI-Parameters ::= SEQUENCE {
   -- ...
 }
 
-generated.IRI-Parameters.CallContentLinkInformation ::= SEQUENCE {
+generated.IRI-Parameters.CallContentLinkInformation ::= SEQUENCE
+{
   cCLink1Characteristics    [1] CallContentLinkCharacteristics OPTIONAL,
   cCLink2Characteristics    [2] CallContentLinkCharacteristics OPTIONAL,
   ...
@@ -117,7 +142,6 @@ The text of the `Pseudo Type Definition` is formatted to a single line of text.
  `typeDefinitionText` which stores the text of the `Pseudo Type Definition`.
 
 ### Parsing Pseudo Type Definitions
-
 
 Psuedo code illustration:
 
