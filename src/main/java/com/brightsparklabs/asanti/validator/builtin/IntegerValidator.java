@@ -6,12 +6,8 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-
-import java.util.Set;
 
 /**
  * Validator for data of type {@link AsnBuiltinType#Integer}
@@ -59,8 +55,7 @@ public class IntegerValidator extends PrimitiveBuiltinTypeValidator
     @Override
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
-        final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO: ASN-105 implement validation logic
-        return ImmutableSet.copyOf(failures);
+        // No validation required
+        return ImmutableSet.of();
     }
 }

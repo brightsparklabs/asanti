@@ -39,21 +39,12 @@ public class IntegerValidatorTest
     @Test
     public void testValidateBytes() throws Exception
     {
-        // TODO: ASN-105 implement
         // test valid
         byte[] bytes = new byte[] { 0x00 };
         assertEquals(0, instance.validate(bytes).size());
 
-        // test invalid
-        /*
-        final String errorPrefix = "";
-        bytes[0] = new byte[] { 0x00 };
-        final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
-        assertEquals(1, failures.size());
-        final ByteValidationFailure failure = failures.iterator().next();
-        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(errorPrefix + b, failure.getFailureReason());
-        */
+        bytes = new byte[] { (byte) 0xff };
+        assertEquals(0, instance.validate(bytes).size());
 
         // test empty
         bytes = new byte[0];

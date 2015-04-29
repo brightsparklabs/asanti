@@ -39,21 +39,36 @@ public class VisibleStringValidatorTest
     @Test
     public void testValidateBytes() throws Exception
     {
-        // TODO: ASN-105 implement
         // test valid
-        byte[] bytes = new byte[] { 0x00 };
-        assertEquals(0, instance.validate(bytes).size());
+        byte[] bytes = new byte[1];
+        for (int b = 126; b >= 32; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(0, instance.validate(bytes).size());
+        }
 
         // test invalid
-        /*
-        final String errorPrefix = "";
-        bytes[0] = new byte[] { 0x00 };
-        final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
-        assertEquals(1, failures.size());
-        final ByteValidationFailure failure = failures.iterator().next();
-        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(errorPrefix + b, failure.getFailureReason());
-        */
+        final String errorPrefix
+                = "Supplied bytes do not conform to the VisibleString format. All bytes must be within the range 32 - 126. Supplied bytes contain a byte with value: ";
+        for (byte b = Byte.MIN_VALUE; b < 32; b++)
+        {
+            bytes[0] = b;
+            final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
+            assertEquals(1, failures.size());
+            final ByteValidationFailure failure = failures.iterator().next();
+            assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+            assertEquals(errorPrefix + b, failure.getFailureReason());
+        }
+
+        for (byte b = Byte.MAX_VALUE; b > 126; b--)
+        {
+            bytes[0] = b;
+            final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
+            assertEquals(1, failures.size());
+            final ByteValidationFailure failure = failures.iterator().next();
+            assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+            assertEquals(errorPrefix + b, failure.getFailureReason());
+        }
 
         // test empty
         bytes = new byte[0];
