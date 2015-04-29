@@ -2,7 +2,7 @@
 
 ## Categories
 
-There are currently two main categories of models:
+There are two main categories of models:
 
 1. `Data Models` which represent parsed ASN.1 binary data. These are:
     - `AsnData` representing ASN.1 binary data read from a BER/DER ASN.1 file.

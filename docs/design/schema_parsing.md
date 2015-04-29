@@ -1,4 +1,4 @@
-# Design Decisions and Concepts - ASN.1 Schema Parsing
+# Design Decisions and Concepts - Schema Parsing
 
 ## Architecture
 
