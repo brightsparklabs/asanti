@@ -69,6 +69,6 @@ public class Ia5StringValidatorTest
         assertEquals(1, failures.size());
         final ByteValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataMissing, failure.getFailureType());
-        assertEquals("No data present", failure.getFailureReason());
+        assertEquals("No bytes present to validate", failure.getFailureReason());
     }
 }

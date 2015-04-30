@@ -4,7 +4,6 @@
  */
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
@@ -12,6 +11,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -49,15 +49,15 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         // validate against the tag's constraint
         final AsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
         final AsnSchemaConstraint constraint = type.getConstraint();
-        final OperationResult<byte[]> constraintResult = constraint.apply(bytes);
-        if (!constraintResult.wasSuccessful())
+        final ImmutableSet<SchemaConstraintValidationFailure> constraintFailures = constraint.apply(
+                bytes);
+        for (SchemaConstraintValidationFailure constraintFailure : constraintFailures)
         {
             final DecodedTagValidationFailure tagFailure = new DecodedTagValidationFailure(tag,
-                    FailureType.MandatoryFieldMissing,
-                    constraintResult.getFailureReason());
+                    constraintFailure.getFailureType(),
+                    constraintFailure.getFailureReason());
             tagFailures.add(tagFailure);
         }
-
         return ImmutableSet.copyOf(tagFailures);
     }
 
@@ -68,7 +68,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         {
             final ByteValidationFailure failure = new ByteValidationFailure(0,
                     FailureType.DataMissing,
-                    "No data present");
+                    "No bytes present to validate");
             return ImmutableSet.of(failure);
         }
         return validateNonNullBytes(bytes);
