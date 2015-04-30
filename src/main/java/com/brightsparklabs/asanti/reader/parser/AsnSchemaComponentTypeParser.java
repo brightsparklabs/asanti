@@ -38,11 +38,11 @@ public class AsnSchemaComponentTypeParser
      * type definition, type constraints
      */
     private static final Pattern PATTERN_RAW_TYPE = Pattern.compile(
-            "(((SET)|(SEQUENCE))( SIZE ?\\((.+)\\))? OF )?([a-zA-z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
+            "(((SET)|(SEQUENCE))(( SIZE)? \\(.+?\\)\\)?)? OF )?([a-zA-z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
 
     /** pattern to determine whether the raw type is a pseudo type definition */
     private static final Pattern PATTERN_PSEUDO_TYPE = Pattern.compile(
-            "(SEQUENCE \\{|SET \\{|ENUMERATED \\{|CHOICE \\{)(.*?)\\}");
+            "(SEQUENCE *\\{|(SET|SEQUENCE)(( SIZE)? \\(.+?\\)\\)?)? OF (SET|SEQUENCE) *\\{|SET *\\{|ENUMERATED *\\{|CHOICE *\\{)(.*?)\\}");
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
