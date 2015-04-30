@@ -33,36 +33,114 @@ public class Utf8StringValidatorTest
     @Test
     public void testValidateTag() throws Exception
     {
-        // TODO: ASN-105 need to mock DecodedAsnData
+        // TODO: ASN-118 need to mock DecodedAsnData
     }
 
     @Test
     public void testValidateBytes() throws Exception
     {
-        // TODO: ASN-105 implement
-        // test valid
-        byte[] bytes = new byte[] { 0x00 };
+        // test valid - one byte (all ASCII characters)
+        byte[] bytes = new byte[1];
+        for (byte b = Byte.MAX_VALUE; b >= 0; b--)
+        {
+            bytes[0] = b;
+            assertEquals(0, instance.validate(bytes).size());
+        }
+
+        // test valid - two bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11000010, (byte) 0b10000000 };
+        assertEquals(0, instance.validate(bytes).size());
+        bytes = new byte[] { (byte) 0b11011111, (byte) 0b10111111 };
         assertEquals(0, instance.validate(bytes).size());
 
-        // test invalid
-        /*
-        final String errorPrefix = "";
-        bytes[0] = new byte[] { 0x00 };
-        final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
+        // test valid - three bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11100010, (byte) 0b10000000, (byte) 0b10000000 };
+        assertEquals(0, instance.validate(bytes).size());
+        bytes = new byte[] { (byte) 0b11101111, (byte) 0b10111111, (byte) 0b10111111 };
+        assertEquals(0, instance.validate(bytes).size());
+
+        // test valid - four bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11110010, (byte) 0b10000000, (byte) 0b10000000,
+                             (byte) 0b10000000 };
+        assertEquals(0, instance.validate(bytes).size());
+        bytes = new byte[] { (byte) 0b11110000, (byte) 0b10111111, (byte) 0b10111111,
+                             (byte) 0b10111111 };
+        assertEquals(0, instance.validate(bytes).size());
+
+        // test invalid - leading byte requires two trailing bytes
+        bytes = new byte[] { (byte) 0b11000000 };
+        ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
         assertEquals(1, failures.size());
-        final ByteValidationFailure failure = failures.iterator().next();
+        ByteValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(errorPrefix + b, failure.getFailureReason());
-        */
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
+
+        // test invalid - leading byte requires three trailing bytes
+        bytes = new byte[] { (byte) 0b11100000 };
+        failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
+        bytes = new byte[] { (byte) 0b11100000, (byte) 0b10000000 };
+        failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
+
+        // test invalid - leading byte requires four trailing bytes
+        bytes = new byte[] { (byte) 0b11110000 };
+        failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
+        bytes = new byte[] { (byte) 0b11110000, (byte) 0b10000000, (byte) 0b10000000 };
+        failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
+
+        // test invalid - leading byte requires five trailing bytes
+        bytes = new byte[] { (byte) 0b11111000 };
+        failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
+        bytes = new byte[] { (byte) 0b11111000, (byte) 0b10000000, (byte) 0b10000000,
+                             (byte) 0b10000000 };
+        failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
+
+        // test invalid - leading byte requires six trailing bytes
+        bytes = new byte[] { (byte) 0b11111100 };
+        failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
+        bytes = new byte[] { (byte) 0b11111100, (byte) 0b10000000, (byte) 0b10000000,
+                             (byte) 0b10000000, (byte) 0b10000000 };
+        failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals("ASN.1 UTF8String type must be encoded in UTF-8", failure.getFailureReason());
 
         // test empty
         bytes = new byte[0];
         assertEquals(0, instance.validate(bytes).size());
 
         // test null
-        final ImmutableSet<ByteValidationFailure> failures = instance.validate(null);
+        failures = instance.validate(null);
         assertEquals(1, failures.size());
-        final ByteValidationFailure failure = failures.iterator().next();
+        failure = failures.iterator().next();
         assertEquals(FailureType.DataMissing, failure.getFailureType());
         assertEquals("No data present", failure.getFailureReason());
     }

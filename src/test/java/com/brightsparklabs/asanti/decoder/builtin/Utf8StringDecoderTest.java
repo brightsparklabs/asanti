@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.google.common.base.Charsets;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,9 +32,7 @@ public class Utf8StringDecoderTest
     @Test
     public void testDecode() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
-        // test valid
+        // test valid - one byte (all ASCII characters)
         byte[] bytes = new byte[1];
         for (byte b = Byte.MAX_VALUE; b >= 0; b--)
         {
@@ -41,7 +40,28 @@ public class Utf8StringDecoderTest
             assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
         }
 
-        // test invalid
+        // test valid - two bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11000010, (byte) 0b10000000 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+        bytes = new byte[] { (byte) 0b11011111, (byte) 0b10111111 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        // test valid - three bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11100010, (byte) 0b10000000, (byte) 0b10000000 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+        bytes = new byte[] { (byte) 0b11101111, (byte) 0b10111111, (byte) 0b10111111 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        // test valid - four bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11110010, (byte) 0b10000000, (byte) 0b10000000,
+                             (byte) 0b10000000 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+        bytes = new byte[] { (byte) 0b11110000, (byte) 0b10111111, (byte) 0b10111111,
+                             (byte) 0b10111111 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        // test invalid - single byte
+        bytes = new byte[1];
         for (byte b = Byte.MIN_VALUE; b < 0; b++)
         {
             bytes[0] = b;
@@ -54,7 +74,39 @@ public class Utf8StringDecoderTest
             {
             }
         }
-        */
+
+        // test invalid - leading byte requires two trailing bytes
+        try
+        {
+            bytes[0] = (byte) 0b11000000;
+            instance.decode(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
+
+        // test invalid - leading byte requires three trailing bytes
+        try
+        {
+            bytes[0] = (byte) 0b11100000;
+            instance.decode(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
+
+        // test invalid - leading byte requires four trailing bytes
+        try
+        {
+            bytes[0] = (byte) 0b11110000;
+            instance.decode(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
 
         // test null
         try
@@ -70,13 +122,36 @@ public class Utf8StringDecoderTest
     @Test
     public void testDecodeAsString() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
-        // test valid
-        byte[] bytes = "TEST".getBytes(Charsets.UTF_8);
-        assertEquals("TEST", instance.decodeAsString(bytes));
+        // test valid - one byte (all ASCII characters)
+        byte[] bytes = new byte[1];
+        for (byte b = Byte.MAX_VALUE; b >= 0; b--)
+        {
+            bytes[0] = b;
+            assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+        }
 
-        // test invalid
+        // test valid - two bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11000010, (byte) 0b10000000 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+        bytes = new byte[] { (byte) 0b11011111, (byte) 0b10111111 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        // test valid - three bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11100010, (byte) 0b10000000, (byte) 0b10000000 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+        bytes = new byte[] { (byte) 0b11101111, (byte) 0b10111111, (byte) 0b10111111 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        // test valid - four bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11110010, (byte) 0b10000000, (byte) 0b10000000,
+                             (byte) 0b10000000 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+        bytes = new byte[] { (byte) 0b11110000, (byte) 0b10111111, (byte) 0b10111111,
+                             (byte) 0b10111111 };
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        // test invalid - single byte
+        bytes = new byte[1];
         for (byte b = Byte.MIN_VALUE; b < 0; b++)
         {
             bytes[0] = b;
@@ -89,7 +164,39 @@ public class Utf8StringDecoderTest
             {
             }
         }
-        */
+
+        // test invalid - leading byte requires two trailing bytes
+        try
+        {
+            bytes[0] = (byte) 0b11000000;
+            instance.decodeAsString(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
+
+        // test invalid - leading byte requires three trailing bytes
+        try
+        {
+            bytes[0] = (byte) 0b11100000;
+            instance.decodeAsString(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
+
+        // test invalid - leading byte requires four trailing bytes
+        try
+        {
+            bytes[0] = (byte) 0b11110000;
+            instance.decodeAsString(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
 
         // test null
         try
