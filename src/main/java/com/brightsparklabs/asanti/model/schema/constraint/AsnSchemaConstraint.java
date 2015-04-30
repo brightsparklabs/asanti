@@ -5,13 +5,14 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
+import com.google.common.collect.ImmutableSet;
 
 /**
- * Models a Constraint from within a {@link AbstractAsnSchemaTypeDefinition} or
- * {@link AsnSchemaComponentType}
+ * Models a Constraint from within a {@link AbstractAsnSchemaTypeDefinition} or {@link
+ * AsnSchemaComponentType}
  *
  * @author brightSPARK Labs
  */
@@ -22,23 +23,21 @@ public interface AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /** null instance */
-    public static final AsnSchemaConstraintNull NULL = new AsnSchemaConstraintNull();
+    public static final AsnSchemaConstraint.Null NULL = new AsnSchemaConstraint.Null();
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the result from applying the constraint to the supplied data
+     * Applies the constraint to the supplied bytes
      *
-     * @param data
-     *            the data to test
+     * @param bytes
+     *         the bytes to test
      *
-     * @return a successful result if the data conforms to this constraint; an
-     *         unsuccessful result otherwise. The result contains the data which
-     *         was tested to generate the result.
+     * @return any failures encountered in applying the constraint to the supplied bytes
      */
-    public OperationResult<byte[]> apply(byte[] data);
+    public ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTypeDefinitionNull
@@ -47,24 +46,22 @@ public interface AsnSchemaConstraint
     /**
      * Null instance of {@link AbstractAsnSchemaTypeDefinition}
      */
-    public static class AsnSchemaConstraintNull implements AsnSchemaConstraint
+    public static class Null implements AsnSchemaConstraint
     {
         /**
-         * Default constructor. Private, use {@link AsnSchemaConstraint#NULL}
-         * instead to obtain a singleton instance
+         * Default constructor. Private, use {@link AsnSchemaConstraint#NULL} instead to obtain a
+         * singleton instance
          */
-        private AsnSchemaConstraintNull()
-        {
-        }
+        private Null() { }
 
         // ---------------------------------------------------------------------
         // IMPLEMENTATION: AsnSchemaConstraint
         // ---------------------------------------------------------------------
 
         @Override
-        public OperationResult<byte[]> apply(byte[] data)
+        public ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes)
         {
-            return OperationResult.createSuccessfulInstance(data);
+            return ImmutableSet.of();
         }
     }
 }

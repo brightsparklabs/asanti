@@ -5,18 +5,19 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
+import com.google.common.collect.ImmutableSet;
 
 /**
- * Models an 'exact' SIZE constraint from within a
- * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}.
- * E.g. {@code SIZE (10)}.
+ * Models an 'exact' SIZE constraint from within a {@link AbstractAsnSchemaTypeDefinition} or {@link
+ * AsnSchemaComponentType}. E.g. {@code SIZE (10)}.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaExactSizeConstraint implements AsnSchemaConstraint
+public class AsnSchemaExactSizeConstraint extends AbstractAsnSchemaConstraint
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -33,7 +34,7 @@ public class AsnSchemaExactSizeConstraint implements AsnSchemaConstraint
      * Default constructor
      *
      * @param exactLength
-     *            the length the data must be
+     *         the length the data must be
      */
     public AsnSchemaExactSizeConstraint(int exactLength)
     {
@@ -41,30 +42,34 @@ public class AsnSchemaExactSizeConstraint implements AsnSchemaConstraint
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaConstraint
+    // IMPLEMENTATION: AbstractAsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Returns true if the length of the supplied array matches the exact length
-     * of this constraint. The content of the byte array is irrelevant.
+     * Checks if the length of the supplied array matches the exact length of this constraint. The
+     * content of the byte array is irrelevant.
      *
-     * @param data
-     *            the data to test
+     * @param bytes
+     *         the bytes to test
      *
-     * @return {@code true} if the data conforms to this constraint;
-     *         {@code false} otherwise
+     * @return any failures encountered in applying the constraint to the supplied bytes
      */
     @Override
-    public OperationResult<byte[]> apply(byte[] data)
+    public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(byte[] bytes)
     {
-        if (data.length == exactLength)
+        if (bytes.length == exactLength)
         {
-            return OperationResult.createSuccessfulInstance(data);
+            return ImmutableSet.of();
         }
         else
         {
-            final String error = String.format("Expected a value of %d, but found: %d", exactLength, data.length);
-            return OperationResult.createUnsuccessfulInstance(data, error);
+            final String error = String.format("Expected a value of %d, but found: %d",
+                    exactLength,
+                    bytes.length);
+            final SchemaConstraintValidationFailure failure = new SchemaConstraintValidationFailure(
+                    FailureType.SchemaConstraint,
+                    error);
+            return ImmutableSet.of(failure);
         }
     }
 }

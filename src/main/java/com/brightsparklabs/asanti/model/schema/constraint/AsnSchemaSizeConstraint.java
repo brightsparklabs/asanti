@@ -5,18 +5,20 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
+import com.google.common.collect.ImmutableSet;
 
 /**
- * Models a minimum/maximum value 'bounded' SIZE constraint from within a
- * {@link AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}.
- * E.g. {@code SIZE (0 .. 256)}.
+ * Models a minimum/maximum value 'bounded' SIZE constraint from within a {@link
+ * AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g. {@code SIZE (0 ..
+ * 256)}.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
+public class AsnSchemaSizeConstraint extends AbstractAsnSchemaConstraint
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -36,10 +38,9 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
      * Default constructor
      *
      * @param minimumLength
-     *            the minimum length the data can be
-     *
+     *         the minimum length the data can be
      * @param maximumLength
-     *            the minimum length the data can be
+     *         the minimum length the data can be
      */
     public AsnSchemaSizeConstraint(int minimumLength, int maximumLength)
     {
@@ -48,38 +49,37 @@ public class AsnSchemaSizeConstraint implements AsnSchemaConstraint
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaConstraint
+    // IMPLEMENTATION: AbstractAsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Returns true if the length of the supplied array falls between the
-     * minimum and maximum bounds of this constraint. The content of the byte
-     * array is irrelevant.
+     * Checks if the length of the supplied array falls between the minimum and maximum bounds of
+     * this constraint. The content of the byte array is irrelevant.
      *
-     * @param data
-     *            the data to test
+     * @param bytes
+     *         the bytes to test
      *
-     * @return {@code true} if the data conforms to this constraint;
-     *         {@code false} otherwise
+     * @return any failures encountered in applying the constraint to the supplied bytes
      */
     @Override
-    public OperationResult<byte[]> apply(byte[] data)
+    public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(byte[] bytes)
     {
-        final int length = data.length;
+        final int length = bytes.length;
         final boolean conforms = (length >= minimumLength) && (length <= maximumLength);
         if (conforms)
         {
-            return OperationResult.createSuccessfulInstance(data);
+            return ImmutableSet.of();
         }
         else
         {
-            final String error =
-                    String.format("Expected a value between %d and %d, but found: %d",
-                            minimumLength,
-                            maximumLength,
-                            length);
-            return OperationResult.createUnsuccessfulInstance(data, error);
+            final String error = String.format("Expected a value between %d and %d, but found: %d",
+                    minimumLength,
+                    maximumLength,
+                    length);
+            final SchemaConstraintValidationFailure failure = new SchemaConstraintValidationFailure(
+                    FailureType.SchemaConstraint,
+                    error);
+            return ImmutableSet.of(failure);
         }
-
     }
 }
