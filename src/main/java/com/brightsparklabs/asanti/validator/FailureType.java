@@ -17,6 +17,8 @@ public enum FailureType
     DataMissing,
     /** a mandatory field is missing */
     MandatoryFieldMissing,
+    /** data does not conform to an ASN.1 schema constraint */
+    SchemaConstraint,
     /** could not decode raw tag against schema */
     UnknownTag
 }

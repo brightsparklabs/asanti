@@ -4,11 +4,11 @@
  */
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import static org.junit.Assert.*;
-
+import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.common.OperationResult;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link AsnSchemaSizeConstraint}
@@ -26,62 +26,59 @@ public class AsnSchemaExactSizeConstraintTest
     {
         // test minimum
         AsnSchemaExactSizeConstraint instance = new AsnSchemaExactSizeConstraint(0);
-        OperationResult<byte[]> result = instance.apply(new byte[0]);
-        assertEquals(true, result.wasSuccessful());
-        assertEquals("", result.getFailureReason());
-        result = instance.apply(new byte[1]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 0, but found: 1", result.getFailureReason());
-        result = instance.apply(new byte[256]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 0, but found: 256", result.getFailureReason());
-        result = instance.apply(new byte[10000]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 0, but found: 10000", result.getFailureReason());
+        ImmutableSet<SchemaConstraintValidationFailure> failures = instance.apply(new byte[0]);
+        assertEquals(true, failures.isEmpty());
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[1],
+                "Expected a value of 0, but found: 1");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[256],
+                "Expected a value of 0, but found: 256");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[10000],
+                "Expected a value of 0, but found: 10000");
 
         // test large (1 MB)
         instance = new AsnSchemaExactSizeConstraint(1000000);
-        result = instance.apply(new byte[1000000]);
-        assertEquals(true, result.wasSuccessful());
-        assertEquals("", result.getFailureReason());
-        result = instance.apply(new byte[0]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 1000000, but found: 0", result.getFailureReason());
-        result = instance.apply(new byte[1]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 1000000, but found: 1", result.getFailureReason());
-        result = instance.apply(new byte[256]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 1000000, but found: 256", result.getFailureReason());
+        failures = instance.apply(new byte[1000000]);
+        assertEquals(true, failures.isEmpty());
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[0],
+                "Expected a value of 1000000, but found: 0");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[1],
+                "Expected a value of 1000000, but found: 1");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[256],
+                "Expected a value of 1000000, but found: 256");
 
         // test normal
         instance = new AsnSchemaExactSizeConstraint(256);
-        result = instance.apply(new byte[256]);
-        assertEquals(true, result.wasSuccessful());
-        assertEquals("", result.getFailureReason());
-        result = instance.apply(new byte[0]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 256, but found: 0", result.getFailureReason());
-        result = instance.apply(new byte[1]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 256, but found: 1", result.getFailureReason());
-        result = instance.apply(new byte[255]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of 256, but found: 255", result.getFailureReason());
+        failures = instance.apply(new byte[256]);
+        assertEquals(true, failures.isEmpty());
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[0],
+                "Expected a value of 256, but found: 0");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[1],
+                "Expected a value of 256, but found: 1");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[255],
+                "Expected a value of 256, but found: 255");
 
         // test invalid bounds
         instance = new AsnSchemaExactSizeConstraint(Integer.MIN_VALUE);
-        result = instance.apply(new byte[0]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of -2147483648, but found: 0", result.getFailureReason());
-        result = instance.apply(new byte[1]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of -2147483648, but found: 1", result.getFailureReason());
-        result = instance.apply(new byte[255]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of -2147483648, but found: 255", result.getFailureReason());
-        result = instance.apply(new byte[256]);
-        assertEquals(false, result.wasSuccessful());
-        assertEquals("Expected a value of -2147483648, but found: 256", result.getFailureReason());
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[0],
+                "Expected a value of -2147483648, but found: 0");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[1],
+                "Expected a value of -2147483648, but found: 1");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[255],
+                "Expected a value of -2147483648, but found: 255");
+        AsnSchemaConstraintTest.checkFailure(instance,
+                new byte[256],
+                "Expected a value of -2147483648, but found: 256");
     }
 }
