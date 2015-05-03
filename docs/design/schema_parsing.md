@@ -121,6 +121,63 @@ generated.IRI-Parameters.CallContentLinkInformation ::= SEQUENCE
 }
 ```
 
+For the case of a SEQUENCE/SET OF SEQUENCE/SET pseudo type definition, only the inner SEQUENCE or
+SET is extracted as a type definition. For example:
+
+```
+ConferencePartyChange ::= SEQUENCE
+{
+    ...
+    communicating [4] SEQUENCE OF SEQUENCE {
+            partyId [0] SEQUENCE OF PartyId OPTIONAL,
+            cCCId   [1] EXPLICIT CCCId OPTIONAL
+        } OPTIONAL,
+    ....
+}
+```
+
+The inner SEQUENCE pseudo type is extracted out as a type definition with the name
+`generated.ConferencePartyChange.communicating`. The schema would conceptually look like this:
+
+```
+ConferencePartyChange ::= SEQUENCE
+{
+    ...
+    communicating [4] SEQUENCE OF generated.ConferencePartyChange.communicating OPTIONAL,
+    ....
+}
+
+generated.ConferencePartyChange.communicating ::= SEQUENCE
+{
+    partyId [0] SEQUENCE OF PartyId OPTIONAL,
+    cCCId   [1] EXPLICIT CCCId OPTIONAL
+}
+```
+
+For explicit type definitions featuring a SEQUENCE/SET OF SEQUENCE/SET, there is no component type
+name therefore the generated type name would be in the following format:
+
+```
+generated.<containingTypeName>
+```
+
+For example, consider the following explicit type definition for a SEQUENCE OF SEQUENCE:
+
+```
+ GA-Polygon ::= SEQUENCE (SIZE (1..maxNrOfPoints)) OF
+   SEQUENCE
+   {
+     geographicalCoordinates   GeographicalCoordinates,
+     ...
+   }
+```
+
+This type definition would have the inner SEQUENCE pseudo type extracted with a type name of:
+
+```
+generated.GA-Polygon
+```
+
 ### Store Pseudo Type Definition
 
 Psuedo code illustration:
