@@ -687,7 +687,7 @@ public final class AsnSchemaTypeDefinitionParser
     /**
      * Parses pseudo type definitions found in the supplied list of {@link AsnSchemaComponentType}.
      *
-     * <p>Refer to {@code /docs/design.md} for details of the design.
+     * <p>Refer to {@code /docs/design/schema_parsing.md} for details of the design.
      *
      * @param componentTypes
      *         list of component types to parse
@@ -721,7 +721,7 @@ public final class AsnSchemaTypeDefinitionParser
     /**
      * Parses the inner SEQUENCE or SET within a SEQUENCE/SET OF type definition
      *
-     * <p>Refer to {@code /docs/design.md} for details of the design.
+     * <p>Refer to {@code /docs/design/schema_parsing.md} for details of the design.
      *
      * @param types
      *         list of {@link AsnSchemaTypeDefinition} to to which parsed type definitions will be
