@@ -47,11 +47,11 @@ public final class AsnSchemaTypeDefinitionParser
 
     /** pattern to match a SEQUENCE OF type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE_OF = Pattern.compile(
-            "^SEQUENCE( .+)? OF (.+)$");
+            "^SEQUENCE(( SIZE)? \\(.+?\\)\\)?)? OF (.+)$");
 
     /** pattern to match a SET OF type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_SET_OF = Pattern.compile(
-            "^SET( .+)? OF (.+)$");
+            "^SET(( SIZE)? \\(.+?\\)\\)?)? OF (.+)$");
 
     /** pattern to match a CLASS type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_CLASS = Pattern.compile(
@@ -270,14 +270,14 @@ public final class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_SEQUENCE_OF.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseSequenceOf(name, matcher));
+            return parseSequenceOf(name, matcher);
         }
 
         // check if defining a SET OF
         matcher = PATTERN_TYPE_DEFINITION_SET_OF.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseSetOf(name, matcher));
+            return parseSetOf(name, matcher);
         }
 
         // check if defining a CLASS
@@ -622,19 +622,32 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_SEQUENCE_OF}
      *
-     * @return an {@link AsnSchemaTypeDefinitionSequenceOf} representing the parsed data
+     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionSequenceOf parseSequenceOf(String name, Matcher matcher)
-            throws ParseException
+    private static ImmutableList<AsnSchemaTypeDefinition> parseSequenceOf(String name,
+            Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(1));
-        final String elementTypeName = matcher.group(2);
+        String elementTypeName = matcher.group(3);
+
+        final List<AsnSchemaTypeDefinition> typeDefinitions = Lists.newArrayList();
+
+        // check if this is a SEQUENCE OF SEQUENCE/SET and create an explicit type definition
+        // for the inner SEQUENCE or SET
+        if (elementTypeName.startsWith("SEQUENCE") || elementTypeName.startsWith("SET"))
+        {
+            elementTypeName = parseInnerSetOrSequence(typeDefinitions, elementTypeName, name);
+        }
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionSequenceOf(name, elementTypeName, constraint);
+        typeDefinitions.add(new AsnSchemaTypeDefinitionSequenceOf(name,
+                elementTypeName,
+                constraint));
+
+        return ImmutableList.copyOf(typeDefinitions);
     }
 
     /**
@@ -645,25 +658,36 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_SET_OF}
      *
-     * @return an {@link AsnSchemaTypeDefinitionSetOf} representing the parsed data
+     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionSetOf parseSetOf(String name, Matcher matcher)
+    private static ImmutableList<AsnSchemaTypeDefinition> parseSetOf(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(1));
-        final String elementTypeName = matcher.group(2);
+        String elementTypeName = matcher.group(3);
+
+        final List<AsnSchemaTypeDefinition> typeDefinitions = Lists.newArrayList();
+
+        // check if this is a SET OF SEQUENCE/SET and create an explicit type definition
+        // for the inner SEQUENCE or SET
+        if (elementTypeName.startsWith("SEQUENCE") || elementTypeName.startsWith("SET"))
+        {
+            elementTypeName = parseInnerSetOrSequence(typeDefinitions, elementTypeName, name);
+        }
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionSetOf(name, elementTypeName, constraint);
+        typeDefinitions.add(new AsnSchemaTypeDefinitionSetOf(name, elementTypeName, constraint));
+
+        return ImmutableList.copyOf(typeDefinitions);
     }
 
     /**
      * Parses pseudo type definitions found in the supplied list of {@link AsnSchemaComponentType}.
      *
-     * <p>Refer to {@code /docs/design.md} for details of the design.
+     * <p>Refer to {@code /docs/design/schema_parsing.md} for details of the design.
      *
      * @param componentTypes
      *         list of component types to parse
@@ -692,5 +716,45 @@ public final class AsnSchemaTypeDefinitionParser
             }
         }
         return parsedTypes;
+    }
+
+    /**
+     * Parses the inner SEQUENCE or SET within a SEQUENCE/SET OF type definition
+     *
+     * <p>Refer to {@code /docs/design/schema_parsing.md} for details of the design.
+     *
+     * @param types
+     *         list of {@link AsnSchemaTypeDefinition} to to which parsed type definitions will be
+     *         added to
+     * @param typeDefinitionText
+     *         the type definition text of the SEQUENCE or SET
+     * @param containingTypeName
+     *         the name of the containing type definition
+     *
+     * @return the generated name of the inner SEQUENCE or SET type definition
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+    private static String parseInnerSetOrSequence(List<AsnSchemaTypeDefinition> types,
+            String typeDefinitionText, String containingTypeName) throws ParseException
+    {
+        final String typeName;
+
+        if (!containingTypeName.startsWith("generated"))
+        {
+            // the SEQUENCE/SET OF type is an explicit type definition, auto-generate the pseudo
+            // SEQUENCE type in the format generated.<containingTypeName>
+            typeName = "generated." + containingTypeName;
+        }
+        else
+        {
+            // the SEQUENCE/SET OF type is a defined within a Pseudo Type definition, use the
+            // already generated Pseudo Type name
+            typeName = containingTypeName;
+        }
+
+        types.addAll(parse(typeName, typeDefinitionText));
+        return typeName;
     }
 }
