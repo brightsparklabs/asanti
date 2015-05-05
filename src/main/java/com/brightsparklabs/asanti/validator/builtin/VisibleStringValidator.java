@@ -56,14 +56,18 @@ public class VisibleStringValidator extends PrimitiveBuiltinTypeValidator
     // IMPLEMENTATION: PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------
 
+    // TODO ASN-105 (review): this seems to be the same validation as PrintableStringValidator. Can we just sub-class and change error message? Perhaps make error a param to constructor than call super(errorMessage)?
+
     @Override
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
 
+        // TODO ASN-105 (review): use enhanced for loop: for(byte b : bytes)
         for (int i = 0; i < bytes.length; i++)
         {
             byte b = bytes[i];
+            // TODO ASN-105 (review): use com.brightsparklabs.asanti.common.ByteArrays.containsNonPrintableChars()
             if (b < 32 || b > 126)
             {
                 final String error =

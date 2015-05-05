@@ -39,6 +39,7 @@ public class PrintableStringValidatorTest
     @Test
     public void testValidateBytes() throws Exception
     {
+        // TODO ASN-105 (review): this is unnecessary long, just use for(byte b = 32; b < 127; b++)
         // test valid
         byte[] bytes = new byte[1];
         for (int b = 'Z'; b >= 'A'; b--)
@@ -104,6 +105,8 @@ public class PrintableStringValidatorTest
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
             assertEquals(errorPrefix, failure.getFailureReason());
         }
+
+        // TODO ASN-105 (review): also test 127 (Byte.MAX_VALUE) as it is invalid
 
         // test empty
         bytes = new byte[0];
