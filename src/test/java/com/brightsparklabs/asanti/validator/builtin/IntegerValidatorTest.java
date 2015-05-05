@@ -46,6 +46,8 @@ public class IntegerValidatorTest
         bytes = new byte[] { (byte) 0xff };
         assertEquals(0, instance.validate(bytes).size());
 
+        // TODO ASN-105 (review): do some test for multiple bytes as well. Integer type is unbounded, so try to test some big numbers (e.g. exceeding Long.MAX_VALUE)
+
         // test empty
         bytes = new byte[0];
         assertEquals(0, instance.validate(bytes).size());

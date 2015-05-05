@@ -60,6 +60,7 @@ public class VisibleStringValidatorTest
             assertEquals(errorPrefix + b, failure.getFailureReason());
         }
 
+        // TODO ASN-105 (review): Byte.MAX_VALUE is 127, no need for a loop here
         for (byte b = Byte.MAX_VALUE; b > 126; b--)
         {
             bytes[0] = b;
