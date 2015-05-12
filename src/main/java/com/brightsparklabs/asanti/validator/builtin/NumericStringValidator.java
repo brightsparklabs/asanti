@@ -60,16 +60,12 @@ public class NumericStringValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO ASN-105 (review): use enhanced for loop: for(byte b : bytes)
         for (int i = 0; i < bytes.length; i++)
         {
             byte b = bytes[i];
             if (b < '0' || b > '9')
             {
-                // TODO ASN-105 (review): instead of '48 - 57' use '0x30 - 0x39' (this makes more sense to our users)
-                final String error =
-                        "Supplied bytes do not conform to the NumericString format. All bytes must be within the range '0' - '9' (48 - 57). Supplied bytes contain a byte with value: "
-                                + b;
+                final String error = NUMERICSTRING_VALIDATION_ERROR + b;
                 final ByteValidationFailure failure = new ByteValidationFailure(i,
                         FailureType.DataIncorrectlyFormatted,
                         error);

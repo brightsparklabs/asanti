@@ -60,16 +60,13 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO ASN-105 (review): use enhanced for loop: for(byte b : bytes)
         for (int i = 0; i < bytes.length; i++)
         {
             byte b = bytes[i];
 
             if (!isPrintableByte(b))
             {
-
-                // TODO ASN-105 (review): let's move all error strings into string constants stored in 'BuiltinTypeValidator' interface. Makes it easier to manage/internationalise
-                final String error = "Supplied bytes do not conform to the PrintableString format.";
+                final String error = PRINTABLESTRING_VALIDATION_ERROR + b;
                 final ByteValidationFailure failure = new ByteValidationFailure(i,
                         FailureType.DataIncorrectlyFormatted,
                         error);
@@ -79,8 +76,6 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
 
         return ImmutableSet.copyOf(failures);
     }
-
-    // TODO ASN-105 (review): get rid of this, use com.brightsparklabs.asanti.common.ByteArrays.containsNonPrintableChars()
 
     /**
      * Returns true if byte is within the range conforming to PrintableString format. The range
