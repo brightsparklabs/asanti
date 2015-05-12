@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.common.ByteArrays;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -60,7 +61,15 @@ public class VisibleStringValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO: ASN-105 implement validation logic
+
+        if (ByteArrays.containsNonPrintableChars(bytes)) {
+            final String error = BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR;
+            final ByteValidationFailure failure = new ByteValidationFailure(bytes.length,
+                    FailureType.DataIncorrectlyFormatted,
+                    error);
+            failures.add(failure);
+        }
+
         return ImmutableSet.copyOf(failures);
     }
 }
