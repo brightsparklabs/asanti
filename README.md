@@ -13,7 +13,7 @@ non-conforming data.
 ```bash
 git clone git@github.com:brightsparklabs/asanti.git
 cd asanti
-./gradlew build
+./gradlew -x signArchives build
 # generate eclipse classpath (optional)
 ./gradlew eclipse
 # generate intellij classpath (optional)
