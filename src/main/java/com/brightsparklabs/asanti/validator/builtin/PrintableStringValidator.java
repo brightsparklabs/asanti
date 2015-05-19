@@ -60,7 +60,59 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO: ASN-105 implement validation logic
+        for (int i = 0; i < bytes.length; i++)
+        {
+            byte b = bytes[i];
+
+            if (!isPrintableByte(b))
+            {
+                final String error = PRINTABLESTRING_VALIDATION_ERROR + String.format("0x%02X ", b);
+                final ByteValidationFailure failure = new ByteValidationFailure(i,
+                        FailureType.DataIncorrectlyFormatted,
+                        error);
+                failures.add(failure);
+            }
+        }
+
         return ImmutableSet.copyOf(failures);
+    }
+
+    /**
+     * Returns true if byte is within the range conforming to PrintableString format. The range
+     * comprises of: A, B, ..., Z a, b, ..., z 0, 1, ..., 9 (space) ' ( ) + , - . / : = ?
+     *
+     * @return true if byte is within the range conforming to PrintableString format
+     */
+    private boolean isPrintableByte(final byte b)
+    {
+        if ((b >= 'A') && (b <= 'Z'))
+        {
+            return true;
+        }
+        if ((b >= 'a') && (b <= 'z'))
+        {
+            return true;
+        }
+        if ((b >= '0') && (b <= '9'))
+        {
+            return true;
+        }
+        switch (b)
+        {
+            case ' ':
+            case '\'':
+            case '(':
+            case ')':
+            case '+':
+            case ',':
+            case '-':
+            case '.':
+            case '/':
+            case ':':
+            case '=':
+            case '?':
+                return true;
+        }
+        return false;
     }
 }

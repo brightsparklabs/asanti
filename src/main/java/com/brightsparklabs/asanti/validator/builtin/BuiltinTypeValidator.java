@@ -24,6 +24,26 @@ import com.google.common.collect.ImmutableSet;
 public interface BuiltinTypeValidator
 {
     // -------------------------------------------------------------------------
+    // CONSTANTS
+    // -------------------------------------------------------------------------
+
+    /** validation error string for IA5String failures */
+    public static final String IA5STRING_VALIDATION_ERROR
+            = "Supplied bytes do not conform to the IA5String format. All bytes must be within the range 0x00 - 0x7f. Supplied bytes contain a byte with invalid value: ";
+
+    /** validation error string for NumericString failures */
+    public static final String NUMERICSTRING_VALIDATION_ERROR
+            = "Supplied bytes do not conform to the NumericString format. All bytes must be within the range '0' - '9' (0x30 - 0x39). Supplied bytes contain a byte with invalid value: ";
+
+    /** validation error string for PrintableString failures */
+    public static final String PRINTABLESTRING_VALIDATION_ERROR
+            = "Supplied bytes do not conform to the PrintableString format. Supplied bytes contain a byte with invalid value: ";
+
+    /** validation error string for VisibleString failures */
+    public static final String VISIBLESTRING_VALIDATION_ERROR
+            = "Supplied bytes do not conform to the VisibleString format. All bytes must be within the range 0x20 - 0x7e. Supplied bytes contain invalid values: ";
+
+    // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
