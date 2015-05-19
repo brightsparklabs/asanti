@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -17,7 +18,6 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link Utf8StringValidator}
@@ -44,17 +44,11 @@ public class Utf8StringValidatorTest
         final AsnSchemaTypeDefinition type = MockAsnSchemaTypeDefinition.builder(
                 "MockUtf8StringType",
                 AsnBuiltinType.Utf8String).setConstraint(new AsnSchemaSizeConstraint(1, 3)).build();
-        final DecodedAsnData mockDecodedAsnData = mock(DecodedAsnData.class);
-        when(mockDecodedAsnData.getType(anyString())).thenReturn(type);
-        when(mockDecodedAsnData.getBytes("/valid")).thenReturn(new byte[] { (byte) 0b11000010,
-                                                                            (byte) 0b10000000 });
-        when(mockDecodedAsnData.getBytes("/invalid/bytes")).thenReturn(new byte[] {
-                (byte) 0b11000010 });
-        when(mockDecodedAsnData.getBytes("/invalid/constraint")).thenReturn(new byte[] { 0x01, 0x02,
-                                                                                         0x03,
-                                                                                         0x04 });
-        when(mockDecodedAsnData.getBytes("/empty")).thenReturn(new byte[0]);
-        when(mockDecodedAsnData.getBytes("/null")).thenReturn(null);
+        final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
+                .addBytes("/valid", new byte[] { (byte) 0b11000010, (byte) 0b10000000 })
+                .addBytes("/invalid/bytes", new byte[] { (byte) 0b11000010 })
+                .addBytes("/invalid/constraint", new byte[] { 0x01, 0x02, 0x03, 0x04 })
+                .build();
 
         // test valid
         ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",

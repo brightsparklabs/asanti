@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -19,8 +20,6 @@ import org.junit.Test;
 import java.math.BigInteger;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link IntegerValidator}
@@ -49,17 +48,12 @@ public class IntegerValidatorTest
                 .setConstraint(new AsnSchemaNumericValueConstraint(BigInteger.valueOf(1),
                         BigInteger.valueOf(32639)))
                 .build();
-
-        final DecodedAsnData mockDecodedAsnData = mock(DecodedAsnData.class);
-        when(mockDecodedAsnData.getType(anyString())).thenReturn(type);
-        // 32639 within constraint
-        when(mockDecodedAsnData.getBytes("/valid")).thenReturn(new byte[] { (byte) 0b01111111,
-                                                                            (byte) 0b01111111 });
-        // 32640 outside constraint (1..32639)
-        when(mockDecodedAsnData.getBytes("/invalid/constraint")).thenReturn(new byte[] {
-                (byte) 0b01111111, (byte) 0b10000000 });
-        when(mockDecodedAsnData.getBytes("/empty")).thenReturn(new byte[0]);
-        when(mockDecodedAsnData.getBytes("/null")).thenReturn(null);
+        final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
+                // 32639 within constraint
+                .addBytes("/valid", new byte[] { (byte) 0b01111111, (byte) 0b01111111 })
+                        // 32640 outside constraint (1..32639)
+                .addBytes("/invalid/constraint",
+                        new byte[] { (byte) 0b01111111, (byte) 0b10000000 }).build();
 
         // test valid
         ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",

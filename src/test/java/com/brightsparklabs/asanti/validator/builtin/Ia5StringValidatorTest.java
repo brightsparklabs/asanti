@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -17,8 +18,6 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link Ia5StringValidator}
@@ -46,19 +45,11 @@ public class Ia5StringValidatorTest
                 = MockAsnSchemaTypeDefinition.builder("MockIa5StringType", AsnBuiltinType.Ia5String)
                 .setConstraint(new AsnSchemaExactSizeConstraint(5))
                 .build();
-        final DecodedAsnData mockDecodedAsnData = mock(DecodedAsnData.class);
-        when(mockDecodedAsnData.getType(anyString())).thenReturn(type);
-        when(mockDecodedAsnData.getBytes("/valid")).thenReturn(new byte[] { '0', '1', '2', '3',
-                                                                            '4' });
-        when(mockDecodedAsnData.getBytes("/invalid/bytes")).thenReturn(new byte[] { '0', '1', '2',
-                                                                                    '3',
-                                                                                    (byte) 0xFF });
-        when(mockDecodedAsnData.getBytes("/invalid/constraint")).thenReturn(new byte[] { '0', '1',
-                                                                                         '2', '3',
-                                                                                         '4',
-                                                                                         '5' });
-        when(mockDecodedAsnData.getBytes("/empty")).thenReturn(new byte[0]);
-        when(mockDecodedAsnData.getBytes("/null")).thenReturn(null);
+        final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
+                .addBytes("/valid", new byte[] { '0', '1', '2', '3', '4' })
+                .addBytes("/invalid/bytes", new byte[] { '0', '1', '2', '3', (byte) 0xFF })
+                .addBytes("/invalid/constraint", new byte[] { '0', '1', '2', '3', '4', '5' })
+                .build();
 
         // test valid
         ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",
