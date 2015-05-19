@@ -67,7 +67,7 @@ public class PrintableStringValidatorTest
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(BuiltinTypeValidator.PRINTABLESTRING_VALIDATION_ERROR + 37,
+        assertEquals(BuiltinTypeValidator.PRINTABLESTRING_VALIDATION_ERROR + "0x25",
                 failure.getFailureReason());
 
         // test invalid - constraint
@@ -172,7 +172,7 @@ public class PrintableStringValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix + b, failure.getFailureReason());
+            assertEquals(errorPrefix + String.format("0x%02X", b), failure.getFailureReason());
         }
 
         {
@@ -181,7 +181,8 @@ public class PrintableStringValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix + bytes[0], failure.getFailureReason());
+            assertEquals(errorPrefix + String.format("0x%02X", bytes[0]),
+                    failure.getFailureReason());
         }
 
         // test empty

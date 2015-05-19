@@ -62,8 +62,10 @@ public class VisibleStringValidator extends PrimitiveBuiltinTypeValidator
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
 
-        if (ByteArrays.containsNonPrintableChars(bytes)) {
-            final String error = BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR;
+        if (ByteArrays.containsNonPrintableChars(bytes))
+        {
+            final String error = BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR
+                    + ByteArrays.toHexString(bytes);
             final ByteValidationFailure failure = new ByteValidationFailure(bytes.length,
                     FailureType.DataIncorrectlyFormatted,
                     error);

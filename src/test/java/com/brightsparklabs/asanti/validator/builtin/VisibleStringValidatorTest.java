@@ -52,7 +52,8 @@ public class VisibleStringValidatorTest
         when(mockDecodedAsnData.getBytes("/valid")).thenReturn(new byte[] { '1', '2', '3', '4', '5',
                                                                             '6', '7', '8', '9',
                                                                             '0' });
-        when(mockDecodedAsnData.getBytes("/invalid/bytes")).thenReturn(new byte[] { (byte) 0x7F });
+        when(mockDecodedAsnData.getBytes("/invalid/bytes")).thenReturn(new byte[] { (byte) 0x7F,
+                                                                                    (byte) 0x00 });
         when(mockDecodedAsnData.getBytes("/invalid/constraint")).thenReturn(new byte[] { '1', '2',
                                                                                          '3', '4',
                                                                                          '5', '6',
@@ -72,7 +73,7 @@ public class VisibleStringValidatorTest
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR,
+        assertEquals(BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR + "0x7f00",
                 failure.getFailureReason());
 
         // test invalid - constraint
@@ -132,26 +133,24 @@ public class VisibleStringValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix, failure.getFailureReason());
+            assertEquals(errorPrefix + String.format("0x%02x", b), failure.getFailureReason());
         }
 
-        {
-            bytes[0] = Byte.MAX_VALUE;
-            final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
-            assertEquals(1, failures.size());
-            final ByteValidationFailure failure = failures.iterator().next();
-            assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix, failure.getFailureReason());
-        }
+        bytes[0] = Byte.MAX_VALUE;
+        ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
+        assertEquals(1, failures.size());
+        ByteValidationFailure failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        assertEquals(errorPrefix + "0x7f", failure.getFailureReason());
 
         // test empty
         bytes = new byte[0];
         assertEquals(0, instance.validate(bytes).size());
 
         // test null
-        final ImmutableSet<ByteValidationFailure> failures = instance.validate(null);
+        failures = instance.validate(null);
         assertEquals(1, failures.size());
-        final ByteValidationFailure failure = failures.iterator().next();
+        failure = failures.iterator().next();
         assertEquals(FailureType.DataMissing, failure.getFailureType());
         assertEquals("No bytes present to validate", failure.getFailureReason());
     }

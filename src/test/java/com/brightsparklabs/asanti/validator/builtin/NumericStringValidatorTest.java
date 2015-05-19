@@ -67,7 +67,7 @@ public class NumericStringValidatorTest
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(BuiltinTypeValidator.NUMERICSTRING_VALIDATION_ERROR + 120,
+        assertEquals(BuiltinTypeValidator.NUMERICSTRING_VALIDATION_ERROR + "0x78",
                 failure.getFailureReason());
 
         // test invalid - constraint
@@ -124,7 +124,7 @@ public class NumericStringValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix + b, failure.getFailureReason());
+            assertEquals(errorPrefix + String.format("0x%02X", b), failure.getFailureReason());
         }
 
         for (byte b = Byte.MAX_VALUE; b > '9'; b--)
@@ -134,7 +134,7 @@ public class NumericStringValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix + b, failure.getFailureReason());
+            assertEquals(errorPrefix + String.format("0x%02X", b), failure.getFailureReason());
         }
 
         // test empty

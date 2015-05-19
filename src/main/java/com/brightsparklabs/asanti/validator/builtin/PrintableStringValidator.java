@@ -66,7 +66,7 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
 
             if (!isPrintableByte(b))
             {
-                final String error = PRINTABLESTRING_VALIDATION_ERROR + b;
+                final String error = PRINTABLESTRING_VALIDATION_ERROR + String.format("0x%02X ", b);
                 final ByteValidationFailure failure = new ByteValidationFailure(i,
                         FailureType.DataIncorrectlyFormatted,
                         error);

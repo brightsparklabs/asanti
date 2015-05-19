@@ -70,7 +70,7 @@ public class Ia5StringValidatorTest
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(BuiltinTypeValidator.IA5STRING_VALIDATION_ERROR + -1,
+        assertEquals(BuiltinTypeValidator.IA5STRING_VALIDATION_ERROR + "0xFF",
                 failure.getFailureReason());
 
         // test invalid - constraint
@@ -130,7 +130,7 @@ public class Ia5StringValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix + b, failure.getFailureReason());
+            assertEquals(errorPrefix + String.format("0x%02X", b), failure.getFailureReason());
         }
 
         // test empty
