@@ -4,7 +4,7 @@
 
 A dynamic ASN.1 Parser for decoding tagged BER/DER data. Asanti allows a schema
 to be layered on top of parsed data rather than forcing the schema to be
-modeled with concrete classes. This allows data to be validated for conformance
+modelled with concrete classes. This allows data to be validated for conformance
 against a schema, whilst still allowing the ability to process and manipulate
 non-conforming data.
 
@@ -85,7 +85,7 @@ BEGIN
         header  [1] Header,
         body    [2] Body,
         footer  [3] Footer,
-        dueDate [4] Date-Due
+        dueDate [4] Date-Due DEFAULT week
     }
 
     Header ::= SEQUENCE
