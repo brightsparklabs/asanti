@@ -60,7 +60,53 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO: ASN-105 implement validation logic
+
+        // Check encoding of first byte
+        if (bytes.length > 0)
+        {
+            int firstByte = bytes[0] & 0xFF;
+            if (firstByte > 0x7F)
+            {
+                final String error = OID_VALIDATION_ERROR + String.format("0x%02X ", firstByte);
+                final ByteValidationFailure failure = new ByteValidationFailure(0,
+                        FailureType.DataIncorrectlyFormatted,
+                        error);
+                failures.add(failure);
+            }
+
+            // Check the encoding of all bytes.
+            long currentSID = 0;
+
+            for (int i = 1; i < bytes.length; i++)
+            {
+                byte b = bytes[i];
+                int currentByte = b & 0xFF;
+                currentSID = (currentSID << 7) | (currentByte & 0x7F);
+
+                // SID may be encoded across multiple octets. If signed bit is not set, this is the
+                // last (or only) encoded octet.
+                if ((currentByte & 0x80) == 0)
+                {
+                    // No errors in current sequence of bytes. Check the next SID.
+                    currentSID = 0;
+                }
+                else
+                {
+                    // If the signed bit on the last byte is set, the encoding is incomplete.
+                    if (i == bytes.length - 1)
+                    {
+                        final String error = OID_VALIDATION_ERROR_INCOMPLETE + String.format(
+                                "0x%02X ",
+                                b);
+                        final ByteValidationFailure failure = new ByteValidationFailure(i,
+                                FailureType.DataIncorrectlyFormatted,
+                                error);
+                        failures.add(failure);
+                    }
+                }
+            }
+        }
+
         return ImmutableSet.copyOf(failures);
     }
 }
