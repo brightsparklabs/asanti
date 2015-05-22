@@ -63,6 +63,12 @@ public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger>
                 bytes);
         DecodeException.throwIfHasFailures(failures);
         // TODO: ASN-107 implement
-        return null;
+        //return null;
+
+        // MJF - just for now, so I can do ASN-123 against a schema with an INTEGER in it, I'll provide this
+        // mechanism, which for at least 8 and 16 bit positive integers that I have tried...
+        // Whoever does this actual task needs to verify negative numbers, byte ordering and all those cases
+        // work with this mechanism.
+        return new BigInteger(bytes);
     }
 }
