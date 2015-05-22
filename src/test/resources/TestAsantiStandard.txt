@@ -1,0 +1,36 @@
+doc Document ::=
+{
+  header
+  {
+    published { date "201501020000Z"}
+  },
+  body
+  {
+    lastModified
+    {
+      date "2015-01-01",
+      modifiedBy {firstName '446f6e616c64'H, lastName '4475636b'H}
+    },
+    content
+    {
+      paragraphs
+      {
+        {
+          title '5061726167726170682031'H,
+          points {'506f696e7420312e31'H, '506f696e7420312e32'H, '506f696e7420312e33'H}
+        },
+        {
+          title '5061726167726170682032'H,
+          points {'506f696e7420322e31'H, '506f696e7420322e32'H, '506f696e7420322e33'H}
+        }
+      }
+    }
+  },
+  footer
+  {
+    authors    {
+      {firstName '4d69636b6579'H, lastName '4d6f757365'H},
+      {firstName '446f6e616c64'H, lastName '4475636b'H}
+    }
+  }
+}

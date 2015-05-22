@@ -1,0 +1,9 @@
+first-man Human ::= 
+{  
+    foo 
+    {
+        bar 1
+    }
+    name "Adam", 
+    age 256
+}
