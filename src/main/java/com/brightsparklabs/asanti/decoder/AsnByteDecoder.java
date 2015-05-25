@@ -277,7 +277,7 @@ public class AsnByteDecoder
      */
     public static BigInteger decodeAsInteger(byte[] bytes) throws DecodeException
     {
-        return BigInteger.ZERO;
+        return IntegerDecoder.getInstance().decode(bytes);
     }
 
     /**
