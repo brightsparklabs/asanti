@@ -6,8 +6,12 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import java.util.Set;
 
 /**
  * Validator for data of type {@link AsnBuiltinType#Integer}
@@ -55,7 +59,15 @@ public class IntegerValidator extends PrimitiveBuiltinTypeValidator
     @Override
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
-        // No validation required
-        return ImmutableSet.of();
+        final Set<ByteValidationFailure> failures = Sets.newHashSet();
+        if (bytes.length == 0)
+        {
+            final String error = "ASN.1 INTEGER type must contain at least one byte. Supplied array contains 0 bytes";
+            final ByteValidationFailure failure = new ByteValidationFailure(bytes.length,
+                    FailureType.DataIncorrectlyFormatted,
+                    error);
+            failures.add(failure);
+        }
+        return ImmutableSet.copyOf(failures);
     }
 }
