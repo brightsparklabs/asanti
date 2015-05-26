@@ -61,6 +61,7 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
 
+        // TODO (review ASN-114) - MJF. Are we sure that a 0 byte input is valid???  What would be an appropriate return value?
         // Check encoding of first byte
         if (bytes.length > 0)
         {
@@ -73,6 +74,25 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
                         error);
                 failures.add(failure);
             }
+
+            /* TODO (review ASN-114) - MJF.  If the only failure is that the last byte has
+             * its top bit set then do we actually need to loop through?
+             * ie can we just do:
+
+            int i = bytes.length - 1;
+            if (i > 1)
+            {
+                byte b = bytes[i];
+                if ((b & (byte) 0x80) != 0) {
+                    final String error = OID_VALIDATION_ERROR_INCOMPLETE +
+                                         String.format("0x%02X ", b);
+                    final ByteValidationFailure failure = new ByteValidationFailure(i,
+                            FailureType.DataIncorrectlyFormatted,
+                            error);
+                    failures.add(failure);
+                }
+            }
+            */
 
             // Check the encoding of all bytes.
             long currentSID = 0;
@@ -105,6 +125,7 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
                     }
                 }
             }
+
         }
 
         return ImmutableSet.copyOf(failures);

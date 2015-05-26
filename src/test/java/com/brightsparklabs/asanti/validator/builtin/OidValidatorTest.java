@@ -107,6 +107,13 @@ public class OidValidatorTest
                              (byte) 0x10 };
         assertEquals(0, instance.validate(bytes).size());
 
+
+        // TODO (review ASN-114) added extra case
+        // test invalid multiple octets
+        // OID is incomplete
+        bytes = new byte[] { (byte) 0x2B, (byte) 0x80 };
+        assertEquals(1, instance.validate(bytes).size());
+
         // test invalid multiple octets
         // OID is incomplete
         bytes = new byte[] { (byte) 0x2B, (byte) 0xFF, (byte) 0xFF };

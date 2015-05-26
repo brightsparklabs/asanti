@@ -63,6 +63,11 @@ public class OidDecoder extends AbstractBuiltinTypeDecoder<String>
         long currentSID = 0;
         StringBuilder oidBuilder = new StringBuilder();
 
+        /* TODO (review ASN-114) - MJF. Are we sure that a 0 byte input is valid???  What is the return value?
+         * I don't think it is valid, and the validator should catch that, meaning we won't need this check.
+         * But please verify if is it valid to have 0 bytes.
+         */
+
         // The first two sub IDs are encoded into the first byte
         if (bytes.length > 0)
         {
