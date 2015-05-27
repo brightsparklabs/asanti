@@ -55,7 +55,7 @@ public class AsnDecoderTest {
          * manage this dependency/coupling, eg should we auto generate those files etc?
          */
 
-
+/*
         logger.info("Testing just the ber");
         // TODO - how do I reference this file properly???
         //final File berFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\TestMinData.ber");
@@ -90,13 +90,16 @@ public class AsnDecoderTest {
         assertEquals(32, big.intValue());
 
         assertEquals("Am expecting one PDU", 1, count);
-
+*/
     }
 
     @Test
     public void testDecodeAsnData1() throws Exception
     {
+/*
         logger.info("testing ber against schema");
+        //final File asnFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\TestMostSimpleEXPLICITTagging.asn");
+        //final File berFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\TestMostSimpleEXPLICITTagging.ber");
         final File asnFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\TestMostSimple.asn");
         final File berFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\TestMostSimple.ber");
         final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, asnFile, "Human");
@@ -127,20 +130,81 @@ public class AsnDecoderTest {
         String s = new String(b);
         logger.info("{} is {}", tag, s);
 
+        String name = (String)pdu.getDecodedObject(tag);
+
         b = pdu.getBytes("/Human");
         logger.info("/Human is {}", b);
 
-
+*/
     }
 
     @Test
     public void testDecodeAsnData2() throws Exception
     {
+/*
+        logger.info("testing ber against schema");
+        final File asnFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\barTypeDef.asn");
+        final File berFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\bar.ber");
+        final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, asnFile, "Bar");
+
+
+        for (int i = 0; i < allDecodedData.size(); i++)
+        {
+            logger.info("Parsing PDU[{}]", i);
+            final DecodedAsnData pdu = allDecodedData.get(i);
+            for (String tag : pdu.getTags())
+            {
+                logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("\t\tType: {} builtinType {} ", pdu.getType(tag).getName(), pdu.getType(tag).getBuiltinType());
+                assertTrue("Tag is found with contains", pdu.contains(tag));
+            }
+            for (String tag : pdu.getUnmappedTags())
+            {
+                logger.info("?\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("\t\tType: {} builtinType{} ", pdu.getType(tag).getName(), pdu.getType(tag).getBuiltinType());
+                assertTrue("Tag is found with contains", pdu.contains(tag));
+            }
+        }
+*/
     }
 
     @Test
     public void testReadAsnBerFile() throws Exception
     {
+
+        //final File asnFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\EIFv122.asn");
+        final File asnFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\TestMostSimpleTypeDef.asn");
+        //final AsnSchema asnSchema = AsnSchemaFileReader.read(asnFile);
+        final File berFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\TestMostSimple.ber");
+        final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, asnFile, "Human");
+
+        for (int i = 0; i < allDecodedData.size(); i++)
+        {
+            logger.info("Parsing PDU[{}]", i);
+            final DecodedAsnData pdu = allDecodedData.get(i);
+            for (String tag : pdu.getTags())
+            {
+                logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("\t\tType: {} builtinType {} ", pdu.getType(tag).getName(), pdu.getType(tag).getBuiltinType());
+                assertTrue("Tag is found with contains", pdu.contains(tag));
+            }
+            for (String tag : pdu.getUnmappedTags())
+            {
+                logger.info("?\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("\t\tType: {} builtinType{} ", pdu.getType(tag).getName(), pdu.getType(tag).getBuiltinType());
+                assertTrue("Tag is found with contains", pdu.contains(tag));
+            }
+        }
+
+        final DecodedAsnData pdu = allDecodedData.get(0);
+        String tag = "/Human/name";
+        byte[] b = pdu.getBytes(tag);
+        //String s = new String(b);
+
+        // we 'know' that this is a UTF8String
+        String s = AsnByteDecoder.decodeAsUtf8String( pdu.getBytes("/Human/name"));
+        logger.info("{} is {}", tag, s);
+        assertEquals("Adam", s);
 
     }
 

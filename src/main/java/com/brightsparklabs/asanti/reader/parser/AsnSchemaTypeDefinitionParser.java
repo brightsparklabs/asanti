@@ -289,6 +289,12 @@ public final class AsnSchemaTypeDefinitionParser
             return ImmutableList.<AsnSchemaTypeDefinition>of(AsnSchemaTypeDefinition.NULL);
         }
 
+        /* TODO - MJF. What happens if this is an indirection, eg:
+         * Foo ::= Bar
+         * where Bar is defined somewhere else.  Surely that is legal?
+         * Complicated by the fact that Bar may not have been parsed by the time we get to the line Foo ::= Bar
+         */
+
         // unknown definition
         final String error = ERROR_UNKNOWN_BUILT_IN_TYPE + name + " ::= " + value;
         throw new ParseException(error, -1);

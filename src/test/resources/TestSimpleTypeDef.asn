@@ -1,7 +1,12 @@
 World-Schema DEFINITIONS AUTOMATIC TAGS ::= 
 BEGIN
   Human ::= SEQUENCE {
-     name  UTF8String,
+     name  Name,
      age   INTEGER
+  }
+  
+  Name ::= SEQUENCE {
+    first UTF8String,
+    last  UTF8String
   }
 END

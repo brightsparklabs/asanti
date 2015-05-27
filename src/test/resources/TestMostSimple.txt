@@ -1,5 +1,5 @@
 first-man Human ::= 
 {  
     name "Adam", 
-    age 256
+    age 32
 }
