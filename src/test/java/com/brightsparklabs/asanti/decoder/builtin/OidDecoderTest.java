@@ -143,8 +143,8 @@ public class OidDecoderTest
         {
         }
 
-        // TODO (review ASN-114) added extra case
-        // test incomplete
+        // test invalid multiple octets
+        // OID is incomplete
         try
         {
             bytes = new byte[] { (byte) 0x2b, (byte) 0x80 };
@@ -160,6 +160,18 @@ public class OidDecoderTest
         try
         {
             bytes = new byte[] { (byte) 0x2B, (byte) 0xFF, (byte) 0xFF };
+            instance.decodeAsString(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
+
+        // test no octets
+        // OID is incomplete
+        try
+        {
+            bytes = new byte[0];
             instance.decodeAsString(bytes);
             fail("DecodeException not thrown");
         }

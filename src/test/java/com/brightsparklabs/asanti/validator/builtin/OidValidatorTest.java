@@ -62,7 +62,7 @@ public class OidValidatorTest
 
         // test empty
         failures = instance.validate("/empty", mockDecodedAsnData);
-        assertEquals(0, failures.size());
+        assertEquals(1, failures.size());
 
         // test null
         failures = instance.validate("/null", mockDecodedAsnData);
@@ -107,8 +107,6 @@ public class OidValidatorTest
                              (byte) 0x10 };
         assertEquals(0, instance.validate(bytes).size());
 
-
-        // TODO (review ASN-114) added extra case
         // test invalid multiple octets
         // OID is incomplete
         bytes = new byte[] { (byte) 0x2B, (byte) 0x80 };
@@ -132,7 +130,7 @@ public class OidValidatorTest
 
         // test empty
         bytes = new byte[0];
-        assertEquals(0, instance.validate(bytes).size());
+        assertEquals(1, instance.validate(bytes).size());
 
         // test null
         final ImmutableSet<ByteValidationFailure> failures = instance.validate(null);

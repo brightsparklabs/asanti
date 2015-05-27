@@ -63,36 +63,28 @@ public class OidDecoder extends AbstractBuiltinTypeDecoder<String>
         long currentSID = 0;
         StringBuilder oidBuilder = new StringBuilder();
 
-        /* TODO (review ASN-114) - MJF. Are we sure that a 0 byte input is valid???  What is the return value?
-         * I don't think it is valid, and the validator should catch that, meaning we won't need this check.
-         * But please verify if is it valid to have 0 bytes.
-         */
-
         // The first two sub IDs are encoded into the first byte
-        if (bytes.length > 0)
+        // First byte encoded as 40 * id1 + id2
+        byte firstByte = bytes[0];
+        oidBuilder.append(firstByte / 40);
+        oidBuilder.append(".");
+        oidBuilder.append(firstByte % 40);
+
+        // The remaining ids may be encoded on one byte (within range 0x00 - 0x7F), or multiple
+        // bytes (where signed bit indicates another octet follows).
+        for (int i = 1; i < bytes.length; i++)
         {
-            // First byte encoded as 40 * id1 + id2
-            byte firstByte = bytes[0];
-            oidBuilder.append(firstByte / 40);
-            oidBuilder.append(".");
-            oidBuilder.append(firstByte % 40);
-
-            // The remaining ids may be encoded on one byte (within range 0x00 - 0x7F), or multiple
-            // bytes (where signed bit indicates another octet follows).
-            for (int i = 1; i < bytes.length; i++)
+            int currentByte = bytes[i] & 0xFF;
+            currentSID = (currentSID << 7) | (currentByte & 0x7F);
+            // SID may be encoded across multiple octets. If 7th bit is not set, this is the last
+            // (or only) encoded octet.
+            if ((currentByte & 0x80) == 0)
             {
-                int currentByte = bytes[i] & 0xFF;
-                currentSID = (currentSID << 7) | (currentByte & 0x7F);
-                // SID may be encoded across multiple octets. If 7th bit is not set, this is the last
-                // (or only) encoded octet.
-                if ((currentByte & 0x80) == 0)
-                {
-                    oidBuilder.append(".");
-                    oidBuilder.append(currentSID);
+                oidBuilder.append(".");
+                oidBuilder.append(currentSID);
 
-                    // Reset currentSID and decode the next sub id in the OID.
-                    currentSID = 0;
-                }
+                // Reset currentSID and decode the next sub id in the OID.
+                currentSID = 0;
             }
         }
         return oidBuilder.toString();
