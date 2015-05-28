@@ -59,7 +59,6 @@ public class NullDecoder extends AbstractBuiltinTypeDecoder<String>
     {
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsNull(bytes);
         DecodeException.throwIfHasFailures(failures);
-        // TODO: ASN-107 implement
-        return null;
+        return "";
     }
 }
