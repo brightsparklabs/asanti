@@ -35,6 +35,13 @@ public interface BuiltinTypeValidator
     public static final String NUMERICSTRING_VALIDATION_ERROR
             = "Supplied bytes do not conform to the NumericString format. All bytes must be within the range '0' - '9' (0x30 - 0x39). Supplied bytes contain a byte with invalid value: ";
 
+    /** validation error string for Oid failures */
+    public static final String OID_VALIDATION_ERROR
+            = "Supplied bytes do not conform to the OID format. The first byte must be with the range 0x00 - 0x7F. Supplied bytes contain a byte with invalid value: ";
+
+    public static final String OID_VALIDATION_ERROR_INCOMPLETE
+            = "Supplied bytes do not conform to the OID format. The OID encoding is incomplete: ";
+
     /** validation error string for PrintableString failures */
     public static final String PRINTABLESTRING_VALIDATION_ERROR
             = "Supplied bytes do not conform to the PrintableString format. Supplied bytes contain a byte with invalid value: ";

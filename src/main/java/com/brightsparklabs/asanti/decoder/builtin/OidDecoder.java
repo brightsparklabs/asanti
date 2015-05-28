@@ -59,7 +59,34 @@ public class OidDecoder extends AbstractBuiltinTypeDecoder<String>
     {
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsOid(bytes);
         DecodeException.throwIfHasFailures(failures);
-        // TODO: ASN-107 implement
-        return null;
+
+        long currentSID = 0;
+        StringBuilder oidBuilder = new StringBuilder();
+
+        // The first two sub IDs are encoded into the first byte
+        // First byte encoded as 40 * id1 + id2
+        byte firstByte = bytes[0];
+        oidBuilder.append(firstByte / 40);
+        oidBuilder.append(".");
+        oidBuilder.append(firstByte % 40);
+
+        // The remaining ids may be encoded on one byte (within range 0x00 - 0x7F), or multiple
+        // bytes (where signed bit indicates another octet follows).
+        for (int i = 1; i < bytes.length; i++)
+        {
+            int currentByte = bytes[i] & 0xFF;
+            currentSID = (currentSID << 7) | (currentByte & 0x7F);
+            // SID may be encoded across multiple octets. If 7th bit is not set, this is the last
+            // (or only) encoded octet.
+            if ((currentByte & 0x80) == 0)
+            {
+                oidBuilder.append(".");
+                oidBuilder.append(currentSID);
+
+                // Reset currentSID and decode the next sub id in the OID.
+                currentSID = 0;
+            }
+        }
+        return oidBuilder.toString();
     }
 }

@@ -60,7 +60,44 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO: ASN-105 implement validation logic
+
+        if (bytes.length > 0)
+        {
+            int firstByte = bytes[0] & 0xFF;
+            if (firstByte > 0x7F)
+            {
+                final String error = OID_VALIDATION_ERROR + String.format("0x%02X ", firstByte);
+                final ByteValidationFailure failure = new ByteValidationFailure(0,
+                        FailureType.DataIncorrectlyFormatted,
+                        error);
+                failures.add(failure);
+            }
+
+            // Check the MSB of the last bit. If this is set, the OID is incomplete.
+            int i = bytes.length - 1;
+            if (i >= 1)
+            {
+                byte b = bytes[i];
+                if ((b & (byte) 0x80) != 0)
+                {
+                    final String error = OID_VALIDATION_ERROR_INCOMPLETE + String.format("0x%02X ",
+                            b);
+                    final ByteValidationFailure failure = new ByteValidationFailure(i,
+                            FailureType.DataIncorrectlyFormatted,
+                            error);
+                    failures.add(failure);
+                }
+            }
+        }
+        else
+        {
+            // Empty bytes array
+            final String error = OID_VALIDATION_ERROR_INCOMPLETE;
+            final ByteValidationFailure failure = new ByteValidationFailure(0,
+                    FailureType.DataMissing,
+                    error);
+            failures.add(failure);
+        }
         return ImmutableSet.copyOf(failures);
     }
 }
