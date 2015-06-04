@@ -81,15 +81,21 @@ public class NullValidatorTest
         byte[] bytes = new byte[0];
         assertEquals(0, instance.validate(bytes).size());
 
-        // test invalid
-        bytes = new byte[] { 0x00 };
-        assertEquals(1, instance.validate(bytes).size());
+        {
+            // test invalid
+            bytes = new byte[]{0x00};
+            final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
+            assertEquals(1, failures.size());
+            final ByteValidationFailure failure = failures.iterator().next();
+            assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
+        }
 
-        // test null
-        final ImmutableSet<ByteValidationFailure> failures = instance.validate(null);
-        assertEquals(1, failures.size());
-        final ByteValidationFailure failure = failures.iterator().next();
-        assertEquals(FailureType.DataMissing, failure.getFailureType());
-        assertEquals("No bytes present to validate", failure.getFailureReason());
+        {
+            // test null
+            final ImmutableSet<ByteValidationFailure> failures = instance.validate(null);
+            assertEquals(1, failures.size());
+            final ByteValidationFailure failure = failures.iterator().next();
+            assertEquals(FailureType.DataMissing, failure.getFailureType());
+        }
     }
 }
