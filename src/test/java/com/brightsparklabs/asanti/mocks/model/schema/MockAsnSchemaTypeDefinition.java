@@ -67,6 +67,8 @@ public class MockAsnSchemaTypeDefinition
                 .addComponentType("2", "body", "Body")
                 .addComponentType("3", "footer", "Footer")
                 .addComponentType("4", "dueDate", "Date-Due")
+                .addComponentType("5", "version", "generated.Document.version")
+                .addComponentType("6", "description", "generated.Document.description")
                 .build();
         listBuilder.add(mocktypeDefinition);
 
@@ -129,6 +131,11 @@ public class MockAsnSchemaTypeDefinition
                 .build();
         listBuilder.add(mocktypeDefinition);
 
+        // build References
+        mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("References",
+                AsnBuiltinType.SequenceOf).build();
+        listBuilder.add(mocktypeDefinition);
+
         // build Date-Due
         mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("Date-Due", AsnBuiltinType.Integer)
                 .build();
@@ -158,7 +165,9 @@ public class MockAsnSchemaTypeDefinition
         mocktypeDefinition = MockAsnSchemaTypeDefinition.builder("Person", AsnBuiltinType.Sequence)
                 .addComponentType("1", "firstName", "OCTET STRING")
                 .addComponentType("2", "lastName", "OCTET STRING")
-                .addComponentType("3", "title", "ENUMERATED")
+                .addComponentType("3", "title", "generated.Person.title")
+                .addComponentType("4", "gender", "Gender")
+                .addComponentType("5", "maritalStatus", "generated.Person.maritalStatus")
                 .build();
         listBuilder.add(mocktypeDefinition);
 

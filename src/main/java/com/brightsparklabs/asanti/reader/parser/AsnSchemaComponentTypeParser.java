@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * Logic for parsing Component Types from a 'constructed' Type Definition
  *
@@ -31,14 +33,14 @@ public class AsnSchemaComponentTypeParser
 
     /** pattern to break text into: tag name, tag, type, optional/default */
     private static final Pattern PATTERN_COMPONENT_TYPE = Pattern.compile(
-            "([a-zA-z0-9\\-]+) ?(\\[(\\d+)\\])? ?(.+?) ?((OPTIONAL)|(DEFAULT ([a-zA-z0-9\\-]+)))?$");
+            "([a-zA-Z0-9\\-]+) ?(\\[(\\d+)\\])? ?(.+?) ?((OPTIONAL)|(DEFAULT ([a-zA-Z0-9\\-]+)))?");
 
     /**
      * pattern to break the raw type string into: set/sequence of, construct constraints, type name,
      * type definition, type constraints
      */
     private static final Pattern PATTERN_RAW_TYPE = Pattern.compile(
-            "(((SET)|(SEQUENCE))(( SIZE)? \\(.+?\\)\\)?)? OF )?([a-zA-z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
+            "(((SET)|(SEQUENCE))(( SIZE)? \\(.+?\\)\\)?)? OF )?([a-zA-Z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
 
     /** pattern to determine whether the raw type is a pseudo type definition */
     private static final Pattern PATTERN_PSEUDO_TYPE = Pattern.compile(
@@ -66,12 +68,23 @@ public class AsnSchemaComponentTypeParser
      *
      * @return each component type found in the construct
      *
+     * @throws NullPointerException
+     *         if {@code containingTypeName} or {@code componentTypesText} are {@code null}
+     * @throws IllegalArgumentException
+     *         if {@code containingTypeName} or {@code componentTypesText} are blank
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
     public static ImmutableList<AsnSchemaComponentType> parse(String containingTypeName,
             String componentTypesText) throws ParseException
     {
+        checkNotNull(containingTypeName);
+        checkArgument(!containingTypeName.trim().isEmpty(),
+                "Containing Type Name must be specified");
+        checkNotNull(componentTypesText);
+        checkArgument(!componentTypesText.trim().isEmpty(),
+                "Component Types Text must be specified");
+
         final List<String> componentTypeLines = splitComponentTypesText(componentTypesText);
         final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
         for (final String componentTypeLine : componentTypeLines)
