@@ -60,7 +60,16 @@ public class NullValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO: ASN-105 implement validation logic
+
+        if (bytes.length != 0)
+        {
+            final String error = NULL_VALIDATION_ERROR;
+            final ByteValidationFailure failure = new ByteValidationFailure(0,
+                    FailureType.DataIncorrectlyFormatted,
+                    error);
+            failures.add(failure);
+        }
+
         return ImmutableSet.copyOf(failures);
     }
 }

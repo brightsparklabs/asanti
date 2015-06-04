@@ -31,30 +31,20 @@ public class NullDecoderTest
     @Test
     public void testDecode() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
-        // test valid
-        byte[] bytes = new byte[1];
-        for (byte b = Byte.MAX_VALUE; b >= 0; b--)
-        {
-            bytes[0] = b;
-            assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
-        }
+        // test valid bytes
+        byte[] bytes = new byte[0];
+        assertEquals("", instance.decode(bytes));
 
-        // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        // test invalid bytes
+        try
         {
-            bytes[0] = b;
-            try
-            {
-                instance.decode(bytes);
-                fail("DecodeException not thrown");
-            }
-            catch (DecodeException ex)
-            {
-            }
+            bytes = new byte[] { 0x00 };
+            instance.decode(bytes);
+            fail("DecodeException not thrown");
         }
-        */
+        catch (DecodeException ex)
+        {
+        }
 
         // test null
         try
@@ -70,26 +60,20 @@ public class NullDecoderTest
     @Test
     public void testDecodeAsString() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
-        // test valid
-        byte[] bytes = "TEST".getBytes(Charsets.UTF_8);
-        assertEquals("TEST", instance.decodeAsString(bytes));
+        // test valid bytes
+        byte[] bytes = new byte[0];
+        assertEquals("", instance.decodeAsString(bytes));
 
-        // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        // test invalid bytes
+        try
         {
-            bytes[0] = b;
-            try
-            {
-                instance.decodeAsString(bytes);
-                fail("DecodeException not thrown");
-            }
-            catch (DecodeException ex)
-            {
-            }
+            bytes = new byte[] { 0x00 };
+            instance.decodeAsString(bytes);
+            fail("DecodeException not thrown");
         }
-        */
+        catch (DecodeException ex)
+        {
+        }
 
         // test null
         try
