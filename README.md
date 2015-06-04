@@ -26,6 +26,8 @@ cd asanti
 ./build/install/asanti/asanti.sh /path/to/example.ber
 # decode a BER file against schema
 ./build/install/asanti/asanti.sh /path/to/example.asn /path/to/example.ber TopLevelType
+# decode a directory of BER files (recursively) against schema
+./build/install/asanti/asanti.sh /path/to/example.asn /path/to/example/directory TopLevelType
 ```
 
 ## Usage
