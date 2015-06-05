@@ -6,7 +6,10 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionConstructed;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -181,16 +184,53 @@ public class AsnSchemaImpl implements AsnSchema
 
             // Get the tag
             final String tag = rawTags.next();
-            final String tagName = type.getTagName(tag);
 
-            typeName = type.getTypeName(tag);
 
-            if (Strings.isNullOrEmpty(tagName))
+            // TODO - the reality is that getTagName is not a generic type function, it is only really
+            // a function for Container types (sequence, set etc.)
+            // What we are doing here is asking a Container type for the Component based on the tag
+
+            // What this is trying to do is follow the sequence of raw tags /0/1/2 etc and map that to a set
+            // of names /Human/name/first AND to provide the Type of that last one
+            // It is only sensible to have a "lower" tag if the "parent" is a Container type (Sequence, set etc)
+
+
+            // So instead of dealing with "generic" types we could determine whether something is a container, and if it is
+            // then ask it for the appropriate Component.
+            // Something like:
+            if (type instanceof AsnSchemaTypeDefinitionConstructed)
             {
-                // unknown tag
-                result.type = AsnSchemaTypeDefinition.NULL;
-                break;
+                AsnSchemaTypeDefinitionConstructed constructed = (AsnSchemaTypeDefinitionConstructed)type;
+                final String tagName = constructed.getTagName(tag);
+                AsnSchemaComponentType component = constructed.getComponent(tag);
+
+                //AsnSchemaTagType tagType = component.getType();
+
+
+                //typeName = type.getTypeName(tag);
+
+                if (Strings.isNullOrEmpty(tagName))
+                {
+                    // unknown tag
+                    result.type = AsnSchemaTypeDefinition.NULL;
+                    break;
+                }
+
+                //type = module.getType(typeName);
+
+                AsnSchemaTagType tagType = component.getType();
+                result.type = tagType;//type;
+                result.decodedTags.add(tagName);
+
+
             }
+            else
+            {
+                // This is NOT a container type, so we can't go any further down - this is the end of the line!
+
+
+            }
+
 
             // TODO - Now we need to go back to the parser and ensure that the things that are
             // components end up in this list, and not just the anonymouse sequences, set etc
@@ -201,11 +241,6 @@ public class AsnSchemaImpl implements AsnSchema
             // 2/ It is still using AsnSchemaTypeDefinition, so we need to get this to use the base
             //    which is AsnSchemaTagType.
 
-            type = module.getType(typeName);
-
-            result.type = type;
-            result.decodedTags.add(tagName);
-            typeName = type.getTypeName(tag);
         }
 
         return result;
@@ -318,6 +353,7 @@ public class AsnSchemaImpl implements AsnSchema
         private final List<String> decodedTags = Lists.newArrayList();
 
         /** the type of the final tag */
-        private AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
+        //private AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
+        private AsnSchemaTagType type = AsnSchemaTypeDefinition.NULL;
     }
 }

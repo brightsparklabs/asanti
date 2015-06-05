@@ -10,6 +10,7 @@ import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -190,7 +191,8 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
 
         final byte[] bytes = getBytes(tag);
-        final AsnSchemaTypeDefinition type = decodedTag.getType();
+        //final AsnSchemaTypeDefinition type = decodedTag.getType();
+        final AsnSchemaTagType type = decodedTag.getType();
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(
                 decoderVisitor);
         return decoder.decodeAsString(bytes);
@@ -210,7 +212,8 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public AsnSchemaTypeDefinition getType(String tag)
+    //public AsnSchemaTypeDefinition getType(String tag)
+    public AsnSchemaTagType getType(String tag)
     {
         final DecodedTag decodedTag = allTags.get(tag);
         return (decodedTag == null) ? AsnSchemaTypeDefinition.NULL : decodedTag.getType();
@@ -228,7 +231,8 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
 
         final byte[] bytes = getBytes(tag);
-        final AsnSchemaTypeDefinition type = decodedTag.getType();
+        //final AsnSchemaTypeDefinition type = decodedTag.getType();
+        final AsnSchemaTagType type = decodedTag.getType();
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(
                 decoderVisitor);
         return decoder.decode(bytes);

@@ -146,6 +146,20 @@ public abstract class AsnSchemaTypeDefinitionConstructed extends AbstractAsnSche
         return (componentType == null) ? "" : componentType.getTypeName();
     }
 
+
+    public AsnSchemaComponentType getComponent(String tag)
+    {
+        final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
+        if (schemaTag == AsnSchemaTag.NULL)
+        {
+            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}", tag);
+            return null;
+        }
+        final AsnSchemaComponentType componentType = tagsToComponentTypes.get(schemaTag.getTagNumber());
+        return componentType;
+    }
+
+
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTag
     // -------------------------------------------------------------------------

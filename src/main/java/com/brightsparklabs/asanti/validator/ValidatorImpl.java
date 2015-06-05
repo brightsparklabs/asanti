@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -39,7 +40,8 @@ public class ValidatorImpl implements Validator
                 = DecodedAsnDataValidationResult.builder();
         for (final String tag : decodedAsnData.getTags())
         {
-            final AsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
+            //final AsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
+            final AsnSchemaTagType type = decodedAsnData.getType(tag);
             final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.visit(
                     validationVisitor);
             final ImmutableSet<DecodedTagValidationFailure> failures = tagValidator.validate(tag,

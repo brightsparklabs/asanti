@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.validator.builtin;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -47,7 +48,8 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         }
 
         // validate against the tag's constraint
-        final AsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
+        //final AsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
+        final AsnSchemaTagType type = decodedAsnData.getType(tag);
         final AsnSchemaConstraint constraint = type.getConstraint();
         final ImmutableSet<SchemaConstraintValidationFailure> constraintFailures = constraint.apply(
                 bytes);

@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Strings;
 
@@ -28,7 +29,8 @@ public class DecodedTag
     private final String rawTag;
 
     /** the type of construct represented by the tag */
-    private final AsnSchemaTypeDefinition type;
+    //private final AsnSchemaTypeDefinition type;
+    private final AsnSchemaTagType type;
 
     /** whether the raw tag was completely decoded */
     private final boolean isFullyDecoded;
@@ -59,7 +61,8 @@ public class DecodedTag
      * @throws IllegalArgumentException
      *             if {@code decodedTag} or {@code rawTag} are blank
      */
-    public DecodedTag(String decodedTag, String rawTag, AsnSchemaTypeDefinition type, boolean isFullyDecoded)
+    //public DecodedTag(String decodedTag, String rawTag, AsnSchemaTypeDefinition type, boolean isFullyDecoded)
+    public DecodedTag(String decodedTag, String rawTag, AsnSchemaTagType type, boolean isFullyDecoded)
     {
         this.tag = Strings.nullToEmpty(decodedTag)
                 .trim();
@@ -103,7 +106,8 @@ public class DecodedTag
      * @return the type of construct represented by the tag
      */
 
-    public AsnSchemaTypeDefinition getType()
+    //public AsnSchemaTypeDefinition getType()
+    public AsnSchemaTagType getType()
     {
         return type;
     }
