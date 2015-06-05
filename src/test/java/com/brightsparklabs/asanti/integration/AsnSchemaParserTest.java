@@ -1,6 +1,8 @@
 package com.brightsparklabs.asanti.integration;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.decoder.AsnDecoder;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
@@ -11,6 +13,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.math.BigInteger;
 import java.text.ParseException;
 
 import static org.junit.Assert.*;
@@ -50,6 +54,25 @@ public class AsnSchemaParserTest
             "       age INTEGER (1..100)\n" +
             "   }\n" +
             "END";
+
+    private static final String HUMAN_NESTED = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       Name NameType\n" +
+            "   }\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       first UTF8String\n" +
+            "       last  UTF8String\n" +
+            "   }\n" +
+            "END";
+
 
     private static final String HUMAN_USING_TYPEDEF = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
@@ -96,6 +119,38 @@ public class AsnSchemaParserTest
         {
             DecodedTag actualTag = result.getOutput();
             logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+            String berFilename = "d:\\tmp\\Human_Simple.ber";
+            final File berFile = new File(berFilename);
+            String topLevelType = "Human";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+            for (int i = 0; i < pdus.size(); i++)
+            {
+
+                logger.info("Parsing PDU[{}]", i);
+                final DecodedAsnData pdu = pdus.get(i);
+                for (String tag2 : pdu.getTags())
+                {
+                    logger.info("\t{} => {}", tag2, pdu.getHexString(tag2));
+                }
+                for (String tag2 : pdu.getUnmappedTags())
+                {
+                    logger.info("\t{} => {}", tag2, pdu.getHexString(tag2));
+                }
+            }
+
+            DecodedAsnData pdu = pdus.get(0);
+            tag = "/Human/age";
+            BigInteger yay = (BigInteger)pdu.getDecodedObject(tag);
+            logger.info(tag + " : " + yay);
+
+
+
+
+
         }
     }
 
