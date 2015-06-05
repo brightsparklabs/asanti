@@ -46,7 +46,7 @@ public class AsnSchemaTypeDefinitionGeneralizedTime extends AsnSchemaTypeDefinit
     // -------------------------------------------------------------------------
 
     @Override
-    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
     {
         return visitor.visit(this);
     }

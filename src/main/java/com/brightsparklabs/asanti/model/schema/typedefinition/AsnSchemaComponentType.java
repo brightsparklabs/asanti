@@ -5,6 +5,9 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+
 import static com.google.common.base.Preconditions.*;
 
 /**
@@ -30,6 +33,10 @@ public class AsnSchemaComponentType
 
     /** whether this component type is optional */
     private final boolean isOptional;
+
+    /**  */
+    private final AsnSchemaTagType type;
+
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -59,6 +66,11 @@ public class AsnSchemaComponentType
      */
     public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional)
     {
+        this(tagName, tag, typeName, isOptional, null); // TODO - temporary
+    }
+
+    public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional, AsnSchemaTagType type)
+    {
         checkNotNull(tagName);
         checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
         checkNotNull(typeName);
@@ -68,6 +80,7 @@ public class AsnSchemaComponentType
         this.tag = (tag == null) ? "" : tag;
         this.typeName = typeName;
         this.isOptional = isOptional;
+        this.type = type;
     }
 
     // -------------------------------------------------------------------------
@@ -105,4 +118,7 @@ public class AsnSchemaComponentType
     {
         return isOptional;
     }
+
+
+    public AsnSchemaTagType getType() { return type; }
 }

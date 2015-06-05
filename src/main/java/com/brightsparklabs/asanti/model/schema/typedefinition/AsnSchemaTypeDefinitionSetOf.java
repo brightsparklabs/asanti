@@ -56,7 +56,7 @@ public class AsnSchemaTypeDefinitionSetOf extends AsnSchemaTypeDefinitionCollect
     // -------------------------------------------------------------------------
 
     @Override
-    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
     {
         return visitor.visit(this);
     }

@@ -4,9 +4,9 @@
  */
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import com.brightsparklabs.asanti.common.Visitable;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 
 /**
  * A type definition from a within a module specification within an ASN.1
@@ -14,7 +14,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
  *
  * @author brightSPARK Labs
  */
-public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefinitionVisitor<?>>
+public interface AsnSchemaTypeDefinition extends AsnSchemaTagType
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -34,20 +34,6 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
      */
     public String getName();
 
-    /**
-     * Returns the ASN.1 built-in type for this type definition
-     *
-     * @return the ASN.1 built-in type for this type definition
-     */
-    public AsnBuiltinType getBuiltinType();
-
-    /**
-     * Returns the constraint associated with this type definition
-     *
-     * @return the constraint associated with this type definition or
-     *         {@link AsnSchemaConstraint#NULL} if there is no constraint.
-     */
-    public AsnSchemaConstraint getConstraint();
 
     /**
      * Returns the name of the specified tag
@@ -101,7 +87,7 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
         // ---------------------------------------------------------------------
 
         @Override
-        public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+        public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
         {
             return visitor.visit(this);
         }

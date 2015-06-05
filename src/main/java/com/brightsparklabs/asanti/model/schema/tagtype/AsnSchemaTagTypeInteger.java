@@ -1,23 +1,17 @@
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
-
-package com.brightsparklabs.asanti.model.schema.typedefinition;
-
-import static com.google.common.base.Preconditions.*;
+package com.brightsparklabs.asanti.model.schema.tagtype;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
 import com.google.common.collect.ImmutableMap;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * An {@code Integer} type definition from a within a module specification
- * within an ASN.1 schema.
- *
- * @author brightSPARK Labs
+ * Created by Michael on 4/06/2015.
  */
-public class AsnSchemaTypeDefinitionInteger extends AsnSchemaTypeDefinitionPrimitive
+public class AsnSchemaTagTypeInteger extends AbstractAsnSchemaTagType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -32,9 +26,6 @@ public class AsnSchemaTypeDefinitionInteger extends AsnSchemaTypeDefinitionPrimi
 
     /**
      * Default constructor.
-     *
-     * @param name
-     *            name of the Integer type definition
      *
      * @param distinguishedValues
      *            the optional list of distinguished values in this INTEGER type
@@ -54,10 +45,10 @@ public class AsnSchemaTypeDefinitionInteger extends AsnSchemaTypeDefinitionPrimi
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeDefinitionInteger(String name, Iterable<AsnSchemaNamedTag> distinguishedValues,
+    public AsnSchemaTagTypeInteger(Iterable<AsnSchemaNamedTag> distinguishedValues,
             AsnSchemaConstraint constraint)
     {
-        super(name, AsnBuiltinType.Integer, constraint);
+        super(AsnBuiltinType.Integer, constraint);
         checkNotNull(distinguishedValues);
 
         final ImmutableMap.Builder<String, AsnSchemaNamedTag> tagsToDistinguishedValuesBuilder = ImmutableMap.builder();
@@ -73,19 +64,19 @@ public class AsnSchemaTypeDefinitionInteger extends AsnSchemaTypeDefinitionPrimi
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
-
+/*
     @Override
     public String getTagName(String tag)
     {
         final AsnSchemaNamedTag distinguishedValue = tagsToDistinguishedValues.get(tag);
         return (distinguishedValue == null) ? "" : distinguishedValue.getTagName();
     }
-
     @Override
     public String getTypeName(String tag)
     {
         return "";
     }
+*/
 
     @Override
     public Object visit(AsnSchemaTagTypeVisitor<?> visitor)

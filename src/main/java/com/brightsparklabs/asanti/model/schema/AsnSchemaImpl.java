@@ -151,6 +151,70 @@ public class AsnSchemaImpl implements AsnSchema
             AsnSchemaModule module)
     {
         String typeName = containingTypeName;
+        final DecodedTagsAndType result = new DecodedTagsAndType();
+
+        AsnSchemaTypeDefinition type = module.getType(typeName);
+
+        while (rawTags.hasNext())
+        {
+            if (Strings.isNullOrEmpty(typeName))
+            {
+                // no type to delve into
+                break;
+            }
+
+            if (type == AsnSchemaTypeDefinition.NULL)
+            {
+                // type is not defined in module, test if it is imported
+                final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
+                if (!AsnSchemaModule.NULL.equals(importedModule))
+                {
+                    // found the module the type is defined in
+                    final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
+                            typeName,
+                            importedModule);
+                    result.type = tagsAndType.type;
+                    result.decodedTags.addAll(tagsAndType.decodedTags);
+                }
+                break;
+            }
+
+            // Get the tag
+            final String tag = rawTags.next();
+            final String tagName = type.getTagName(tag);
+
+            typeName = type.getTypeName(tag);
+
+            if (Strings.isNullOrEmpty(tagName))
+            {
+                // unknown tag
+                result.type = AsnSchemaTypeDefinition.NULL;
+                break;
+            }
+
+            // TODO - Now we need to go back to the parser and ensure that the things that are
+            // components end up in this list, and not just the anonymouse sequences, set etc
+            // There are a couple of steps to do that.
+            // 1/ It is in private static ImmutableList<AsnSchemaTypeDefinition> parseSequence
+            //    in AsnSchemaTypeDefinitionParser where we are collecting all these types for the
+            //    components.  So it needs to collect more than the anon sequences
+            // 2/ It is still using AsnSchemaTypeDefinition, so we need to get this to use the base
+            //    which is AsnSchemaTagType.
+
+            type = module.getType(typeName);
+
+            result.type = type;
+            result.decodedTags.add(tagName);
+            typeName = type.getTypeName(tag);
+        }
+
+        return result;
+    }
+/*
+    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
+            AsnSchemaModule module)
+    {
+        String typeName = containingTypeName;
         AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
         final DecodedTagsAndType result = new DecodedTagsAndType();
 
@@ -187,7 +251,13 @@ public class AsnSchemaImpl implements AsnSchema
                 result.type = AsnSchemaTypeDefinition.NULL;
                 break;
             }
+
             result.type = type;
+            // TODO - at this point (for the first time through the loop) 'type' is still the type
+            // of the containingTypeName, NOT of this tag.
+
+
+
             result.decodedTags.add(tagName);
             typeName = type.getTypeName(tag);
         }
@@ -195,6 +265,7 @@ public class AsnSchemaImpl implements AsnSchema
         return result;
     }
 
+*/
     /**
      * Returns the imported module which contains the specified type module.
      *

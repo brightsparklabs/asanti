@@ -11,6 +11,7 @@
 package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
@@ -19,7 +20,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.*;
  *
  * @author brightSPARK Labs
  */
-public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<BuiltinTypeDecoder<?>>
+public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecoder<?>>
 {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: Validator
@@ -70,6 +71,10 @@ public class DecoderVisitor implements AsnSchemaTypeDefinitionVisitor<BuiltinTyp
 
     @Override
     public IntegerDecoder visit(final AsnSchemaTypeDefinitionInteger visitable)
+    {
+        return IntegerDecoder.getInstance();
+    }
+    public IntegerDecoder visit(AsnSchemaTagTypeInteger visitable)
     {
         return IntegerDecoder.getInstance();
     }

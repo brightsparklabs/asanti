@@ -49,7 +49,7 @@ public class AsnSchemaComponentTypeGenerated extends AsnSchemaComponentType
     public AsnSchemaComponentTypeGenerated(String tagName, String tag, String typeName,
             String typeDefinitionText, boolean isOptional)
     {
-        super(tagName, tag, typeName, isOptional);
+        super(tagName, tag, typeName, isOptional, null); // TODO MJF...
 
         checkNotNull(typeDefinitionText);
         checkArgument(!typeDefinitionText.trim().isEmpty(),

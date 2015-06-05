@@ -45,7 +45,7 @@ public class AbstractAsnSchemaTypeDefinitionTest
         }
 
         @Override
-        public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+        public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
         {
             return "";
         }

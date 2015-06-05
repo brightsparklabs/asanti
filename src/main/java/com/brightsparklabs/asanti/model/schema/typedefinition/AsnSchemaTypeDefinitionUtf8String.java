@@ -49,7 +49,7 @@ public class AsnSchemaTypeDefinitionUtf8String extends AsnSchemaTypeDefinitionPr
     // -------------------------------------------------------------------------
 
     @Override
-    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
     {
         return visitor.visit(this);
     }

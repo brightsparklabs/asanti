@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -325,6 +326,7 @@ public final class AsnSchemaTypeDefinitionParser
 
         final ImmutableList<AsnSchemaComponentType> componentTypes
                 = AsnSchemaComponentTypeParser.parse(name, componentTypesText);
+
 
         // parse any pseudo type definitions from returned component types
         final List<AsnSchemaTypeDefinition> parsedTypes = parsePseudoTypes(componentTypes);

@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.validator;
 
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
@@ -15,7 +16,7 @@ import com.brightsparklabs.asanti.validator.rule.ValidationRule;
  *
  * @author brightSPARK Labs
  */
-public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<BuiltinTypeValidator>
+public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeValidator>
 {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: Validator
@@ -66,6 +67,10 @@ public class ValidationVisitor implements AsnSchemaTypeDefinitionVisitor<Builtin
     }
 
     public IntegerValidator visit(AsnSchemaTypeDefinitionInteger visitable)
+    {
+        return IntegerValidator.getInstance();
+    }
+    public IntegerValidator visit(AsnSchemaTagTypeInteger visitable)
     {
         return IntegerValidator.getInstance();
     }

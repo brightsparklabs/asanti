@@ -49,7 +49,7 @@ public class AsnSchemaTypeDefinitionIa5String extends AsnSchemaTypeDefinitionPri
     // -------------------------------------------------------------------------
 
     @Override
-    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
     {
         return visitor.visit(this);
     }

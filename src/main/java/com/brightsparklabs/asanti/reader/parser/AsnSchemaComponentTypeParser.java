@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentTypeGenerated;
 import com.google.common.collect.ImmutableList;
@@ -192,6 +193,8 @@ public class AsnSchemaComponentTypeParser
         final String rawType = matcher.group(4);
         final boolean isOptional = matcher.group(6) != null;
 
+
+
         // check if type is a pseudo type
         matcher = PATTERN_PSEUDO_TYPE.matcher(rawType);
         if (matcher.matches())
@@ -211,8 +214,10 @@ public class AsnSchemaComponentTypeParser
 
             if (matcher.matches())
             {
+                final AsnSchemaTagType tagType = AnsSchemaTagTypeParser.parse(tagName, rawType);
+
                 final String typeName = matcher.group(7);
-                return new AsnSchemaComponentType(tagName, tag, typeName, isOptional);
+                return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
             }
             else
             {

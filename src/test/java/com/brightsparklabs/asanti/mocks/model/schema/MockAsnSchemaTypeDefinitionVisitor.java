@@ -4,6 +4,7 @@
  */
 package com.brightsparklabs.asanti.mocks.model.schema;
 
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
@@ -12,7 +13,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.*;
  *
  * @author brightSPARK Labs
  */
-public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefinitionVisitor<String>
+public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisitor<String>
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -44,7 +45,7 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefiniti
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaTypeDefinitionVisitor
+    // IMPLEMENTATION: AsnSchemaTagTypeVisitor
     // -------------------------------------------------------------------------
 
     @Override
@@ -79,6 +80,11 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTypeDefiniti
 
     @Override
     public String visit(AsnSchemaTypeDefinitionInteger visitable)
+    {
+        return visitable.getClass().getCanonicalName();
+    }
+    @Override
+    public String visit(AsnSchemaTagTypeInteger visitable)
     {
         return visitable.getClass().getCanonicalName();
     }

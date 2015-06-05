@@ -54,7 +54,7 @@ public class AsnSchemaTypeDefinitionSequence extends AsnSchemaTypeDefinitionCons
     // -------------------------------------------------------------------------
 
     @Override
-    public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
+    public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
     {
         return visitor.visit(this);
     }

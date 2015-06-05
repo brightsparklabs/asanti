@@ -6,6 +6,8 @@
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import com.brightsparklabs.asanti.common.Visitor;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
 
 /**
@@ -16,7 +18,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
  *
  * @author brightSPARK Labs
  */
-public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
+public interface AsnSchemaTagTypeVisitor<T> extends Visitor
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -101,6 +103,9 @@ public interface AsnSchemaTypeDefinitionVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionInteger visitable);
+
+    public T visit(AsnSchemaTagTypeInteger visitable);
+
 
     /**
      * Processes the supplied object with this visitor
