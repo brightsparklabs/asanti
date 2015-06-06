@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.google.common.base.Charsets;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,18 +32,60 @@ public class PrintableStringDecoderTest
     @Test
     public void testDecode() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
         // test valid
         byte[] bytes = new byte[1];
-        for (byte b = Byte.MAX_VALUE; b >= 0; b--)
+        for (int b = 'Z'; b >= 'A'; b--)
         {
-            bytes[0] = b;
+            bytes[0] = (byte) b;
             assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
         }
+        for (int b = 'z'; b >= 'a'; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+        }
+        for (int b = '9'; b >= '0'; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+        }
+        bytes[0] = (byte) ' ';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
 
-        // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        bytes[0] = (byte) '\'';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) '(';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) ')';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) '+';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) ',';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) '-';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) '.';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) '/';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) ':';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) '=';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) '?';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        for (byte b = Byte.MIN_VALUE; b < 32; b++)
         {
             bytes[0] = b;
             try
@@ -54,7 +97,18 @@ public class PrintableStringDecoderTest
             {
             }
         }
-        */
+
+        {
+            bytes[0] = Byte.MAX_VALUE;
+            try
+            {
+                instance.decode(bytes);
+                fail("DecodeException not thrown");
+            }
+            catch (DecodeException ex)
+            {
+            }
+        }
 
         // test null
         try
@@ -70,14 +124,75 @@ public class PrintableStringDecoderTest
     @Test
     public void testDecodeAsString() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
         // test valid
-        byte[] bytes = "TEST".getBytes(Charsets.UTF_8);
-        assertEquals("TEST", instance.decodeAsString(bytes));
+        byte[] bytes = "TEST1234+-:= ()/".getBytes(Charsets.UTF_8);
+        assertEquals("TEST1234+-:= ()/", instance.decodeAsString(bytes));
 
         // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        bytes = "TEST1234+-:= ()/^".getBytes(Charsets.UTF_8);
+        try
+        {
+            instance.decodeAsString(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
+
+        // test valid
+        bytes = new byte[1];
+        for (int b = 'Z'; b >= 'A'; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+        }
+        for (int b = 'z'; b >= 'a'; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+        }
+        for (int b = '9'; b >= '0'; b--)
+        {
+            bytes[0] = (byte) b;
+            assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+        }
+        bytes[0] = (byte) ' ';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) '\'';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) '(';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) ')';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) '+';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) ',';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) '-';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) '.';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) '/';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) ':';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decodeAsString(bytes));
+
+        bytes[0] = (byte) '=';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        bytes[0] = (byte) '?';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        for (byte b = Byte.MIN_VALUE; b < 32; b++)
         {
             bytes[0] = b;
             try
@@ -89,7 +204,18 @@ public class PrintableStringDecoderTest
             {
             }
         }
-        */
+
+        {
+            bytes[0] = Byte.MAX_VALUE;
+            try
+            {
+                instance.decode(bytes);
+                fail("DecodeException not thrown");
+            }
+            catch (DecodeException ex)
+            {
+            }
+        }
 
         // test null
         try

@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.google.common.base.Charsets;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,18 +32,16 @@ public class NumericStringDecoderTest
     @Test
     public void testDecode() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
         // test valid
         byte[] bytes = new byte[1];
-        for (byte b = Byte.MAX_VALUE; b >= 0; b--)
+        for (int b = '9'; b >= '0'; b--)
         {
-            bytes[0] = b;
+            bytes[0] = (byte) b;
             assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
         }
 
         // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        for (byte b = Byte.MIN_VALUE; b < '0'; b++)
         {
             bytes[0] = b;
             try
@@ -54,7 +53,18 @@ public class NumericStringDecoderTest
             {
             }
         }
-        */
+
+        for (byte b = Byte.MAX_VALUE; b > '9'; b--)
+        {
+            bytes[0] = b;
+            try
+            {
+                instance.decode(bytes);
+            }
+            catch (DecodeException ex)
+            {
+            }
+        }
 
         // test null
         try
@@ -70,13 +80,21 @@ public class NumericStringDecoderTest
     @Test
     public void testDecodeAsString() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
         // test valid
-        byte[] bytes = "TEST".getBytes(Charsets.UTF_8);
-        assertEquals("TEST", instance.decodeAsString(bytes));
+        byte[] bytes = "0123456789".getBytes(Charsets.UTF_8);
+        assertEquals("0123456789", instance.decodeAsString(bytes));
 
         // test invalid
+        bytes = "0123456789z".getBytes(Charsets.UTF_8);
+        try
+        {
+            instance.decodeAsString(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
+
         for (byte b = Byte.MIN_VALUE; b < 0; b++)
         {
             bytes[0] = b;
@@ -89,7 +107,19 @@ public class NumericStringDecoderTest
             {
             }
         }
-        */
+
+        for (byte b = Byte.MAX_VALUE; b > '9'; b--)
+        {
+            bytes[0] = b;
+            try
+            {
+                instance.decodeAsString(bytes);
+                fail("DecodeException not thrown");
+            }
+            catch (DecodeException ex)
+            {
+            }
+        }
 
         // test null
         try
