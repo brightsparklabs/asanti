@@ -3,16 +3,17 @@ package com.brightsparklabs.asanti.reader.parser;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionInteger;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionUtf8String;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypePlaceHolder;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
+import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -230,14 +231,14 @@ public final class AnsSchemaTagTypeParser
             return ImmutableList.<AsnSchemaTypeDefinition>of(parseIA5String(name, matcher));
         }
 
-
+*/
         // check if defining a Utf8String
         matcher = PATTERN_TYPE_DEFINITION_UTF8_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseUTF8String(name, matcher));
+            return parseUTF8String(name, matcher);
         }
-
+/*
         // check if defining a NumericString
         matcher = PATTERN_TYPE_DEFINITION_NUMERIC_STRING.matcher(value);
         if (matcher.matches())
@@ -298,11 +299,21 @@ public final class AnsSchemaTagTypeParser
             return ImmutableList.<AsnSchemaTypeDefinition>of(AsnSchemaTypeDefinition.NULL);
         }
 */
-        /* TODO - MJF. What happens if this is an indirection, eg:
-         * Foo ::= Bar
+        /* TODO - MJF. What happens if this is an indirection, eg (within a Sequence):
+         *    foo Bar
          * where Bar is defined somewhere else.  Surely that is legal?
          * Complicated by the fact that Bar may not have been parsed by the time we get to the line Foo ::= Bar
          */
+        // So, to answer the above, if we get there then we must have a Tag that is of a non-Primitive type,
+        // ie it must be of a Type Definition type.
+        matcher = PATTERN_COMPONENT_TYPE.matcher(value);
+        if (matcher.matches())
+        {
+
+            //return ImmutableList.<AsnSchemaTagType>of(parseInteger(name, matcher));
+            return parsePlaceHolder(name, matcher);
+        }
+
 
         // unknown definition
         final String error = ERROR_UNKNOWN_BUILT_IN_TYPE + name + " ::= " + value;
@@ -328,14 +339,14 @@ public final class AnsSchemaTagTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    /*
+
     private static AsnSchemaTagTypeUtf8String parseUTF8String(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTagTypeUtf8String(name, constraint);
-    }*/
+        return new AsnSchemaTagTypeUtf8String(constraint);
+    }
 
 
     /**
@@ -360,6 +371,37 @@ public final class AnsSchemaTagTypeParser
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         return new AsnSchemaTagTypeInteger(distinguishedValues, constraint);
+    }
+
+    /**
+     * Parses a Utf8String type definition
+     *
+     * @param name
+     *         name of the defined type
+     * @param matcher
+     *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_UTF8_STRING}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionUtf8String} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+
+    private static AsnSchemaTagTypePlaceHolder parsePlaceHolder(String name, Matcher matcher)
+            throws ParseException
+    {
+        final String typeName = Strings.nullToEmpty(matcher.group(0));
+        final String b = Strings.nullToEmpty(matcher.group(1));
+        final String c = Strings.nullToEmpty(matcher.group(2));
+        final String d = Strings.nullToEmpty(matcher.group(3));
+        final String f = Strings.nullToEmpty(matcher.group(4));
+        final String h = Strings.nullToEmpty(matcher.group(5));
+        final String i = Strings.nullToEmpty(matcher.group(6));
+
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTagTypePlaceHolder(typeName, constraint);
+
     }
 
 }

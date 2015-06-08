@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypePlaceHolder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionConstructed;
@@ -216,11 +217,32 @@ public class AsnSchemaImpl implements AsnSchema
                     break;
                 }
 
-                //type = module.getType(typeName);
+
 
                 AsnSchemaTagType tagType = component.getType();
+
+
+                // TODO MJF.  This is just temporary.  We should do this scan for all PlaceHolders
+                // as part of the schema parsing.  But just to test the concept, lets try here...
+
+                if (tagType instanceof AsnSchemaTagTypePlaceHolder)
+                {
+                    typeName = component.getTypeName();
+                    tagType = module.getType(typeName);
+                }
+
+
+
                 result.type = tagType;//type;
                 result.decodedTags.add(tagName);
+
+                // TODO - MJF.  We need to prepare for the next go round the while loop (ie the next
+                // level down in the chain). So either the component need to be able to give us that
+                // child, or we need to be able to get it from somewhere else.  Previously this was
+                // what module.getType did.
+                // Get the next type.
+                typeName = component.getTypeName();
+                type = module.getType(typeName);
 
 
             }
@@ -228,6 +250,7 @@ public class AsnSchemaImpl implements AsnSchema
             {
                 // This is NOT a container type, so we can't go any further down - this is the end of the line!
 
+                type = AsnSchemaTypeDefinition.NULL;
 
             }
 

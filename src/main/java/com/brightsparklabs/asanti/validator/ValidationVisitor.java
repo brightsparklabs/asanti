@@ -6,6 +6,8 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
@@ -93,6 +95,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
         // TODO ASN-113
         return null;
     }
+    @Override
+    public BuiltinTypeValidator visit(AsnSchemaTagTypeSequence visitable)
+    {
+        // TODO ASN-113
+        return null;
+    }
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSequenceOf visitable)
@@ -117,6 +125,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
 
     @Override
     public Utf8StringValidator visit(AsnSchemaTypeDefinitionUtf8String visitable)
+    {
+        return Utf8StringValidator.getInstance();
+    }
+
+    @Override
+    public Utf8StringValidator visit(AsnSchemaTagTypeUtf8String visitable)
     {
         return Utf8StringValidator.getInstance();
     }

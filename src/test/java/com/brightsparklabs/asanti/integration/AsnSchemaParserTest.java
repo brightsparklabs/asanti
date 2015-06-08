@@ -8,6 +8,9 @@ import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.reader.parser.AnsSchemaTagTypeParser;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
+import com.brightsparklabs.asanti.validator.Validator;
+import com.brightsparklabs.asanti.validator.ValidatorImpl;
+import com.brightsparklabs.asanti.validator.result.ValidationResult;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -55,6 +58,20 @@ public class AsnSchemaParserTest
             "   }\n" +
             "END";
 
+    private static final String HUMAN_SIMPLE2 = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       age INTEGER (1..100),\n" +
+            "       name UTF8String\n" +
+            "   }\n" +
+            "END";
+
     private static final String HUMAN_NESTED = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
@@ -64,12 +81,12 @@ public class AsnSchemaParserTest
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
-            "       Name NameType\n" +
-            "   }\n" +
-            "   Human ::= SEQUENCE\n" +
-            "   {\n" +
-            "       first UTF8String\n" +
-            "       last  UTF8String\n" +
+            "       name SEQUENCE\n" +
+            "       {\n" +
+            "           first UTF8String,\n" +
+            "           last  UTF8String\n" +
+            "       },\n" +
+            "       age INTEGER (1..100)\n" +
             "   }\n" +
             "END";
 
@@ -147,16 +164,127 @@ public class AsnSchemaParserTest
             BigInteger yay = (BigInteger)pdu.getDecodedObject(tag);
             logger.info(tag + " : " + yay);
 
+        }
+    }
 
+    @Test
+    public void testParse_HumanSimple2() throws Exception
+    {
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE2);
 
+        String tag = "/0";
+        logger.info("get tag " + tag);
+        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
+        if (result.wasSuccessful())
+        {
+            DecodedTag actualTag = result.getOutput();
+            logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
+            String berFilename = "d:\\tmp\\Human_Simple2.ber";
+            final File berFile = new File(berFilename);
+            String topLevelType = "Human";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+            for (int i = 0; i < pdus.size(); i++)
+            {
+
+                logger.info("Parsing PDU[{}]", i);
+                final DecodedAsnData pdu = pdus.get(i);
+                for (String tag2 : pdu.getTags())
+                {
+                    logger.info("\t{} => {}", tag2, pdu.getHexString(tag2));
+                }
+                for (String tag2 : pdu.getUnmappedTags())
+                {
+                    logger.info("\t{} => {}", tag2, pdu.getHexString(tag2));
+                }
+            }
+
+            DecodedAsnData pdu = pdus.get(0);
+            tag = "/Human/age";
+            BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
+            logger.info(tag + " : " + age);
+
+            tag = "/Human/name";
+            String name = (String)pdu.getDecodedObject(tag);
+            logger.info(tag + " : " + name);
 
         }
     }
 
     @Test
+    public void testParse_HumanNested() throws Exception
+    {
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_NESTED);
+
+        String tag = "/0";
+        logger.info("get tag " + tag);
+        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
+        if (result.wasSuccessful())
+        {
+            DecodedTag actualTag = result.getOutput();
+            logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+            String berFilename = "d:\\tmp\\Human_Nested.ber";
+            final File berFile = new File(berFilename);
+            String topLevelType = "Human";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+            for (int i = 0; i < pdus.size(); i++)
+            {
+
+                logger.info("Parsing PDU[{}]", i);
+                final DecodedAsnData pdu = pdus.get(i);
+                for (String tag2 : pdu.getTags())
+                {
+                    logger.info("\t{} => {}", tag2, pdu.getHexString(tag2));
+                }
+                for (String tag2 : pdu.getUnmappedTags())
+                {
+                    logger.info("\t{} => {}", tag2, pdu.getHexString(tag2));
+                }
+            }
+
+            DecodedAsnData pdu = pdus.get(0);
+            tag = "/Human/name/first";
+            String first = (String)pdu.getDecodedObject(tag);
+            logger.info(tag + " : " + first);
+
+            tag = "/Human/name/last";
+            String last = (String)pdu.getDecodedObject(tag);
+            logger.info(tag + " : " + last);
+
+            tag = "/Human/age";
+            BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
+            logger.info(tag + " : " + age);
+
+            ValidatorImpl validator = new ValidatorImpl();
+            ValidationResult validationresult = validator.validate(pdu);
+
+            if (validationresult.hasFailures())
+            {
+
+            }
+
+
+        }
+
+        int breakpoint = 0;
+
+    }
+    
+    @Test
     public void testParse_HumanUsingTypeDef() throws Exception
     {
+        // TODO - In order for this to work we need to figure out how to handle TypeDefs as types,
+        // Eg age PersonAge in a sequence.  This will require some update to AsnSchemaComponentTypeParser.parse
+        // at least, but also some mechanism to store and sweep after the whole file is processed to
+        // attempt to re-align things that were not declared when they were first used.
+
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF);
 
         String tag = "/";

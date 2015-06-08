@@ -12,6 +12,8 @@ package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
@@ -96,6 +98,11 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE types cannot be decoded");
     }
+    @Override
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTagTypeSequence visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE types cannot be decoded");
+    }
 
     @Override
     public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSequenceOf visitable)
@@ -117,6 +124,11 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
 
     @Override
     public Utf8StringDecoder visit(final AsnSchemaTypeDefinitionUtf8String visitable)
+    {
+        return Utf8StringDecoder.getInstance();
+    }
+    @Override
+    public Utf8StringDecoder visit(final AsnSchemaTagTypeUtf8String visitable)
     {
         return Utf8StringDecoder.getInstance();
     }

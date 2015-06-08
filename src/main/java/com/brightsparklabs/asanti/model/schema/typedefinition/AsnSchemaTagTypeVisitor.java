@@ -8,6 +8,8 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 import com.brightsparklabs.asanti.common.Visitor;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
 
 /**
@@ -136,6 +138,7 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionSequence visitable);
+    public T visit(AsnSchemaTagTypeSequence visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -176,6 +179,7 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionUtf8String visitable);
+    public T visit(AsnSchemaTagTypeUtf8String visitable);
 
     /**
      * Processes the supplied object with this visitor

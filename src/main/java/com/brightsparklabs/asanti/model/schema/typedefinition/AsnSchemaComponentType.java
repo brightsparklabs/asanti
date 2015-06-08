@@ -64,6 +64,7 @@ public class AsnSchemaComponentType
      * @throws IllegalArgumentException
      *             if {@code tagName} or {@code typeName} are blank
      */
+
     public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional)
     {
         this(tagName, tag, typeName, isOptional, null); // TODO - temporary
