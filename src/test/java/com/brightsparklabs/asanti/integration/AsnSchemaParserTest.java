@@ -88,8 +88,7 @@ public class AsnSchemaParserTest
             "   {\n" +
             "       name SEQUENCE\n" +
             "       {\n" +
-//            "           first UTF8String,\n" +
-            "           first OCTET STRING,\n" +
+            "           first UTF8String,\n" +
             "           last  UTF8String\n" +
             "       },\n" +
             "       age INTEGER (1..100)\n" +
@@ -141,8 +140,7 @@ public class AsnSchemaParserTest
             "   }\n" +
             "   PersonName ::= SEQUENCE\n" +
             "   {\n" +
-            "           first UTF8String,\n" +
-            "           first OCTET STRING,\n" +
+            "       first UTF8String,\n" +
             "       last  UTF8String\n" +
             "   }\n" +
             "   PersonAge ::= INTEGER (1..200)\n" +
@@ -447,8 +445,7 @@ public class AsnSchemaParserTest
         assertEquals(new BigInteger("32"), age);
 
         tag = "/Human/name/first";
-        byte [] bytes = (byte []) pdu.getDecodedObject(tag);
-        String first = new String(bytes, Charsets.UTF_8);
+        String first = (String)pdu.getDecodedObject(tag);
         logger.info(tag + " : " + first);
         assertEquals("Adam", first);
 
@@ -491,17 +488,19 @@ public class AsnSchemaParserTest
                 topLevelType);
 
         DecodedAsnData pdu = pdus.get(0);
+
+        assertEquals(0, pdu.getUnmappedTags().size());
+
         for (String tag : pdu.getTags())
         {
             logger.info("\t{} => {}", tag, pdu.getHexString(tag));
         }
 
+        /* TODO MJF
         String tag = "/Human/faveNumbers";
         BigInteger fave0 = (BigInteger)pdu.getDecodedObject(tag+"[0]");
+        */
 
-        assertEquals(0, pdu.getUnmappedTags().size());
-
-        int breakpoint = 0;
     }
 
 
