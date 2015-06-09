@@ -10,7 +10,9 @@
 package com.brightsparklabs.asanti.mocks.model.data;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.google.common.collect.ImmutableSet;
 
 import static org.mockito.Mockito.*;
 
@@ -85,6 +87,8 @@ public class MockDecodedAsnData
             when(mockedInstance.getBytes("/empty")).thenReturn(new byte[0]);
             when(mockedInstance.getType("/null")).thenReturn(type);
             when(mockedInstance.getBytes("/null")).thenReturn(null);
+            when(mockedInstance.getAllTypes(anyString())).thenReturn(ImmutableSet.<AsnSchemaTagType>of());
+
         }
 
         // ---------------------------------------------------------------------

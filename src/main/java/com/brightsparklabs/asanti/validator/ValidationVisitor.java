@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeOctetString;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
@@ -85,6 +86,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
 
     @Override
     public OctetStringValidator visit(AsnSchemaTypeDefinitionOctetString visitable)
+    {
+        return OctetStringValidator.getInstance();
+    }
+
+    @Override
+    public OctetStringValidator visit(AsnSchemaTagTypeOctetString visitable)
     {
         return OctetStringValidator.getInstance();
     }

@@ -5,5 +5,5 @@ BEGIN
      age   MyAge
   }
   
---  MyAge ::= INTEGER --
+  MyAge ::= INTEGER
 END

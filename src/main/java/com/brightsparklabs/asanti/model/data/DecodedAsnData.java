@@ -141,6 +141,20 @@ public interface DecodedAsnData
     public AsnSchemaTagType getType(String tag);
 
 
+    // TODO - MJF, is this the best way to get the chain??? - mostly this is so that we can process
+    // constraints.  I think ideally we'd just "reduce" the chain of constraints...
+    /**
+     * Gets the ASN.1 Type Definition chain of the specified tag.  This allows processing of
+     * constraints defined through multiple layers of Type Definitions.
+     *
+     * @param tag
+     *         tag to retrieve the type of
+     *
+     * @return the ASN.1 Type Definition chain of the specified tag or empty Set
+     * if the tag does not exist
+     */
+    public ImmutableSet<AsnSchemaTagType> getAllTypes(String tag);
+
     /**
      * Gets the data (bytes) associated with the specified tag as the decoded Java object most
      * appropriate to its type
@@ -245,6 +259,12 @@ public interface DecodedAsnData
         public AsnSchemaTypeDefinition getType(String tag)
         {
             return AsnSchemaTypeDefinition.NULL;
+        }
+
+        @Override
+        public ImmutableSet<AsnSchemaTagType> getAllTypes(String tag)
+        {
+            return ImmutableSet.<AsnSchemaTagType>of();
         }
 
         @Override

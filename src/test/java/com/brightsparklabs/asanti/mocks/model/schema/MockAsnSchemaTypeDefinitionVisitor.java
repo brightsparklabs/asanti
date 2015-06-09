@@ -5,6 +5,7 @@
 package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeOctetString;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition.Null;
@@ -99,6 +100,12 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
 
     @Override
     public String visit(AsnSchemaTypeDefinitionOctetString visitable)
+    {
+        return visitable.getClass().getCanonicalName();
+    }
+
+    @Override
+    public String visit(AsnSchemaTagTypeOctetString visitable)
     {
         return visitable.getClass().getCanonicalName();
     }

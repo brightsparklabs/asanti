@@ -1,0 +1,10 @@
+first-man Human ::= 
+{  
+    foo {
+      name "Adam",
+      age 32,
+      bar { a 6, b "Hi" } 
+    }
+    height 6
+    
+}

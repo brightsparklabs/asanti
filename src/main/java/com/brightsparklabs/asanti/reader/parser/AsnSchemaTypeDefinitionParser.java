@@ -291,9 +291,10 @@ public final class AsnSchemaTypeDefinitionParser
         }
 
         /* TODO - MJF. What happens if this is an indirection, eg:
-         * Foo ::= Bar
-         * where Bar is defined somewhere else.  Surely that is legal?
-         * Complicated by the fact that Bar may not have been parsed by the time we get to the line Foo ::= Bar
+         * PersonAge ::= ShortInt (0.200)
+         * ShortInt ::= INTEGER (0.32768)
+         * Surely that is legal?
+         * Complicated by the fact that ShortInt may not have been parsed by the time we get to the line PersonAge ::= ShortInt (0.200)
          */
 
         // unknown definition

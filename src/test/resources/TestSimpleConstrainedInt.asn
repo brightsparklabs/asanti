@@ -1,0 +1,10 @@
+World-Schema DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN
+  Human ::= SEQUENCE {
+      foo SEQUENCE {
+         name  UTF8String,
+         age   INTEGER (1..200)      
+      },
+      height INTEGER
+  }
+END

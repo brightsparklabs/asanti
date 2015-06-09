@@ -120,6 +120,9 @@ public class AsnSchemaComponentType
         return isOptional;
     }
 
-
+    /**
+     *
+     * @return the type fo this component type
+     */
     public AsnSchemaTagType getType() { return type; }
 }

@@ -10,6 +10,7 @@ import static com.google.common.base.Preconditions.*;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Represent a decoded ASN.1 tag created by decoding a raw tag path
@@ -32,8 +33,12 @@ public class DecodedTag
     //private final AsnSchemaTypeDefinition type;
     private final AsnSchemaTagType type;
 
+    /** the Type Definition chain that got to the end primitive type */
+    private final ImmutableSet<AsnSchemaTagType> allTypeDefinitions;
+
     /** whether the raw tag was completely decoded */
     private final boolean isFullyDecoded;
+
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -52,6 +57,9 @@ public class DecodedTag
      * @param type
      *            the type of construct represented by the tag
      *
+     * @param allTypeDefinitions
+     *            the chain of Type Definitions to ended with the {@code type}
+     *
      * @param isFullyDecoded
      *            whether the raw tag was completely decoded
      *
@@ -62,13 +70,19 @@ public class DecodedTag
      *             if {@code decodedTag} or {@code rawTag} are blank
      */
     //public DecodedTag(String decodedTag, String rawTag, AsnSchemaTypeDefinition type, boolean isFullyDecoded)
-    public DecodedTag(String decodedTag, String rawTag, AsnSchemaTagType type, boolean isFullyDecoded)
+    //public DecodedTag(String decodedTag, String rawTag, AsnSchemaTagType type, boolean isFullyDecoded)
+    public DecodedTag(String decodedTag,
+                      String rawTag,
+                      AsnSchemaTagType type,
+                      ImmutableSet<AsnSchemaTagType> allTypeDefinitions,
+                      boolean isFullyDecoded)
     {
         this.tag = Strings.nullToEmpty(decodedTag)
                 .trim();
         this.rawTag = Strings.nullToEmpty(rawTag)
                 .trim();
         this.type = type;
+        this.allTypeDefinitions = allTypeDefinitions;
         this.isFullyDecoded = isFullyDecoded;
 
         checkArgument(!this.tag.isEmpty(), "Decoded tag cannot be blank");
@@ -111,6 +125,17 @@ public class DecodedTag
     {
         return type;
     }
+
+    /**
+     * Returns the chain of Type Definitions that may have led to (@code type}
+     *
+     * @return the chain of Type Definitions that may have led to (@code type}
+     */
+    public ImmutableSet<AsnSchemaTagType>  getAllTypes()
+    {
+        return allTypeDefinitions;
+    }
+
 
     public boolean isFullyDecoded()
     {

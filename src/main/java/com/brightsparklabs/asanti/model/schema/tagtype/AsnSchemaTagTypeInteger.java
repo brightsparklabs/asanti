@@ -9,7 +9,10 @@ import com.google.common.collect.ImmutableMap;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by Michael on 4/06/2015.
+ * An {@code Integer} component/tag type from a within a module specification
+ * within an ASN.1 schema.
+ *
+ * @author brightSPARK Labs
  */
 public class AsnSchemaTagTypeInteger extends AbstractAsnSchemaTagType
 {
@@ -39,11 +42,8 @@ public class AsnSchemaTagTypeInteger extends AbstractAsnSchemaTagType
      *            E.g. For {@code Integer (1..56)} this would be {@code (1..56)}
      *
      * @throws NullPointerException
-     *             if {@code name} or {@code distinguishedValues} is
-     *             {@code null}
+     *             if {@code distinguishedValues} is {@code null}
      *
-     * @throws IllegalArgumentException
-     *             if {@code name} is blank
      */
     public AsnSchemaTagTypeInteger(Iterable<AsnSchemaNamedTag> distinguishedValues,
             AsnSchemaConstraint constraint)
@@ -64,7 +64,9 @@ public class AsnSchemaTagTypeInteger extends AbstractAsnSchemaTagType
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
-/*
+/* TODO MJF - do we need this?  I assume that a Component that is an Integer can have distinguished
+          values?
+
     @Override
     public String getTagName(String tag)
     {

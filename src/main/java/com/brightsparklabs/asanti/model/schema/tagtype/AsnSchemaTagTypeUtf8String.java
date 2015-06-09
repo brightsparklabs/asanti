@@ -5,7 +5,10 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
 
 /**
- * Created by Michael on 8/06/2015.
+ * An {@code UTF8String} component/tag type from a within a module specification
+ * within an ASN.1 schema.
+ *
+ * @author brightSPARK Labs
  */
 public class AsnSchemaTagTypeUtf8String extends AbstractAsnSchemaTagType
 {
@@ -26,8 +29,6 @@ public class AsnSchemaTagTypeUtf8String extends AbstractAsnSchemaTagType
      * @throws NullPointerException
      *             if {@code name} is {@code null}
      *
-     * @throws IllegalArgumentException
-     *             if {@code name} is blank
      */
     public AsnSchemaTagTypeUtf8String(AsnSchemaConstraint constraint)
     {

@@ -216,7 +216,9 @@ public class AsnSchemaComponentTypeParser
             {
                 final AsnSchemaTagType tagType = AnsSchemaTagTypeParser.parse(tagName, rawType);
 
-                final String typeName = matcher.group(7);
+                String typeName = matcher.group(7);
+                // TODO MJF - figure out the regex so we don't need to trim...
+                typeName = typeName.trim();
                 return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
             }
             else

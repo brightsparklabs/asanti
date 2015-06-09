@@ -1,10 +1,7 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypePlaceHolder;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
+import com.brightsparklabs.asanti.model.schema.tagtype.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -17,6 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * Logic for parsing a Type Definition from a module within an ASN.1 schema
  *
@@ -27,6 +26,10 @@ public final class AnsSchemaTagTypeParser
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
+
+    // TODO - All these Regex are copied from elsewhere.  They need to be TESTED
+    // to work with the way the input parameters are going to be passed.
+
 
     /** pattern to match a SET/SEQUENCE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_SEQUENCE = Pattern.compile(
@@ -111,6 +114,10 @@ public final class AnsSchemaTagTypeParser
     private static final Pattern PATTERN_COMPONENT_TYPE = Pattern.compile(
             "([a-zA-Z0-9\\-]+) ?(\\[(\\d+)\\])? ?(.+?) ?((OPTIONAL)|(DEFAULT ([a-zA-Z0-9\\-]+)))?");
 
+    /** pattern to break text into: type, optional/default */
+    private static final Pattern PATTERN_DEFINED_TYPE = Pattern.compile(
+            "^([a-zA-Z0-9\\-]+) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+
     /**
      * pattern to break the raw type string into: set/sequence of, construct constraints, type name,
      * type definition, type constraints
@@ -170,15 +177,15 @@ public final class AnsSchemaTagTypeParser
     public static AsnSchemaTagType parse(String name, String value)
             throws ParseException
     {
-        logger.debug("Found type definition: {} = {}", name, value);
-        if (name == null || name.trim().isEmpty())
-        {
-            throw new ParseException("A name must be supplied for a Type Definition", -1);
-        }
-        if (value == null || value.trim().isEmpty())
-        {
-            throw new ParseException("A value must be supplied for a Type Definition", -1);
-        }
+
+        checkNotNull(name);
+        checkArgument(!name.trim().isEmpty(),
+                "name must be specified");
+        checkNotNull(value);
+        checkArgument(!value.trim().isEmpty(),
+                "value must be specified");
+
+        logger.debug("Found tag type: {} = {}", name, value);
         Matcher matcher;
 /*
         // check if defining a SEQUENCE
@@ -208,14 +215,14 @@ public final class AnsSchemaTagTypeParser
         {
             return ImmutableList.<AsnSchemaTypeDefinition>of(parseEnumerated(name, matcher));
         }
-
+*/
         // check if defining an OCTET STRING
         matcher = PATTERN_TYPE_DEFINITION_OCTET_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseOctetString(name, matcher));
+            return parseOctetString(name, matcher);
         }
-
+/*
         // check if defining a BIT STRING
         matcher = PATTERN_TYPE_DEFINITION_BIT_STRING.matcher(value);
         if (matcher.matches())
@@ -306,7 +313,7 @@ public final class AnsSchemaTagTypeParser
          */
         // So, to answer the above, if we get there then we must have a Tag that is of a non-Primitive type,
         // ie it must be of a Type Definition type.
-        matcher = PATTERN_COMPONENT_TYPE.matcher(value);
+        matcher = PATTERN_DEFINED_TYPE.matcher(value);
         if (matcher.matches())
         {
 
@@ -324,6 +331,26 @@ public final class AnsSchemaTagTypeParser
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
 
+    /**
+     * Parses an OCTET STRING type definition
+     *
+     * @param name
+     *         name of the defined type
+     * @param matcher
+     *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_OCTET_STRING}
+     *
+     * @return an {@link AsnSchemaTypeDefinitionOctetString} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+    private static AsnSchemaTagTypeOctetString parseOctetString(String name, Matcher matcher)
+            throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTagTypeOctetString(constraint);
+    }
 
 
     /**
@@ -390,15 +417,8 @@ public final class AnsSchemaTagTypeParser
     private static AsnSchemaTagTypePlaceHolder parsePlaceHolder(String name, Matcher matcher)
             throws ParseException
     {
-        final String typeName = Strings.nullToEmpty(matcher.group(0));
-        final String b = Strings.nullToEmpty(matcher.group(1));
-        final String c = Strings.nullToEmpty(matcher.group(2));
-        final String d = Strings.nullToEmpty(matcher.group(3));
-        final String f = Strings.nullToEmpty(matcher.group(4));
-        final String h = Strings.nullToEmpty(matcher.group(5));
-        final String i = Strings.nullToEmpty(matcher.group(6));
-
-        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        final String typeName = Strings.nullToEmpty(matcher.group(1));
+        final String constraintText = Strings.nullToEmpty(matcher.group(4));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         return new AsnSchemaTagTypePlaceHolder(typeName, constraint);
 

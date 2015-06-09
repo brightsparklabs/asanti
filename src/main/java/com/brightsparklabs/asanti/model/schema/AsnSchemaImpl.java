@@ -15,14 +15,13 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -121,6 +120,7 @@ public class AsnSchemaImpl implements AsnSchema
         final DecodedTag decodedTag = new DecodedTag(decodedTagPath,
                 rawTag,
                 decodedTagsAndType.type,
+                decodedTagsAndType.allTypeDefinitions,
                 decodeSuccessful);
         final OperationResult<DecodedTag> result = decodeSuccessful ?
                 OperationResult.createSuccessfulInstance(decodedTag) :
@@ -157,6 +157,9 @@ public class AsnSchemaImpl implements AsnSchema
         String typeName = containingTypeName;
         final DecodedTagsAndType result = new DecodedTagsAndType();
 
+        //ImmutableSet.<AsnSchemaTagType>of();
+        Set<AsnSchemaTagType> allTypeDefs = Sets.newHashSet();
+
         AsnSchemaTypeDefinition type = module.getType(typeName);
 
         while (rawTags.hasNext())
@@ -179,6 +182,7 @@ public class AsnSchemaImpl implements AsnSchema
                             importedModule);
                     result.type = tagsAndType.type;
                     result.decodedTags.addAll(tagsAndType.decodedTags);
+                    // TODO MJF.  test this...
                 }
                 break;
             }
@@ -205,11 +209,6 @@ public class AsnSchemaImpl implements AsnSchema
                 final String tagName = constructed.getTagName(tag);
                 AsnSchemaComponentType component = constructed.getComponent(tag);
 
-                //AsnSchemaTagType tagType = component.getType();
-
-
-                //typeName = type.getTypeName(tag);
-
                 if (Strings.isNullOrEmpty(tagName))
                 {
                     // unknown tag
@@ -217,22 +216,31 @@ public class AsnSchemaImpl implements AsnSchema
                     break;
                 }
 
-
-
                 AsnSchemaTagType tagType = component.getType();
-
 
                 // TODO MJF.  This is just temporary.  We should do this scan for all PlaceHolders
                 // as part of the schema parsing.  But just to test the concept, lets try here...
+                // Also TypeDefs may be indirect, eg in a Sequence we may have:
+                //    age MyAge
+                // then
+                //  MyAge ::= ShortInt (1..200)
+                //  ShortInt ::= INTEGER (1..32767)
 
                 if (tagType instanceof AsnSchemaTagTypePlaceHolder)
                 {
+                    // we only want the 'chain' of the type of the tag, not anything of the parent
+                    // structures.
+                    if (!rawTags.hasNext())
+                    {
+                        allTypeDefs.add(tagType);
+                    }
                     typeName = component.getTypeName();
                     tagType = module.getType(typeName);
                 }
 
 
 
+                result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
                 result.type = tagType;//type;
                 result.decodedTags.add(tagName);
 
@@ -378,5 +386,7 @@ public class AsnSchemaImpl implements AsnSchema
         /** the type of the final tag */
         //private AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
         private AsnSchemaTagType type = AsnSchemaTypeDefinition.NULL;
+
+        private ImmutableSet<AsnSchemaTagType> allTypeDefinitions = ImmutableSet.<AsnSchemaTagType>of();
     }
 }

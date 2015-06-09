@@ -12,6 +12,7 @@ package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
+import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeOctetString;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
@@ -89,6 +90,11 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
 
     @Override
     public OctetStringDecoder visit(final AsnSchemaTypeDefinitionOctetString visitable)
+    {
+        return OctetStringDecoder.getInstance();
+    }
+    @Override
+    public OctetStringDecoder visit(final AsnSchemaTagTypeOctetString visitable)
     {
         return OctetStringDecoder.getInstance();
     }
