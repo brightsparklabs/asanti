@@ -41,7 +41,20 @@ public class NumericStringDecoderTest
         }
 
         // test invalid
-        for (byte b = Byte.MIN_VALUE; b < '0'; b++)
+        for (byte b = Byte.MIN_VALUE; b < ' '; b++)
+        {
+            bytes[0] = b;
+            try
+            {
+                instance.decode(bytes);
+                fail("DecodeException not thrown");
+            }
+            catch (DecodeException ex)
+            {
+            }
+        }
+
+        for (byte b = '!'; b < '0'; b++)
         {
             bytes[0] = b;
             try
@@ -60,6 +73,7 @@ public class NumericStringDecoderTest
             try
             {
                 instance.decode(bytes);
+                fail("DecodeException not thrown");
             }
             catch (DecodeException ex)
             {
@@ -95,7 +109,20 @@ public class NumericStringDecoderTest
         {
         }
 
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        for (byte b = Byte.MIN_VALUE; b < ' '; b++)
+        {
+            bytes[0] = b;
+            try
+            {
+                instance.decodeAsString(bytes);
+                fail("DecodeException not thrown");
+            }
+            catch (DecodeException ex)
+            {
+            }
+        }
+
+        for (byte b = '!'; b < '0'; b++)
         {
             bytes[0] = b;
             try
