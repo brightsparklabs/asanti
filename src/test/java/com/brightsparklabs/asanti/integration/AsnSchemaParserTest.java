@@ -77,6 +77,20 @@ public class AsnSchemaParserTest
             "   }\n" +
             "END";
 
+    private static final String HUMAN_SIMPLE_SET = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SET\n" +
+            "   {\n" +
+            "       age INTEGER (1..100),\n" +
+            "       name UTF8String\n" +
+            "   }\n" +
+            "END";
+
     private static final String HUMAN_NESTED = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
@@ -110,7 +124,7 @@ public class AsnSchemaParserTest
             "   PersonAge ::= INTEGER (1..200)\n" +
             "END";
 
-    /** TODO - This does NOT work yet... */
+    /** TODO MJF - This (component being of a Typedef type) does NOT work yet... */
     private static final String HUMAN_USING_TYPEDEF_INDIRECT = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
@@ -146,7 +160,43 @@ public class AsnSchemaParserTest
             "   PersonAge ::= INTEGER (1..200)\n" +
             "END";
 
-    private static final String HUMAN_USING_TYPEDEF_SET = "Test-Protocol\n" +
+    private static final String HUMAN_SEQUENCEOF_SEQUENCE = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE OF SEQUENCE\n" +
+            "   {\n" +
+            "       age INTEGER (1..100),\n" +
+            "       name UTF8String\n" +
+            "   }\n" +
+            "END";
+
+    /** TODO MJF - This (component being of a Typedef type) does NOT work yet... */
+    private static final String HUMAN_SEQUENCEOF_SEQUENCE2 = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       age INTEGER (1..100),\n" +
+            "       name UTF8String,\n" +
+            "       friends SEQUENCE OF Name\n" +
+            "   }\n" +
+            "   Name ::= SEQUENCE\n" +
+            "   {\n" +
+            "       first UTF8String,\n" +
+            "       last  UTF8String\n" +
+            "   }\n" +
+            "END";
+
+
+    private static final String HUMAN_USING_TYPEDEF_SETOF = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
             "DEFINITIONS\n" +
@@ -249,6 +299,45 @@ public class AsnSchemaParserTest
 
         //String berFilename = "d:\\tmp\\Human_Simple2.ber";
         String berFilename = getClass().getResource("/Human_Simple2.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+
+        DecodedAsnData pdu = pdus.get(0);
+
+        assertEquals(0, pdu.getUnmappedTags().size());
+
+        tag = "/Human/age";
+        BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
+        logger.info(tag + " : " + age);
+        assertEquals(new BigInteger("32"), age);
+
+
+        tag = "/Human/name";
+        String name = (String)pdu.getDecodedObject(tag);
+        logger.info(tag + " : " + name);
+        assertEquals("Adam", name);
+
+    }
+
+    @Test
+    public void testParse_HumanSimpleSet() throws Exception
+    {
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE_SET);
+
+        String tag = "/0";
+        logger.info("get tag " + tag);
+        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
+
+        assertTrue(result.wasSuccessful());
+
+        DecodedTag actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+        String berFilename = getClass().getResource("/Human_SimpleSet.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
@@ -474,10 +563,77 @@ public class AsnSchemaParserTest
     }
 
     @Test
-    public void testParse_HumanUsingTypeDefSet() throws Exception
+    public void testParse_HumanSequenceOfSequence() throws Exception
     {
 
-        AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_SET);
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE);
+
+        String berFilename = getClass().getResource("/Human_SequenceOfSequence.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+
+
+
+        DecodedAsnData pdu = pdus.get(0);
+
+        //assertEquals(0, pdu.getUnmappedTags().size());
+
+        for (String tag : pdu.getTags())
+        {
+            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+        }
+        for (String tag : pdu.getUnmappedTags())
+        {
+            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+        }
+
+        /* TODO MJF
+        String tag = "/Human/faveNumbers";
+        BigInteger fave0 = (BigInteger)pdu.getDecodedObject(tag+"[0]");
+        */
+
+    }
+
+    @Test
+    public void testParse_HumanSequenceOfSequence2() throws Exception
+    {
+/*
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE2);
+
+        String berFilename = getClass().getResource("/Human_SequenceOfSequence2.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+
+
+
+        DecodedAsnData pdu = pdus.get(0);
+
+        //assertEquals(0, pdu.getUnmappedTags().size());
+
+        for (String tag : pdu.getTags())
+        {
+            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+        }
+        for (String tag : pdu.getUnmappedTags())
+        {
+            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+        }
+*/
+    }
+
+    @Test
+    public void testParse_HumanUsingTypeDefSetOf() throws Exception
+    {
+
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_SETOF);
 
         String berFilename = getClass().getResource("/Human_TypedefSet.ber").getFile();
         final File berFile = new File(berFilename);

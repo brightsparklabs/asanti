@@ -281,6 +281,7 @@ public final class AnsSchemaTagTypeParser
             //return ImmutableList.<AsnSchemaTagType>of(parseInteger(name, matcher));
             return parseInteger(name, matcher);
         }
+
 /*
 
         // check if defining a SEQUENCE OF
@@ -289,7 +290,6 @@ public final class AnsSchemaTagTypeParser
         {
             return parseSequenceOf(name, matcher);
         }
-
         // check if defining a SET OF
         matcher = PATTERN_TYPE_DEFINITION_SET_OF.matcher(value);
         if (matcher.matches())

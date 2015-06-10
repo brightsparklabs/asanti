@@ -10,6 +10,7 @@ import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypePlaceHolder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionCollectionOf;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionConstructed;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -157,9 +158,10 @@ public class AsnSchemaImpl implements AsnSchema
         String typeName = containingTypeName;
         final DecodedTagsAndType result = new DecodedTagsAndType();
 
-        //ImmutableSet.<AsnSchemaTagType>of();
         Set<AsnSchemaTagType> allTypeDefs = Sets.newHashSet();
 
+        // The module stores all the TypeDefs defined within it.
+        // this is now the Type of the tag's container (ie we are assuming this is in a Sequence/Set etc)
         AsnSchemaTypeDefinition type = module.getType(typeName);
 
         while (rawTags.hasNext())
@@ -206,7 +208,9 @@ public class AsnSchemaImpl implements AsnSchema
             if (type instanceof AsnSchemaTypeDefinitionConstructed)
             {
                 AsnSchemaTypeDefinitionConstructed constructed = (AsnSchemaTypeDefinitionConstructed)type;
-                final String tagName = constructed.getTagName(tag);
+                //final String tagName = constructed.getTagName(tag);
+                final String tagName = type.getTagName(tag);
+
                 AsnSchemaComponentType component = constructed.getComponent(tag);
 
                 if (Strings.isNullOrEmpty(tagName))
@@ -254,12 +258,24 @@ public class AsnSchemaImpl implements AsnSchema
 
 
             }
+            else if (type instanceof AsnSchemaTypeDefinitionCollectionOf)
+            {
+                // TODO MJF - 
+                AsnSchemaTypeDefinitionCollectionOf collection = (AsnSchemaTypeDefinitionCollectionOf)type;
+
+                final String tagName = tag;// type.getTagName(tag);
+                typeName = collection.getTypeName(tag);
+
+                type = module.getType(typeName);
+
+                result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
+                result.type = AsnSchemaTypeDefinition.NULL;
+                result.decodedTags.add(tagName);
+            }
             else
             {
                 // This is NOT a container type, so we can't go any further down - this is the end of the line!
-
                 type = AsnSchemaTypeDefinition.NULL;
-
             }
 
 
