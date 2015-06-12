@@ -549,7 +549,7 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + last);
         assertEquals("Smith", last);
 
-
+/*
         ValidatorImpl validator = new ValidatorImpl();
         ValidationResult validationresult = validator.validate(pdu);
 
@@ -566,6 +566,7 @@ public class AsnSchemaParserTest
                     " reason: " + fail.getFailureReason() +
                     " type: " + fail.getFailureType());
         }
+*/
     }
 
     @Test
@@ -673,31 +674,10 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        String rawTag = "/1/0";
-        logger.info("get tag " + rawTag);
-        OperationResult<DecodedTag> result = schema.getDecodedTag(rawTag, "PS-PDU");
-
 
         String berFilename = getClass().getResource("/test.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "PS-PDU";
-
-
-/*
-        final ImmutableList<AsnData> data = AsnDecoder.readAsnBerFile(berFile);
-        int count = 0;
-        for (final AsnData asnData : data)
-        {
-            logger.info("PDU[" + count + "]");
-            final Map<String, byte[]> tagsData = asnData.getBytes();
-
-            for (final String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
-            {
-                logger.info("\t {}: 0x{}", tag, BaseEncoding.base16().encode(tagsData.get(tag)));
-            }
-            count++;
-        }
-*/
 
         final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
                 schema,

@@ -501,12 +501,13 @@ public final class AnsSchemaTagTypeParser
     private static AsnSchemaTagTypeSequenceOf parseSequenceOf(String name, Matcher matcher)
             throws ParseException
     {
+/*
         final String a = matcher.group(0);
         final String b = matcher.group(1);
         final String c = matcher.group(2);
         final String d = matcher.group(3);
-
-        final String constraintText = Strings.nullToEmpty(matcher.group(3));
+*/
+        final String constraintText = "";//Strings.nullToEmpty(matcher.group(3));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
         return new AsnSchemaTagTypeSequenceOf(constraint);
