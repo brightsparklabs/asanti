@@ -3,6 +3,7 @@ package com.brightsparklabs.asanti.model.schema.tagtype;
 import com.brightsparklabs.asanti.common.Visitable;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
 
 /**
@@ -13,7 +14,17 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVi
  */
 public interface AsnSchemaTagType extends Visitable<AsnSchemaTagTypeVisitor<?>>
 {
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
 
+    /** null instance */
+    public static final AsnSchemaTagType.Null NULL = new AsnSchemaTagType.Null();
+
+
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
 
     /**
      * Returns the ASN.1 built-in type for this tagtype
@@ -29,5 +40,44 @@ public interface AsnSchemaTagType extends Visitable<AsnSchemaTagTypeVisitor<?>>
      *         {@link AsnSchemaConstraint#NULL} if there is no constraint.
      */
     public AsnSchemaConstraint getConstraint();
+
+
+
+    // -------------------------------------------------------------------------
+    // INTERNAL CLASS: AsnSchemaConstructTagTypeNull
+    // -------------------------------------------------------------------------
+
+    /**
+     * Null instance of {@link AbstractAsnSchemaTypeDefinition}.
+     * <p>
+     * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
+     * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
+     */
+    public static class Null extends AbstractAsnSchemaTagType
+    {
+        // ---------------------------------------------------------------------
+        // CONSTRUCTION
+        // ---------------------------------------------------------------------
+
+        /**
+         * Default constructor. This is private. Use
+         * {@link AbstractAsnSchemaTypeDefinition#NULL} to obtain an instance.
+         */
+        private Null()
+        {
+            super( AsnBuiltinType.Null, AsnSchemaConstraint.NULL);
+        }
+
+        // ---------------------------------------------------------------------
+        // IMPLEMENTATION: AsnSchemaTagType
+        // ---------------------------------------------------------------------
+        @Override
+        public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
+        {
+            return visitor.visit(this);
+        }
+
+    }
+
 
 }

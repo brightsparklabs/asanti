@@ -87,6 +87,10 @@ public final class AnsSchemaTagTypeParser
     private static final Pattern PATTERN_TYPE_DEFINITION_GENERAL_STRING = Pattern.compile(
             "^GeneralString ?(\\((.+)\\))?$");
 
+    /** pattern to match a GeneralString type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_PRINTABLE_STRING = Pattern.compile(
+            "^PrintableString ?(\\((.+)\\))?$");
+
     /** pattern to match a GeneralizedTime type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_GENERALIZED_TIME = Pattern.compile(
             "^GeneralizedTime$");
@@ -94,6 +98,12 @@ public final class AnsSchemaTagTypeParser
     /** pattern to match an Integer type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_INTEGER = Pattern.compile(
             "^INTEGER ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+
+
+    /** pattern to match an Integer type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_NULL = Pattern.compile(
+            "^NULL$");
+
 
     // TODO ASN-25 remove this once ASN-25 is completed
 
@@ -114,9 +124,14 @@ public final class AnsSchemaTagTypeParser
     private static final Pattern PATTERN_COMPONENT_TYPE = Pattern.compile(
             "([a-zA-Z0-9\\-]+) ?(\\[(\\d+)\\])? ?(.+?) ?((OPTIONAL)|(DEFAULT ([a-zA-Z0-9\\-]+)))?");
 
+
     /** pattern to break text into: type, optional/default */
+/*
     private static final Pattern PATTERN_DEFINED_TYPE = Pattern.compile(
-            "^([a-zA-Z0-9\\-]+) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+            "^([a-zA-Z0-9\\-]+)(.([a-zA-Z0-9\\-]+))? ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+*/
+    private static final Pattern PATTERN_DEFINED_TYPE = Pattern.compile(
+            "^((([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
 
     /**
      * pattern to break the raw type string into: set/sequence of, construct constraints, type name,
@@ -222,15 +237,15 @@ public final class AnsSchemaTagTypeParser
         {
             return parseOctetString(name, matcher);
         }
-/*
+
         // check if defining a BIT STRING
         matcher = PATTERN_TYPE_DEFINITION_BIT_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseBitString(name, matcher));
+            return parseBitString(name, matcher);
 
         }
-
+/*
         // check if defining an Ia5String
         matcher = PATTERN_TYPE_DEFINITION_IA5_STRING.matcher(value);
         if (matcher.matches())
@@ -266,6 +281,14 @@ public final class AnsSchemaTagTypeParser
         {
             return ImmutableList.<AsnSchemaTypeDefinition>of(parseGeneralString(name, matcher));
         }
+*/
+        // check if defining a PrintableString
+        matcher = PATTERN_TYPE_DEFINITION_PRINTABLE_STRING.matcher(value);
+        if (matcher.matches())
+        {
+            return parsePrintableString(name, matcher);
+        }
+/*
 
         // check if defining a GeneralizedTime
         matcher = PATTERN_TYPE_DEFINITION_GENERALIZED_TIME.matcher(value);
@@ -282,14 +305,13 @@ public final class AnsSchemaTagTypeParser
             return parseInteger(name, matcher);
         }
 
-/*
-
         // check if defining a SEQUENCE OF
         matcher = PATTERN_TYPE_DEFINITION_SEQUENCE_OF.matcher(value);
         if (matcher.matches())
         {
             return parseSequenceOf(name, matcher);
         }
+/*
         // check if defining a SET OF
         matcher = PATTERN_TYPE_DEFINITION_SET_OF.matcher(value);
         if (matcher.matches())
@@ -306,6 +328,20 @@ public final class AnsSchemaTagTypeParser
             return ImmutableList.<AsnSchemaTypeDefinition>of(AsnSchemaTypeDefinition.NULL);
         }
 */
+
+        matcher = PATTERN_TYPE_DEFINITION_NULL.matcher(value);
+        if (matcher.matches())
+        {
+            return AsnSchemaTagType.NULL;
+        }
+
+
+        matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
+        if (matcher.matches())
+        {
+            logger.debug("Did not otherwise parse Primitive: " + value);
+        }
+
         /* TODO - MJF. What happens if this is an indirection, eg (within a Sequence):
          *    foo Bar
          * where Bar is defined somewhere else.  Surely that is legal?
@@ -321,10 +357,19 @@ public final class AnsSchemaTagTypeParser
             return parsePlaceHolder(name, matcher);
         }
 
+        // TODO - for now if we are here it is most likely because we have not implemented something
+        // to see where we are at I will create a placeHolder
+        final String constraintText = "";
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        logger.info("Creating last ditch placeholder for: " + name + " of type: " + value);
+        return new AsnSchemaTagTypePlaceHolder("", value, constraint);
 
+
+/*
         // unknown definition
         final String error = ERROR_UNKNOWN_BUILT_IN_TYPE + name + " ::= " + value;
         throw new ParseException(error, -1);
+*/
     }
 
     // -------------------------------------------------------------------------
@@ -339,7 +384,7 @@ public final class AnsSchemaTagTypeParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_OCTET_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionOctetString} representing the parsed data
+     * @return an {@link AsnSchemaTagTypeOctetString} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
@@ -352,6 +397,26 @@ public final class AnsSchemaTagTypeParser
         return new AsnSchemaTagTypeOctetString(constraint);
     }
 
+    /**
+     * Parses an BIT STRING type definition
+     *
+     * @param name
+     *         name of the defined type
+     * @param matcher
+     *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_BIT_STRING}
+     *
+     * @return an {@link AsnSchemaTagTypeBitString} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+    private static AsnSchemaTagTypeBitString parseBitString(String name, Matcher matcher)
+            throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTagTypeBitString(constraint);
+    }
 
     /**
      * Parses a Utf8String type definition
@@ -361,12 +426,11 @@ public final class AnsSchemaTagTypeParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_UTF8_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionUtf8String} representing the parsed data
+     * @return an {@link AsnSchemaTagTypeUtf8String} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-
     private static AsnSchemaTagTypeUtf8String parseUTF8String(String name, Matcher matcher)
             throws ParseException
     {
@@ -375,6 +439,27 @@ public final class AnsSchemaTagTypeParser
         return new AsnSchemaTagTypeUtf8String(constraint);
     }
 
+    /**
+     * Parses a PrintableString type definition
+     *
+     * @param name
+     *         name of the defined type
+     * @param matcher
+     *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_PRINTABLE_STRING}
+     *
+     * @return an {@link AsnSchemaTagTypePrintableString} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+
+    private static AsnSchemaTagTypePrintableString parsePrintableString(String name, Matcher matcher)
+            throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+        return new AsnSchemaTagTypePrintableString(constraint);
+    }
 
     /**
      * Parses an Integer type definition
@@ -384,7 +469,7 @@ public final class AnsSchemaTagTypeParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_INTEGER}
      *
-     * @return an {@link AsnSchemaTypeDefinitionInteger} representing the parsed data
+     * @return an {@link AsnSchemaTagTypeInteger} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
@@ -401,14 +486,42 @@ public final class AnsSchemaTagTypeParser
     }
 
     /**
-     * Parses a Utf8String type definition
+     * Parses a Sequence Of type definition
      *
      * @param name
      *         name of the defined type
      * @param matcher
-     *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_UTF8_STRING}
+     *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_SEQUENCE_OF}
      *
-     * @return an {@link AsnSchemaTypeDefinitionUtf8String} representing the parsed data
+     * @return an {@link AsnSchemaTagTypeSequenceOf} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+    private static AsnSchemaTagTypeSequenceOf parseSequenceOf(String name, Matcher matcher)
+            throws ParseException
+    {
+        final String a = matcher.group(0);
+        final String b = matcher.group(1);
+        final String c = matcher.group(2);
+        final String d = matcher.group(3);
+
+        final String constraintText = Strings.nullToEmpty(matcher.group(3));
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+
+        return new AsnSchemaTagTypeSequenceOf(constraint);
+    }
+
+
+    /**
+     * Parses a type that we don't know about
+     *
+     * @param name
+     *         name of the defined type
+     * @param matcher
+     *         matcher which matched on {@link #PATTERN_DEFINED_TYPE}
+     *
+     * @return an {@link AsnSchemaTagTypePlaceHolder} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
@@ -417,10 +530,14 @@ public final class AnsSchemaTagTypeParser
     private static AsnSchemaTagTypePlaceHolder parsePlaceHolder(String name, Matcher matcher)
             throws ParseException
     {
-        final String typeName = Strings.nullToEmpty(matcher.group(1));
-        final String constraintText = Strings.nullToEmpty(matcher.group(4));
+        final String moduleName = Strings.nullToEmpty(matcher.group(3));
+        final String typeName = Strings.nullToEmpty(matcher.group(4));
+
+        final String constraintText = Strings.nullToEmpty(matcher.group(6));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTagTypePlaceHolder(typeName, constraint);
+
+        logger.debug("creating placeholder - moduleName:" + moduleName + " typeName: " + typeName + " contraints: " + constraintText);
+        return new AsnSchemaTagTypePlaceHolder(moduleName, typeName, constraint);
 
     }
 

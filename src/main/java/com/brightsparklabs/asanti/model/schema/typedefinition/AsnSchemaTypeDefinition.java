@@ -58,7 +58,7 @@ public interface AsnSchemaTypeDefinition extends AsnSchemaTagType
     public String getTypeName(String tag);
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaConstructTypeDefinitionNull
+    // INTERNAL CLASS: AsnSchemaTagType.Null
     // -------------------------------------------------------------------------
 
     /**

@@ -5,10 +5,7 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeOctetString;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
+import com.brightsparklabs.asanti.model.schema.tagtype.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
@@ -32,7 +29,19 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public BuiltinTypeValidator.Null visit(AsnSchemaTagType.Null visitable)
+    {
+        return BuiltinTypeValidator.NULL;
+    }
+
+    @Override
     public BitStringValidator visit(AsnSchemaTypeDefinitionBitString visitable)
+    {
+        return BitStringValidator.getInstance();
+    }
+
+    @Override
+    public BitStringValidator visit(AsnSchemaTagTypeBitString visitable)
     {
         return BitStringValidator.getInstance();
     }
@@ -61,6 +70,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     public GeneralStringValidator visit(AsnSchemaTypeDefinitionGeneralString visitable)
     {
         return GeneralStringValidator.getInstance();
+    }
+
+    @Override
+    public PrintableStringValidator visit(AsnSchemaTagTypePrintableString visitable)
+    {
+        return PrintableStringValidator.getInstance();
     }
 
     @Override
@@ -111,6 +126,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
 
     @Override
     public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSequenceOf visitable)
+    {
+        // TODO ASN-113
+        return null;
+    }
+    @Override
+    public BuiltinTypeValidator visit(AsnSchemaTagTypeSequenceOf visitable)
     {
         // TODO ASN-113
         return null;

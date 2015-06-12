@@ -2,11 +2,13 @@ package com.brightsparklabs.asanti.integration;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnDecoder;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.brightsparklabs.asanti.reader.parser.AnsSchemaTagTypeParser;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
 import com.brightsparklabs.asanti.validator.Validator;
@@ -16,6 +18,8 @@ import com.brightsparklabs.asanti.validator.result.ValidationResult;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Ordering;
+import com.google.common.io.BaseEncoding;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +28,7 @@ import java.io.File;
 import java.math.BigInteger;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -47,6 +52,7 @@ public class AsnSchemaParserTest
             "AUTOMATIC TAGS ::=\n" +
             "IMPORTS\n" +
             "BEGIN\n" +
+            "li-psDomainId OBJECT IDENTIFIER ::= {lawfulInterceptDomainId li-ps(5) genHeader(1) version14(14)}" +
             "    MyInt ::= INTEGER\n" +
             "END";
 
@@ -124,7 +130,7 @@ public class AsnSchemaParserTest
             "   PersonAge ::= INTEGER (1..200)\n" +
             "END";
 
-    /** TODO MJF - This (component being of a Typedef type) does NOT work yet... */
+    /** TODO MJF - This (component Typedef of a Typedef type) does NOT work yet... */
     private static final String HUMAN_USING_TYPEDEF_INDIRECT = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
@@ -659,6 +665,72 @@ public class AsnSchemaParserTest
 
     }
 
+
+    @Test
+    public void testParse_HumanUsingTypeEtsi() throws Exception
+    {
+        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+
+        String rawTag = "/1/0";
+        logger.info("get tag " + rawTag);
+        OperationResult<DecodedTag> result = schema.getDecodedTag(rawTag, "PS-PDU");
+
+
+        String berFilename = getClass().getResource("/test.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "PS-PDU";
+
+
+/*
+        final ImmutableList<AsnData> data = AsnDecoder.readAsnBerFile(berFile);
+        int count = 0;
+        for (final AsnData asnData : data)
+        {
+            logger.info("PDU[" + count + "]");
+            final Map<String, byte[]> tagsData = asnData.getBytes();
+
+            for (final String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
+            {
+                logger.info("\t {}: 0x{}", tag, BaseEncoding.base16().encode(tagsData.get(tag)));
+            }
+            count++;
+        }
+*/
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+
+        for (int i = 0; i < pdus.size(); i++)
+        {
+
+            logger.info("Parsing PDU[{}]", i);
+            final DecodedAsnData pdu = pdus.get(i);
+            for (String tag : pdu.getTags())
+            {
+                logger.info("\t{} => {} as {}", tag, pdu.getHexString(tag), pdu.getType(tag).getBuiltinType() );
+            }
+            for (String tag : pdu.getUnmappedTags())
+            {
+                logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+            }
+        }
+
+        BigInteger sequenceNumber = (BigInteger)pdus.get(0).getDecodedObject("/PS-PDU/pSHeader/sequenceNumber");
+        logger.info("sequenceNumber[0]: " + sequenceNumber);
+        BigInteger communicationIdentityNumber = (BigInteger)pdus.get(0).getDecodedObject("/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber");
+        logger.info("communicationIdentityNumber[0]: " + communicationIdentityNumber);
+
+        communicationIdentityNumber = (BigInteger)pdus.get(1).getDecodedObject("/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber");
+        logger.info("communicationIdentityNumber[1]: {}", communicationIdentityNumber);
+
+        sequenceNumber = (BigInteger)pdus.get(2).getDecodedObject("/PS-PDU/pSHeader/sequenceNumber");
+        logger.info("sequenceNumber[2]: " + sequenceNumber);
+
+
+    }
 
     @Test
     public void testParse_HumanUsingTypeDefBroken() throws Exception

@@ -37,15 +37,21 @@
 --    HEADER SECTION
 --========================================================================
 
+
 -- Source: LI-PS-PDU,ver14.txt
 -- ETSI TS 102 232-1 V3.2.1 (2012-11)
 -- Annex A.2 ASN.1 specification
+
 LI-PS-PDU
 {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) genHeader(1) version14(14)}
+
 DEFINITIONS IMPLICIT TAGS ::=
+
 BEGIN
+
 IMPORTS
   -- Any of the IMPORTs may be commented out if they are not used (see clause A.3)
+
   -- from TS 101 671 [4]
   LawfulInterceptionIdentifier,
   IRI-Parameters,
@@ -53,10 +59,12 @@ IMPORTS
   Network-Element-Identifier
     FROM HI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi2(1) version17(17)}
+
   -- from TS 101 671 [4]
   HI1-Operation
     FROM HI1NotificationOperations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi1(0) notificationOperations(1) version6(6)}
+
   -- from TS 102 232-02 [5]
   EmailCC,
   EmailIRI,
@@ -64,28 +72,33 @@ IMPORTS
   MessagingIRI
     FROM EmailPDU
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) email(2) version9(9)}
+
   -- from TS 102 232-03 [6]
   IPCC,
   IPIRI,
   IPIRIOnly
     FROM IPAccessPDU
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) iPAccess(3) version9(9)}
+
   -- from TS 102 232-04 [32]
   L2CC,
   L2IRI,
   L2IRIOnly
     FROM L2AccessPDU
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) l2Access(4) version6(6)}
+
   -- from TS 102 232-05 [37]
   IPMMCC,
   IPMMIRI
     FROM IPMultimediaPDU
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) iPMultimedia(5) version6(6)}
+
   -- from TS 102 232-06 [36]
   PstnIsdnCC,
   PstnIsdnIRI
     FROM PstnIsdnPDU
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) pstnIsdn(6) version4(4)}
+
   -- from 3GPP TS 33.108 [9]
   IRI-Parameters,
   UmtsIRIsContent,
@@ -94,6 +107,7 @@ IMPORTS
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) threeGPP(4) hi2(1)}
       -- The relevant module (including the UMTS release and version number) needs
       -- to be chosen when compiling the application.
+
   -- from 3GPP TS 33.108 [9]
   IRI-Parameters,
   UmtsCS-IRIsContent
@@ -101,6 +115,7 @@ IMPORTS
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) threeGPP(4) hi2CS(3)}
       -- The relevant module (including the UMTS release and version number) needs
       -- to be chosen when compiling the application.
+
   -- from 3GPP TS 33.108 [9]
   IRI-Parameters,
   EpsIRIsContent
@@ -108,12 +123,14 @@ IMPORTS
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) threeGPP(4) hi2eps(8)}
       -- The relevant module (including the UMTS release and version number) needs
       -- to be chosen when compiling the application.
+
   -- from TS 101 909-20-1 [33]
   TARGETACTIVITYMONITOR-1,
   TTRAFFIC,
   CTTRAFFIC
     FROM TS101909201
     {itu-t(0) identified-organization(4) etsi(0) ts101909(1909) part20(20) subpart1(1) interceptVersion(0)}
+
   -- from TS 101 909-20-2 [34]
   TARGETACTIVITYMONITOR,
   TTRAFFIC,
@@ -121,9 +138,11 @@ IMPORTS
     FROM TS101909202
     {itu-t(0) identified-organization(4) etsi(0) ts101909(1909) part20(20) subpart2(2) interceptVersion(0)}
 
+
 --
 -- Begin disable LAESProtocol, CDMA2000LAESMessage, and CCIPPacketHeader as they are not used
 --
+
   -- from J-STD-025-B [39]
 --  LAESProtocol
 --    FROM Laesp-j-std-025-b
@@ -135,24 +154,32 @@ IMPORTS
 --  FROM CDMA2000CCModule
 --    {iso(1) member-body(2) us(840) tia(113737) laes(2) tr45(0) cdma2000(1) cc(1) version-1(0)};
   ;
+
 --
 -- End disable LAESProtocol, CDMA2000LAESMessage, and CCIPPacketHeader as they are not used
 --
 
+
 -- end of IMPORTS
+
 -- =============================
 -- Object Identifier Definitions
 -- =============================
+
 lawfulInterceptDomainId OBJECT IDENTIFIER ::= {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2)}
+
 li-psDomainId OBJECT IDENTIFIER ::= {lawfulInterceptDomainId li-ps(5) genHeader(1) version14(14)}
+
 -- ====================
 -- Top-level definition
 -- ====================
+
 PS-PDU ::= SEQUENCE
 {
   pSHeader  [1] PSHeader,
   payload   [2] Payload
 }
+
 PSHeader ::= SEQUENCE
 {
   li-psDomainId         [0] OBJECT IDENTIFIER,
@@ -169,6 +196,7 @@ PSHeader ::= SEQUENCE
   microSecondTimeStamp      [7] MicroSecondTimeStamp OPTIONAL,
   timeStampQualifier        [8] TimeStampQualifier OPTIONAL
 }
+
 Payload ::= CHOICE
 {
   iRIPayloadSequence    [0] SEQUENCE OF IRIPayload,
@@ -179,6 +207,7 @@ Payload ::= CHOICE
   hI1-Operation     [3] HI1-Operation,
   encryptionContainer   [4] EncryptionContainer
 }
+
 TimeStampQualifier ::= ENUMERATED
 {
   unknown(0),
@@ -186,9 +215,11 @@ TimeStampQualifier ::= ENUMERATED
   timeOfMediation(2),
   ...
 }
+
 -- ====================================
 -- Items contained within the PS-Header
 -- ====================================
+
 CommunicationIdentifier ::= SEQUENCE
 {
   networkIdentifier       [0] NetworkIdentifier,
@@ -202,6 +233,7 @@ CommunicationIdentifier ::= SEQUENCE
     -- To be used when a single INTEGER is not sufficient to identify
     -- a particular session (see clause 5.2.4)
 }
+
 NetworkIdentifier ::= SEQUENCE
 {
   operatorIdentifier      [0] OCTET STRING (SIZE(1..16)),
@@ -210,9 +242,11 @@ NetworkIdentifier ::= SEQUENCE
   eTSI671NEID         [2] Network-Element-Identifier OPTIONAL
     -- For Network Element Identifier, use either OCTET STRING or ETSI671 definition
 }
+
 -- ==========================
 -- Definitions for CC Payload
 -- ==========================
+
 CCPayload ::= SEQUENCE
 {
   payloadDirection    [0] PayloadDirection OPTIONAL,
@@ -223,6 +257,7 @@ CCPayload ::= SEQUENCE
   microSecondTimeStamp  [3] MicroSecondTimeStamp OPTIONAL
     -- For aggregated payloads (see clause 6.2.3)
 }
+
 PayloadDirection ::= ENUMERATED
 {
   fromTarget(0),
@@ -237,6 +272,7 @@ PayloadDirection ::= ENUMERATED
   notapplicable(4)
     -- Indication that direction of interceptable service does not make sense
 }
+
 CCContents ::= CHOICE
   -- Any of these choices may be commented out if they are not being used, see clause A.3
 {
@@ -253,12 +289,15 @@ CCContents ::= CHOICE
   cTTRAFFIC-2     [10] TS101909202.CTTRAFFIC,
   pstnIsdnCC      [11] PstnIsdnCC,
   iPMMCC        [12] IPMMCC,
+
 -- Begin unused.
 --  cCIPPacketHeader    [13] CDMA2000CCModule.CCIPPacketHeader,
 -- End unused.
+
   messagingCC     [14] MessagingCC,
   ePSCC       [15] OCTET STRING
 }
+
 MicroSecondTimeStamp ::= SEQUENCE
 {
   seconds     [0] INTEGER (0..18446744073709551615),
@@ -266,9 +305,11 @@ MicroSecondTimeStamp ::= SEQUENCE
   microSeconds  [1] INTEGER (0..999999),
   ...
 }
+
 -- ===========================
 -- Definitions for IRI Payload
 -- ===========================
+
 IRIPayload ::= SEQUENCE
 {
   iRIType     [0] IRIType OPTIONAL,
@@ -278,6 +319,7 @@ IRIPayload ::= SEQUENCE
   iRIContents   [2] IRIContents,
   ...
 }
+
 IRIType ::= ENUMERATED
 {
   iRI-Begin(1),
@@ -285,6 +327,7 @@ IRIType ::= ENUMERATED
   iRI-Continue(3),
   iRI-Report(4)
 }
+
 IRIContents ::= CHOICE
   -- Any of these choices may be commented out if they are not being used (see clause A.3)
 {
@@ -301,13 +344,16 @@ IRIContents ::= CHOICE
   tARGETACTIVITYMONITOR-2     [9] TS101909202.TARGETACTIVITYMONITOR,
   pstnIsdnIRI       [10] PstnIsdnIRI,
   iPMMIRI         [11] IPMMIRI,
+
 -- Begin unused.
 --  lAESProtocol        [12] Laesp-j-std-025-b.LAESProtocol,
 --  cDMA2000LAESMessage     [13] CDMA2000CIIModule.CDMA2000LAESMessage,
 -- End unused.
+
   messagingIRI        [14] MessagingIRI,
   ePSIRI          [15] EPSIRI
 }
+
 UMTSIRI ::= CHOICE
   -- This structure may be commented out if not used
 {
@@ -317,6 +363,7 @@ UMTSIRI ::= CHOICE
   iRI-CS-Parameters [2] UmtsCS-HI2Operations.IRI-Parameters,
   umtsCS-IRIsContent  [3] UmtsCS-IRIsContent
 }
+
 ETSI671IRI ::= CHOICE
   -- This structure may be commented out if not used
 {
@@ -324,6 +371,7 @@ ETSI671IRI ::= CHOICE
   iRIsContent   [1] IRIsContent,
   ...
 }
+
 EPSIRI ::= CHOICE
   -- This structure may be commented out if not used
 {
@@ -331,9 +379,11 @@ EPSIRI ::= CHOICE
   epsIRIsContent    [1] EpsIRIsContent,
   ...
 }
+
 -- ===========================
 -- Definitions for TRI Payload
 -- ===========================
+
 TRIPayload ::= CHOICE
 {
   integrityCheck    [0] IntegrityCheck,
@@ -348,6 +398,7 @@ TRIPayload ::= CHOICE
   cINReset      [7] NULL,
   operatorLeaMessage  [8] OperatorLeaMessage
 }
+
 IntegrityCheck ::= SEQUENCE
 {
   includedSequenceNumbers [0] SEQUENCE OF INTEGER (0..4294967295),
@@ -361,6 +412,7 @@ IntegrityCheck ::= SEQUENCE
     -- In case of a DSA/DSS signature, the r and s values shall be concatenated
   ...
 }
+
 CheckType ::= ENUMERATED
 {
   hash(1),
@@ -369,21 +421,25 @@ CheckType ::= ENUMERATED
     -- DSS/DSA signature
   ...
 }
+
 DataType ::= ENUMERATED
 {
   iRI(1),
   cC(2),
   ...
 }
+
 -- ==================================
 -- Definitions for OperatorLeaMessage
 -- ==================================
+
 OperatorLeaMessage ::= SEQUENCE
 {
   messagePriority   [0] OperatorLeaMessagePriority,
   message       [1] OCTET STRING (SIZE(1..255)),
   ...
 }
+
 OperatorLeaMessagePriority ::= ENUMERATED
 {
   error(1),
@@ -394,9 +450,11 @@ OperatorLeaMessagePriority ::= ENUMERATED
     -- the intercepted data
   ...
 }
+
 -- ===================================
 -- Definitions for EncryptionContainer
 -- ===================================
+
 EncryptionContainer ::= SEQUENCE
 {
   encryptionType      [0] EncryptionType,
@@ -405,6 +463,7 @@ EncryptionContainer ::= SEQUENCE
   ...,
   encryptedPayloadType  [2] EncryptedPayloadType OPTIONAL
 }
+
 EncryptionType ::= ENUMERATED
 {
   none(1),
@@ -423,6 +482,7 @@ EncryptionType ::= ENUMERATED
     -- Triple-DES using a 192 bit key in CBC mode
   ...
 }
+
 EncryptedPayload ::= SEQUENCE
 {
   byteCounter     [0] INTEGER (0..18446744073709551615),
@@ -439,6 +499,7 @@ EncryptedPayload ::= SEQUENCE
   payload       [1] Payload,
   ...
 }
+
 EncryptedPayloadType ::= ENUMERATED
 {
   unknown(1),
@@ -458,21 +519,30 @@ EncryptedPayloadType ::= ENUMERATED
   part1(8)
     -- encrypted payload is TS 102 232 part 1 (the present document)
 }
+
 END --end of LI-PS-PDU
+
+
 
 -- Source: HI2Operations,ver17.txt,v 1.2
 -- ETSI TS 101 671 V3.11.1 (2012-11)
 -- Annex D.5 Intercept related information (HI2)
+
 HI2Operations
 {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi2(1) version17(17)}
+
  -- It is advised not to use version11(11) of this ASN.1 module since it contains a syntax error.
  -- Version11(11) of HI2Operations is only defined in TS 101 671 v3.5.1 [81].
+
 DEFINITIONS IMPLICIT TAGS ::=
+
 BEGIN
+
 IMPORTS OPERATION,
   ERROR
     FROM Remote-Operations-Information-Objects
     {joint-iso-itu-t(2) remote-operations(4) informationObjects(5) version1(0)}
+
   -- from 3GPP TS 33.108 [61]
   UmtsQos,
   IMSevent,
@@ -480,10 +550,12 @@ IMPORTS OPERATION,
   CorrelationValues
     FROM UmtsHI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulintercept(2) threeGPP(4) hi2(1) r11(11) version-0(0)}
+
   -- from TS 101 909-20-01 [69]
   TARGETACTIVITYMONITOR-1
     FROM TS101909201
     {itu-t(0) identified-organization(4) etsi(0) ts101909(1909) part20(20) subpart1(1) interceptVersion(0)}
+
   -- from EN 301 040 [72]
   TARGETACTIVITYMONITORind,
   TARGETCOMMSMONITORind,
@@ -491,14 +563,18 @@ IMPORTS OPERATION,
   CTTRAFFICind
     FROM EN301040
     {itu-t(0) identified-organization(4) etsi(0) en301040 (1040) interceptVersion (0)};
+
 -- =============================
 -- Object Identifier Definitions
 -- =============================
+
 -- LawfulIntercept DomainId
 lawfulInterceptDomainId OBJECT IDENTIFIER ::= {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2)}
+
 -- Security Subdomains
 hi2DomainId OBJECT IDENTIFIER ::= {lawfulInterceptDomainId hi2(1)}
 hi2OperationId OBJECT IDENTIFIER ::= {hi2DomainId version17(17)}
+
 sending-of-IRI OPERATION ::=
 {
   ARGUMENT  IRIsContent
@@ -508,11 +584,13 @@ sending-of-IRI OPERATION ::=
 -- Class 2 operation. The timer shall be set to a value between 3s and 240s.
 -- The timer default value is 60s.
 -- NOTE: The same note as for HI management operation applies.
+
 IRIsContent ::= CHOICE
 {
   iRIContent    IRIContent,
   iRISequence   IRISequence
 }
+
 IRISequence ::= SEQUENCE OF IRIContent
   -- Aggregation of IRIContent is an optional feature.
   -- It may be applied in cases when at a given point in time several IRI records are
@@ -520,6 +598,7 @@ IRISequence ::= SEQUENCE OF IRIContent
   -- As a general rule, records created at any event shall be sent immediately and shall
   -- not held in the DF or MF in order to apply aggregation.
   -- When aggregation is not to be applied, IRIContent needs to be chosen.
+
 IRIContent ::= CHOICE
 {
   iRI-Begin-record    [1] IRI-Parameters,
@@ -531,10 +610,12 @@ IRIContent ::= CHOICE
     -- At least one optional parameter must be included within the iRI-Report-Record.
   ...
 }
+
 unknown-version     ERROR ::= {CODE local:0}
 missing-parameter   ERROR ::= {CODE local:1}
 unknown-parameter-value   ERROR ::= {CODE local:2}
 unknown-parameter   ERROR ::= {CODE local:3}
+
 OperationErrors ERROR ::=
 {
   unknown-version |
@@ -543,6 +624,7 @@ OperationErrors ERROR ::=
   unknown-parameter
 }
 -- These values may be sent by the LEMF, when an operation or a parameter is misunderstood.
+
 IRI-Parameters ::= SEQUENCE
 {
   domainID              [0] OBJECT IDENTIFIER (hi2OperationId) OPTIONAL,
@@ -679,9 +761,11 @@ IRI-Parameters ::= SEQUENCE
     -- Parameter is used in EN 301 040 [72]
   national-HI2-ASN1parameters     [255] National-HI2-ASN1parameters OPTIONAL
 }
+
 -- ==================
 -- PARAMETERS FORMATS
 -- ==================
+
 CommunicationIdentifier ::= SEQUENCE
 {
   communication-Identity-Number [0] OCTET STRING (SIZE (1..8)) OPTIONAL,
@@ -700,6 +784,7 @@ CommunicationIdentifier ::= SEQUENCE
 -- with the HI3 information for correlation purpose between the IRI and the information sent
 -- on the HI3 interfaces (CCLink, data, ..) with each IRI associated to a same intercepted
 -- call for correlation purpose between the different IRI.
+
 Network-Identifier ::= SEQUENCE
 {
   operator-Identifier     [0] OCTET STRING (SIZE (1..5)),
@@ -709,6 +794,7 @@ Network-Identifier ::= SEQUENCE
   network-Element-Identifier  [1] Network-Element-Identifier OPTIONAL,
   ...
 }
+
 Network-Element-Identifier ::= CHOICE
 {
   e164-Format     [1] OCTET STRING (SIZE (1..25)),
@@ -723,12 +809,14 @@ Network-Element-Identifier ::= CHOICE
   ...,
   iP-Address      [5] IPAddress
 }
+
 CC-Link-Identifier ::= OCTET STRING (SIZE (1..8))
   -- Depending on a network option, this parameter may be used to identify a CClink
   -- in case of multiparty calls.
   -- The individual digits of the CC-Link-Identifier shall be represented in
   -- ASCII format, e.g. "12345678" = 8 octets 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38.
   -- For subaddress option only "0"..."9" shall be used.
+
 TimeStamp ::= CHOICE
 {
 -- The minimum resolution required is one second.
@@ -737,6 +825,7 @@ TimeStamp ::= CHOICE
   localTime     [0] LocalTimeStamp,
   utcTime       [1] UTCTime
 }
+
 LocalTimeStamp ::= SEQUENCE
 {
   generalizedTime         [0] GeneralizedTime,
@@ -751,6 +840,7 @@ LocalTimeStamp ::= SEQUENCE
     ...
   }
 }
+
 PartyInformation ::= SEQUENCE
 {
   party-Qualifier           [0] ENUMERATED
@@ -822,6 +912,7 @@ PartyInformation ::= SEQUENCE
     -- information associated to the basic data call.
   ...
 }
+
 CallingPartyNumber ::= CHOICE
 {
   iSUP-Format     [1] OCTET STRING (SIZE (1..25)),
@@ -835,6 +926,7 @@ CallingPartyNumber ::= CHOICE
   mAP-Format      [3] OCTET STRING (SIZE (1..25))
     -- Encoded as AddressString of the MAP protocol TS GSM 09.02 [32].
 }
+
 CalledPartyNumber ::= CHOICE
 {
   iSUP-Format     [1] OCTET STRING (SIZE (1..25)),
@@ -848,6 +940,7 @@ CalledPartyNumber ::= CHOICE
     -- The DSS1 Information element identifier and the DSS1 length are not included.
   ...
 }
+
 Location ::= SEQUENCE
 {
   e164-Number     [1] OCTET STRING (SIZE (1..25)) OPTIONAL,
@@ -887,6 +980,7 @@ Location ::= SEQUENCE
     -- the available location information is the one received from the MME.
     -- This parameter is duplicated from 3GPP TS 33.108 [61].
 }
+
 TetraLocation ::= CHOICE
   -- This optional parameter is not in use anymore, but is kept for backwards compatibility.
 {
@@ -902,6 +996,7 @@ TetraLocation ::= CHOICE
   },
   ls-Loc    [2] INTEGER
 }
+
 GSMLocation ::= CHOICE
 {
   geoCoordinates    [1] SEQUENCE
@@ -923,6 +1018,7 @@ GSMLocation ::= CHOICE
     -- Example:
     --    latitude short form   N502312
     --    longitude long form   E1122312.18
+
   utmCoordinates    [2] SEQUENCE
   {
     utm-East  [1] PrintableString (SIZE(10)),
@@ -935,6 +1031,7 @@ GSMLocation ::= CHOICE
     azimuth   [4] INTEGER (0..359) OPTIONAL
       -- The azimuth is the bearing, relative to true north
   },
+
   utmRefCoordinates [3] SEQUENCE
   {
     utmref-string PrintableString (SIZE(13)),
@@ -942,9 +1039,11 @@ GSMLocation ::= CHOICE
     ...
   },
     -- example 32UPU91294045
+
   wGS84Coordinates  [4] OCTET STRING
   -- format is as defined in 3GPP TS 03.32 [57]
 }
+
 MapDatum ::= ENUMERATED
 {
   wGS84,
@@ -954,6 +1053,7 @@ MapDatum ::= ENUMERATED
     -- European Datum 50
   ...
 }
+
 UMTSLocation ::= CHOICE
 {
   point         [1] GA-Point,
@@ -961,6 +1061,7 @@ UMTSLocation ::= CHOICE
   polygon         [3] GA-Polygon,
   ...
 }
+
 GeographicalCoordinates ::= SEQUENCE
 {
   latitudeSign  ENUMERATED
@@ -972,23 +1073,28 @@ GeographicalCoordinates ::= SEQUENCE
   longitude   INTEGER (-8388608..8388607),
   ...
 }
+
 GA-Point ::= SEQUENCE
 {
   geographicalCoordinates   GeographicalCoordinates,
   ...
 }
+
 GA-PointWithUnCertainty ::=SEQUENCE
 {
   geographicalCoordinates   GeographicalCoordinates,
   uncertaintyCode       INTEGER (0..127)
 }
+
 maxNrOfPoints INTEGER ::= 15
+
 GA-Polygon ::= SEQUENCE (SIZE (1..maxNrOfPoints)) OF
   SEQUENCE
   {
     geographicalCoordinates   GeographicalCoordinates,
     ...
   }
+
 CallContentLinkCharacteristics ::= SEQUENCE
 {
   cCLink-State      [1] CCLink-State OPTIONAL,
@@ -1001,6 +1107,7 @@ CallContentLinkCharacteristics ::= SEQUENCE
     -- Directory number used to route the call toward the LEMF
   ...
 }
+
 CCLink-State ::= ENUMERATED
 {
   setUpInProcess(1),
@@ -1012,6 +1119,7 @@ CCLink-State ::= ENUMERATED
     -- be established because of lack of resource at the MF level.
   ...
 }
+
 Intercepted-Call-State ::= ENUMERATED
 {
   idle(1),
@@ -1023,6 +1131,7 @@ Intercepted-Call-State ::= ENUMERATED
     -- The answer has been received
   ...
 }
+
 Services-Information ::= SEQUENCE
 {
   iSUP-parameters       [1] ISUP-parameters OPTIONAL,
@@ -1030,36 +1139,47 @@ Services-Information ::= SEQUENCE
   ...,
   mAP-parameters        [3] MAP-parameters OPTIONAL
 }
+
 ISUP-parameters ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "OCTET STRING" contains one additional ISUP parameter TLV coded not already defined in
   -- the previous parameters. The Tag value is the one given in EN 300 356 [5].
+
   -- In version 1 of the present document "iSUP-parameters" is defined as mandatory.
   -- It might occur that no ISUP parameter is available. In that case in a version 1
   -- implementation the value "zero" may be included in the first octet string of the SET.
+
   -- The Length and the Value are coded in accordance with the parameter definition in
   -- EN 300 356 [5]. Hereafter are listed the main parameters.
   -- However other parameters may be added:
+
   -- Transmission medium requirement: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the "calling party".
+
   -- Transmission medium requirement prime: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the "calling party".
+
 DSS1-parameters-codeset-0 ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "OCTET STRING" contains one DSS1 parameter of the codeset-0. The parameter is coded as
   -- described in EN 300 403-1 [6] (The DSS1 Information element identifier and the DSS1 length
   -- are included). Hereafter are listed the main parameters.
   -- However other parameters may be added:
+
   -- Bearer capability: this parameter may be repeated. Format defined in EN 300 403-1 [6].
   -- This parameter can be provided with the "Party Information" of the "calling party",
   -- "called party" or "forwarded to party".
+
   -- High Layer Compatibility: this parameter may be repeated. Format defined in EN 300 403-1 [6]
   -- This parameter can be provided with the "Party Information" of the "calling party",
   -- "called party" or "forwarded to party".
+
   -- Low Layer capability: this parameter may be repeated. Format defined in EN 300 403-1 [6].
   -- This parameter can be provided with the "Party Information" of the "calling party",
   -- "called party" or "forwarded to party".
+
 MAP-parameters ::= SET SIZE (1..256) OF OCTET STRING (SIZE(1..256))
   -- Each "OCTET STRING" contains one MAP parameter. The parameter is coded as described in
   -- TS GSM 09.02 [32] (The map-TS-Code is included).
+
 Supplementary-Services ::= SEQUENCE
 {
   standard-Supplementary-Services   [1] Standard-Supplementary-Services OPTIONAL,
@@ -1067,6 +1187,7 @@ Supplementary-Services ::= SEQUENCE
   other-Services            [3] Other-Services OPTIONAL,
   ...
 }
+
 Standard-Supplementary-Services ::= SEQUENCE
 {
   iSUP-SS-parameters        [1] ISUP-SS-parameters OPTIONAL,
@@ -1080,92 +1201,119 @@ Standard-Supplementary-Services ::= SEQUENCE
   mAP-SS-Invoke-Components    [9] MAP-SS-Invoke-Components OPTIONAL,
   ...
 }
+
 Non-Standard-Supplementary-Services ::= SET SIZE (1..20) OF CHOICE
 {
   simpleIndication    [1] SimpleIndication,
   sciData         [2] SciDataMode,
   ...
 }
+
 Other-Services ::= SET SIZE (1..50) OF OCTET STRING (SIZE (1..256))
   -- Reference manufacturer manuals.
+
 ISUP-SS-parameters ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- It must be noticed this parameter is retained for compatibility reasons.
   -- It is recommended not to use it in new work but to use ISUP-parameters parameter.
+
   -- Each "OCTET STRING" contains one additional ISUP parameter TLV coded not already defined in
   -- the previous parameters. The Tag value is the one given in EN 300 356 [5].
   -- The Length and the Value are coded in accordance with the parameter definition in
   -- EN 300 356 [5]. Hereafter are listed the main parameters.
   -- However other parameters may be added:
+
   -- Connected Number: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the
   -- "called party" or "forwarded to party".
+
   -- RedirectingNumber: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the "originating party"
   -- or/and of the “terminating party”.
+
   -- Original Called Party Number: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the "originating party".
+
   -- Redirection information: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the
   -- "originating party", "forwarded to party" or/and "Terminating party".
+
   -- Redirection Number: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the
   -- "forwarded to party" or "Terminating party".
+
   -- Call diversion information: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the
   -- "forwarded to party" or "Terminating party".
+
   -- Generic Number: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the
   -- "calling party", "called party" or "forwarded to party".
   -- This parameters are used to transmit additional identities (additional, calling party
   -- number, additional called number, etc.).
+
   -- Generic Notification: format defined in EN 300 356 [5].
   -- This parameter may be provided with the "Party Information" of the
   -- "calling party", "called party" or "forwarded to party".
   -- This parameters transmit the notification to the other part of the call of the supplementary
   -- services activated or invoked by a subscriber during the call.
+
   -- CUG Interlock Code: format defined in EN 300 356 [5].
   -- This parameter can be provided with the "Party Information" of the "calling party".
+
 DSS1-SS-parameters-codeset-0 ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "OCTET STRING" contains one DSS1 parameter of the codeset-0. The parameter is coded as
   -- described in EN 300 403-1 [6] (The DSS1 Information element identifier and the DSS1 length
   -- are included). Hereafter are listed the main parameters.
   -- However other parameters may be added:
+
   -- Calling Party Subaddress: format defined in EN 300 403-1 [6].
   -- This parameter can be provided with the "Party Information" of the "calling party".
+
   -- Called Party Subaddress: format defined in EN 300 403-1 [6].
   -- This parameter can be provided with the "Party Information" of the "calling party".
+
   -- Connected Subaddress: format defined in recommendation (see EN 300 097-1 [14]).
   -- This parameter can be provided with the "Party Information" of the
   -- "called party" or "forwarded to party".
+
   -- Connected Number: format defined in recommendation (see EN 300 097-1 [14]).
   -- This parameter can be provided with the "Party Information" of the
   -- "called party" or "forwarded to party".
+
   -- Keypad facility: format defined in EN 300 403-1 [6].
   -- This parameter can be provided with the "Party Information" of the
   -- "calling party", "called party" or "forwarded to party".
+
   -- Called Party Number: format defined in EN 300 403-1 [6].
   -- This parameter could be provided with the "Party Information" of the "calling party"
   -- when target is the originating party; it contains the dialled digits before modification
   -- at network level (e.g. IN interaction, translation, etc …).
+
   -- User-user: format defined in EN 300 286-1 [23]).
   -- This parameter can be provided with the "Party Information" of the
   -- "calling party", "called party" or "forwarded to party".
+
 DSS1-SS-parameters-codeset-4 ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "OCTET STRING" contains one DSS1 parameter of the codeset-4. The parameter is coded as
   -- described in the relevant recommendation.
+
 DSS1-SS-parameters-codeset-5 ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "OCTET STRING" contains one DSS1 parameter of the codeset-5. The parameter is coded as
   -- described in the relevant national recommendation.
+
 DSS1-SS-parameters-codeset-6 ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "OCTET STRING" contains one DSS1 parameter of the codeset-6. The parameter is coded as
   -- described in the relevant local network recommendation.
+
 DSS1-SS-parameters-codeset-7 ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "octet string" contains one DSS1 parameter of the codeset-7. The parameter is coded as
   -- described in the relevant user specific recommendation.
+
 DSS1-SS-Invoke-Components ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "octet string" contains one DSS1 Invoke or Return Result component.
   -- The invoke or return result component is coded as
   -- described in the relevant DSS1 supplementary service recommendation.
+
   -- Invoke or Return Result component (BeginCONF): EN 300 185-1 [19]
   -- Invoke or Return Result component (AddCONF): EN 300 185-1 [19]
   -- Invoke or Return Result component (SplitCONF): EN 300 185-1 [19]
@@ -1196,13 +1344,16 @@ DSS1-SS-Invoke-Components ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Invoke or Return Result component (CF: DivertingLegInformation2): EN 300 207-1 [21]
   -- Invoke or Return Result component (CF: DivertingLegInformation3): EN 300 207-1 [21]
   -- other invoke or return result components ...
+
 MAP-SS-Invoke-Components ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "octet string" contains one MAP Invoke or Return Result component.
   -- The invoke or return result component is coded as
   -- described in the relevant MAP supplementary service recommendation.
+
 MAP-SS-Parameters ::= SET SIZE (1..256) OF OCTET STRING (SIZE (1..256))
   -- Each "octet string" contains one MAP Parameter. The parameter is coded as
   -- described in the relevant MAP supplementary service recommendation.
+
 SimpleIndication ::= ENUMERATED
 {
   call-Waiting-Indication(0),
@@ -1221,7 +1372,9 @@ SimpleIndication ::= ENUMERATED
     -- indication that this call has been answered
   ...
 }
+
 SciDataMode ::= OCTET STRING (SIZE (1..256))
+
 SMS-report ::= SEQUENCE
 {
   communicationIdentifier   [1] CommunicationIdentifier,
@@ -1282,11 +1435,14 @@ SMS-report ::= SEQUENCE
     } OPTIONAL
   }
 }
+
 LawfulInterceptionIdentifier ::= OCTET STRING (SIZE (1..25))
   -- It is recommended to use ASCII characters in "a"…"z", "A"…"Z", "-", "_", ".", and "0"…"9".
   -- For subaddress option only "0"..."9" shall be used.
+
 National-Parameters ::= SET SIZE (1..40) OF OCTET STRING (SIZE (1..256))
   -- Content defined by national law.
+
 --
 -- Begin customisation of National-Parameters for Australia
 --
@@ -1343,7 +1499,10 @@ National-Parameters ::= SET SIZE (1..40) OF OCTET STRING (SIZE (1..256))
 --
 -- End customisation of National-Parameters for Australia
 
+
+
 GPRSCorrelationNumber ::= OCTET STRING (SIZE(8..20))
+
 GPRSEvent ::= ENUMERATED
   -- see 3GPP TS 03.33 [42]
 {
@@ -1357,11 +1516,13 @@ GPRSEvent ::= ENUMERATED
   ...,
   pDPContextModification(13)
 }
+
 Services-Data-Information ::= SEQUENCE
 {
   gPRS-parameters   [1] GPRS-parameters OPTIONAL,
   ...
 }
+
 GPRS-parameters ::= SEQUENCE
 {
   pDP-address-allocated-to-the-target   [1] DataNodeAddress OPTIONAL,
@@ -1378,14 +1539,17 @@ GPRS-parameters ::= SEQUENCE
   nSAPI                 [4] OCTET STRING (SIZE (1)) OPTIONAL,
   additionalIPaddress           [5] DataNodeAddress OPTIONAL
 }
+
 GPRSOperationErrorCode ::= OCTET STRING (SIZE(2))
   -- Refer to 3GPP TS 24.008 [41] for values (GMM cause or SM cause parameter).
+
 DataNodeAddress ::= CHOICE
 {
   ipAddress [1] IPAddress,
   x25Address  [2] X25Address,
   ...
 }
+
 IPAddress ::= SEQUENCE
 {
   iP-type       [1] ENUMERATED
@@ -1417,6 +1581,7 @@ IPAddress ::= SEQUENCE
     -- represent the dotted-decimal subnet mask of "255.255.255.248" corresponding to
     -- a /29 CIDR-format subnet mask
 }
+
 IP-value ::= CHOICE
 {
   iPBinaryAddress [1] OCTET STRING (SIZE(4..16)),
@@ -1429,7 +1594,9 @@ IP-value ::= CHOICE
     -- IPv4 address or an IPv4address/netmask, for example "192.168.1.1" or "192.168.1.1/24"
   ...
 }
+
 X25Address ::= OCTET STRING (SIZE(1..25))
+
 National-HI2-ASN1parameters ::= SEQUENCE
 {
   countryCode   [1] PrintableString (SIZE (2)),
@@ -1444,34 +1611,45 @@ National-HI2-ASN1parameters ::= SEQUENCE
     -- retrieved from the IANA web site (see annex K). Besides, it is recommended to avoid
     -- using tags from 240 to 255 in a formal type definition.
 }
+
 END -- end of HI2Operations
+
+
 
 -- Source: HI1NotificationOperations,ver6.txt,v 1.3
 -- ETSI TS 101 671 V3.11.1 (2012-11)
 -- Annex D.4 LI management notification
+
 HI1NotificationOperations
 {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi1(0) notificationOperations(1) version6(6)}
+
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
+
 IMPORTS
   OPERATION,
   ERROR
     FROM Remote-Operations-Information-Objects
     {joint-iso-itu-t(2) remote-operations(4) informationObjects(5) version1(0)}
+
   -- from clause D.5
   CommunicationIdentifier,
   TimeStamp,
   LawfulInterceptionIdentifier
     FROM HI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi2(1) version10(10)};
+
 -- =============================
 -- Object Identifier Definitions
 -- =============================
+
 -- LawfulIntercept DomainId
 lawfulInterceptDomainId OBJECT IDENTIFIER ::= {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2)}
+
 -- hi1 Domain
 hi1NotificationOperationsId OBJECT IDENTIFIER ::= {lawfulInterceptDomainId hi1(0) notificationOperations(1)}
 hi1OperationId OBJECT IDENTIFIER ::= {hi1NotificationOperationsId version6(6)}
+
 sending-of-HI1-Notification   OPERATION ::=
 {
   ARGUMENT  HI1-Operation
@@ -1483,10 +1661,12 @@ sending-of-HI1-Notification   OPERATION ::=
 -- NOTE: The value for this timer is to be set on the equipment waiting for the returned message;
 -- its value shall be agreed between the NWO/AP/SvP and the LEA, depending on their equipment
 -- properties.
+
 other-failure-causes    ERROR ::= {CODE local:0}
 missing-parameter   ERROR ::= {CODE local:1}
 unknown-parameter   ERROR ::= {CODE local:2}
 erroneous-parameter   ERROR ::= {CODE local:3}
+
 ErrorHI1Notifications ERROR ::=
 {
   other-failure-causes |
@@ -1494,6 +1674,7 @@ ErrorHI1Notifications ERROR ::=
   unknown-parameter |
   erroneous-parameter
 }
+
 HI1-Operation   ::= CHOICE
 {
   liActivated           [1] Notification,
@@ -1503,9 +1684,11 @@ HI1-Operation   ::= CHOICE
   ...,
   national-HI1-ASN1parameters   [5] National-HI1-ASN1parameters
 }
+
 -- ==================
 -- PARAMETERS FORMATS
 -- ==================
+
 Notification  ::= SEQUENCE
 {
   domainID            [0] OBJECT IDENTIFIER (hi1OperationId) OPTIONAL,
@@ -1525,6 +1708,7 @@ Notification  ::= SEQUENCE
     -- provides information about the number or the characteristic of the target
     -- (e.g. E-mail address, E.164 number), ASCII format
 }
+
 Alarm-Indicator   ::= SEQUENCE
 {
   domainID            [0] OBJECT IDENTIFIER (hi1OperationId) OPTIONAL,
@@ -1542,6 +1726,7 @@ Alarm-Indicator   ::= SEQUENCE
     -- for each target in according to national law.
   national-HI1-ASN1parameters   [5] National-HI1-ASN1parameters OPTIONAL
 }
+
 National-HI1-ASN1parameters   ::= SEQUENCE
 {
   domainID    [0] OBJECT IDENTIFIER (hi1OperationId) OPTIONAL,
@@ -1557,6 +1742,7 @@ National-HI1-ASN1parameters   ::= SEQUENCE
     -- included in the national parameters definition. Vendor identifications can be
     -- retrieved from IANA web site (see annex K). Besides, it is recommended to avoid
     -- using tags from 240 to 255 in a formal type definition.
+
 --
 -- Begin National HI1 parameter extension for Australia.
 --
@@ -1577,38 +1763,52 @@ National-HI1-ASN1parameters   ::= SEQUENCE
   } OPTIONAL,
   agencyID    [4] PrintableString (SIZE (1..256)) OPTIONAL,
   warrantID   [5] PrintableString (SIZE (1..256)) OPTIONAL
+
 --
 -- End National HI1 parameter extension for Australia.
 --
+
 }
+
 END -- end of HI1NotificationOperations
+
+
 
 -- Source: EmailPDU,ver9.txt,v 1.3
 -- ETSI TS 102 232-2 V3.3.1 (2012-11)
 -- Annex D (normative): E-mail ASN.1
+
 EmailPDU
 {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) email(2) version9(9)}
+
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
+
 IMPORTS
+
   -- from TS 101 671 [4]
   IPAddress
     FROM HI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi2(1) version17(17)};
 
+
 -- ============================
 -- Object Identifier Definition
 -- ============================
+
 emailIRIObjId RELATIVE-OID    ::= {li-ps(5) email(2) version9(9) iRI(1)}
 emailCCObjId RELATIVE-OID   ::= {li-ps(5) email(2) version9(9) cC(2)}
 messagingIRIObjId RELATIVE-OID  ::= {li-ps(5) email(2) version9(9) messagingIRI(3)}
 messagingCCObjId RELATIVE-OID   ::= {li-ps(5) email(2) version9(9) messagingCC(4)}
+
   -- definitions are relative to
   -- {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulintercept(2)}
+
 
 -- =============================
 -- Email Communications Contents
 -- =============================
+
 EmailCC ::= SEQUENCE
   -- EmailCC is the PDU sent for each "piece" of E-mail captured content
 {
@@ -1617,6 +1817,7 @@ EmailCC ::= SEQUENCE
   content       [2] OCTET STRING
     -- Network byte order
 }
+
 Email-Format ::= ENUMERATED
 {
   ip-packet(1),
@@ -1627,9 +1828,11 @@ Email-Format ::= ENUMERATED
     -- Only the IP stack Layer 4 payload, (i.e. no IP or TCP headers)
     -- Meets requirement E.2.8
 }
+
 -- =======================================
 -- Intercept-related information for Email
 -- =======================================
+
 EmailIRI ::= SEQUENCE
   -- EmailIRI is the PDU sent for each "piece" of E-mail IRI
 {
@@ -1669,12 +1872,14 @@ EmailIRI ::= SEQUENCE
       ...
     } OPTIONAL
 }
+
 E-mail-Status ::= ENUMERATED
 {
   status-unknown(1),
   operation-failed(2),
   operation-succeeded(3)
 }
+
 E-mail-Event ::= ENUMERATED
 {
   e-mail-send(1),
@@ -1688,6 +1893,7 @@ E-mail-Event ::= ENUMERATED
   e-mail-partial-download(8),
   e-mail-upload(9)
 }
+
 E-mail-Protocol ::= ENUMERATED
 {
   smtp(1),
@@ -1697,7 +1903,9 @@ E-mail-Protocol ::= ENUMERATED
     -- The protocol is not known or not representable by the current enumeration
   ...
 }
+
 E-mail-Address-List ::= SEQUENCE (SIZE (0..1023)) OF UTF8String(SIZE (0..255))
+
 National-EM-ASN1parameters ::= SEQUENCE
 {
   countryCode   [1] PrintableString (SIZE (2)),
@@ -1708,6 +1916,7 @@ National-EM-ASN1parameters ::= SEQUENCE
     -- these national parameters should be defined using the ASN.1 syntax and added after the
     -- extension marker (...)
 }
+
 AAAInformation ::= CHOICE
   -- The AAAInformation field allows for POP3 and authenticated SMTP AAA information
 {
@@ -1716,6 +1925,7 @@ AAAInformation ::= CHOICE
   ...,
   iMAPAAAInformation      [2] IMAPAAAInformation
 }
+
 POP3AAAInformation ::= SEQUENCE
   -- The POP3AAAInformation field contains the POP3 username & optionally the password
 {
@@ -1724,6 +1934,7 @@ POP3AAAInformation ::= SEQUENCE
   aAAResult         [2] AAAResult OPTIONAL,
   ...
 }
+
 ASMTPAAAInformation ::= SEQUENCE
   -- The ASMTPAAAInformation field contains the SMTP username and
   -- optionally the authentication fields
@@ -1738,6 +1949,7 @@ ASMTPAAAInformation ::= SEQUENCE
   aAAResult         [4] AAAResult OPTIONAL,
   ...
 }
+
 IMAPAAAInformation ::= SEQUENCE
   -- The iMAPAAAInformation field contains the IMAP username & optionally the password
 {
@@ -1746,6 +1958,7 @@ IMAPAAAInformation ::= SEQUENCE
   aAAResult         [2] AAAResult OPTIONAL,
   ...
 }
+
 AAAResult ::= ENUMERATED
 {
   resultUnknown(1),
@@ -1753,6 +1966,7 @@ AAAResult ::= ENUMERATED
   aAASucceeded(3),
   ...
 }
+
 AAAauthMethod ::= ENUMERATED
 {
   undefinedAuthMethod(1),
@@ -1760,9 +1974,11 @@ AAAauthMethod ::= ENUMERATED
   digestMD5(3),
   ...
 }
+
 -- =================================
 -- Messaging Communications Contents
 -- =================================
+
 MessagingCC ::= SEQUENCE
   -- MessagingCC is the PDU sent for the captured content
 {
@@ -1777,9 +1993,11 @@ MessagingCC ::= SEQUENCE
   content           [6] OCTET STRING,
   ...
 }
+
 -- ===========================================
 -- Intercept-related information for Messaging
 -- ===========================================
+
 MessagingIRI ::= SEQUENCE
 {
   messaging-iri-obj-id    [0] RELATIVE-OID,
@@ -1797,11 +2015,13 @@ MessagingIRI ::= SEQUENCE
   ...,
   box-identifier        [10] OCTET STRING OPTIONAL
 }
+
 Messaging-System-Type ::= ENUMERATED
 {
   unified-messaging(1),
   ...
 }
+
 Messaging-Event-Category ::= CHOICE
 {
   message           [0] Messaging-Event,
@@ -1810,6 +2030,7 @@ Messaging-Event-Category ::= CHOICE
   call            [3] Messaging-Call-Event,
   ...
 }
+
 Messaging-Event ::= ENUMERATED
 {
   deposit(1),
@@ -1819,6 +2040,7 @@ Messaging-Event ::= ENUMERATED
   slamdown(5),
   ...
 }
+
 Messaging-Box-Event ::= ENUMERATED
 {
   login(1),
@@ -1844,6 +2066,7 @@ Messaging-Box-Event ::= ENUMERATED
   pin-security-enable(20),
   pin-security-disable(21)
 }
+
 Messaging-Notification-Event ::= ENUMERATED
 {
   sms(1),
@@ -1854,11 +2077,13 @@ Messaging-Notification-Event ::= ENUMERATED
   fax-to-email(6),
   ...
 }
+
 Messaging-Call-Event ::= ENUMERATED
 {
   callout(1),
   ...
 }
+
 Messaging-Status ::= ENUMERATED
 {
   unknown(0),
@@ -1869,12 +2094,14 @@ Messaging-Status ::= ENUMERATED
   operation-started(5),
   ...
 }
+
 Messaging-Party-Information ::= SEQUENCE
 {
   party-qualifier   [0] Messaging-Party-Qualifier,
   party-identity    [1] Messaging-Party-Identity,
   ...
 }
+
 Messaging-Party-Qualifier ::= ENUMERATED
 {
   unknown-party(0),
@@ -1890,6 +2117,7 @@ Messaging-Party-Qualifier ::= ENUMERATED
     -- In this case, the partyInformation parameter provides the identites related to
     -- an associated party and all information provided by this party
 }
+
 Messaging-Party-Identity ::= CHOICE
 {
   msisdn        [0] OCTET STRING (SIZE (1..9)),
@@ -1903,6 +2131,7 @@ Messaging-Party-Identity ::= CHOICE
   ip-address      [3] IPAddress,
   alphanumeric    [4] UTF8String
 }
+
 Messaging-Trigger ::= ENUMERATED
 {
   unknown(0),
@@ -1912,6 +2141,7 @@ Messaging-Trigger ::= ENUMERATED
   system-operator(4),
   ...
 }
+
 Messaging-Property ::= CHOICE
 {
   pincode       [0] OCTET STRING (SIZE (1..32)),
@@ -1922,6 +2152,7 @@ Messaging-Property ::= CHOICE
   language      [4] OCTET STRING
     -- Language according to RFC 3066 [24]
 }
+
 Messaging-Property-Priority ::= ENUMERATED
 {
   low(1),
@@ -1930,6 +2161,7 @@ Messaging-Property-Priority ::= ENUMERATED
   private(4),
   ...
 }
+
 Messaging-Property-Greeting-Type ::= ENUMERATED
 {
   general(1),
@@ -1939,56 +2171,71 @@ Messaging-Property-Greeting-Type ::= ENUMERATED
   number(5),
   ...
 }
+
 Messaging-Property-Notification-Type ::= ENUMERATED
 {
   empty-call(1),
   lost-call(2),
   ...
 }
+
 END -- end of EmailPDU
+
+
 
 -- Source: IPAccessPDU,ver9.txt,v 1.2
 -- ETSI TS 102 232-3 V3.2.1 (2012-06)
 -- Section 8 ASN.1 for IRI and CC
+
 IPAccessPDU
 {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) iPAccess(3) version9(9)}
+
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
+
 IMPORTS
   -- from ETSI TS 101 671 [1]
   IPAddress
     FROM HI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi2(1) version16(16)};
+
 -- ============================
 -- Object Identifier Definition
 -- ============================
+
 iPIRIObjId RELATIVE-OID       ::= {li-ps(5) iPAccess(3) version9(9) iRI(1)}
 iPCCObjId RELATIVE-OID        ::= {li-ps(5) iPAccess(3) version9(9) cC(2)}
 iPIRIOnlyObjId RELATIVE-OID     ::= {li-ps(5) iPAccess(3) version9(9) iRIOnly(3)}
   -- all three definitions relative to {itu-t(0) identified-organization(4)
   -- etsi(0) securityDomain(2) lawfulintercept(2)}
+
 -- ==========================
 -- IP Communications Contents
 -- ==========================
+
 IPCC ::= SEQUENCE
 {
   iPCCObjId     [0] RELATIVE-OID,
   iPCCContents    [1] IPCCContents
 }
+
 IPCCContents ::= CHOICE
 {
   iPPackets     [0] OCTET STRING,
   ...
 }
+
 -- ===================================================
 -- Intercept-related information for general IP-Access
 -- ===================================================
+
 IPIRI ::= SEQUENCE
 {
   iPIRIObjId      [0] RELATIVE-OID,
   iPIRIContents   [1] IPIRIContents,
   ...
 }
+
 IPIRIContents ::= SEQUENCE
 {
   accessEventType     [0] AccessEventType,
@@ -2046,6 +2293,7 @@ IPIRIContents ::= SEQUENCE
     -- It is used when multiple subnet/prefix ranges are assigned to a target service.
     -- Use of this field is fully described in section 6.2.1
 }
+
 AccessEventType ::= ENUMERATED
 {
   accessAttempt(0),
@@ -2068,6 +2316,7 @@ AccessEventType ::= ENUMERATED
   accessEnd(8)
     -- A target stops using the IAS, the session ends
 }
+
 InternetAccessType ::= ENUMERATED
 {
   undefined(0),
@@ -2093,6 +2342,7 @@ InternetAccessType ::= ENUMERATED
     -- IAS via other type of Wireless access
     -- (when it is not covered by any 3GPP or ETSI mobile Lawful Interception specifications)
 }
+
 IPVersion ::= ENUMERATED
 {
   iPV4(1),
@@ -2103,6 +2353,7 @@ IPVersion ::= ENUMERATED
     -- The IPv4 and IPv6 protocols are used
   ...
 }
+
 EndReason ::= ENUMERATED
 {
   undefined(0),
@@ -2116,6 +2367,7 @@ EndReason ::= ENUMERATED
     -- The DHCP lease expired
   ...
 }
+
 IPIRIIDType ::= CHOICE
 {
   printableIDType     [0] UTF8String (SIZE (1..128)),
@@ -2126,6 +2378,7 @@ IPIRIIDType ::= CHOICE
     -- For IP address types
   ...
 }
+
 NationalIPIRIParameters ::= SEQUENCE
 {
   countryCode   [1] PrintableString (SIZE (2)),
@@ -2140,6 +2393,7 @@ NationalIPIRIParameters ::= SEQUENCE
   -- retrieved from the IANA web site (see Annex E Bibliography). Besides, it is recommended
   -- to avoid using tags from 240 to 255 in a formal type definition.
 }
+
 AuthenticationType ::= ENUMERATED
 {
   unknown(0),
@@ -2154,6 +2408,7 @@ AuthenticationType ::= ENUMERATED
     -- AAA function for the target service is provided by DIAMETER
   ...
 }
+
 OtherTargetIdentifiers ::= CHOICE
 {
     -- Additional target identifiers associated with the target service
@@ -2165,9 +2420,11 @@ OtherTargetIdentifiers ::= CHOICE
     -- an IPv6 address (with or without a prefix range defined).
   ...
 }
+
 -- =====================================================
 -- Intercept-related information for IRI-Only intercepts
 -- =====================================================
+
 IPIRIOnly ::= SEQUENCE
 {
   iPIRIOnlyObjId        [0] RELATIVE-OID,
@@ -2177,11 +2434,13 @@ IPIRIOnly ::= SEQUENCE
   iPAggregatedNbrOfBytes    [4] INTEGER OPTIONAL,
   ...
 }
+
 IPInformation ::= CHOICE
 {
   iPv4Information   [0] IPv4Information,
   iPv6Information   [1] IPv6Information
 }
+
 ProtocolInformation ::= CHOICE
 {
   none          [0] NULL,
@@ -2190,6 +2449,7 @@ ProtocolInformation ::= CHOICE
   uDPInformation      [2] UDPInformation,
   ...
 }
+
 IPv4Information ::= SEQUENCE
 {
   headerLength      [0] OCTET STRING OPTIONAL,
@@ -2204,6 +2464,7 @@ IPv4Information ::= SEQUENCE
   destination       [9] OCTET STRING (SIZE (4)),
   options         [10] OCTET STRING (SIZE (0..40))OPTIONAL
 }
+
 IPv6Information ::= SEQUENCE
 {
   trafficClass      [0] OCTET STRING OPTIONAL,
@@ -2214,6 +2475,7 @@ IPv6Information ::= SEQUENCE
   source          [5] OCTET STRING (SIZE (16)),
   destination       [6] OCTET STRING (SIZE (16))
 }
+
 TCPInformation ::= SEQUENCE
 {
   sourcePort      [0] OCTET STRING (SIZE (2))OPTIONAL,
@@ -2229,6 +2491,7 @@ TCPInformation ::= SEQUENCE
   urgentPointer   [8] OCTET STRING (SIZE (2))OPTIONAL,
   options       [9] OCTET STRING (SIZE (0..40))OPTIONAL
 }
+
 UDPInformation ::= SEQUENCE
 {
   sourcePort      [0] OCTET STRING (SIZE (2))OPTIONAL,
@@ -2236,26 +2499,35 @@ UDPInformation ::= SEQUENCE
   length        [2] OCTET STRING (SIZE (2))OPTIONAL,
   checkSum      [3] OCTET STRING (SIZE (2))OPTIONAL
 }
+
 END -- end of IPAccessPDU
+
+
 
 -- Source:L2AccessPDU,ver6.txt,v 1.2
 -- ETSI TS 102 232-4 V3.1.1 (2012-02)
 -- Section 8.1 ASN.1 specification
+
 L2AccessPDU
 {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) l2Access(4) version6(6)}
+
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
+
 -- ============================
 -- Object Identifier Definition
 -- ============================
+
 l2IRIObjId RELATIVE-OID     ::= {li-ps(5) l2Access(4) version6(6) iRI(1)}
 l2CCObjId RELATIVE-OID      ::= {li-ps(5) l2Access(4) version6(6) cC(2)}
 l2IRIOnlyObjId RELATIVE-OID   ::= {li-ps(5) l2Access(4) version6(6) iRIOnly(3)}
   -- all three definitions relative to {itu-t(0) identified-organization(4)
   -- etsi(0) securityDomain(2) lawfulintercept(2)}
+
 -- ==========================
 -- L2 Communications Contents
 -- ==========================
+
 L2CC    ::= SEQUENCE
 {
   l2CCObjId         [0] RELATIVE-OID,
@@ -2278,15 +2550,18 @@ L2CC    ::= SEQUENCE
       -- The protocol RFC 2427 “Multiprotocol Interconnect over Frame Relay” [18] is used
   }
 }
+
 -- ===================================================
 -- Intercept-related information for general L2-Access
 -- ===================================================
+
 L2IRI     ::= SEQUENCE
 {
   l2IRIObjId      [0] RELATIVE-OID,
   l2IRIContents   [1] L2IRIContents,
   ...
 }
+
 L2IRIContents     ::= SEQUENCE
 {
   accessEventType       [0] AccessEventType,
@@ -2318,6 +2593,7 @@ L2IRIContents     ::= SEQUENCE
   authenticationType      [16] AuthenticationType OPTIONAL
     -- Field used to identify the authentication type to assist with LEMF data validation
 }
+
 AccessEventType     ::= ENUMERATED
 {
   accessAttempt(0),
@@ -2341,6 +2617,7 @@ AccessEventType     ::= ENUMERATED
   accessEnd(9)
     -- A target stops using the IAS, the session ends.
 }
+
 InternetAccessType    ::= ENUMERATED
 {
   undefined(0),
@@ -2363,6 +2640,7 @@ InternetAccessType    ::= ENUMERATED
     -- IAS via Satellite access
     -- (when it is not covered by any 3GPP or ETSI mobile Lawful Interception specifications)
 }
+
 EndReason     ::= ENUMERATED
 {
   undefined(0),
@@ -2376,6 +2654,7 @@ EndReason     ::= ENUMERATED
     -- The DHCP lease expired
   ...
 }
+
 AuthenticationType ::= ENUMERATED
 {
   unknown(0),
@@ -2391,9 +2670,11 @@ AuthenticationType ::= ENUMERATED
   ...
 }
 
+
 -- =====================================================
 -- Intercept-related information for IRI-Only intercepts
 -- =====================================================
+
 L2IRIOnly   ::= SEQUENCE
 {
   l2IRIOnlyObjId          [0] RELATIVE-OID,
@@ -2402,6 +2683,7 @@ L2IRIOnly   ::= SEQUENCE
   l2AggregatedNbrOfBytes    [4] INTEGER OPTIONAL,
   ...
 }
+
 L2ProtocolInformation   ::= ENUMERATED
 {
   l2ProtocolL2tp(1),
@@ -2421,30 +2703,40 @@ L2ProtocolInformation   ::= ENUMERATED
   l2ProtocolFR2427(8)
     -- The protocol RFC2427 “Multiprotocol Interconnect over Frame Relay” [18] is used
 }
+
 END -- end of L2AccessPDU
+
+
 
 -- Source: IPMultimediaPDU,ver6.txt,v 1.2
 -- ETSI TS 102 232-5 V3.2.1 (2012-06)
 -- Section 7 ASN.1 specification for IRI and CC
+
 IPMultimediaPDU
 {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) iPMultimedia(5) version6(6)}
+
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
+
 IMPORTS
   -- from TS 101 671 [1]
   IPAddress
     FROM HI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi2(1) version16(16)};
+
 -- ============================
 -- Object Identifier Definition
 -- ============================
+
 iPMMIRIObjId RELATIVE-OID     ::= {li-ps(5) iPMultimedia(5) version6(6) iRI(1)}
 iPMMCCObjId RELATIVE-OID      ::= {li-ps(5) iPMultimedia(5) version6(6) cC(2)}
   -- both definitions relative to:
   -- {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2)}
+
 -- =====================================
 -- IP Multimedia Communications Contents
 -- =====================================
+
 IPMMCC ::= SEQUENCE
 {
   iPMMCCObjId         [0] RELATIVE-OID,
@@ -2467,6 +2759,7 @@ IPMMCC ::= SEQUENCE
     -- Used to identify the protocol of packets sent in MMCCContent (RTP, UDPTL, MSRP, etc.)
     -- Absence means mMCCContents contains RTP/RTCP packets
 }
+
 FrameType ::= ENUMERATED
 {
   ipFrame(0),
@@ -2485,6 +2778,7 @@ FrameType ::= ENUMERATED
   udptlFrame(6)
     -- UDP and IP headers are missing
 }
+
 MMCCprotocol ::= ENUMERATED
 {
   rTP(0),
@@ -2495,15 +2789,18 @@ MMCCprotocol ::= ENUMERATED
   uDPTL(2)
     -- mMCCContents parameter contains UDPTL packets
 }
+
 -- ========================================================
 -- Intercept-related information for IP Multimedia sessions
 -- ========================================================
+
 IPMMIRI ::= SEQUENCE
 {
   iPMMIRIObjId        [0] RELATIVE-OID,
   iPMMIRIContents       [1] IPIRIContents,
   ...
 }
+
 IPIRIContents ::= CHOICE
 {
   originalIPMMMessage     [0] OCTET STRING,
@@ -2517,6 +2814,7 @@ IPIRIContents ::= CHOICE
     -- This parameter is used according to national regulations
     -- This parameter shall be delivered as an IRI-Report-record
 }
+
 SIPMessage ::= SEQUENCE
 {
   iPSourceAddress       [0] IPAddress,
@@ -2524,6 +2822,7 @@ SIPMessage ::= SEQUENCE
   sIPContent          [2] OCTET STRING,
   ...
 }
+
 H323Message ::= SEQUENCE
 {
   iPSourceAddress       [0] IPAddress,
@@ -2531,6 +2830,7 @@ H323Message ::= SEQUENCE
   h323Content         [2] H323MessageContent,
   ...
 }
+
 H323MessageContent ::= CHOICE
 {
   h225CSMessageContent    [0] OCTET STRING,
@@ -2539,6 +2839,7 @@ H323MessageContent ::= CHOICE
   genericMessageContent   [3] OCTET STRING,
   ...
 }
+
 NationalIPMMIRIParameters ::= SEQUENCE
 {
   countryCode         [1] PrintableString (SIZE (2)),
@@ -2553,46 +2854,60 @@ NationalIPMMIRIParameters ::= SEQUENCE
   -- retrieved from the IANA web site (see Annex E Bibliography). Besides, it is recommended
   -- to avoid using tags from 240 to 255 in a formal type definition.
 }
+
 END -- end of IP Multimedia PDU
+
+
 
 -- Source: PstnIsdnPDU,ver4.txt,v 1.2
 -- ETSI TS 102 232-6 V3.1.1 (2012-06)
 -- Annex A.2 ASN.1 definitions
+
 PstnIsdnPDU
 {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) pstnIsdn(6) version4(4)}
+
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
+
 IMPORTS
+
   -- from TS 101 671 [1]
   IPAddress
     FROM HI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) hi2(1) version16(16)}
+
   -- from TS 102 232-01 [2]
   PayloadDirection
     FROM LI-PS-PDU
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulIntercept(2) li-ps(5) genHeader(1) version13(13)};
 
+
 -- ============================
 -- Object Identifier Definition
 -- ============================
+
   -- definitions are relative to
   -- {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulintercept(2)}
 pstnIsdnIRIObjId RELATIVE-OID ::= {li-ps(5) pstnIsdn(6) version4(4) iRI(1)}
 pstnIsdnCCObjId RELATIVE-OID  ::= {li-ps(5) pstnIsdn(6) version4(4) cC(2)}
 
+
 -- ===============================
 -- Description of the PstnIsdn IRI
 -- ===============================
+
 PstnIsdnIRI ::= SEQUENCE
 {
   pstnIsdnIRIObjId    [0] RELATIVE-OID,
   pstnIsdnIRIContents   [1] PstnIsdnIRIContents
 }
+
 PstnIsdnIRIContents ::= CHOICE
 {
   supplementaryInfo   [0] SupplementaryInfo,
   ...
 }
+
 SupplementaryInfo ::= SEQUENCE
 {
   informationAppliesTo  [0] InformationAppliesTo,
@@ -2615,6 +2930,7 @@ SupplementaryInfo ::= SEQUENCE
     -- Populated if one or more protocol layers are missing from CC data
     -- May be omitted if all headers are present.
 }
+
 InformationAppliesTo ::= SEQUENCE
   -- Identifies the PDUs to which a piece of supplementary information applies
 {
@@ -2626,6 +2942,7 @@ InformationAppliesTo ::= SEQUENCE
     -- The supplementary info applies to all PDUs with this sequence number and above
   ...
 }
+
 FrameType ::= ENUMERATED
 {
   ipFrame(0),
@@ -2640,9 +2957,11 @@ FrameType ::= ENUMERATED
   artificialRtpFrame(4)
     -- UDP and IP headers are missing, artificial RTP frame has been added
 }
+
 -- ==============================
 -- Description of the PstnIsdn CC
 -- ==============================
+
 PstnIsdnCC ::= SEQUENCE
 {
   pstnIsdnCCObjId     [0] RELATIVE-OID,
@@ -2654,19 +2973,28 @@ PstnIsdnCC ::= SEQUENCE
   supplementaryInfo   [3] SupplementaryInfo OPTIONAL
     -- Shall be present at least in the first PDU
 }
+
 END -- end of PstnIsdnPDU
+
+
 
 -- Source: UmtsHI2Operations,rel11.txt
 -- ETSI TS 133 108 V11.4.0 (2012-10)
 -- B.3  Intercept related information (HI2 PS and IMS)
+
 UmtsHI2Operations {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulintercept(2) threeGPP(4) hi2(1) r11(11) version-0 (0)}
+
 DEFINITIONS IMPLICIT TAGS ::=
+
 BEGIN
+
 IMPORTS
+
     OPERATION,
     ERROR
       FROM Remote-Operations-Information-Objects
       {joint-iso-itu-t(2) remote-operations(4) informationObjects(5) version1(0)}
+
     LawfulInterceptionIdentifier,
     TimeStamp,
     Network-Identifier,
@@ -2676,17 +3004,22 @@ IMPORTS
     IPAddress,
     IP-value,
     X25Address
+
       FROM HI2Operations
       {itu-t(0) identified-organization(4) etsi(0) securityDomain(2)
           lawfulIntercept(2) hi2(1) version10(10)}; -- Imported from TS 101 671v2.15.1
 
+
 -- Object Identifier Definitions
+
 -- Security DomainId
 lawfulInterceptDomainId OBJECT IDENTIFIER ::= {itu-t(0) identified-organization(4) etsi(0)
 securityDomain(2) lawfulIntercept(2)}
+
 -- Security Subdomains
 threeGPPSUBDomainId OBJECT IDENTIFIER ::= {lawfulInterceptDomainId threeGPP(4)}
 hi2DomainId OBJECT IDENTIFIER ::= {threeGPPSUBDomainId hi2(1) r11(11) version-0 (0)}
+
 umts-sending-of-IRI  OPERATION ::=
 {
   ARGUMENT  UmtsIRIsContent
@@ -2696,12 +3029,15 @@ umts-sending-of-IRI  OPERATION ::=
 -- Class 2 operation . The timer shall be set to a value between 3 s and 240 s.
 -- The timer.default value is 60s.
 -- NOTE:  The same note as for HI management operation applies.
+
 UmtsIRIsContent   ::= CHOICE
 {
   umtsiRIContent      UmtsIRIContent,
   umtsIRISequence     UmtsIRISequence
 }
+
 UmtsIRISequence   ::= SEQUENCE OF UmtsIRIContent
+
 -- Aggregation of UmtsIRIContent is an optional feature.
 -- It may be applied in cases when at a given point in time
 -- several IRI records are available for delivery to the same LEA destination.
@@ -2711,6 +3047,7 @@ UmtsIRISequence   ::= SEQUENCE OF UmtsIRIContent
 -- When aggregation is not to be applied,
 -- UmtsIRIContent needs to be chosen.
 
+
 UmtsIRIContent    ::= CHOICE
 {
   iRI-Begin-record    [1] IRI-Parameters, -- include at least one optional parameter
@@ -2718,10 +3055,12 @@ UmtsIRIContent    ::= CHOICE
   iRI-Continue-record   [3] IRI-Parameters, -- include at least one optional parameter
   iRI-Report-record   [4] IRI-Parameters  -- include at least one optional parameter
 }
+
 unknown-version     ERROR ::= { CODE local:0}
 missing-parameter   ERROR ::= { CODE local:1}
 unknown-parameter-value ERROR ::= { CODE local:2}
 unknown-parameter   ERROR ::= { CODE local:3}
+
 OperationErrors ERROR ::=
 {
   unknown-version |
@@ -2730,6 +3069,7 @@ OperationErrors ERROR ::=
   unknown-parameter
 }
 -- This values may be sent by the LEMF, when an operation or a parameter is misunderstood.
+
 -- Parameters having the same tag numbers must be identical in Rel-5 and onwards modules.
 IRI-Parameters    ::= SEQUENCE
 {
@@ -2766,17 +3106,20 @@ IRI-Parameters    ::= SEQUENCE
       -- deactivation is network initiated
   ...
   } OPTIONAL,
+
   locationOfTheTarget   [8] Location OPTIONAL,
     -- location of the target subscriber
   partyInformation    [9] SET SIZE (1..10) OF PartyInformation OPTIONAL,
     -- This parameter provides the concerned party, the identiy(ies) of the party
     --)and all the information provided by the party.
+
   serviceCenterAddress  [13] PartyInformation OPTIONAL,
     -- e.g. in case of SMS message this parameter provides the address of  the relevant
     -- server within the calling (if server is originating) or called (if server is
     -- terminating) party address parameters
   sMS           [14] SMS-report OPTIONAL,
     -- this parameter provides the SMS content and associated information
+
   national-Parameters   [16] National-Parameters OPTIONAL,
   gPRSCorrelationNumber [18] GPRSCorrelationNumber OPTIONAL,
   gPRSevent         [20] GPRSEvent OPTIONAL,
@@ -2803,10 +3146,13 @@ IRI-Parameters    ::= SEQUENCE
   -- Diameter Origin-Host and Origin-Realm of the S4-SGSN based on the TS 29.272 [59].
   -- Only the data fields from the Diameter AVPs are provided concatenated
   -- with a semicolon to populate this field.
+
   national-HI2-ASN1parameters [255] National-HI2-ASN1parameters OPTIONAL
 }
 -- Parameters having the same tag numbers must be identical in Rel-5 and onwards modules
+
 -- PARAMETERS FORMATS
+
 PartyInformation      ::= SEQUENCE
 {
   party-Qualifier   [0]  ENUMERATED
@@ -2818,26 +3164,33 @@ PartyInformation      ::= SEQUENCE
   {
     imei          [1] OCTET STRING (SIZE (8)) OPTIONAL,
       -- See MAP format [4]
+
     imsi          [3] OCTET STRING (SIZE (3..8)) OPTIONAL,
       -- See MAP format [4] International Mobile
       -- Station Identity E.212 number beginning with Mobile Country Code
+
     msISDN          [6] OCTET STRING (SIZE (1..9)) OPTIONAL,
       -- MSISDN of the target, encoded in the same format as the AddressString
       -- parameters defined in MAP format document TS 29.002 [4]
+
     e164-Format       [7] OCTET STRING    (SIZE (1 .. 25)) OPTIONAL,
       -- E164 address of the node in international format. Coded in the same format as
       -- the calling party number  parameter of the ISUP (parameter part:[5])
+
     sip-uri         [8] OCTET STRING  OPTIONAL,
       -- See [26]
+
     ...,
     tel-url         [9] OCTET STRING  OPTIONAL
       -- See [36]
   },
+
   services-Data-Information   [4] Services-Data-Information OPTIONAL,
     -- This parameter is used to transmit all the information concerning the
     -- complementary information associated to the basic data call
   ...
 }
+
 Location  ::= SEQUENCE
 {
   e164-Number         [1] OCTET STRING (SIZE (1..25)) OPTIONAL,
@@ -2870,9 +3223,11 @@ Location  ::= SEQUENCE
     -- The eCGI parameter is applicable only to the CS traffic cases where
     -- the available location information is the one received from the the MME.
 }
+
 GlobalCellID  ::= OCTET STRING  (SIZE (5..7))
 Rai       ::= OCTET STRING (SIZE (6))
 Sai       ::= OCTET STRING (SIZE (7))
+
 GSMLocation   ::= CHOICE
 {
   geoCoordinates  [1] SEQUENCE
@@ -2894,6 +3249,7 @@ GSMLocation   ::= CHOICE
     -- Example :
     --      latitude short form   N502312
     --      longitude long form   E1122312.18
+
   utmCoordinates  [2] SEQUENCE
   {
     utm-East    [1] PrintableString (SIZE(10)),
@@ -2905,6 +3261,7 @@ GSMLocation   ::= CHOICE
     azimuth     [4] INTEGER (0..359) OPTIONAL
       -- The azimuth is the bearing, relative to true north.
   },
+
   utmRefCoordinates   [3] SEQUENCE
   {
     utmref-string   PrintableString (SIZE(13)),
@@ -2912,9 +3269,11 @@ GSMLocation   ::= CHOICE
     ...
   },
     -- example  32UPU91294045
+
   wGS84Coordinates    [4] OCTET STRING
     -- format is as defined in [37].
 }
+
 MapDatum ::= ENUMERATED
 {
   wGS84,
@@ -2922,31 +3281,38 @@ MapDatum ::= ENUMERATED
   eD50,   -- European Datum 50
   ...
 }
+
 UMTSLocation ::= CHOICE {
   point         [1] GA-Point,
   pointWithUnCertainty  [2] GA-PointWithUnCertainty,
   polygon         [3] GA-Polygon
 }
+
 GeographicalCoordinates ::= SEQUENCE {
   latitudeSign      ENUMERATED { north, south },
   latitude        INTEGER (0..8388607),
   longitude       INTEGER (-8388608..8388607),
   ...
 }
+
 GA-Point ::= SEQUENCE {
   geographicalCoordinates   GeographicalCoordinates,
   ...
 }
+
 GA-PointWithUnCertainty ::=SEQUENCE {
   geographicalCoordinates   GeographicalCoordinates,
   uncertaintyCode       INTEGER (0..127)
 }
+
 maxNrOfPoints           INTEGER ::= 15
+
 GA-Polygon ::= SEQUENCE (SIZE (1..maxNrOfPoints)) OF
   SEQUENCE {
     geographicalCoordinates   GeographicalCoordinates,
     ...
   }
+
 SMS-report    ::= SEQUENCE
 {
   sMS-Contents  [3] SEQUENCE
@@ -2978,8 +3344,11 @@ SMS-report    ::= SEQUENCE
     ...
   }
 }
+
 GPRSCorrelationNumber ::= OCTET STRING (SIZE(8..20))
+
 CorrelationValues ::= CHOICE {
+
     iri-to-CC   [0]   IRI-to-CC-Correlation, -- correlates IRI to Content(s)
     iri-to-iri  [1]   IRI-to-IRI-Correlation, -- correlates IRI to IRI
     both-IRI-CC [2]   SEQUENCE { -- correlates IRI to IRI and IRI to Content(s)
@@ -2987,12 +3356,14 @@ CorrelationValues ::= CHOICE {
                 iri-IRI [1] IRI-to-IRI-Correlation}
 }
 
+
 IRI-to-CC-Correlation ::= SEQUENCE { -- correlates IRI to Content
       cc    [0] SET OF  OCTET STRING,-- correlates IRI to multiple CCs
       iri   [1]     OCTET STRING OPTIONAL
                   -- correlates IRI to CC with signaling
 }
 IRI-to-IRI-Correlation ::= OCTET STRING -- correlates IRI to IRI
+
 
 GPRSEvent ::= ENUMERATED
 {
@@ -3009,23 +3380,29 @@ GPRSEvent ::= ENUMERATED
   startOfInterceptionWithMSAttached   (15)
 }
 -- see [19]
+
 IMSevent ::= ENUMERATED
 {
   unfilteredSIPmessage (1),
     -- This value indicates to LEMF that the whole SIP message is sent.
+
   ...,
   sIPheaderOnly (2),
     -- If warrant requires only IRI then specific content in a 'sIPMessage'
     -- (e.g. 'Message', etc.) has been deleted before sending it to LEMF.
+
     decryptionKeysAvailable (3)
     -- This value indicates to LEMF that the IRI carries CC decryption keys for the session
         -- under interception.
+
 }
+
 Services-Data-Information ::= SEQUENCE
 {
   gPRS-parameters [1] GPRS-parameters OPTIONAL,
   ...
 }
+
 GPRS-parameters ::= SEQUENCE
 {
   pDP-address-allocated-to-the-target   [1] DataNodeAddress OPTIONAL,
@@ -3042,9 +3419,11 @@ GPRS-parameters ::= SEQUENCE
   nSAPI         [4] OCTET STRING (SIZE (1)) OPTIONAL,
   additionalIPaddress   [5] DataNodeAddress OPTIONAL
 }
+
 GPRSOperationErrorCode ::= OCTET STRING
 -- The parameter shall carry the GMM cause value or the SM cause value, as defined in the
 -- standard [9], without the IEI.
+
 
 LDIevent ::= ENUMERATED
 {
@@ -3052,6 +3431,7 @@ LDIevent ::= ENUMERATED
   targetLeavesIA      (2),
   ...
 }
+
 UmtsQos ::= CHOICE
 {
   qosMobileRadio [1] OCTET STRING,
@@ -3063,9 +3443,11 @@ UmtsQos ::= CHOICE
   qosGn [2] OCTET STRING
     -- qosGn parameter shall be coded in accordance with § 7.7.34 of document [17]
 }
+
 MediaDecryption-info ::= SEQUENCE OF CCKeyInfo
     -- One or more key can be available for decryption, one for each media streams of the
         -- intercepted session.
+
 CCKeyInfo ::= SEQUENCE
 {
   cCCSID   [1]  OCTET STRING,
@@ -3077,19 +3459,27 @@ CCKeyInfo ::= SEQUENCE
   ...
 }
 
+
 END -- OF UmtsHI2Operations
+
+
 
 
 -- Source: UmtsCS-HI2Operations,rel11.txt
 -- ETSI TS 133 108 V11.4.0 (2012-10)
 -- B.3a Interception related information (HI2 CS)
+
 UmtsCS-HI2Operations {itu-t (0) identified-organization (4) etsi (0) securityDomain (2) lawfulIntercept (2) threeGPP(4) hi2CS (3) r11(11) version-1 (1)}
+
 DEFINITIONS IMPLICIT TAGS ::=
+
 BEGIN
+
 IMPORTS OPERATION,
   ERROR
     FROM Remote-Operations-Information-Objects
     {joint-iso-itu-t (2) remote-operations(4) informationObjects(5) version1(0)}
+
   LawfulInterceptionIdentifier,
   TimeStamp,
   Intercepted-Call-State,
@@ -3099,22 +3489,29 @@ IMPORTS OPERATION,
   CC-Link-Identifier,
   National-Parameters,
   National-HI2-ASN1parameters
+
   FROM HI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2)
       lawfulIntercept(2) hi2(1) version9(9)} -- Imported from TS 101 671v2.13.1
+
   Location,
   SMS-report
+
   FROM UmtsHI2Operations
     {itu-t(0) identified-organization(4) etsi(0) securityDomain(2)
       lawfulintercept(2) threeGPP(4) hi2(1) r11(11) version-0(0)};
 
+
 -- Object Identifier Definitions
+
 -- Security DomainId
 lawfulInterceptDomainId OBJECT IDENTIFIER ::= {itu-t(0) identified-organization(4) etsi(0)
 securityDomain(2) lawfulIntercept(2)}
+
 -- Security Subdomains
 threeGPPSUBDomainId OBJECT IDENTIFIER ::= {lawfulInterceptDomainId threeGPP(4)}
 hi2CSDomainId OBJECT IDENTIFIER ::= {threeGPPSUBDomainId hi2CS(3) r11(11) version-1(1)}
+
 
 umtsCS-sending-of-IRI  OPERATION ::=
 {
@@ -3125,11 +3522,13 @@ umtsCS-sending-of-IRI  OPERATION ::=
 -- Class 2 operation. The timer shall be set to a value between 3 s and 240 s.
 -- The timer.default value is 60s.
 -- NOTE: The same note as for HI management operation applies.
+
 UmtsCS-IRIsContent    ::= CHOICE
 {
   iRIContent      UmtsCS-IRIContent,
   iRISequence     UmtsCS-IRISequence
 }
+
 UmtsCS-IRISequence    ::= SEQUENCE OF UmtsCS-IRIContent
   -- Aggregation of UmtsCS-IRIContent is an optional feature.
   -- It may be applied in cases when at a given point in time several IRI records are
@@ -3137,6 +3536,7 @@ UmtsCS-IRISequence    ::= SEQUENCE OF UmtsCS-IRIContent
   -- As a general rule, records created at any event shall be sent immediately and shall
   -- not held in the DF or MF in order to apply aggregation.
 -- When aggregation is not to be applied, UmtsCS-IRIContent needs to be chosen.
+
 UmtsCS-IRIContent   ::= CHOICE
 {
   iRI-Begin-record    [1] IRI-Parameters,
@@ -3148,10 +3548,12 @@ UmtsCS-IRIContent   ::= CHOICE
     --at least one optional parameter must be included within the iRI-Report-Record
   ...
 }
+
 unknown-version     ERROR ::= { CODE local:0}
 missing-parameter   ERROR ::= { CODE local:1}
 unknown-parameter-value ERROR ::= { CODE local:2}
 unknown-parameter   ERROR ::= { CODE local:3}
+
 OperationErrors ERROR ::=
 {
   unknown-version |
@@ -3160,9 +3562,11 @@ OperationErrors ERROR ::=
   unknown-parameter
 }
 --These values may be sent by the LEMF, when an operation or a parameter is misunderstood.
+
 IRI-Parameters    ::= SEQUENCE
 {
   hi2CSDomainId           [0] OBJECT IDENTIFIER, -- 3GPP HI2 CS domain
+
   iRIversion              [23] ENUMERATED
   {
     version1(1),
@@ -3182,6 +3586,7 @@ IRI-Parameters    ::= SEQUENCE
     -- This identifier is associated to the target.
   communicationIdentifier       [2] CommunicationIdentifier,
     -- used to uniquely identify an intercepted call.
+
   timeStamp             [3] TimeStamp,
     -- date and time of the event triggering the report.
   intercepted-Call-Direct       [4] ENUMERATED
@@ -3252,7 +3657,9 @@ IRI-Parameters    ::= SEQUENCE
   -- Care should be taken to ensure additional parameter numbering does not conflict with
   -- ETSI TS 101 671 or Annex B.3 of this document (PS HI2).
   national-HI2-ASN1parameters     [255] National-HI2-ASN1parameters OPTIONAL
+
 }
+
 Umts-Cs-Event ::= ENUMERATED
 {
   call-establishment        (1),
@@ -3265,21 +3672,31 @@ Umts-Cs-Event ::= ENUMERATED
   subscriber-Controlled-Input   (8),
   ...
 }
+
 END -- OF UmtsCS-HI2Operations
+
+
+
 
 
 -- Source: EpsHI2Operations,rel11.txt,v 1.2
 -- ETSI TS 133 108 V11.4.0 (2012-10)
 -- Annex B.9  Intercept related information (HI2 SAE/EPS and IMS)
 
+
 EpsHI2Operations {itu-t(0) identified-organization(4) etsi(0) securityDomain(2) lawfulintercept(2) threeGPP(4) hi2eps(8) r11(11) version-3(3)}
+
 DEFINITIONS IMPLICIT TAGS ::=
+
 BEGIN
+
 IMPORTS
+
     OPERATION,
     ERROR
       FROM Remote-Operations-Information-Objects
       {joint-iso-itu-t(2) remote-operations(4) informationObjects(5) version1(0)}
+
     LawfulInterceptionIdentifier,
     TimeStamp,
     Network-Identifier,
@@ -3289,17 +3706,22 @@ IMPORTS
     IPAddress,
     IP-value,
     X25Address
+
       FROM HI2Operations
       {itu-t(0) identified-organization(4) etsi(0) securityDomain(2)
           lawfulIntercept(2) hi2(1) version10(10)}; -- Imported from TS 101 671v3.3.1
 
+
 -- Object Identifier Definitions
+
 -- Security DomainId
 lawfulInterceptDomainId OBJECT IDENTIFIER ::= {itu-t(0) identified-organization(4) etsi(0)
 securityDomain(2) lawfulIntercept(2)}
+
 -- Security Subdomains
 threeGPPSUBDomainId OBJECT IDENTIFIER ::= {lawfulInterceptDomainId threeGPP(4)}
 hi2epsDomainId OBJECT IDENTIFIER  ::= {threeGPPSUBDomainId hi2eps(8) r11(11) version-3 (3)}
+
 eps-sending-of-IRI  OPERATION ::=
 {
   ARGUMENT  EpsIRIsContent
@@ -3309,12 +3731,15 @@ eps-sending-of-IRI  OPERATION ::=
 -- Class 2 operation . The timer shall be set to a value between 3 s and 240 s.
 -- The timer.default value is 60s.
 -- NOTE:  The same note as for HI management operation applies.
+
 EpsIRIsContent    ::= CHOICE
 {
   epsiRIContent     EpsIRIContent,
   epsIRISequence      EpsIRISequence
 }
+
 EpsIRISequence    ::= SEQUENCE OF EpsIRIContent
+
 -- Aggregation of EpsIRIContent is an optional feature.
 -- It may be applied in cases when at a given point in time
 -- several IRI records are available for delivery to the same LEA destination.
@@ -3324,6 +3749,7 @@ EpsIRISequence    ::= SEQUENCE OF EpsIRIContent
 -- When aggregation is not to be applied,
 -- UmtsIRIContent needs to be chosen.
 
+
 EpsIRIContent   ::= CHOICE
 {
   iRI-Begin-record    [1] IRI-Parameters, -- include at least one optional parameter
@@ -3331,10 +3757,12 @@ EpsIRIContent   ::= CHOICE
   iRI-Continue-record   [3] IRI-Parameters, -- include at least one optional parameter
   iRI-Report-record   [4] IRI-Parameters  -- include at least one optional parameter
 }
+
 unknown-version     ERROR ::= { CODE local:0}
 missing-parameter   ERROR ::= { CODE local:1}
 unknown-parameter-value ERROR ::= { CODE local:2}
 unknown-parameter   ERROR ::= { CODE local:3}
+
 OperationErrors ERROR ::=
 {
   unknown-version |
@@ -3343,6 +3771,7 @@ OperationErrors ERROR ::=
   unknown-parameter
 }
 -- This values may be sent by the LEMF, when an operation or a parameter is misunderstood.
+
 -- Parameters having the same tag numbers must be identical in Rel-5 and onwards modules.
 IRI-Parameters    ::= SEQUENCE
 {
@@ -3366,17 +3795,20 @@ IRI-Parameters    ::= SEQUENCE
       -- or deactivation is network initiated
   ...
   } OPTIONAL,
+
   locationOfTheTarget   [8] Location OPTIONAL,
     -- location of the target subscriber
   partyInformation    [9] SET SIZE (1..10) OF PartyInformation OPTIONAL,
     -- This parameter provides the concerned party, the identiy(ies) of the party
     --)and all the information provided by the party.
+
   serviceCenterAddress  [13] PartyInformation OPTIONAL,
     -- e.g. in case of SMS message this parameter provides the address of  the relevant
     -- server within the calling (if server is originating) or called (if server is
     -- terminating) party address parameters
   sMS           [14] SMS-report OPTIONAL,
     -- this parameter provides the SMS content and associated information
+
   national-Parameters   [16] National-Parameters OPTIONAL,
   ePSCorrelationNumber  [18] EPSCorrelationNumber OPTIONAL,
   ePSevent        [20] EPSEvent OPTIONAL,
@@ -3412,16 +3844,20 @@ IRI-Parameters    ::= SEQUENCE
     visitedNetworkId               [41] UTF8String                 OPTIONAL,
          -- contains the visited network identifier inside the EPS Serving System Update for
          -- non 3GPP access, coded according to [53]
+
   mediaDecryption-info         [42] MediaDecryption-info OPTIONAL,
   servingS4-SGSN-address         [43] OCTET STRING OPTIONAL,
   -- Diameter Origin-Host and Origin-Realm of the S4-SGSN based on the TS 29.272 [59].
   -- Only the data fields from the Diameter AVPs are provided concatenated
   -- with a semicolon to populate this field.
 
+
   national-HI2-ASN1parameters [255] National-HI2-ASN1parameters OPTIONAL
 }
 -- Parameters having the same tag numbers must be identical in Rel-5 and onwards modules
+
 -- PARAMETERS FORMATS
+
 PartyInformation      ::= SEQUENCE
 {
   party-Qualifier   [0]  ENUMERATED
@@ -3433,28 +3869,35 @@ PartyInformation      ::= SEQUENCE
   {
     imei          [1] OCTET STRING (SIZE (8)) OPTIONAL,
       -- See MAP format [4]
+
     imsi          [3] OCTET STRING (SIZE (3..8)) OPTIONAL,
       -- See MAP format [4] International Mobile
       -- Station Identity E.212 number beginning with Mobile Country Code
+
     msISDN          [6] OCTET STRING (SIZE (1..9)) OPTIONAL,
       -- MSISDN of the target, encoded in the same format as the AddressString
       -- parameters defined in MAP format document TS 29.002 [4]
+
     e164-Format       [7] OCTET STRING    (SIZE (1 .. 25)) OPTIONAL,
       -- E164 address of the node in international format. Coded in the same format as
       -- the calling party number  parameter of the ISUP (parameter part:[5])
+
     sip-uri         [8] OCTET STRING  OPTIONAL,
       -- See [26]
+
     ...,
     tel-url         [9] OCTET STRING  OPTIONAL,
       -- See [36]
         nai                    [10] OCTET STRING    OPTIONAL
             -- NAI of the target, encoded in the same format as defined by [EPS stage 3 specs]
   },
+
   services-Data-Information   [4] Services-Data-Information OPTIONAL,
     -- This parameter is used to transmit all the information concerning the
     -- complementary information associated to the basic data call
   ...
 }
+
 Location  ::= SEQUENCE
 {
   e164-Number         [1] OCTET STRING (SIZE (1..25)) OPTIONAL,
@@ -3479,9 +3922,13 @@ Location  ::= SEQUENCE
     -- § 10.5.5.15 of document [9] without the Routing Area Identification IEI
     -- (only the last 6 octets are used).
 }
+
 GlobalCellID  ::= OCTET STRING  (SIZE (5..7))
+
 Rai       ::= OCTET STRING (SIZE (6))
+
 Sai       ::= OCTET STRING (SIZE (7))
+
 
 GSMLocation   ::= CHOICE
 {
@@ -3504,6 +3951,7 @@ GSMLocation   ::= CHOICE
     -- Example :
     --      latitude short form   N502312
     --      longitude long form   E1122312.18
+
   utmCoordinates  [2] SEQUENCE
   {
     utm-East    [1] PrintableString (SIZE(10)),
@@ -3515,6 +3963,7 @@ GSMLocation   ::= CHOICE
     azimuth     [4] INTEGER (0..359) OPTIONAL
       -- The azimuth is the bearing, relative to true north.
   },
+
   utmRefCoordinates   [3] SEQUENCE
   {
     utmref-string   PrintableString (SIZE(13)),
@@ -3522,9 +3971,11 @@ GSMLocation   ::= CHOICE
     ...
   },
     -- example  32UPU91294045
+
   wGS84Coordinates    [4] OCTET STRING
     -- format is as defined in [37].
 }
+
 MapDatum ::= ENUMERATED
 {
   wGS84,
@@ -3532,31 +3983,38 @@ MapDatum ::= ENUMERATED
   eD50,   -- European Datum 50
   ...
 }
+
 UMTSLocation ::= CHOICE {
   point         [1] GA-Point,
   pointWithUnCertainty  [2] GA-PointWithUnCertainty,
   polygon         [3] GA-Polygon
 }
+
 GeographicalCoordinates ::= SEQUENCE {
   latitudeSign      ENUMERATED { north, south },
   latitude        INTEGER (0..8388607),
   longitude       INTEGER (-8388608..8388607),
   ...
 }
+
 GA-Point ::= SEQUENCE {
   geographicalCoordinates   GeographicalCoordinates,
   ...
 }
+
 GA-PointWithUnCertainty ::=SEQUENCE {
   geographicalCoordinates   GeographicalCoordinates,
   uncertaintyCode       INTEGER (0..127)
 }
+
 maxNrOfPoints           INTEGER ::= 15
+
 GA-Polygon ::= SEQUENCE (SIZE (1..maxNrOfPoints)) OF
   SEQUENCE {
     geographicalCoordinates   GeographicalCoordinates,
     ...
   }
+
 SMS-report    ::= SEQUENCE
 {
   sMS-Contents  [3] SEQUENCE
@@ -3588,9 +4046,12 @@ SMS-report    ::= SEQUENCE
     ...
   }
 }
+
 EPSCorrelationNumber ::= OCTET STRING
        -- In case of PS interception, the size will be in the range (8..20)
+
 CorrelationValues ::= CHOICE {
+
     iri-to-CC   [0]   IRI-to-CC-Correlation, -- correlates IRI to Content(s)
     iri-to-iri  [1]   IRI-to-IRI-Correlation, -- correlates IRI to IRI
     both-IRI-CC [2]   SEQUENCE { -- correlates IRI to IRI and IRI to Content(s)
@@ -3598,13 +4059,16 @@ CorrelationValues ::= CHOICE {
                 iri-IRI [1] IRI-to-IRI-Correlation}
 }
 
+
 IRI-to-CC-Correlation ::= SEQUENCE { -- correlates IRI to Content
       cc    [0] SET OF  OCTET STRING,-- correlates IRI to multiple CCs
       iri   [1]     OCTET STRING OPTIONAL
                   -- correlates IRI to CC with signaling
 }
 
+
 IRI-to-IRI-Correlation ::= OCTET STRING -- correlates IRI to IRI
+
 
 EPSEvent ::= ENUMERATED
 {
@@ -3646,25 +4110,32 @@ EPSEvent ::= ENUMERATED
     pMIPsessionModification                 (40),
     startOfInterceptWithEUTRANAttachedUE    (41),
     dSMIPSessionModification                (42)
+
 }
 -- see [19]
+
 IMSevent ::= ENUMERATED
 {
   unfilteredSIPmessage (1),
     -- This value indicates to LEMF that the whole SIP message is sent.
+
   ...,
   sIPheaderOnly (2),
     -- If warrant requires only IRI then specific content in a 'sIPMessage'
     -- (e.g. 'Message', etc.) has been deleted before sending it to LEMF.
+
     decryptionKeysAvailable (3)
     -- This value indicates to LEMF that the IRI carries CC decryption keys for the session
         -- under interception.
+
 }
+
 Services-Data-Information ::= SEQUENCE
 {
   gPRS-parameters [1] GPRS-parameters OPTIONAL,
   ...
 }
+
 GPRS-parameters ::= SEQUENCE
 {
   pDP-address-allocated-to-the-target   [1] DataNodeAddress OPTIONAL,
@@ -3678,9 +4149,11 @@ GPRS-parameters ::= SEQUENCE
   nSAPI         [4] OCTET STRING (SIZE (1)) OPTIONAL,
   additionalIPaddress   [5] DataNodeAddress OPTIONAL
 }
+
 GPRSOperationErrorCode ::= OCTET STRING
 -- The parameter shall carry the GMM cause value or the SM cause value, as defined in the
 -- standard [9], without the IEI.
+
 
 LDIevent ::= ENUMERATED
 {
@@ -3688,6 +4161,7 @@ LDIevent ::= ENUMERATED
   targetLeavesIA      (2),
   ...
 }
+
 UmtsQos ::= CHOICE
 {
   qosMobileRadio [1] OCTET STRING,
@@ -3699,6 +4173,7 @@ UmtsQos ::= CHOICE
   qosGn [2] OCTET STRING
     -- qosGn parameter shall be coded in accordance with § 7.7.34 of document [17]
 }
+
 
 EPS-GTPV2-SpecificParameters ::= SEQUENCE
 {
@@ -3738,6 +4213,7 @@ EPS-GTPV2-SpecificParameters ::= SEQUENCE
     ...,
   pDNType                              [24]   OCTET STRING (SIZE (1))           OPTIONAL,
     -- coded according to TS 24.301 [47]
+
     requestType                          [25]  OCTET STRING (SIZE (1))            OPTIONAL,
       -- coded according to TS 24.301 [47]
     uEReqPDNConnFailReason               [26]  OCTET STRING (SIZE (1))            OPTIONAL,
@@ -3747,10 +4223,13 @@ EPS-GTPV2-SpecificParameters ::= SEQUENCE
   -- Otherwise set to the value 0.
   -- The use of extendedHandoverIndication and handoverIndication parameters is
   -- mutually exclusive and depends on the actual ASN.1 encoding method.
+
     -- All the parameters are coded as the corresponding IEs without the octets containing type and
     -- length. Unless differently stated, they are coded according to 3GPP TS 29.274 [46]; in this
     -- case the octet containing the instance shall also be not included.
 }
+
+
 
 TypeOfBearer ::= ENUMERATED
 {
@@ -3760,8 +4239,12 @@ TypeOfBearer ::= ENUMERATED
 }
 
 
+
+
+
 EPSLocation ::= SEQUENCE
 {
+
   userLocationInfo    [1] OCTET STRING (SIZE (1..34)) OPTIONAL,
         -- coded according to 3GPP TS 29.274 [46]; the type IE is not included
   gsmLocation     [2] GSMLocation OPTIONAL,
@@ -3776,13 +4259,18 @@ EPSLocation ::= SEQUENCE
     ...,
   threeGPP2Bsid     [7] OCTET STRING (SIZE (1..12)) OPTIONAL
     -- contains only the payload from the 3GPP2-BSID AVP described in the 3GPP TS 29.212 [56].
+
 }
+
 ProtConfigOptions ::= SEQUENCE
+
 {
     ueToNetwork                           [1]  OCTET STRING (SIZE(1..251))        OPTIONAL,
     networkToUe                           [2]  OCTET STRING (SIZE(1..251))        OPTIONAL,
     ...
 }
+
+
 
 EPS-PMIP-SpecificParameters ::= SEQUENCE
 {
@@ -3801,9 +4289,11 @@ EPS-PMIP-SpecificParameters ::= SEQUENCE
     servingNetwork                        [12] OCTET STRING (SIZE (3))            OPTIONAL,
     dHCPv4AddressAllocationInd            [13] OCTET STRING (SIZE (1))            OPTIONAL,
     ePSlocationOfTheTarget                [14] EPSLocation                        OPTIONAL
+
     -- parameters coded according to 3GPP TS 29.275 [48] and RFCs specifically
   -- referenced in it.
 }
+
 
 EPS-DSMIP-SpecificParameters ::= SEQUENCE
 {
@@ -3822,6 +4312,7 @@ EPS-DSMIP-SpecificParameters ::= SEQUENCE
   -- referenced in it.
 }
 
+
 EPS-MIP-SpecificParameters ::= SEQUENCE
 {
     lifetime                              [1]   INTEGER (0.. 65535)                  OPTIONAL,
@@ -3835,9 +4326,11 @@ EPS-MIP-SpecificParameters ::= SEQUENCE
   -- referenced in it.
 }
 
+
 MediaDecryption-info ::= SEQUENCE OF CCKeyInfo
     -- One or more key can be available for decryption, one for each media streams of the
         -- intercepted session.
+
 CCKeyInfo ::= SEQUENCE
 {
   cCCSID   [1]  OCTET STRING,
@@ -3848,19 +4341,27 @@ CCKeyInfo ::= SEQUENCE
         -- defined in IETF RFC 6043 [61] 'draft-mattsson-mikey-ticket'.
   ...
 }
+
 END -- OF EpsHI2Operations
+
+
 
 
 -- Source: ETSI TS 101 909-20-1 V1.1.2 (2005-10)
 -- Annex A
+
 TS101909201 {itu-t (0) identified-organization (4) etsi (0) ts101909 (1909) part20 (20) subpart1(1) interceptVersion (0)}
+
 DEFINITIONS AUTOMATIC TAGS ::=
+
 BEGIN
+
 IMPORTS
   CdcPdu  FROM
     PCESP {iso(1) identified-organization(3) dod(6) internet(1) private(4)
     enterprise(1) cable-Television-Laboratories-Inc(4491) clabProject(2)
     clabProjPacketCable(2) pktcLawfulIntercept(5) pcesp(1) version-4(4)};
+
 TARGETACTIVITYMONITOR-1 ::= SEQUENCE
 {
     version                      INTEGER DEFAULT 1,         -- header, version -
@@ -3873,6 +4374,7 @@ TARGETACTIVITYMONITOR-1 ::= SEQUENCE
     userSignal                   UserSignalType,            -- Either copy or interpreted signalling
     cryptoCheckSum               BIT STRING             OPTIONAL
 }
+
 TTRAFFIC ::= SEQUENCE
 {
       version                   INTEGER DEFAULT 1,      -- header, version -
@@ -3881,6 +4383,7 @@ TTRAFFIC ::= SEQUENCE
         trafficPacket             BIT STRING,
         cryptoChecksum            BIT STRING    OPTIONAL
 }
+
 CTTRAFFIC ::= SEQUENCE
 {
       version                   INTEGER DEFAULT 1,      -- header, version -
@@ -3890,18 +4393,21 @@ CTTRAFFIC ::= SEQUENCE
         trafficPacket             BIT STRING,
         cryptoChecksum            BIT STRING    OPTIONAL
 }
+
 DirectionType ::= ENUMERATED
 {
    toTarget,
    fromTarget,
    unknown
 }
+
 UserSignalType ::= CHOICE
 {
       copySignal          BIT STRING,
      interpretedSignal  INTEGER,
   cdcPdu        CdcPdu
 }
+
 IRITransactionType ::= ENUMERATED
 {
         iRIbegin,
@@ -3909,20 +4415,29 @@ IRITransactionType ::= ENUMERATED
         iRIend,
         iRIreport
 }
+
 LocationType ::= CHOICE
 {
         geodeticData        BIT STRING,
         nameAddress         PrintableString (SIZE (1..100))
 }
+
 LIIDType ::= INTEGER (0..65535) -- 16 bit integer to identify interception
+
 END
+
+
 
 
 -- Source: ETSI TS 101 909-20-2 V1.2.1 (2006-03)
 -- Annex A
+
 TS101909202 {itu-t (0) identified-organization (4) etsi (0) ts101909 (1909) part20 (20) subpart2(2) interceptVersion (0)}
+
 DEFINITIONS AUTOMATIC TAGS ::=
+
 BEGIN
+
 TARGETACTIVITYMONITOR ::= SEQUENCE
 {
   version           INTEGER DEFAULT 1,   -- header, version -
@@ -3935,6 +4450,7 @@ TARGETACTIVITYMONITOR ::= SEQUENCE
   userSignal          UserSignalType,      -- Either copy or interpreted signalling
   cryptoCheckSum        BIT STRING         OPTIONAL
 }
+
 TTRAFFIC ::= SEQUENCE
 {
     version          INTEGER DEFAULT 1,   -- header, version -
@@ -3943,6 +4459,7 @@ TTRAFFIC ::= SEQUENCE
     trafficPacket       BIT STRING,
     cryptoChecksum      BIT STRING  OPTIONAL
 }
+
 CTTRAFFIC ::= SEQUENCE
 {
     version          INTEGER DEFAULT 1,   -- header, version -
@@ -3952,18 +4469,21 @@ CTTRAFFIC ::= SEQUENCE
     trafficPacket       BIT STRING,
     cryptoChecksum      BIT STRING  OPTIONAL
 }
+
 DirectionType ::= ENUMERATED
 {
   toTarget,
   fromTarget,
   unknown
 }
+
 UserSignalType ::= CHOICE
 {
   copySignal    BIT STRING,
   copyCharSignal  PrintableString,
   interpretedSignal INTEGER  -- Place holder
 }
+
 IRITransactionType ::= ENUMERATED
 {
     iRIbegin,
@@ -3971,21 +4491,29 @@ IRITransactionType ::= ENUMERATED
     iRIend,
     iRIreport
 }
+
 LocationType ::= CHOICE
 {
     geodeticData    BIT STRING,
     nameAddress     PrintableString (SIZE (1..100))
 }
+
 LIIdType ::= INTEGER (0..65535) -- 16 bit integer to identify interception
+
 END
+
+
 
 -- Source: ETSI TS 101 909-20-1 V1.1.2 (2005-10)
 -- Annex A
+
 PCESP  {iso(1) identified-organization(3) dod(6) internet(1) private(4)
         enterprise(1) cable-Television-Laboratories-Inc(4491) clabProject(2)
         clabProjPacketCable(2) pktcLawfulIntercept(5) pcesp(1) version-4(4)}
+
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
+
 ProtocolVersion ::= ENUMERATED {
   -- Versions IO1 and IO2 do not support protocol versioning.
   v3(3),  -- Version supporting PacketCable Electronic Surveillance
@@ -3994,11 +4522,13 @@ ProtocolVersion ::= ENUMERATED {
           -- Specification I04 and PacketCable 1.5 Electronic Surveillance
           -- Specification I01
   ...}
+
 CdcPdu ::= SEQUENCE {
   protocolVersion   [0] ProtocolVersion,
   message     [1] Message,
   ...
 }
+
 Message ::= CHOICE {
   answer                 [1]  Answer,
   ccclose                [2]  CCClose,
@@ -4022,6 +4552,7 @@ Message ::= CHOICE {
   confpartychange        [20] ConferencePartyChange,
   ...
 }
+
 Answer ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4030,6 +4561,7 @@ Answer ::= SEQUENCE {
   answering           [4] PartyId              OPTIONAL,
   ...
 }
+
 CCChange ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4042,6 +4574,7 @@ CCChange ::= SEQUENCE {
   resourceState       [8] ResourceState        OPTIONAL,
   ...
 }
+
 CCClose ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4050,6 +4583,7 @@ CCClose ::= SEQUENCE {
   flowDirection       [4] FlowDirection,
   ...
 }
+
 CCOpen ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4065,6 +4599,7 @@ CCOpen ::= SEQUENCE {
   flowDirection       [8] FlowDirection,
   ...
 }
+
 ConferencePartyChange  ::= SEQUENCE {
   caseId             [0] CaseId,
   accessingElementId [1] AccessingElementId,
@@ -4103,6 +4638,7 @@ ConferencePartyChange  ::= SEQUENCE {
                       } OPTIONAL,
   ...
 }
+
 DialedDigitExtraction ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4118,6 +4654,7 @@ DialedDigitExtraction ::= SEQUENCE {
                           -- Example: "123AB" or "*66" or "345#"
   ...
 }
+
 MediaReport ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4127,6 +4664,7 @@ MediaReport ::= SEQUENCE {
   associate           [5] SDP                  OPTIONAL,
   ...
 }
+
 NetworkSignal ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4146,6 +4684,7 @@ NetworkSignal ::= SEQUENCE {
   signaledToPartyId    [8] PartyId,
   ...
 }
+
 Origination ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4162,6 +4701,7 @@ Origination ::= SEQUENCE {
   transitCarrierId    [9] TransitCarrierId  OPTIONAL,
   ...
 }
+
 Redirection ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4175,6 +4715,7 @@ Redirection ::= SEQUENCE {
   redirectedfrom      [9] PartyId              OPTIONAL,
   ...
 }
+
 Release ::= SEQUENCE {
   caseId             [0] CaseId,
   accessingElementId [1] AccessingElementId,
@@ -4182,6 +4723,7 @@ Release ::= SEQUENCE {
   callId             [3] CallId,
   ...
 }
+
 ServiceInstance ::= SEQUENCE {
   caseId              [0] CaseId,
   accessingElementId  [1] AccessingElementId,
@@ -4195,6 +4737,7 @@ ServiceInstance ::= SEQUENCE {
   calling             [9] PartyId              OPTIONAL,
   ...
 }
+
 SubjectSignal ::= SEQUENCE {
   caseId             [0] CaseId,
   accessingElementId [1] AccessingElementId,
@@ -4216,6 +4759,7 @@ SubjectSignal ::= SEQUENCE {
   signaledFromPartyId [5] PartyId,
   ...
 }
+
 TerminationAttempt ::= SEQUENCE {
   caseId               [0] CaseId,
   accessingElementId   [1] AccessingElementId,
@@ -4227,8 +4771,10 @@ TerminationAttempt ::= SEQUENCE {
   redirectedFromInfo   [7] RedirectedFromInfo  OPTIONAL,
   ...
 }
+
 AccessingElementId ::= VisibleString (SIZE(1..15, ...))
                          --  Statically configured element number
+
 AlertingSignal ::= ENUMERATED {
   notUsed               (0),   -- Reserved
   alertingPattern0      (1),   -- normal ringing
@@ -4253,6 +4799,7 @@ AlertingSignal ::= ENUMERATED {
 -- applied toward the surveillance subject. See GR-506-CORE, LSSGR: Signaling
 -- for Analog Interfaces (A Module of the LATA Switching Systems Generic
 -- Requirements [LSSGR], FR-64).
+
 AudibleSignal ::= ENUMERATED {
   notUsed                   (0),  -- Reserved
   dialTone                  (1),
@@ -4288,6 +4835,7 @@ AudibleSignal ::= ENUMERATED {
 -- [LSSGR], FR-64), ANSI/TIA/EIA-41-D, Cellular Radiotelecommunications
 -- Intersystem Operations, and GSM 02.40, Digital cellular telecommunications
 -- system (Phase 2+); Procedure for call progress indications.
+
 CallId ::= SEQUENCE {
   sequencenumber  [0] VisibleString (SIZE(1..25, ...)),
   systemidentity  [1] VisibleString (SIZE(1..15, ...)),
@@ -4300,7 +4848,9 @@ CallId ::= SEQUENCE {
 -- ASCII strings, separating them with a comma.
 -- The systemidentity field is copied from the
 -- Element-ID field
+
 CaseId ::= VisibleString (SIZE(1..25, ...))
+
 CCCId ::= CHOICE {
   combCCC              [0] VisibleString (SIZE(1..20, ...)),
   sepCCCpair           [1] SEQUENCE{
@@ -4315,13 +4865,16 @@ CCCId ::= CHOICE {
 -- Call Content packet stream by converting the 32-bit
 -- value into an 8-character (hex-encoded) ASCII string
 -- consisting of digits 0-9 and letters A-F.
+
 EventTime ::= GeneralizedTime
+
 FlowDirection ::= ENUMERATED {
   downstream               (1),
   upstream                 (2),
   downstream-and-upstream  (3),
   ...
 }
+
 PartyId ::= SEQUENCE {
   reserved0            [0]  NULL               OPTIONAL, -- Reserved
   reserved1            [1]  NULL               OPTIONAL, -- Reserved
@@ -4344,15 +4897,19 @@ PartyId ::= SEQUENCE {
   context              [18] VisibleString (SIZE(1..32, ...))  OPTIONAL,
   ...
 }
+
 RedirectedFromInfo ::= SEQUENCE {
   lastRedirecting        [0] PartyId           OPTIONAL,
   originalCalled         [1] PartyId           OPTIONAL,
   numRedirections        [2] INTEGER (1..100, ...)  OPTIONAL,
   ...
 }
+
 ResourceState ::= ENUMERATED {reserved(1), committed(2), ...}
+
 SDP ::= UTF8String
 -- The format and syntax of this field are defined in [8].
+
 TerminalDisplayInfo ::= SEQUENCE {
   generalDisplay         [0] VisibleString (SIZE (1..80, ...))  OPTIONAL,
     -- Can be used to report display-related
@@ -4372,16 +4929,25 @@ TerminalDisplayInfo ::= SEQUENCE {
 -- subject's terminal. See GR-506-CORE, LSSGR: Signaling for Analog
 -- Interfaces (A Module of the LATA Switching Systems Generic Requirements
 -- [LSSGR], FR-64).
+
 TransitCarrierId ::= VisibleString (SIZE(3..7, ...))
+
 END -- PCESP
+
+
+
 
 
 -- Source: 06132v203_C01_ASN1.asn
 -- ETSI EN 301 040 V2.1.1 (2006-03)
 
+
 EN301040 {itu-t (0) identified-organization (4) etsi (0) en301040 (1040) interceptVersion (0)}
+
 DEFINITIONS AUTOMATIC TAGS ::=
+
 BEGIN
+
 LIACTIVATEreq ::= SEQUENCE
 {
       timeStamp       UTCTime,
@@ -4392,6 +4958,7 @@ LIACTIVATEreq ::= SEQUENCE
       additionaltargetdata  VisibleString     OPTIONAL,
       monitorServiceList    SEQUENCE OF ActivityType
 }
+
 LIACTIVATEconf ::= SEQUENCE
 {
       timeStamp       UTCTime,
@@ -4399,6 +4966,7 @@ LIACTIVATEconf ::= SEQUENCE
   result      BOOLEAN,
       tLIInstanceid     TLIIdType       OPTIONAL  -- Conditional on value of Result --
 }
+
 LIMODIFYreq ::= SEQUENCE
 {
       tLIInstanceid           TLIIdType,
@@ -4414,6 +4982,7 @@ LIMODIFYreq ::= SEQUENCE
         monitorServiceList    SEQUENCE OF ActivityType
   }
 }
+
 LIMODIFYconf ::= SEQUENCE
 {
       tLIInstanceid           TLIIdType,
@@ -4421,12 +4990,14 @@ LIMODIFYconf ::= SEQUENCE
       modificationNumber  INTEGER,
       result      BOOLEAN
 }
+
 LISTATUSind ::= SEQUENCE
 {
       tLIInstanceid           TLIIdType,
       timestamp               UTCTime,
       tETRASysStatus    StatusType
 }
+
 TARGETACTIVITYMONITORind ::= SEQUENCE
 {
       tLIInstanceid     TLIIdType,        -- header, who –
@@ -4437,6 +5008,7 @@ TARGETACTIVITYMONITORind ::= SEQUENCE
       cotargetaddress     SEQUENCE OF AddressType   OPTIONAL,
       cotargetlocation      SEQUENCE OF LocationType    OPTIONAL
 }
+
 TARGETCOMMSMONITORind ::= SEQUENCE
 {
       tLIInstanceid       TLIIdType,
@@ -4447,16 +5019,19 @@ TARGETCOMMSMONITORind ::= SEQUENCE
       cotargetaddress       SEQUENCE OF AddressType   OPTIONAL,
       cotargetcommsid     SEQUENCE OF CircuitIdType   OPTIONAL
 }
+
 TTRAFFICind ::= SEQUENCE
 {
       tLIInstanceid         TLIIdType,
   trafficPacket       BIT STRING
 }
+
 CTTRAFFICind ::= SEQUENCE
 {
       tLIInstanceid         TLIIdType,
   trafficPacket       BIT STRING
 }
+
 
 ActivityClassType ::= ENUMERATED
 {
@@ -4511,6 +5086,7 @@ ActivityClassType ::= ENUMERATED
   rOAMING,
   supplementaryService
 }
+
 ActivityType::= SEQUENCE
 {
   cctivity  ActivityClassType,
@@ -4535,11 +5111,13 @@ ActivityType::= SEQUENCE
   cPlaneData  BIT STRING OPTIONAL,
   sStype    SSType OPTIONAL
 }
+
 AddressType ::= SEQUENCE
 {
   tSI     TSIType,
   supplementaryAddress  SEQUENCE OF TETRAAddressType OPTIONAL
 }
+
 TETRAAddressType ::= CHOICE
 {
   tETRAaddress  TSIType,
@@ -4550,18 +5128,26 @@ TETRAAddressType ::= CHOICE
   tEI   TEIType
 }
 
+
 CellIdType ::= BIT STRING (SIZE (16))   -- 16 bits –
+
 LocationAreaType ::= BIT STRING (SIZE (14)) -- 14 bits, as defined in ETS 300 392-2 –
+
 LocationType ::= CHOICE
 {
   mSLoc   TETRACGIType,
   lSLoc   TETRAAddressType
 }
 
+
 MCCType ::= BIT STRING (SIZE (10))  -- 10 bits, as defined in ETS 300 392-1 –
+
 MNCType ::= BIT STRING (SIZE (14))  -- 14 bits, as defined in ETS 300 392-1 –
+
 SSIType ::= BIT STRING (SIZE (24))  -- 24 bits, as defined in ETS 300 392-1 –
+
 CircuitIdType ::= NumericString (SIZE (20))
+
 SSType ::= ENUMERATED
 {
   ambienceListening,
@@ -4595,6 +5181,7 @@ SSType ::= ENUMERATED
       transferofControl,
       talkingPartyIdentification
 }
+
 StatusType ::= ENUMERATED
 {
   networkFullyAvailable,
@@ -4603,6 +5190,7 @@ StatusType ::= ENUMERATED
   sessionExpired,
   gatewayServicesUnavailable
 }
+
 TETRACGIType ::= SEQUENCE
 {
   mcc MCCType,
@@ -4610,27 +5198,37 @@ TETRACGIType ::= SEQUENCE
   lai LocationAreaType,
   cI  CellIdType  OPTIONAL
 }
+
 TLIIdType ::= BIT STRING (SIZE (16))  -- 16 bits –
+
 TSIType ::= SEQUENCE
 {
       mcc       MCCType,
       mnc       MNCType,
       ssi       SSIType
 }
+
 TEIType ::= BIT STRING (SIZE (60)) -- 60 bits, as defined in ETS 300 392-1 –
+
 END  -- EN301040
+
+
 
 -- Source: Module Remote-Operations-Information-Objects (X.880:07/1994)
 -- See also ITU-T X.880 (1994) Technical Cor. 1 (07/1995)
 -- See also the index of all ASN.1 assignments needed in this Recommendation
+
 Remote-Operations-Information-Objects {joint-iso-itu-t remote-operations(4) informationObjects(5) version1(0)}
+
 DEFINITIONS ::=
 BEGIN
+
 -- exports everything
 IMPORTS
   emptyBind, emptyUnbind
     FROM Remote-Operations-Useful-Definitions {joint-iso-itu-t
       remote-operations(4) useful-definitions(7) version1(0)};
+
 OPERATION ::= CLASS {
   &ArgumentType          OPTIONAL,
   &argumentTypeOptional  BOOLEAN OPTIONAL,
@@ -4659,6 +5257,7 @@ WITH SYNTAX {
   [RESULT-PRIORITY &ResultPriority]
   [CODE &operationCode]
 }
+
 ERROR ::= CLASS {
   &ParameterType          OPTIONAL,
   &parameterTypeOptional  BOOLEAN OPTIONAL,
@@ -4671,6 +5270,7 @@ WITH SYNTAX {
   [PRIORITY &ErrorPriority]
   [CODE &errorCode]
 }
+
 OPERATION-PACKAGE ::= CLASS {
   &Both      OPERATION OPTIONAL,
   &Consumer  OPERATION OPTIONAL,
@@ -4684,6 +5284,7 @@ WITH SYNTAX {
   [SUPPLIER INVOKES &Consumer]
   [ID &id]
 }
+
 CONNECTION-PACKAGE ::= CLASS {
   &bind                OPERATION DEFAULT emptyBind,
   &unbind              OPERATION DEFAULT emptyUnbind,
@@ -4698,6 +5299,7 @@ WITH SYNTAX {
   [FAILURE TO UNBIND &unbindCanFail]
   [ID &id]
 }
+
 CONTRACT ::= CLASS {
   &connection           CONNECTION-PACKAGE OPTIONAL,
   &OperationsOf         OPERATION-PACKAGE OPTIONAL,
@@ -4712,6 +5314,7 @@ WITH SYNTAX {
   [RESPONDER CONSUMER OF &InitiatorSupplierOf]
   [ID &id]
 }
+
 ROS-OBJECT-CLASS ::= CLASS {
   &Is                    ROS-OBJECT-CLASS OPTIONAL,
   &Initiates             CONTRACT OPTIONAL,
@@ -4726,19 +5329,28 @@ WITH SYNTAX {
   [RESPONDS &Responds]
   ID &id
 }
+
 Code ::= CHOICE {local   INTEGER,
                  global  OBJECT IDENTIFIER
 }
+
 Priority ::= INTEGER(0..MAX)
+
 END -- end of Information Object specifications
+
+
 
 
 -- Source: Module Remote-Operations-Useful-Definitions (X.880:07/1994)
 -- See also ITU-T X.880 (1994) Technical Cor. 1 (07/1995)
 -- See also the index of all ASN.1 assignments needed in this Recommendation
+
 Remote-Operations-Useful-Definitions {joint-iso-itu-t remote-operations(4) useful-definitions(7) version1(0)}
+
 DEFINITIONS IMPLICIT TAGS ::=
+
 BEGIN
+
 -- exports everything
 IMPORTS
   OPERATION, ERROR, OPERATION-PACKAGE, Code
@@ -4747,34 +5359,46 @@ IMPORTS
   InvokeId, ROS{}
     FROM Remote-Operations-Generic-ROS-PDUs {joint-iso-itu-t
       remote-operations(4) generic-ROS-PDUs(6) version1(0)};
+
 emptyBind OPERATION ::= {ERRORS       {refuse}
                          SYNCHRONOUS  TRUE
 }
+
 emptyUnbind OPERATION ::= {SYNCHRONOUS  TRUE
 }
+
 refuse ERROR ::= {CODE  local:-1
 }
+
 no-op OPERATION ::= {ALWAYS RESPONDS  FALSE
                      CODE             local:-1
 }
 
+
 /*
 -- Start of deletion to enable successful compliation
+
 Forward{OPERATION:OperationSet} OPERATION ::=
   {OperationSet | OperationSet.&Linked.&Linked |
    OperationSet.&Linked.&Linked.&Linked.&Linked}
+
 Reverse{OPERATION:OperationSet} OPERATION ::=
   {Forward{{OperationSet.&Linked}}}
+
 ConsumerPerforms{OPERATION-PACKAGE:package} OPERATION ::=
   {Forward{{package.&Consumer}} | Forward{{package.&Both}} |
    Reverse{{package.&Supplier}} | Reverse{{package.&Both}}}
+
 SupplierPerforms{OPERATION-PACKAGE:package} OPERATION ::=
   {Forward{{package.&Supplier}} | Forward{{package.&Both}} |
    Reverse{{package.&Consumer}} | Reverse{{package.&Both}}}
+
 AllOperations{OPERATION-PACKAGE:package} OPERATION ::=
   {ConsumerPerforms{package} | SupplierPerforms{package}}
+
 -- End of deletion to enable successful compliation
 */
+
 -- continued on the next page
 recode{OPERATION:operation, Code:code} OPERATION ::= {
   ARGUMENT         operation.&ArgumentType
@@ -4790,6 +5414,7 @@ recode{OPERATION:operation, Code:code} OPERATION ::= {
   RESULT-PRIORITY  {operation.&ResultPriority}
   CODE             code
 }
+
 switch{OPERATION-PACKAGE:package, OBJECT IDENTIFIER:id} OPERATION-PACKAGE ::=
 {
   OPERATIONS        {package.&Both}
@@ -4797,6 +5422,7 @@ switch{OPERATION-PACKAGE:package, OBJECT IDENTIFIER:id} OPERATION-PACKAGE ::=
   SUPPLIER INVOKES  {package.&Supplier}
   ID                id
 }
+
 combine{OPERATION-PACKAGE:ConsumerConsumes, OPERATION-PACKAGE:ConsumerSupplies, OPERATION-PACKAGE:base} OPERATION-PACKAGE ::= {
   OPERATIONS        {ConsumerConsumes.&Both | ConsumerSupplies.&Both}
   CONSUMER INVOKES
@@ -4806,33 +5432,45 @@ combine{OPERATION-PACKAGE:ConsumerConsumes, OPERATION-PACKAGE:ConsumerSupplies, 
   ID                base.&id
 }
 
+
 --
 -- Disabled - Australian customisation
 --
 -- ROS-SingleAS{InvokeId:InvokeIdSet, OPERATION-PACKAGE:package} ::=
 --  ROS{{InvokeIdSet}, {AllOperations  {package}}, {AllOperations  {package}}}
+
 -- ROS-ConsumerAS{InvokeId:InvokeIdSet, OPERATION-PACKAGE:package} ::=
 --  ROS
 --    {{InvokeIdSet}, {ConsumerPerforms  {package}},
 --    {SupplierPerforms  {package}}}
+
 -- ROS-SupplierAS{InvokeId:InvokeIdSet, OPERATION-PACKAGE:package} ::=
 --  ROS
 --    {{InvokeIdSet}, {SupplierPerforms  {package}},
 --    {ConsumerPerforms  {package}}}
+
 END -- end of useful definitions.
+
+
+
 
 
 -- Source: Module Remote-Operations-Generic-ROS-PDUs (X.880:07/1994)
 -- See also ITU-T X.880 (1994) Technical Cor. 1 (07/1995)
 -- See also the index of all ASN.1 assignments needed in this Recommendation
+
 Remote-Operations-Generic-ROS-PDUs {joint-iso-itu-t remote-operations(4) generic-ROS-PDUs(6) version1(0)}
+
 DEFINITIONS IMPLICIT TAGS ::=
+
 BEGIN
+
 -- exports everything
 IMPORTS
   OPERATION, ERROR
     FROM Remote-Operations-Information-Objects {joint-iso-itu-t
       remote-operations(4) informationObjects(5) version1(0)};
+
 ROS{InvokeId:InvokeIdSet, OPERATION:Invokable, OPERATION:Returnable} ::=
   CHOICE {
   invoke        [1]  Invoke{{InvokeIdSet}, {Invokable}},
@@ -4842,6 +5480,7 @@ ROS{InvokeId:InvokeIdSet, OPERATION:Invokable, OPERATION:Returnable} ::=
 }
 (CONSTRAINED BY { -- must conform to the above definition --} !
  RejectProblem:general-unrecognizedPDU)
+
 Invoke{InvokeId:InvokeIdSet, OPERATION:Operations} ::= SEQUENCE {
   invokeId
     InvokeId(InvokeIdSet)
@@ -4874,6 +5513,7 @@ Invoke{InvokeId:InvokeIdSet, OPERATION:Operations} ::= SEQUENCE {
    opcode    (CONSTRAINED BY { -- must be in the &Linked field of the associated operation --
                 } !RejectProblem:invoke-unexpectedLinkedOperation)
  })
+
 -- continued on the next page
 ReturnResult{OPERATION:Operations} ::= SEQUENCE {
   invokeId
@@ -4894,6 +5534,7 @@ ReturnResult{OPERATION:Operations} ::= SEQUENCE {
 }
 (CONSTRAINED BY { -- must conform to the above definition --} !
  RejectProblem:general-mistypedPDU)
+
 ReturnError{ERROR:Errors} ::= SEQUENCE {
   invokeId
     InvokeId
@@ -4912,6 +5553,7 @@ ReturnError{ERROR:Errors} ::= SEQUENCE {
 }
 (CONSTRAINED BY { -- must conform to the above definition --} !
  RejectProblem:general-mistypedPDU)
+
 Reject ::= SEQUENCE {
   invokeId  InvokeId,
   problem
@@ -4922,19 +5564,24 @@ Reject ::= SEQUENCE {
 }
 (CONSTRAINED BY { -- must conform to the above definition --} !
  RejectProblem:general-mistypedPDU)
+
 GeneralProblem ::= INTEGER {
   unrecognizedPDU(0), mistypedPDU(1), badlyStructuredPDU(2)}
+
 -- continued on the next page
 InvokeProblem ::= INTEGER {
   duplicateInvocation(0), unrecognizedOperation(1), mistypedArgument(2),
   resourceLimitation(3), releaseInProgress(4), unrecognizedLinkedId(5),
   linkedResponseUnexpected(6), unexpectedLinkedOperation(7)}
+
 ReturnResultProblem ::= INTEGER {
   unrecognizedInvocation(0), resultResponseUnexpected(1), mistypedResult(2)
 }
+
 ReturnErrorProblem ::= INTEGER {
   unrecognizedInvocation(0), errorResponseUnexpected(1), unrecognizedError(2),
   unexpectedError(3), mistypedParameter(4)}
+
 RejectProblem ::= INTEGER {
   general-unrecognizedPDU(0), general-mistypedPDU(1),
   general-badlyStructuredPDU(2), invoke-duplicateInvocation(10),
@@ -4947,21 +5594,28 @@ RejectProblem ::= INTEGER {
   returnError-unrecognizedInvocation(30),
   returnError-errorResponseUnexpected(31), returnError-unrecognizedError(32),
   returnError-unexpectedError(33), returnError-mistypedParameter(34)}
+
 InvokeId ::= CHOICE {present  INTEGER,
                      absent   NULL
 }
+
 noInvokeId InvokeId ::= absent:NULL
+
 NoInvokeId InvokeId ::= {noInvokeId}
+
 Errors{OPERATION:Operations} ERROR ::= {Operations.&Errors}
+
 -- continued on the next page
 Bind{OPERATION:operation} ::= CHOICE {
   bind-invoke  [16]  OPERATION.&ArgumentType({operation}),
   bind-result  [17]  OPERATION.&ResultType({operation}),
   bind-error   [18]  OPERATION.&Errors.&ParameterType({operation})
 }
+
 Unbind{OPERATION:operation} ::= CHOICE {
   unbind-invoke  [19]  OPERATION.&ArgumentType({operation}),
   unbind-result  [20]  OPERATION.&ResultType({operation}),
   unbind-error   [21]  OPERATION.&Errors.&ParameterType({operation})
 }
+
 END -- end of generic ROS PDU definitions

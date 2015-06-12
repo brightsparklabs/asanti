@@ -19,6 +19,7 @@ public class AsnSchemaTagTypePlaceHolder extends AbstractAsnSchemaTagType
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
+    private final String moduleName;
     private final String typeName;
 
     // -------------------------------------------------------------------------
@@ -43,7 +44,7 @@ public class AsnSchemaTagTypePlaceHolder extends AbstractAsnSchemaTagType
      * @throws IllegalArgumentException
      *             if {@code typeName} is blank
      */
-    public AsnSchemaTagTypePlaceHolder(String typeName, AsnSchemaConstraint constraint)
+    public AsnSchemaTagTypePlaceHolder(String moduleName, String typeName, AsnSchemaConstraint constraint)
     {
         super(AsnBuiltinType.Null, constraint);
 
@@ -51,6 +52,7 @@ public class AsnSchemaTagTypePlaceHolder extends AbstractAsnSchemaTagType
         checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");  // TODO MJF. Test case it!
 
         this.typeName = typeName;
+        this.moduleName =moduleName;
     }
 
     // -------------------------------------------------------------------------
@@ -68,5 +70,10 @@ public class AsnSchemaTagTypePlaceHolder extends AbstractAsnSchemaTagType
     public String getTypeName()
     {
         return typeName;
+    }
+
+    public String getModuleName()
+    {
+        return moduleName;
     }
 }

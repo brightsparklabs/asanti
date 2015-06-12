@@ -11,10 +11,7 @@
 package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeInteger;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeOctetString;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeUtf8String;
+import com.brightsparklabs.asanti.model.schema.tagtype.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
@@ -37,7 +34,20 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTagType.Null visitable)
+    {
+        return new BuiltinTypeDecoder.Null(
+                "null instances of AsnSchemaTagType cannot be decoded");
+    }
+
+    @Override
     public BitStringDecoder visit(final AsnSchemaTypeDefinitionBitString visitable)
+    {
+        return BitStringDecoder.getInstance();
+    }
+
+    @Override
+    public BitStringDecoder visit(final AsnSchemaTagTypeBitString visitable)
     {
         return BitStringDecoder.getInstance();
     }
@@ -64,6 +74,12 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     public GeneralStringDecoder visit(final AsnSchemaTypeDefinitionGeneralString visitable)
     {
         return GeneralStringDecoder.getInstance();
+    }
+
+    @Override
+    public PrintableStringDecoder visit(final AsnSchemaTagTypePrintableString visitable)
+    {
+        return PrintableStringDecoder.getInstance();
     }
 
     @Override
@@ -112,6 +128,11 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
 
     @Override
     public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSequenceOf visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE OF types cannot be decoded");
+    }
+    @Override
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTagTypeSequenceOf visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE OF types cannot be decoded");
     }

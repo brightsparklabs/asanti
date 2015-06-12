@@ -110,6 +110,7 @@ public class AsnSchemaImpl implements AsnSchema
             {
                 final String unknownTag = tags.get(i);
                 decodedTags.add(unknownTag);
+                logger.debug("Unable to parse " + rawTag + " : " + unknownTag);
             }
         }
 
@@ -260,7 +261,7 @@ public class AsnSchemaImpl implements AsnSchema
             }
             else if (type instanceof AsnSchemaTypeDefinitionCollectionOf)
             {
-                // TODO MJF - 
+                // TODO MJF -
                 AsnSchemaTypeDefinitionCollectionOf collection = (AsnSchemaTypeDefinitionCollectionOf)type;
 
                 final String tagName = tag;// type.getTagName(tag);
