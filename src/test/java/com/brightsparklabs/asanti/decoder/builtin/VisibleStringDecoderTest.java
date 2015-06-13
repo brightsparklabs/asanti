@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.google.common.base.Charsets;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,18 +32,16 @@ public class VisibleStringDecoderTest
     @Test
     public void testDecode() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
         // test valid
         byte[] bytes = new byte[1];
-        for (byte b = Byte.MAX_VALUE; b >= 0; b--)
+        for (int b = 126; b >= 32; b--)
         {
-            bytes[0] = b;
+            bytes[0] = (byte) b;
             assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
         }
 
         // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        for (byte b = Byte.MIN_VALUE; b < 32; b++)
         {
             bytes[0] = b;
             try
@@ -54,7 +53,16 @@ public class VisibleStringDecoderTest
             {
             }
         }
-        */
+
+        bytes[0] = Byte.MAX_VALUE;
+        try
+        {
+            instance.decode(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
 
         // test null
         try
@@ -70,14 +78,12 @@ public class VisibleStringDecoderTest
     @Test
     public void testDecodeAsString() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
         // test valid
         byte[] bytes = "TEST".getBytes(Charsets.UTF_8);
         assertEquals("TEST", instance.decodeAsString(bytes));
 
         // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        for (byte b = Byte.MIN_VALUE; b < 32; b++)
         {
             bytes[0] = b;
             try
@@ -89,7 +95,16 @@ public class VisibleStringDecoderTest
             {
             }
         }
-        */
+
+        bytes[0] = Byte.MAX_VALUE;
+        try
+        {
+            instance.decodeAsString(bytes);
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException ex)
+        {
+        }
 
         // test null
         try

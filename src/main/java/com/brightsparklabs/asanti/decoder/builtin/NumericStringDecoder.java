@@ -9,6 +9,7 @@ import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -60,7 +61,6 @@ public class NumericStringDecoder extends AbstractBuiltinTypeDecoder<String>
         final ImmutableSet<ByteValidationFailure> failures
                 = AsnByteValidator.validateAsNumericString(bytes);
         DecodeException.throwIfHasFailures(failures);
-        // TODO: ASN-107 implement
-        return null;
+        return new String(bytes, Charsets.UTF_8);
     }
 }
