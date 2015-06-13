@@ -14,6 +14,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
@@ -101,8 +102,11 @@ public class NumericStringValidatorTest
     @Test
     public void testValidateBytes() throws Exception
     {
+        // -------------------------------------------------------------------------
+        // test valid, numbers and space
+        // -------------------------------------------------------------------------
 
-        // test valid
+        // numbers
         byte[] bytes = new byte[1];
         for (int b = '9'; b >= '0'; b--)
         {
@@ -110,7 +114,18 @@ public class NumericStringValidatorTest
             assertEquals(0, instance.validate(bytes).size());
         }
 
+        // test space
+        bytes[0] = ' ';
+        assertEquals(0, instance.validate(bytes).size());
+
+        // test a "phone number"
+        bytes = "0400 123 456".getBytes(Charsets.UTF_8);
+        assertEquals(0, instance.validate(bytes).size());
+
+
+        // -------------------------------------------------------------------------
         // test invalid
+        // -------------------------------------------------------------------------
         final String errorPrefix = BuiltinTypeValidator.NUMERICSTRING_VALIDATION_ERROR;
         for (byte b = Byte.MIN_VALUE; b < ' '; b++)
         {
@@ -141,6 +156,11 @@ public class NumericStringValidatorTest
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
             assertEquals(errorPrefix + String.format("0x%02X", b), failure.getFailureReason());
         }
+
+
+        // -------------------------------------------------------------------------
+        // test edge cases (empty and null)
+        // -------------------------------------------------------------------------
 
         // test empty
         bytes = new byte[0];

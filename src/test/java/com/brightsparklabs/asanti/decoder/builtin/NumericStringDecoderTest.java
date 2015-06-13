@@ -40,6 +40,15 @@ public class NumericStringDecoderTest
             assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
         }
 
+        // test space
+        bytes[0] = ' ';
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+        // test a "phone number"
+        bytes = "0400 123 456".getBytes(Charsets.UTF_8);
+        assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+
+
         // test invalid
         for (byte b = Byte.MIN_VALUE; b < ' '; b++)
         {
@@ -97,6 +106,17 @@ public class NumericStringDecoderTest
         // test valid
         byte[] bytes = "0123456789".getBytes(Charsets.UTF_8);
         assertEquals("0123456789", instance.decodeAsString(bytes));
+
+
+        bytes = " 0123456789 ".getBytes(Charsets.UTF_8);
+        assertEquals(" 0123456789 ", instance.decodeAsString(bytes));
+
+        bytes = "0 1 2 3 4 5 6 7 8 9".getBytes(Charsets.UTF_8);
+        assertEquals("0 1 2 3 4 5 6 7 8 9", instance.decodeAsString(bytes));
+
+        bytes = "     ".getBytes(Charsets.UTF_8);
+        assertEquals("     ", instance.decodeAsString(bytes));
+
 
         // test invalid
         bytes = "0123456789z".getBytes(Charsets.UTF_8);
