@@ -62,7 +62,8 @@ public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger>
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsInteger(
                 bytes);
         DecodeException.throwIfHasFailures(failures);
-        // TODO: ASN-107 implement
-        return null;
+        // The Java BigInteger aligns with the ASN.1 concept of Integer, in that
+        // it can be arbitrarily many bytes, and is by default signed.
+        return new BigInteger(bytes);
     }
 }
