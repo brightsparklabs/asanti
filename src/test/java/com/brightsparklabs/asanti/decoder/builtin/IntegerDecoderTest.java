@@ -42,6 +42,7 @@ public class IntegerDecoderTest
             assertEquals(big.longValue(), b);
         }
 
+
         {
             // check that we can have a leading 0 followed by a byte with a 1 for most significant
             // bit.  ie without the leading 0 this would be treated as a negative number.
@@ -122,20 +123,11 @@ public class IntegerDecoderTest
             assertEquals(-36028797018963968L, big7.longValue());
             assertEquals(-9223372036854775808L, big8.longValue());assertEquals(Long.MIN_VALUE, big8.longValue());
 
-
-            // from here on we run out of primitive type language support, so do some calculations.
-            BigInteger two56 = new BigInteger("256");
-            BigInteger big9calc = big8.multiply(two56);
-            assertEquals(big9calc, big9);
-
-            BigInteger two = BigInteger.ONE.add(BigInteger.ONE);
-
-            BigInteger big16calc = big8.multiply(big8.negate()).multiply(two);
-            assertEquals(big16calc, big16);
-
-            BigInteger big17calc = big16calc.multiply(two56);
-            assertEquals(big17calc, big17);
-
+            // from here on we run out of primitive type language support (ie they are now bigger than 64 bit)
+            // so go straight to BigInteger.
+            assertEquals(new BigInteger("-2361183241434822606848"), big9);
+            assertEquals(new BigInteger("-170141183460469231731687303715884105728"), big16);
+            assertEquals(new BigInteger("-43556142965880123323311949751266331066368"), big17);
         }
 
         {
@@ -173,25 +165,11 @@ public class IntegerDecoderTest
             assertEquals(36028797018963967L, big7.longValue());
             assertEquals(9223372036854775807L, big8.longValue());assertEquals(Long.MAX_VALUE, big8.longValue());
 
-
-            // from here on we run out of primitive type language support, so do some basic calculations.
-
-            // shift it
-            BigInteger two55 = new BigInteger("255");
-            BigInteger big9calc = big8.shiftLeft(8).add(two55);
-            assertEquals(big9calc, big9);
-
-
-
-            BigInteger big16calc = BigInteger.ONE;
-            for(int i = 0; i < 127; ++i)
-            {
-                big16calc = big16calc.setBit(i);
-            }
-            assertEquals(big16calc, big16);
-
-            BigInteger big17calc = big16calc.shiftLeft(8).add(two55);
-            assertEquals(big17calc, big17);
+            // from here on we run out of primitive type language support (ie they are now bigger than 64 bit)
+            // so go straight to BigInteger.
+            assertEquals(new BigInteger("2361183241434822606847"), big9);
+            assertEquals(new BigInteger("170141183460469231731687303715884105727"), big16);
+            assertEquals(new BigInteger("43556142965880123323311949751266331066367"), big17);
         }
 
         // test empty byte array
@@ -205,7 +183,6 @@ public class IntegerDecoderTest
         catch (DecodeException ex)
         {
         }
-
 
         // test null
         try
@@ -345,19 +322,25 @@ public class IntegerDecoderTest
         }
 
         // test empty byte array
-        try {
+        try
+        {
 
             byte[] b1 = {};
             instance.decodeAsString(b1);
             fail("DecodeException not thrown");
-        } catch (DecodeException ex) {
+        }
+        catch (DecodeException ex)
+        {
         }
 
         // test null
-        try {
+        try
+        {
             instance.decodeAsString(null);
             fail("DecodeException not thrown");
-        } catch (DecodeException ex) {
+        }
+        catch (DecodeException ex)
+        {
         }
     }
 }
