@@ -5,12 +5,12 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
 
 /**
- * An {@code OCTET STRING} type definition from a within a module specification
+ * An {@code ObjectIdentifier} component/tag type from a within a module specification
  * within an ASN.1 schema.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTagTypeOctetString extends AbstractAsnSchemaTagType
+public class AsnSchemaTagTypeObjectIdentifier extends AbstractAsnSchemaTagType
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -22,17 +22,11 @@ public class AsnSchemaTagTypeOctetString extends AbstractAsnSchemaTagType
      * @param constraint
      *            The constraint on the type. Use
      *            {@link AsnSchemaConstraint#NULL} if no constraint.
-     *            <p>
-     *            E.g. For {@code Utf8String (SIZE (1..50))} this would be
-     *            {@code SIZE (1..50)}
-     *
-     * @throws NullPointerException
-     *             if {@code name} is {@code null}
      *
      */
-    public AsnSchemaTagTypeOctetString(AsnSchemaConstraint constraint)
+    public AsnSchemaTagTypeObjectIdentifier(AsnSchemaConstraint constraint)
     {
-        super(AsnBuiltinType.OctetString, constraint);
+        super(AsnBuiltinType.Oid, constraint);
     }
 
     // -------------------------------------------------------------------------

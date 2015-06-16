@@ -199,6 +199,13 @@ public class AsnSchemaComponentTypeParser
         matcher = PATTERN_PSEUDO_TYPE.matcher(rawType);
         if (matcher.matches())
         {
+
+            // TODO MJF - Sequence and Set are both types that are 'complex' in that they contain
+            // other tags and and are not "directly" tags themselves (ie you can't get bytes/data for them)
+            // Enumerated however is something you can get bytes for.
+            // Not sure about Choice?
+
+
             // auto-generate pseudo type name in the format
             // generated.<containingTypeName>.<componentTypeName>
             final String generatedTypeName = "generated." + containingTypeName + "." + tagName;
@@ -214,6 +221,7 @@ public class AsnSchemaComponentTypeParser
 
             if (matcher.matches())
             {
+                // TODO MJF -
                 final AsnSchemaTagType tagType = AnsSchemaTagTypeParser.parse(tagName, rawType);
 
                 String typeName = matcher.group(7);

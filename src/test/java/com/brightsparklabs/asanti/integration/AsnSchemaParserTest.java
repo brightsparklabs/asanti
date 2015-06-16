@@ -56,7 +56,7 @@ public class AsnSchemaParserTest
             "    MyInt ::= INTEGER\n" +
             "END";
 
-    private static final String HUMAN_SIMPLE = "Test-Protocol\n" +
+    private static final String HUMAN_SIMPLExx = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
             "DEFINITIONS\n" +
@@ -68,6 +68,50 @@ public class AsnSchemaParserTest
             "       age [0] INTEGER (1..100)\n" +
             "   }\n" +
             "END";
+
+    private static final String HUMAN_SIMPLE_CHOICE = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       payload Payload\n" +
+            "   }\n" +
+            "   Payload ::= CHOICE\n" +
+            "   {\n" +
+            "       optA [0] TypeA,\n" +
+            "       optB [1] TypeAB\n" +
+            "   }\n" +
+            "   TypeA ::= SEQUENCE\n" +
+            "   {\n" +
+            "       name UTF8String,\n" +
+            "       age INTEGER\n" +
+            "   }\n" +
+            "   TypeB ::= SEQUENCE\n" +
+            "   {\n" +
+            "       number INTEGER,\n" +
+            "       also INTEGER\n" +
+            "   }\n" +
+            "END";
+
+
+    private static final String HUMAN_SIMPLE = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       age [0] INTEGER,\n" +
+            "       gender ENUMERATED { male(0), female(1) }" +
+            "   }\n" +
+            "END";
+
 
     private static final String HUMAN_SIMPLE2 = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
@@ -212,15 +256,16 @@ public class AsnSchemaParserTest
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
             "       faveNumbers FaveNumbers,\n" +
-            "       name PersonName" +
+            "       name PersonName,\n" +
+            "       bitString BIT STRING (SIZE (4))" +
             "   }\n" +
             "   PersonName ::= SEQUENCE\n" +
             "   {\n" +
-            //            "           first UTF8String,\n" +
-            "           first OCTET STRING,\n" +
-            "       last  UTF8String\n" +
+            "       first NameType,\n" +
+            "       last  NameType\n" +
             "   }\n" +
             "   FaveNumbers ::= SET OF INTEGER\n" +
+            "   NameType ::= UTF8String\n" +
             "END";
 
     private static final String HUMAN_USING_TYPEDEF_BROKEN = "Test-Protocol\n" +
@@ -263,30 +308,41 @@ public class AsnSchemaParserTest
         String tag = "/0";
         logger.info("get tag " + tag);
         OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        if (result.wasSuccessful())
-        {
-            DecodedTag actualTag = result.getOutput();
-            logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
-            //String berFilename = "d:\\tmp\\Human_Simple.ber";
-            String berFilename = getClass().getResource("/Human_Simple.ber").getFile();
-            final File berFile = new File(berFilename);
+        assertTrue(result.wasSuccessful());
+
+        DecodedTag actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
 
-            String topLevelType = "Human";
-
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
-
-            DecodedAsnData pdu = pdus.get(0);
-            tag = "/Human/age";
-            BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
-            logger.info(tag + " : " + age);
-            assertEquals(new BigInteger("32"), age);
+        tag = "/1";
+        logger.info("get tag " + tag);
+        result = schema.getDecodedTag(tag, "Human");
 
 
-        }
+        actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+        //String berFilename = "d:\\tmp\\Human_Simple.ber";
+        String berFilename = getClass().getResource("/Human_SimpleDELME.ber").getFile();
+        final File berFile = new File(berFilename);
+
+
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+
+        DecodedAsnData pdu = pdus.get(0);
+        tag = "/Human/age";
+        BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
+        logger.info(tag + " : " + age);
+        assertEquals(new BigInteger("32"), age);
+
+        byte [] bytes = pdu.getBytes("/1");
+        logger.info("bytes: ", bytes.toString());
+
     }
 
     @Test
@@ -327,6 +383,70 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + name);
         assertEquals("Adam", name);
 
+    }
+
+
+    @Test
+    public void testParse_HumanSimpleChoice() throws Exception
+    {
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE_CHOICE);
+
+        String tag = "/0";
+        logger.info("get tag " + tag);
+        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
+
+        assertTrue(result.wasSuccessful());
+
+        DecodedTag actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+
+        tag = "/1";
+        logger.info("get tag " + tag);
+        result = schema.getDecodedTag(tag, "Human");
+
+
+        actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+        //String berFilename = "d:\\tmp\\Human_Simple.ber";
+        String berFilename = getClass().getResource("/Human_SimpleChoice.ber").getFile();
+        final File berFile = new File(berFilename);
+
+
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+
+
+        for (int i = 0; i < pdus.size(); i++)
+        {
+
+            logger.info("Parsing PDU[{}]", i);
+            final DecodedAsnData pdu = pdus.get(i);
+            for (String t : pdu.getTags())
+            {
+                logger.info("\t{} => {} as {}", t, pdu.getHexString(t), pdu.getType(t).getBuiltinType() );
+            }
+            for (String t : pdu.getUnmappedTags())
+            {
+                logger.info("\t{} => {}", t, pdu.getHexString(t));
+            }
+        }
+
+
+/*
+        DecodedAsnData pdu = pdus.get(0);
+        tag = "/Human/age";
+        BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
+        logger.info(tag + " : " + age);
+        assertEquals(new BigInteger("32"), age);
+
+        byte [] bytes = pdu.getBytes("/1");
+        logger.info("bytes: ", bytes.toString());
+*/
     }
 
     @Test
@@ -641,8 +761,8 @@ public class AsnSchemaParserTest
     {
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_SETOF);
-
-        String berFilename = getClass().getResource("/Human_TypedefSet.ber").getFile();
+/*
+        String berFilename = getClass().getResource("/Human_TypedefSetOf.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
@@ -656,14 +776,20 @@ public class AsnSchemaParserTest
 
         for (String tag : pdu.getTags())
         {
-            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+            logger.info("\t{} => {} as {}", tag, pdu.getHexString(tag), pdu.getType(tag).getBuiltinType());
         }
 
-        /* TODO MJF
         String tag = "/Human/faveNumbers";
-        BigInteger fave0 = (BigInteger)pdu.getDecodedObject(tag+"[0]");
-        */
+        BigInteger fave = (BigInteger)pdu.getDecodedObject(tag+"[0]");
+        logger.info("fave[0]: {}", fave);
 
+        fave = (BigInteger)pdu.getDecodedObject(tag+"[1]");
+        logger.info("fave[1]: {}", fave);
+
+        tag = "/Human/faveNumbers[2]";
+        fave = (BigInteger)pdu.getDecodedObject(tag+"[2]");
+        logger.info("fave[2]: {}", fave);
+*/
     }
 
 
@@ -674,30 +800,148 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-
-        String berFilename = getClass().getResource("/test.ber").getFile();
-        final File berFile = new File(berFilename);
-        String topLevelType = "PS-PDU";
-
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                schema,
-                topLevelType);
-
-        for (int i = 0; i < pdus.size(); i++)
         {
+            String tag = "/2/0/2/5/1/1/2/0";
+            logger.info("get tag " + tag);
+            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
+            int breakpoint = 0;
 
-            logger.info("Parsing PDU[{}]", i);
-            final DecodedAsnData pdu = pdus.get(i);
-            for (String tag : pdu.getTags())
+        }
+
+
+        {
+            String berFilename = getClass().getResource("/test5.ber").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "PS-PDU";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            for (int i = 0; i < pdus.size(); i++)
             {
-                logger.info("\t{} => {} as {}", tag, pdu.getHexString(tag), pdu.getType(tag).getBuiltinType() );
-            }
-            for (String tag : pdu.getUnmappedTags())
-            {
-                logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+
+                logger.info("Parsing PDU[{}]", i);
+                final DecodedAsnData pdu = pdus.get(i);
+                for (String tag : pdu.getTags())
+                {
+                    logger.info("\t{} => {} as {}",
+                            tag,
+                            pdu.getHexString(tag),
+                            pdu.getType(tag).getBuiltinType());
+                }
+                for (String tag : pdu.getUnmappedTags())
+                {
+                    logger.info("\t? {} => {}", tag, pdu.getHexString(tag));
+                }
             }
         }
 
+        {
+            String berFilename = getClass().getResource("/mock/SSI_CC.etsi").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "PS-PDU";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            for (int i = 0; i < pdus.size(); i++)
+            {
+
+                logger.info("Parsing PDU[{}]", i);
+                final DecodedAsnData pdu = pdus.get(i);
+                for (String tag : pdu.getTags())
+                {
+                    logger.info("\t{} => {} as {}",
+                            tag,
+                            pdu.getHexString(tag),
+                            pdu.getType(tag).getBuiltinType());
+                }
+                for (String tag : pdu.getUnmappedTags())
+                {
+                    logger.info("\t? {} => {}", tag, pdu.getHexString(tag));
+                }
+
+                ValidatorImpl validator = new ValidatorImpl();
+                ValidationResult validationresult = validator.validate(pdu);
+                // TODO - we should get a validation failure where we can't determine the type of a tag
+                //assertTrue(validationresult.hasFailures());
+
+                ImmutableSet<DecodedTagValidationFailure> failures = validationresult.getFailures();
+                //assertEquals(1, failures.size());
+                logger.warn("Validation failures: {}", failures.size());
+
+                for (DecodedTagValidationFailure fail : failures)
+                {
+
+                    logger.info("Tag: " + fail.getTag() +
+                            " reason: " + fail.getFailureReason() +
+                            " type: " + fail.getFailureType());
+                }
+
+
+            }
+
+
+            String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
+
+            BigInteger number = (BigInteger)pdus.get(0).getDecodedObject(tag);
+            logger.info("communicationIdentityNumber: " + number);
+
+            String str = (String)pdus.get(0).getDecodedObject("/PS-PDU/pSHeader/authorizationCountryCode");
+            logger.info("authorizationCountryCode: " + str);
+
+            str = (String)pdus.get(1).getDecodedObject("/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode");
+            logger.info("deliveryCountryCode: {}", str);
+
+            byte [] bytes = (byte [])pdus.get(1).getDecodedObject("/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier");
+            String s = new String(bytes, Charsets.UTF_8);
+            logger.info("networkElementIdentifier: {} - from Octet String", s);
+
+
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+
+
+        }
+/*
+        {
+            String berFilename = getClass().getResource("/mock/SSI_IRI.etsi").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "PS-PDU";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            for (int i = 0; i < pdus.size(); i++)
+            {
+
+                logger.info("Parsing PDU[{}]", i);
+                final DecodedAsnData pdu = pdus.get(i);
+                for (String tag : pdu.getTags())
+                {
+                    logger.info("\t{} => {} as {}",
+                            tag,
+                            pdu.getHexString(tag),
+                            pdu.getType(tag).getBuiltinType());
+                }
+                for (String tag : pdu.getUnmappedTags())
+                {
+                    logger.info("\t? {} => {}", tag, pdu.getHexString(tag));
+                }
+            }
+        }
+*/
+        /*
         BigInteger sequenceNumber = (BigInteger)pdus.get(0).getDecodedObject("/PS-PDU/pSHeader/sequenceNumber");
         logger.info("sequenceNumber[0]: " + sequenceNumber);
         BigInteger communicationIdentityNumber = (BigInteger)pdus.get(0).getDecodedObject("/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber");
@@ -708,7 +952,7 @@ public class AsnSchemaParserTest
 
         sequenceNumber = (BigInteger)pdus.get(2).getDecodedObject("/PS-PDU/pSHeader/sequenceNumber");
         logger.info("sequenceNumber[2]: " + sequenceNumber);
-
+*/
 
     }
 

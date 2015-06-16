@@ -71,6 +71,12 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public GeneralizedTimeDecoder visit(final AsnSchemaTagTypeGeneralizedTime visitable)
+    {
+        return GeneralizedTimeDecoder.getInstance();
+    }
+
+    @Override
     public GeneralStringDecoder visit(final AsnSchemaTypeDefinitionGeneralString visitable)
     {
         return GeneralStringDecoder.getInstance();
@@ -148,6 +154,11 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SET OF types cannot be decoded");
     }
+    @Override
+    public BuiltinTypeDecoder.Null visit(final AsnSchemaTagTypeSetOf visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 SET OF types cannot be decoded");
+    }
 
     @Override
     public Utf8StringDecoder visit(final AsnSchemaTypeDefinitionUtf8String visitable)
@@ -164,5 +175,11 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     public VisibleStringDecoder visit(final AsnSchemaTypeDefinitionVisibleString visitable)
     {
         return VisibleStringDecoder.getInstance();
+    }
+
+    @Override
+    public OidDecoder visit(final AsnSchemaTagTypeObjectIdentifier visitable)
+    {
+        return OidDecoder.getInstance();
     }
 }

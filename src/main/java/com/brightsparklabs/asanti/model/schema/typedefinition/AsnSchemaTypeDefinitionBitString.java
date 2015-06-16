@@ -47,7 +47,6 @@ public class AsnSchemaTypeDefinitionBitString extends AsnSchemaTypeDefinitionPri
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
-
     @Override
     public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
     {

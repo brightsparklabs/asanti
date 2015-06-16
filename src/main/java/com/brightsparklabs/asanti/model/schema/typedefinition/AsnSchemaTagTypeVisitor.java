@@ -32,7 +32,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinition.Null visitable);
-
     public T visit(AsnSchemaTagType.Null visitable);
 
     /**
@@ -75,6 +74,7 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionGeneralizedTime visitable);
+    public T visit(AsnSchemaTagTypeGeneralizedTime visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -116,7 +116,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionInteger visitable);
-
     public T visit(AsnSchemaTagTypeInteger visitable);
 
 
@@ -183,6 +182,7 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionSetOf visitable);
+    public T visit(AsnSchemaTagTypeSetOf visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -204,4 +204,15 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnSchemaTypeDefinitionVisibleString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnSchemaTagTypeObjectIdentifier visitable);
+
 }

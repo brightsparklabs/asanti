@@ -5,12 +5,12 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
 
 /**
- * An {@code OCTET STRING} type definition from a within a module specification
+ * A {@code GeneralizedTime} component/tag type from a within a module specification
  * within an ASN.1 schema.
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTagTypeOctetString extends AbstractAsnSchemaTagType
+public class AsnSchemaTagTypeGeneralizedTime extends AbstractAsnSchemaTagType
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -30,13 +30,13 @@ public class AsnSchemaTagTypeOctetString extends AbstractAsnSchemaTagType
      *             if {@code name} is {@code null}
      *
      */
-    public AsnSchemaTagTypeOctetString(AsnSchemaConstraint constraint)
+    public AsnSchemaTagTypeGeneralizedTime(AsnSchemaConstraint constraint)
     {
-        super(AsnBuiltinType.OctetString, constraint);
+        super(AsnBuiltinType.GeneralizedTime, constraint);
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // IMPLEMENTATION: AsnSchemaTagType
     // -------------------------------------------------------------------------
 
     @Override

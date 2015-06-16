@@ -328,7 +328,6 @@ public final class AsnSchemaTypeDefinitionParser
         final ImmutableList<AsnSchemaComponentType> componentTypes
                 = AsnSchemaComponentTypeParser.parse(name, componentTypesText);
 
-
         // parse any pseudo type definitions from returned component types
         final List<AsnSchemaTypeDefinition> parsedTypes = parsePseudoTypes(componentTypes);
 

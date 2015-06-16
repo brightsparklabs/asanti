@@ -5,7 +5,10 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
 
 /**
- * Created by Michael on 12/06/2015.
+ * A {@code SEQUENCEOF} component/tag type from a within a module specification
+ * within an ASN.1 schema.
+ *
+ * @author brightSPARK Labs
  */
 public class AsnSchemaTagTypeSequenceOf extends AbstractAsnSchemaTagType
 {
@@ -22,7 +25,7 @@ public class AsnSchemaTagTypeSequenceOf extends AbstractAsnSchemaTagType
      *            <p>
      *            E.g for
      *            {@code SEQUENCE (SIZE (1..100)) OF OCTET STRING (SIZE (256))}
-     *            this would be {@code SIZE (256)}
+     *            this would be {@code SIZE (1..100)}
      *
      * @throws NullPointerException
      *             if {@code name}, {@code elementTypeName} or
