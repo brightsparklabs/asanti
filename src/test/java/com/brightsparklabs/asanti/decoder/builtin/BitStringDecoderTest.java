@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.google.common.base.Charsets;
 import org.junit.Test;
 
@@ -32,6 +33,45 @@ public class BitStringDecoderTest
     @Test
     public void testDecode() throws Exception
     {
+
+        {
+            // TODO (ASN-120 review) - here is my interpretation of how we should be able to decode.
+            byte[] bytes = { (byte)0x05, (byte)0xE0 };
+            assertEquals("111", instance.decode(bytes));
+
+            bytes = new byte [] { (byte)0x04, (byte)0xE0 };
+            assertEquals("1110", instance.decode(bytes));
+
+            bytes = new byte [] { (byte)0x00, (byte)0xFF };
+            assertEquals("11111111", instance.decode(bytes));
+
+            // showing how the length octect forces to ignore trailing bits of last octet
+            bytes = new byte [] { (byte)0x07, (byte)0xFF };
+            assertEquals("1", instance.decode(bytes));
+
+            bytes = new byte [] { (byte)0x07, (byte)0x00 };
+            assertEquals("0", instance.decode(bytes));
+
+            bytes = new byte [] { (byte)0x06, (byte)0xAA, (byte)0x80 };
+            assertEquals("1010101010", instance.decode(bytes));
+
+            // empty string
+            bytes = new byte [] { (byte)0x00 };
+            assertEquals("", instance.decode(bytes));
+
+            // I think this should throw (ie not validate)
+            try
+            {
+
+                bytes = new byte[] {};
+                instance.decode(bytes);
+                fail("DecodeException not thrown");
+            }
+            catch (DecodeException e)
+            {
+            }
+        }
+
         // test valid single byte values
         byte[] bytes = new byte[1];
         for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--)
