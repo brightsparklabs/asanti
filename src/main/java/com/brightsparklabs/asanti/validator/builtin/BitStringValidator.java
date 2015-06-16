@@ -59,8 +59,7 @@ public class BitStringValidator extends PrimitiveBuiltinTypeValidator
     @Override
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
-        final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO: ASN-105 implement validation logic
-        return ImmutableSet.copyOf(failures);
+        // no validation required
+        return ImmutableSet.of();
     }
 }

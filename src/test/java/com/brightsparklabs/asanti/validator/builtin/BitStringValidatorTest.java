@@ -31,29 +31,11 @@ public class BitStringValidatorTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testValidateTag() throws Exception
-    {
-        // TODO: ASN-105 need to mock DecodedAsnData
-    }
-
-    @Test
     public void testValidateBytes() throws Exception
     {
-        // TODO: ASN-105 implement
         // test valid
         byte[] bytes = new byte[] { 0x00 };
         assertEquals(0, instance.validate(bytes).size());
-
-        // test invalid
-        /*
-        final String errorPrefix = "";
-        bytes[0] = new byte[] { 0x00 };
-        final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
-        assertEquals(1, failures.size());
-        final ByteValidationFailure failure = failures.iterator().next();
-        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(errorPrefix + b, failure.getFailureReason());
-        */
 
         // test empty
         bytes = new byte[0];

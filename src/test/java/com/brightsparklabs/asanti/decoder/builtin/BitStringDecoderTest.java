@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.google.common.base.Charsets;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,32 +32,37 @@ public class BitStringDecoderTest
     @Test
     public void testDecode() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
-        // test valid
+        // test valid single byte values
         byte[] bytes = new byte[1];
-        for (byte b = Byte.MAX_VALUE; b >= 0; b--)
+        for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--)
         {
-            bytes[0] = b;
-            assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+            bytes[0] = (byte) b;
+            final String binaryString = String.format("%8s", Integer.toBinaryString(b & 0xFF))
+                    .replace(' ', '0');
+            assertEquals(binaryString, instance.decode(bytes));
         }
 
-        // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
-        {
-            bytes[0] = b;
-            try
-            {
-                instance.decode(bytes);
-                fail("DecodeException not thrown");
-            }
-            catch (DecodeException ex)
-            {
-            }
-        }
-        */
+        // test valid - two bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11000010, (byte) 0b10000000 };
+        assertEquals("1100001010000000", instance.decode(bytes));
+        bytes = new byte[] { (byte) 0b11011111, (byte) 0b10111111 };
+        assertEquals("1101111110111111", instance.decode(bytes));
 
-        // test null
+        // test valid - three bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11100010, (byte) 0b10000000, (byte) 0b10000000 };
+        assertEquals("111000101000000010000000", instance.decode(bytes));
+        bytes = new byte[] { (byte) 0b11101111, (byte) 0b10111111, (byte) 0b10111111 };
+        assertEquals("111011111011111110111111", instance.decode(bytes));
+
+        // test valid - four bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11110010, (byte) 0b10000000, (byte) 0b10000000,
+                             (byte) 0b10000000 };
+        assertEquals("11110010100000001000000010000000", instance.decode(bytes));
+        bytes = new byte[] { (byte) 0b11110000, (byte) 0b10111111, (byte) 0b10111111,
+                             (byte) 0b10111111 };
+        assertEquals("11110000101111111011111110111111", instance.decode(bytes));
+
+        //test null
         try
         {
             instance.decode(null);
@@ -70,26 +76,35 @@ public class BitStringDecoderTest
     @Test
     public void testDecodeAsString() throws Exception
     {
-        // TODO: ASN-107 implement
-        /*
-        // test valid
-        byte[] bytes = "TEST".getBytes(Charsets.UTF_8);
-        assertEquals("TEST", instance.decodeAsString(bytes));
-
-        // test invalid
-        for (byte b = Byte.MIN_VALUE; b < 0; b++)
+        // test valid single byte values
+        byte[] bytes = new byte[1];
+        for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--)
         {
-            bytes[0] = b;
-            try
-            {
-                instance.decodeAsString(bytes);
-                fail("DecodeException not thrown");
-            }
-            catch (DecodeException ex)
-            {
-            }
+            bytes[0] = (byte) b;
+            final String binaryString = String.format("%8s", Integer.toBinaryString(b & 0xFF))
+                    .replace(' ', '0');
+            assertEquals(binaryString, instance.decodeAsString(bytes));
         }
-        */
+
+        // test valid - two bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11000010, (byte) 0b10000000 };
+        assertEquals("1100001010000000", instance.decodeAsString(bytes));
+        bytes = new byte[] { (byte) 0b11011111, (byte) 0b10111111 };
+        assertEquals("1101111110111111", instance.decodeAsString(bytes));
+
+        // test valid - three bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11100010, (byte) 0b10000000, (byte) 0b10000000 };
+        assertEquals("111000101000000010000000", instance.decodeAsString(bytes));
+        bytes = new byte[] { (byte) 0b11101111, (byte) 0b10111111, (byte) 0b10111111 };
+        assertEquals("111011111011111110111111", instance.decodeAsString(bytes));
+
+        // test valid - four bytes (minimum/maximum)
+        bytes = new byte[] { (byte) 0b11110010, (byte) 0b10000000, (byte) 0b10000000,
+                             (byte) 0b10000000 };
+        assertEquals("11110010100000001000000010000000", instance.decodeAsString(bytes));
+        bytes = new byte[] { (byte) 0b11110000, (byte) 0b10111111, (byte) 0b10111111,
+                             (byte) 0b10111111 };
+        assertEquals("11110000101111111011111110111111", instance.decodeAsString(bytes));
 
         // test null
         try

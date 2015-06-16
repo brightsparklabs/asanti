@@ -60,7 +60,17 @@ public class BitStringDecoder extends AbstractBuiltinTypeDecoder<String>
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsBitString(
                 bytes);
         DecodeException.throwIfHasFailures(failures);
-        // TODO: ASN-107 implement
-        return null;
+
+        // loop through all bytes and append binary string
+        final StringBuilder bitStringBuilder = new StringBuilder();
+        for (final byte b : bytes)
+        {
+            // convert to unsigned byte while using Integer.toBinaryString method and pad with zeros
+            // to ensure 8 bits in length
+            bitStringBuilder.append(String.format("%8s", Integer.toBinaryString(b & 0xFF))
+                    .replace(' ', '0'));
+        }
+
+        return bitStringBuilder.toString();
     }
 }
