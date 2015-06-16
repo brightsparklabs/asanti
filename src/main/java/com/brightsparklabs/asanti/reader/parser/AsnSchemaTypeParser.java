@@ -2,7 +2,6 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypePlaceHolder;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.google.common.base.Strings;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,12 +58,8 @@ public class AsnSchemaTypeParser
             "^OCTET STRING ?(\\((.+)\\))?$");
 
     /** pattern to match a BIT STRING type definition */
-    /* TODO MJF - I don't understand why this is inclusive of DEFAULT?
     private static final Pattern PATTERN_TYPE_DEFINITION_BIT_STRING = Pattern.compile(
             "^BIT STRING ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
-*/
-    private static final Pattern PATTERN_TYPE_DEFINITION_BIT_STRING = Pattern.compile(
-            "^BIT STRING ?(\\{(.+?)\\})?$");
 
     /** pattern to match an IA5String type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_IA5_STRING = Pattern.compile(
@@ -183,26 +177,21 @@ public class AsnSchemaTypeParser
         matcher = PATTERN_TYPE_DEFINITION_UTF8_STRING.matcher(value);
         if (matcher.matches())
         {
-            return parseGeneric(matcher, AsnPrimitiveType.Utf8String);
+            return parseWithConstraints(matcher, AsnPrimitiveType.Utf8String);
         }
         // check if defining a PrintableString
         matcher = PATTERN_TAG_TYPE_PRINTABLE_STRING.matcher(value);
         if (matcher.matches())
         {
-            return parseGeneric(matcher, AsnPrimitiveType.PrintableString);
+            return parseWithConstraints(matcher, AsnPrimitiveType.PrintableString);
         }
         // check if defining an OctetString
         matcher = PATTERN_TYPE_DEFINITION_OCTET_STRING.matcher(value);
         if (matcher.matches())
         {
-            return parseGeneric(matcher, AsnPrimitiveType.OctetString);
+            return parseWithConstraints(matcher, AsnPrimitiveType.OctetString);
         }
-        // check if defining a BIT String
-        matcher = PATTERN_TYPE_DEFINITION_BIT_STRING.matcher(value);
-        if (matcher.matches())
-        {
-            return parseGeneric(matcher, AsnPrimitiveType.BitString);
-        }
+
 
 
 
@@ -210,7 +199,7 @@ public class AsnSchemaTypeParser
         matcher = PATTERN_TAG_TYPE_OBJECT_IDENTIFIER.matcher(value);
         if (matcher.matches())
         {
-            return parseGeneric(matcher, AsnPrimitiveType.Oid);
+            return parseWithConstraints(matcher, AsnPrimitiveType.Oid);
         }
 
 
@@ -219,13 +208,19 @@ public class AsnSchemaTypeParser
         matcher = PATTERN_TYPE_DEFINITION_INTEGER.matcher(value);
         if (matcher.matches())
         {
-            return parseInteger(matcher);
+            return parseWithDistinguishedValues(matcher, AsnPrimitiveType.Integer);
+        }
+        // check if defining a BIT String
+        matcher = PATTERN_TYPE_DEFINITION_BIT_STRING.matcher(value);
+        if (matcher.matches())
+        {
+            return parseWithDistinguishedValues(matcher, AsnPrimitiveType.BitString);
         }
 
         matcher = PATTERN_DEFINED_TYPE.matcher(value);
         if (matcher.matches())
         {
-            //return ImmutableList.<AsnSchemaTagType>of(parseInteger(name, matcher));
+            //return ImmutableList.<AsnSchemaTagType>of(parseWithDistinguishedValues(name, matcher));
             return parsePlaceHolder(matcher);
         }
 
@@ -256,7 +251,8 @@ public class AsnSchemaTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaType parseGeneric(Matcher matcher, AsnPrimitiveType primitiveType)
+    private static AsnSchemaType parseWithConstraints(Matcher matcher,
+            AsnPrimitiveType primitiveType)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
@@ -276,7 +272,7 @@ public class AsnSchemaTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeInteger parseInteger(Matcher matcher)
+    private static AsnSchemaTypeWithDistinguishedValues parseWithDistinguishedValues(Matcher matcher, AsnPrimitiveType primitiveType)
             throws ParseException
     {
         final String distinguishedValuesText = matcher.group(2);
@@ -285,14 +281,12 @@ public class AsnSchemaTypeParser
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        return new AsnSchemaTypeInteger(distinguishedValues, constraint);
+        return new AsnSchemaTypeWithDistinguishedValues(distinguishedValues, constraint, primitiveType);
     }
 
     /**
      * Parses a type that we don't know about
      *
-     * @param name
-     *         name of the defined type
      * @param matcher
      *         matcher which matched on {@link #PATTERN_DEFINED_TYPE}
      *

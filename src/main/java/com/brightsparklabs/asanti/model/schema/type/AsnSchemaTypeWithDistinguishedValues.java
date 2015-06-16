@@ -10,7 +10,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by Michael on 16/06/2015.
  */
-public class AsnSchemaTypeInteger extends AbstractAsnSchemaType
+public class AsnSchemaTypeWithDistinguishedValues extends AbstractAsnSchemaType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -42,10 +42,10 @@ public class AsnSchemaTypeInteger extends AbstractAsnSchemaType
      *             if {@code distinguishedValues} is {@code null}
      *
      */
-    public AsnSchemaTypeInteger(Iterable<AsnSchemaNamedTag> distinguishedValues,
-            AsnSchemaConstraint constraint)
+    public AsnSchemaTypeWithDistinguishedValues(Iterable<AsnSchemaNamedTag> distinguishedValues,
+            AsnSchemaConstraint constraint, AsnPrimitiveType primitiveType)
     {
-        super(AsnPrimitiveType.Integer, constraint);
+        super(primitiveType, constraint);
         checkNotNull(distinguishedValues);
 
         final ImmutableMap.Builder<String, AsnSchemaNamedTag> tagsToDistinguishedValuesBuilder = ImmutableMap.builder();
