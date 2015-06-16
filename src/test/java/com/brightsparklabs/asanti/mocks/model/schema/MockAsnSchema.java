@@ -7,7 +7,8 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 
 import static org.mockito.Mockito.*;
 
@@ -209,7 +210,7 @@ public class MockAsnSchema
         final DecodedTag decodedTag = mock(DecodedTag.class);
         when(decodedTag.getTag()).thenReturn(decodedTagPath);
         when(decodedTag.getRawTag()).thenReturn(rawTag);
-        when(decodedTag.getType()).thenReturn(AsnSchemaTypeDefinition.NULL);
+        when(decodedTag.getType()).thenReturn(AsnSchemaType.NULL);
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
         when(instance.getDecodedTag(rawTag, topLevelTypeName)).thenReturn(isFullyDecoded ?
                 OperationResult.createSuccessfulInstance(decodedTag) :

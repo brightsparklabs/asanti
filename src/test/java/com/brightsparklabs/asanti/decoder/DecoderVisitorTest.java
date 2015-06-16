@@ -33,7 +33,7 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionNullInstance()
     {
-        final AsnSchemaTypeDefinition.Null visitable = AsnSchemaTypeDefinition.NULL;
+        final OLDAsnSchemaTypeDefinition.Null visitable = OLDAsnSchemaTypeDefinition.NULL;
         final Object result = instance.visit(visitable);
         assertNotNull(result);
     }
@@ -41,7 +41,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionBitString()
     {
-        final AsnSchemaTypeDefinitionBitString visitable = new AsnSchemaTypeDefinitionBitString(
+        final OLDAsnSchemaTypeDefinitionBitString
+                visitable = new OLDAsnSchemaTypeDefinitionBitString(
                 "TEST_NAME",
                 AsnSchemaConstraint.NULL);
         final BitStringDecoder result = instance.visit(visitable);
@@ -51,7 +52,7 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionChoice()
     {
-        final AsnSchemaTypeDefinitionChoice visitable = new AsnSchemaTypeDefinitionChoice(
+        final OLDAsnSchemaTypeDefinitionChoice visitable = new OLDAsnSchemaTypeDefinitionChoice(
                 "TEST_NAME",
                 ImmutableList.<AsnSchemaComponentType>of(),
                 AsnSchemaConstraint.NULL);
@@ -62,7 +63,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionEnumerated()
     {
-        final AsnSchemaTypeDefinitionEnumerated visitable = new AsnSchemaTypeDefinitionEnumerated(
+        final OLDAsnSchemaTypeDefinitionEnumerated
+                visitable = new OLDAsnSchemaTypeDefinitionEnumerated(
                 "TEST_NAME",
                 ImmutableList.<AsnSchemaNamedTag>of());
         final Object result = instance.visit(visitable);
@@ -72,8 +74,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionGeneralizedTime()
     {
-        final AsnSchemaTypeDefinitionGeneralizedTime visitable
-                = new AsnSchemaTypeDefinitionGeneralizedTime("TEST_NAME", AsnSchemaConstraint.NULL);
+        final OLDAsnSchemaTypeDefinitionGeneralizedTime visitable
+                = new OLDAsnSchemaTypeDefinitionGeneralizedTime("TEST_NAME", AsnSchemaConstraint.NULL);
         final GeneralizedTimeDecoder result = instance.visit(visitable);
         assertNotNull(result);
     }
@@ -81,8 +83,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionGeneralString()
     {
-        final AsnSchemaTypeDefinitionGeneralString visitable
-                = new AsnSchemaTypeDefinitionGeneralString("TEST_NAME", AsnSchemaConstraint.NULL);
+        final OLDAsnSchemaTypeDefinitionGeneralString visitable
+                = new OLDAsnSchemaTypeDefinitionGeneralString("TEST_NAME", AsnSchemaConstraint.NULL);
         final GeneralStringDecoder result = instance.visit(visitable);
         assertNotNull(result);
     }
@@ -90,7 +92,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionIA5String()
     {
-        final AsnSchemaTypeDefinitionIa5String visitable = new AsnSchemaTypeDefinitionIa5String(
+        final OLDAsnSchemaTypeDefinitionIa5String
+                visitable = new OLDAsnSchemaTypeDefinitionIa5String(
                 "TEST_NAME",
                 AsnSchemaConstraint.NULL);
         final Ia5StringDecoder result = instance.visit(visitable);
@@ -100,7 +103,7 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionInteger()
     {
-        final AsnSchemaTypeDefinitionInteger visitable = new AsnSchemaTypeDefinitionInteger(
+        final OLDAsnSchemaTypeDefinitionInteger visitable = new OLDAsnSchemaTypeDefinitionInteger(
                 "TEST_NAME",
                 ImmutableList.<AsnSchemaNamedTag>of(),
                 AsnSchemaConstraint.NULL);
@@ -111,8 +114,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionNumericString()
     {
-        final AsnSchemaTypeDefinitionNumericString visitable
-                = new AsnSchemaTypeDefinitionNumericString("TEST_NAME", AsnSchemaConstraint.NULL);
+        final OLDAsnSchemaTypeDefinitionNumericString visitable
+                = new OLDAsnSchemaTypeDefinitionNumericString("TEST_NAME", AsnSchemaConstraint.NULL);
         final NumericStringDecoder result = instance.visit(visitable);
         assertNotNull(result);
     }
@@ -120,7 +123,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionOctetString()
     {
-        final AsnSchemaTypeDefinitionOctetString visitable = new AsnSchemaTypeDefinitionOctetString(
+        final OLDAsnSchemaTypeDefinitionOctetString
+                visitable = new OLDAsnSchemaTypeDefinitionOctetString(
                 "TEST_NAME",
                 AsnSchemaConstraint.NULL);
         final OctetStringDecoder result = instance.visit(visitable);
@@ -130,7 +134,7 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionSequence()
     {
-        final AsnSchemaTypeDefinitionSequence visitable = new AsnSchemaTypeDefinitionSequence(
+        final OLDAsnSchemaTypeDefinitionSequence visitable = new OLDAsnSchemaTypeDefinitionSequence(
                 "TEST_NAME",
                 ImmutableList.<AsnSchemaComponentType>of(),
                 AsnSchemaConstraint.NULL);
@@ -141,7 +145,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionSequenceOf()
     {
-        final AsnSchemaTypeDefinitionSequenceOf visitable = new AsnSchemaTypeDefinitionSequenceOf(
+        final OLDAsnSchemaTypeDefinitionSequenceOf
+                visitable = new OLDAsnSchemaTypeDefinitionSequenceOf(
                 "TEST_NAME",
                 "TEST_TYPE",
                 AsnSchemaConstraint.NULL);
@@ -152,7 +157,7 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionSet()
     {
-        final AsnSchemaTypeDefinitionSet visitable = new AsnSchemaTypeDefinitionSet("TEST_NAME",
+        final OLDAsnSchemaTypeDefinitionSet visitable = new OLDAsnSchemaTypeDefinitionSet("TEST_NAME",
                 ImmutableList.<AsnSchemaComponentType>of(),
                 AsnSchemaConstraint.NULL);
         final Object result = instance.visit(visitable);
@@ -162,7 +167,7 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionSetOf()
     {
-        final AsnSchemaTypeDefinitionSetOf visitable = new AsnSchemaTypeDefinitionSetOf("TEST_NAME",
+        final OLDAsnSchemaTypeDefinitionSetOf visitable = new OLDAsnSchemaTypeDefinitionSetOf("TEST_NAME",
                 "TEST_TYPE",
                 AsnSchemaConstraint.NULL);
         final Object result = instance.visit(visitable);
@@ -172,7 +177,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionUtf8String()
     {
-        final AsnSchemaTypeDefinitionUtf8String visitable = new AsnSchemaTypeDefinitionUtf8String(
+        final OLDAsnSchemaTypeDefinitionUtf8String
+                visitable = new OLDAsnSchemaTypeDefinitionUtf8String(
                 "TEST_NAME",
                 AsnSchemaConstraint.NULL);
         final Utf8StringDecoder result = instance.visit(visitable);
@@ -182,8 +188,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionVisibleString()
     {
-        final AsnSchemaTypeDefinitionVisibleString visitable
-                = new AsnSchemaTypeDefinitionVisibleString("TEST_NAME", AsnSchemaConstraint.NULL);
+        final OLDAsnSchemaTypeDefinitionVisibleString visitable
+                = new OLDAsnSchemaTypeDefinitionVisibleString("TEST_NAME", AsnSchemaConstraint.NULL);
         final VisibleStringDecoder result = instance.visit(visitable);
         assertNotNull(result);
     }

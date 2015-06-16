@@ -11,7 +11,8 @@ package com.brightsparklabs.asanti.mocks.model.data;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableSet;
 
 import static org.mockito.Mockito.*;
@@ -47,7 +48,7 @@ public class MockDecodedAsnData
      *         the ASN.1 Type Definition to return for all calls to {@link
      *         DecodedAsnData#getType(String)}
      */
-    public static Builder builder(AsnSchemaTypeDefinition type) throws Exception
+    public static Builder builder(AsnSchemaType type) throws Exception
     {
         return new Builder(type);
     }
@@ -81,13 +82,13 @@ public class MockDecodedAsnData
          *         the ASN.1 Type Definition to return for all calls of {@link
          *         DecodedAsnData#getType(String)}
          */
-        private Builder(AsnSchemaTypeDefinition type)
+        private Builder(AsnSchemaType type)
         {
             when(mockedInstance.getType(anyString())).thenReturn(type);
             when(mockedInstance.getBytes("/empty")).thenReturn(new byte[0]);
             when(mockedInstance.getType("/null")).thenReturn(type);
             when(mockedInstance.getBytes("/null")).thenReturn(null);
-            when(mockedInstance.getAllTypes(anyString())).thenReturn(ImmutableSet.<AsnSchemaTagType>of());
+            when(mockedInstance.getAllTypes(anyString())).thenReturn(ImmutableSet.<AsnSchemaType>of());
 
         }
 

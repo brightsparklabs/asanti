@@ -3,7 +3,7 @@ package com.brightsparklabs.asanti.model.schema.tagtype;
 import com.brightsparklabs.asanti.common.Visitable;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
 
 /**
@@ -48,7 +48,7 @@ public interface AsnSchemaTagType extends Visitable<AsnSchemaTagTypeVisitor<?>>
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractAsnSchemaTypeDefinition}.
+     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
@@ -61,7 +61,7 @@ public interface AsnSchemaTagType extends Visitable<AsnSchemaTagTypeVisitor<?>>
 
         /**
          * Default constructor. This is private. Use
-         * {@link AbstractAsnSchemaTypeDefinition#NULL} to obtain an instance.
+         * {@link AbstractOLDAsnSchemaTypeDefinition#NULL} to obtain an instance.
          */
         private Null()
         {

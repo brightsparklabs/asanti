@@ -8,7 +8,7 @@ package com.brightsparklabs.asanti.model.schema;
 import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
@@ -30,11 +30,12 @@ public class DecodedTag
     private final String rawTag;
 
     /** the type of construct represented by the tag */
-    //private final AsnSchemaTypeDefinition type;
-    private final AsnSchemaTagType type;
+    //private final OLDAsnSchemaTypeDefinition type;
+    //private final AsnSchemaTagType type;
+    private final AsnSchemaType type;
 
     /** the Type Definition chain that got to the end primitive type */
-    private final ImmutableSet<AsnSchemaTagType> allTypeDefinitions;
+    private final ImmutableSet<AsnSchemaType> allTypeDefinitions;
 
     /** whether the raw tag was completely decoded */
     private final boolean isFullyDecoded;
@@ -69,12 +70,12 @@ public class DecodedTag
      * @throws IllegalArgumentException
      *             if {@code decodedTag} or {@code rawTag} are blank
      */
-    //public DecodedTag(String decodedTag, String rawTag, AsnSchemaTypeDefinition type, boolean isFullyDecoded)
+    //public DecodedTag(String decodedTag, String rawTag, OLDAsnSchemaTypeDefinition type, boolean isFullyDecoded)
     //public DecodedTag(String decodedTag, String rawTag, AsnSchemaTagType type, boolean isFullyDecoded)
     public DecodedTag(String decodedTag,
                       String rawTag,
-                      AsnSchemaTagType type,
-                      ImmutableSet<AsnSchemaTagType> allTypeDefinitions,
+                      AsnSchemaType type,
+                      ImmutableSet<AsnSchemaType> allTypeDefinitions,
                       boolean isFullyDecoded)
     {
         this.tag = Strings.nullToEmpty(decodedTag)
@@ -120,8 +121,8 @@ public class DecodedTag
      * @return the type of construct represented by the tag
      */
 
-    //public AsnSchemaTypeDefinition getType()
-    public AsnSchemaTagType getType()
+    //public OLDAsnSchemaTypeDefinition getType()
+    public AsnSchemaType getType()
     {
         return type;
     }
@@ -131,7 +132,7 @@ public class DecodedTag
      *
      * @return the chain of Type Definitions that may have led to (@code type}
      */
-    public ImmutableSet<AsnSchemaTagType>  getAllTypes()
+    public ImmutableSet<AsnSchemaType>  getAllTypes()
     {
         return allTypeDefinitions;
     }

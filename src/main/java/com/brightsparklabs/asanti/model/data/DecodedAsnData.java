@@ -7,7 +7,9 @@ package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -134,11 +136,13 @@ public interface DecodedAsnData
      * @param tag
      *         tag to retrieve the type of
      *
-     * @return the ASN.1 Type Definition of the specified tag or {@link AsnSchemaTypeDefinition#NULL}
+     * @return the ASN.1 Type Definition of the specified tag or {@link OLDAsnSchemaTypeDefinition#NULL}
      * if the tag does not exist
      */
-    //public AsnSchemaTypeDefinition getType(String tag);
-    public AsnSchemaTagType getType(String tag);
+    //public OLDAsnSchemaTypeDefinition getType(String tag);
+    //public AsnSchemaTagType getType(String tag);
+    public AsnSchemaType getType(String tag);
+
 
 
     // TODO - MJF, is this the best way to get the chain??? - mostly this is so that we can process
@@ -153,7 +157,7 @@ public interface DecodedAsnData
      * @return the ASN.1 Type Definition chain of the specified tag or empty Set
      * if the tag does not exist
      */
-    public ImmutableSet<AsnSchemaTagType> getAllTypes(String tag);
+    public ImmutableSet<AsnSchemaType> getAllTypes(String tag);
 
     /**
      * Gets the data (bytes) associated with the specified tag as the decoded Java object most
@@ -256,15 +260,15 @@ public interface DecodedAsnData
         }
 
         @Override
-        public AsnSchemaTypeDefinition getType(String tag)
+        public AsnSchemaType getType(String tag)
         {
-            return AsnSchemaTypeDefinition.NULL;
+            return AsnSchemaType.NULL;
         }
 
         @Override
-        public ImmutableSet<AsnSchemaTagType> getAllTypes(String tag)
+        public ImmutableSet<AsnSchemaType> getAllTypes(String tag)
         {
-            return ImmutableSet.<AsnSchemaTagType>of();
+            return ImmutableSet.<AsnSchemaType>of();
         }
 
         @Override

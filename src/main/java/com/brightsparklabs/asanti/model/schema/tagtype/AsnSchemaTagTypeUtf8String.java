@@ -36,7 +36,7 @@ public class AsnSchemaTagTypeUtf8String extends AbstractAsnSchemaTagType
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // IMPLEMENTATION: OLDAsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
 
     @Override

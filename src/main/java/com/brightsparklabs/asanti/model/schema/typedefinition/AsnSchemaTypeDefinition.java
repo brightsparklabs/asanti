@@ -1,21 +1,15 @@
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 
 /**
- * A type definition from a within a module specification within an ASN.1
- * schema.
- *
- * @author brightSPARK Labs
+ * Created by Michael on 16/06/2015.
  */
-public interface AsnSchemaTypeDefinition extends AsnSchemaTagType
+public interface AsnSchemaTypeDefinition
 {
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -29,45 +23,27 @@ public interface AsnSchemaTypeDefinition extends AsnSchemaTagType
 
     /**
      * Returns the name of this type definition
-     *
      * @return the name of this type definition
      */
-    public String getName();
-
-
-    /**
-     * Returns the name of the specified tag
-     *
-     * @param tag
-     *            a tag within this construct
-     *
-     * @return name of the specified tag; or an empty string if tag is not
-     *         recognised.
-     */
-    public String getTagName(String tag);
+    String getName();
 
     /**
-     * Returns the name of the type definition associated with the specified tag
-     *
-     * @param tag
-     *            a tag within this construct
-     *
-     * @return name of the type definition associated with the specified tag; or
-     *         an empty string if tag is not recognised.
+     * Returns the AsnSchemaType of this type definition
+     * @return
      */
-    public String getTypeName(String tag);
+    AsnSchemaType getType();
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaTagType.Null
+    // INTERNAL CLASS: AsnSchemaTypeDefinition.Null
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractAsnSchemaTypeDefinition}.
+     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
      */
-    public static class Null extends AbstractAsnSchemaTypeDefinition
+    public static class Null extends AsnSchemaTypeDefinitionImpl
     {
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -75,33 +51,29 @@ public interface AsnSchemaTypeDefinition extends AsnSchemaTagType
 
         /**
          * Default constructor. This is private. Use
-         * {@link AbstractAsnSchemaTypeDefinition#NULL} to obtain an instance.
+         * {@link AbstractOLDAsnSchemaTypeDefinition#NULL} to obtain an instance.
          */
         private Null()
         {
-            super("NULL", AsnBuiltinType.Null, AsnSchemaConstraint.NULL);
+            super("NULL", AsnSchemaType.NULL);
         }
 
         // ---------------------------------------------------------------------
-        // IMPLEMENTATION: AsnSchemaTypeDefinition
+        // IMPLEMENTATION: OLDAsnSchemaTypeDefinition
         // ---------------------------------------------------------------------
-
         @Override
-        public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
-        {
-            return visitor.visit(this);
-        }
-
-        @Override
-        public String getTagName(String tag)
+        public String getName()
         {
             return "";
         }
 
         @Override
-        public String getTypeName(String tag)
+        public AsnSchemaType getType()
         {
-            return "";
+            return null;
         }
+
+
     }
+
 }

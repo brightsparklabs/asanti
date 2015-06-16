@@ -6,7 +6,11 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeUtf8String;
+import com.brightsparklabs.asanti.model.schema.type.AbstractAsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -138,7 +142,7 @@ public final class AsnSchemaTypeDefinitionParser
      *         the value of the defined type (i.e. the text on the right hand side of the {@code
      *         ::=})
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} objects representing the parsed
+     * @return an ImmutableList of {@link OLDAsnSchemaTypeDefinition} objects representing the parsed
      * type definitions
      *
      * @throws ParseException
@@ -162,42 +166,42 @@ public final class AsnSchemaTypeDefinitionParser
         Matcher matcher = PATTERN_TYPE_DEFINITION_SEQUENCE.matcher(value);
         if (matcher.matches())
         {
-            return parseSequence(name, matcher);
+            return parseConstructed(name, matcher, AsnPrimitiveType.Sequence);
         }
 
         // check if defining a SET
         matcher = PATTERN_TYPE_DEFINITION_SET.matcher(value);
         if (matcher.matches())
         {
-            return parseSet(name, matcher);
+            return parseConstructed(name, matcher, AsnPrimitiveType.Choice);
         }
 
         // check if defining a CHOICE
         matcher = PATTERN_TYPE_DEFINITION_CHOICE.matcher(value);
         if (matcher.matches())
         {
-            return parseChoice(name, matcher);
+            return parseConstructed(name, matcher, AsnPrimitiveType.Choice);
         }
-
+/*
         // check if defining an ENUMERATED
         matcher = PATTERN_TYPE_DEFINITION_ENUMERATED.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseEnumerated(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseEnumerated(name, matcher));
         }
 
         // check if defining an OCTET STRING
         matcher = PATTERN_TYPE_DEFINITION_OCTET_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseOctetString(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseOctetString(name, matcher));
         }
 
         // check if defining a BIT STRING
         matcher = PATTERN_TYPE_DEFINITION_BIT_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseBitString(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseBitString(name, matcher));
 
         }
 
@@ -205,59 +209,68 @@ public final class AsnSchemaTypeDefinitionParser
         matcher = PATTERN_TYPE_DEFINITION_IA5_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseIA5String(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseIA5String(name, matcher));
         }
 
         // check if defining a Utf8String
         matcher = PATTERN_TYPE_DEFINITION_UTF8_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseUTF8String(name, matcher));
+            return ImmutableList.<AsnSchemaTypeDefinition>of(parseGeneric(name, matcher, AsnPrimitiveType.Utf8String));
         }
 
         // check if defining a NumericString
         matcher = PATTERN_TYPE_DEFINITION_NUMERIC_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseNumericString(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseNumericString(name, matcher));
         }
 
         // check if defining a VisibleString
         matcher = PATTERN_TYPE_DEFINITION_VISIBLE_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseVisibleString(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseVisibleString(name, matcher));
         }
 
         // check if defining a GeneralString
         matcher = PATTERN_TYPE_DEFINITION_GENERAL_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseGeneralString(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseGeneralString(name, matcher));
         }
 
         // check if defining a GeneralizedTime
         matcher = PATTERN_TYPE_DEFINITION_GENERALIZED_TIME.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseGeneralizedTime(name));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseGeneralizedTime(name));
         }
-
+*/
+        /*
         // check if defining a Integer
         matcher = PATTERN_TYPE_DEFINITION_INTEGER.matcher(value);
         if (matcher.matches())
         {
             return ImmutableList.<AsnSchemaTypeDefinition>of(parseInteger(name, matcher));
         }
-
+*/
         // check if defining a PRIMITIVE
         matcher = PATTERN_TYPE_DEFINITION_PRIMITIVE.matcher(value);
         if (matcher.matches())
         {
+
+
+            AsnSchemaType type = AsnSchemaTypeParser.parse(value);
+
+            return ImmutableList.<AsnSchemaTypeDefinition>of(new AsnSchemaTypeDefinitionImpl(name, type));
+
+
             /*
              * TODO ASN-25 - handle all primitive types. Currently this is just
              * a catch-all to log warnings
              */
+/*
             final String builtinType = matcher.group(1);
             final String error = String.format(
                     "Cannot parse unsupported ASN.1 built-in type: %s for type: %s",
@@ -265,8 +278,9 @@ public final class AsnSchemaTypeDefinitionParser
                     name);
             logger.warn(error);
             return ImmutableList.<AsnSchemaTypeDefinition>of(AsnSchemaTypeDefinition.NULL);
+*/
         }
-
+/*
         // check if defining a SEQUENCE OF
         matcher = PATTERN_TYPE_DEFINITION_SEQUENCE_OF.matcher(value);
         if (matcher.matches())
@@ -287,9 +301,9 @@ public final class AsnSchemaTypeDefinitionParser
         {
             // TODO ASN-39 - handle CLASS
             logger.warn("Type Definitions for CLASS not yet supported");
-            return ImmutableList.<AsnSchemaTypeDefinition>of(AsnSchemaTypeDefinition.NULL);
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(OLDAsnSchemaTypeDefinition.NULL);
         }
-
+*/
         /* TODO - MJF. What happens if this is an indirection, eg:
          * PersonAge ::= ShortInt (0.200)
          * ShortInt ::= INTEGER (0.32768)
@@ -306,6 +320,45 @@ public final class AsnSchemaTypeDefinitionParser
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
 
+
+    /**
+     * Parses a Constructed type definition
+     *
+     * @param name
+     *         name of the defined type
+     * @param matcher
+     *         matcher which matched on eg {@link #PATTERN_TYPE_DEFINITION_SEQUENCE}
+     *
+     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+    private static ImmutableList<AsnSchemaTypeDefinition> parseConstructed(String name,
+            Matcher matcher, AsnPrimitiveType primitiveType) throws ParseException
+    {
+        final String componentTypesText = matcher.group(1);
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+
+        final ImmutableList<AsnSchemaComponentType> componentTypes
+                = AsnSchemaComponentTypeParser.parse(name, componentTypesText);
+
+        // parse any pseudo type definitions from returned component types
+        final List<AsnSchemaTypeDefinition> parsedTypes = parsePseudoTypes(componentTypes);
+
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+
+        final AsnSchemaTypeConstructed type = new AsnSchemaTypeConstructed(primitiveType, componentTypes, constraint);
+
+        final AsnSchemaTypeDefinitionImpl typeDefinition = new AsnSchemaTypeDefinitionImpl(name, type);
+
+        parsedTypes.add(typeDefinition);
+
+        return ImmutableList.copyOf(parsedTypes);
+    }
+
+
+
     /**
      * Parses a SEQUENCE type definition
      *
@@ -314,7 +367,7 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_SEQUENCE}
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an ImmutableList of {@link OLDAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
@@ -332,10 +385,11 @@ public final class AsnSchemaTypeDefinitionParser
         final List<AsnSchemaTypeDefinition> parsedTypes = parsePseudoTypes(componentTypes);
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        final AsnSchemaTypeDefinitionSequence typeDefinition = new AsnSchemaTypeDefinitionSequence(
-                name,
-                componentTypes,
-                constraint);
+
+        final AsnSchemaTypeConstructed type = new AsnSchemaTypeConstructed(AsnPrimitiveType.Sequence, componentTypes, constraint);
+
+        final AsnSchemaTypeDefinitionImpl typeDefinition = new AsnSchemaTypeDefinitionImpl(name, type);
+
         parsedTypes.add(typeDefinition);
 
         return ImmutableList.copyOf(parsedTypes);
@@ -349,11 +403,11 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_SET}
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an ImmutableList of {@link OLDAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
+     *//*
     private static ImmutableList<AsnSchemaTypeDefinition> parseSet(String name, Matcher matcher)
             throws ParseException
     {
@@ -367,13 +421,14 @@ public final class AsnSchemaTypeDefinitionParser
         final List<AsnSchemaTypeDefinition> parsedTypes = parsePseudoTypes(componentTypes);
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        final AsnSchemaTypeDefinitionSet typeDefinition = new AsnSchemaTypeDefinitionSet(name,
-                componentTypes,
-                constraint);
+
+        final AsnSchemaTypeConstructed type = new AsnSchemaTypeConstructed(AsnPrimitiveType.Sequence, componentTypes, constraint);
+
+        final AsnSchemaTypeDefinitionImpl typeDefinition = new AsnSchemaTypeDefinitionImpl(name, type);
         parsedTypes.add(typeDefinition);
 
         return ImmutableList.copyOf(parsedTypes);
-    }
+    }*/
 
     /**
      * Parses a CHOICE type definition
@@ -383,11 +438,11 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_CHOICE}
      *
-     * @return an {@link AsnSchemaTypeDefinitionChoice} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionChoice} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
+     *//*
     private static ImmutableList<AsnSchemaTypeDefinition> parseChoice(String name, Matcher matcher)
             throws ParseException
     {
@@ -401,13 +456,14 @@ public final class AsnSchemaTypeDefinitionParser
         final List<AsnSchemaTypeDefinition> parsedTypes = parsePseudoTypes(componentTypes);
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        final AsnSchemaTypeDefinitionChoice typeDefinition = new AsnSchemaTypeDefinitionChoice(name,
+        final OLDAsnSchemaTypeDefinitionChoice
+                typeDefinition = new OLDAsnSchemaTypeDefinitionChoice(name,
                 componentTypes,
                 constraint);
         parsedTypes.add(typeDefinition);
 
         return ImmutableList.copyOf(parsedTypes);
-    }
+    }*/
 
     /**
      * Parses an ENUMERATED type definition
@@ -417,19 +473,20 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_ENUMERATED}
      *
-     * @return an {@link AsnSchemaTypeDefinitionEnumerated} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionEnumerated} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionEnumerated parseEnumerated(String name, Matcher matcher)
+    /*
+    private static AsnSchemaTypeDefinition parseEnumerated(String name, Matcher matcher)
             throws ParseException
     {
         final String enumeratedOptionsText = matcher.group(1);
         final ImmutableList<AsnSchemaNamedTag> enumeratedOptions
                 = AsnSchemaNamedTagParser.parseEnumeratedOptions(enumeratedOptionsText);
-        return new AsnSchemaTypeDefinitionEnumerated(name, enumeratedOptions);
-    }
+        return new OLDAsnSchemaTypeDefinitionEnumerated(name, enumeratedOptions);
+    }*/
 
     /**
      * Parses an OCTET STRING type definition
@@ -439,18 +496,18 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_OCTET_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionOctetString} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionOctetString} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static AsnSchemaTypeDefinitionOctetString parseOctetString(String name, Matcher matcher)
+     *//*
+    private static AsnSchemaTypeDefinition parseOctetString(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionOctetString(name, constraint);
-    }
+        return new OLDAsnSchemaTypeDefinitionOctetString(name, constraint);
+    }*/
 
     /**
      * Parses a BIT STRING type definition
@@ -460,19 +517,19 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_BIT_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionBitString} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionBitString} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static AsnSchemaTypeDefinitionBitString parseBitString(String name, Matcher matcher)
+     *//*
+    private static AsnSchemaTypeDefinition parseBitString(String name, Matcher matcher)
             throws ParseException
     {
         // TODO ASN-87 - parse list of named bits
         final String constraintText = Strings.nullToEmpty(matcher.group(6));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionBitString(name, constraint);
-    }
+        return new OLDAsnSchemaTypeDefinitionBitString(name, constraint);
+    }*/
 
     /**
      * Parses an Ia5String type definition
@@ -482,18 +539,18 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_IA5_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionIa5String} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionIa5String} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static AsnSchemaTypeDefinitionIa5String parseIA5String(String name, Matcher matcher)
+     *//*
+    private static AsnSchemaTypeDefinition parseIA5String(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionIa5String(name, constraint);
-    }
+        return new OLDAsnSchemaTypeDefinitionIa5String(name, constraint);
+    }*/
 
     /**
      * Parses a Utf8String type definition
@@ -503,18 +560,32 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_UTF8_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionUtf8String} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionUtf8String} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeDefinitionUtf8String parseUTF8String(String name, Matcher matcher)
+    private static AsnSchemaTypeDefinition parseUTF8String(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionUtf8String(name, constraint);
+
+        final AbstractAsnSchemaType type = new AbstractAsnSchemaType(AsnPrimitiveType.Utf8String, constraint);
+        return new AsnSchemaTypeDefinitionImpl(name, type);
     }
+
+
+    private static AsnSchemaTypeDefinition parseGeneric(String name, Matcher matcher, AsnPrimitiveType primitiveType)
+            throws ParseException
+    {
+        final String constraintText = Strings.nullToEmpty(matcher.group(2));
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+
+        final AsnSchemaType type = new AbstractAsnSchemaType(primitiveType, constraint);
+        return new AsnSchemaTypeDefinitionImpl(name, type);
+    }
+
 
     /**
      * Parses a NumericString type definition
@@ -524,18 +595,18 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_NUMERIC_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionNumericString} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionNumericString} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static AsnSchemaTypeDefinitionNumericString parseNumericString(String name,
+     *//*
+    private static OLDAsnSchemaTypeDefinitionNumericString parseNumericString(String name,
             Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionNumericString(name, constraint);
-    }
+        return new OLDAsnSchemaTypeDefinitionNumericString(name, constraint);
+    }*/
 
     /**
      * Parses a VisibleString type definition
@@ -545,18 +616,18 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_VISIBLE_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionVisibleString} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionVisibleString} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static AsnSchemaTypeDefinitionVisibleString parseVisibleString(String name,
+     *//*
+    private static OLDAsnSchemaTypeDefinitionVisibleString parseVisibleString(String name,
             Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionVisibleString(name, constraint);
-    }
+        return new OLDAsnSchemaTypeDefinitionVisibleString(name, constraint);
+    }*/
 
     /**
      * Parses a General type definition
@@ -566,18 +637,18 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_GENERAL_STRING}
      *
-     * @return an {@link AsnSchemaTypeDefinitionGeneralString} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionGeneralString} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static AsnSchemaTypeDefinitionGeneralString parseGeneralString(String name,
+     *//*
+    private static OLDAsnSchemaTypeDefinitionGeneralString parseGeneralString(String name,
             Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionGeneralString(name, constraint);
-    }
+        return new OLDAsnSchemaTypeDefinitionGeneralString(name, constraint);
+    }*/
 
     /**
      * Parses a GeneralizedTime type definition
@@ -585,42 +656,20 @@ public final class AsnSchemaTypeDefinitionParser
      * @param name
      *         name of the defined type
      *
-     * @return an {@link AsnSchemaTypeDefinitionGeneralizedTime} representing the parsed data
+     * @return an {@link OLDAsnSchemaTypeDefinitionGeneralizedTime} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static AsnSchemaTypeDefinitionGeneralizedTime parseGeneralizedTime(String name)
+     *//*
+    private static OLDAsnSchemaTypeDefinitionGeneralizedTime parseGeneralizedTime(String name)
             throws ParseException
     {
         // sub-type constraints are not applicable to GeneralizedTime.
         final AsnSchemaConstraint constraint = AsnSchemaConstraint.NULL;
-        return new AsnSchemaTypeDefinitionGeneralizedTime(name, constraint);
-    }
+        return new OLDAsnSchemaTypeDefinitionGeneralizedTime(name, constraint);
+    }*/
 
-    /**
-     * Parses an Integer type definition
-     *
-     * @param name
-     *         name of the defined type
-     * @param matcher
-     *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_INTEGER}
-     *
-     * @return an {@link AsnSchemaTypeDefinitionInteger} representing the parsed data
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the type
-     */
-    private static AsnSchemaTypeDefinitionInteger parseInteger(String name, Matcher matcher)
-            throws ParseException
-    {
-        final String distinguishedValuesText = matcher.group(2);
-        final ImmutableList<AsnSchemaNamedTag> distinguishedValues
-                = AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesText);
-        final String constraintText = Strings.nullToEmpty(matcher.group(3));
-        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        return new AsnSchemaTypeDefinitionInteger(name, distinguishedValues, constraint);
-    }
+
 
     /**
      * Parses a SEQUENCE OF type definition
@@ -630,18 +679,18 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_SEQUENCE_OF}
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an ImmutableList of {@link OLDAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static ImmutableList<AsnSchemaTypeDefinition> parseSequenceOf(String name,
+     *//*
+    private static ImmutableList<OLDAsnSchemaTypeDefinition> parseSequenceOf(String name,
             Matcher matcher) throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(1));
         String elementTypeName = matcher.group(3);
 
-        final List<AsnSchemaTypeDefinition> typeDefinitions = Lists.newArrayList();
+        final List<OLDAsnSchemaTypeDefinition> typeDefinitions = Lists.newArrayList();
 
         // check if this is a SEQUENCE OF SEQUENCE/SET and create an explicit type definition
         // for the inner SEQUENCE or SET
@@ -651,12 +700,12 @@ public final class AsnSchemaTypeDefinitionParser
         }
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        typeDefinitions.add(new AsnSchemaTypeDefinitionSequenceOf(name,
+        typeDefinitions.add(new OLDAsnSchemaTypeDefinitionSequenceOf(name,
                 elementTypeName,
                 constraint));
 
         return ImmutableList.copyOf(typeDefinitions);
-    }
+    }*/
 
     /**
      * Parses a SET OF type definition
@@ -666,18 +715,18 @@ public final class AsnSchemaTypeDefinitionParser
      * @param matcher
      *         matcher which matched on {@link #PATTERN_TYPE_DEFINITION_SET_OF}
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed data
+     * @return an ImmutableList of {@link OLDAsnSchemaTypeDefinition} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static ImmutableList<AsnSchemaTypeDefinition> parseSetOf(String name, Matcher matcher)
+     *//*
+    private static ImmutableList<OLDAsnSchemaTypeDefinition> parseSetOf(String name, Matcher matcher)
             throws ParseException
     {
         final String constraintText = Strings.nullToEmpty(matcher.group(1));
         String elementTypeName = matcher.group(3);
 
-        final List<AsnSchemaTypeDefinition> typeDefinitions = Lists.newArrayList();
+        final List<OLDAsnSchemaTypeDefinition> typeDefinitions = Lists.newArrayList();
 
         // check if this is a SET OF SEQUENCE/SET and create an explicit type definition
         // for the inner SEQUENCE or SET
@@ -687,10 +736,10 @@ public final class AsnSchemaTypeDefinitionParser
         }
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-        typeDefinitions.add(new AsnSchemaTypeDefinitionSetOf(name, elementTypeName, constraint));
+        typeDefinitions.add(new OLDAsnSchemaTypeDefinitionSetOf(name, elementTypeName, constraint));
 
         return ImmutableList.copyOf(typeDefinitions);
-    }
+    }*/
 
     /**
      * Parses pseudo type definitions found in the supplied list of {@link AsnSchemaComponentType}.
@@ -700,7 +749,7 @@ public final class AsnSchemaTypeDefinitionParser
      * @param componentTypes
      *         list of component types to parse
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} representing the parsed pseudo
+     * @return an ImmutableList of {@link OLDAsnSchemaTypeDefinition} representing the parsed pseudo
      * type definitions
      *
      * @throws ParseException
@@ -732,7 +781,7 @@ public final class AsnSchemaTypeDefinitionParser
      * <p>Refer to {@code /docs/design/schema_parsing.md} for details of the design.
      *
      * @param types
-     *         list of {@link AsnSchemaTypeDefinition} to to which parsed type definitions will be
+     *         list of {@link OLDAsnSchemaTypeDefinition} to to which parsed type definitions will be
      *         added to
      * @param typeDefinitionText
      *         the type definition text of the SEQUENCE or SET
@@ -743,8 +792,8 @@ public final class AsnSchemaTypeDefinitionParser
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
-     */
-    private static String parseInnerSetOrSequence(List<AsnSchemaTypeDefinition> types,
+     *//*
+    private static String parseInnerSetOrSequence(List<OLDAsnSchemaTypeDefinition> types,
             String typeDefinitionText, String containingTypeName) throws ParseException
     {
         final String typeName;
@@ -764,5 +813,5 @@ public final class AsnSchemaTypeDefinitionParser
 
         types.addAll(parse(typeName, typeDefinitionText));
         return typeName;
-    }
+    }*/
 }

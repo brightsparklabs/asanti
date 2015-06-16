@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentTypeGenerated;
 import com.google.common.collect.ImmutableList;
@@ -222,7 +223,8 @@ public class AsnSchemaComponentTypeParser
             if (matcher.matches())
             {
                 // TODO MJF -
-                final AsnSchemaTagType tagType = AnsSchemaTagTypeParser.parse(tagName, rawType);
+                //final AsnSchemaTagType tagType = AnsSchemaTagTypeParser.parse(tagName, rawType);
+                final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType);
 
                 String typeName = matcher.group(7);
                 // TODO MJF - figure out the regex so we don't need to trim...

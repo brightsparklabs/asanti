@@ -8,7 +8,7 @@ import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -49,10 +49,16 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
 
         {
             // validate against the tag's constraint
-            //final AsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
-            final AsnSchemaTagType type = decodedAsnData.getType(tag);
-            final AsnSchemaConstraint constraint = type.getConstraint();
-            final ImmutableSet<SchemaConstraintValidationFailure> constraintFailures = constraint.apply(bytes);
+            //final OLDAsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
+            final AsnSchemaType type = decodedAsnData.getType(tag);
+            final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
+            //final ImmutableSet<SchemaConstraintValidationFailure> constraintFailures;
+            Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
+            for(AsnSchemaConstraint constraint : constraints)
+            {
+                // TODO MJF - how to add the constrain failures?
+                constraintFailures.addAll(constraint.apply(bytes));
+            }
             for (SchemaConstraintValidationFailure constraintFailure : constraintFailures)
             {
                 final DecodedTagValidationFailure tagFailure = new DecodedTagValidationFailure(tag,
@@ -62,7 +68,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
             }
         }
 
-
+/*
         // TODO MJF - validate against any Type Def chain that got to the end tag.
         final ImmutableSet<AsnSchemaTagType> allTypeDefs = decodedAsnData.getAllTypes(tag);
         for(AsnSchemaTagType type : allTypeDefs)
@@ -79,7 +85,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
             }
 
         }
-
+*/
 
         return ImmutableSet.copyOf(tagFailures);
     }

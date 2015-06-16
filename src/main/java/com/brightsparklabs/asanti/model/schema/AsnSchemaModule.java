@@ -10,6 +10,7 @@ import static com.google.common.base.Preconditions.*;
 import java.util.Map;
 
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -111,7 +112,7 @@ public class AsnSchemaModule
      *            name of the type. E.g. {@code "Document"}
      *
      * @return the type definition associated with the specified type name or
-     *         {@link AsnSchemaTypeDefinition#NULL} if no type definition is
+     *         {@link OLDAsnSchemaTypeDefinition#NULL} if no type definition is
      *         found
      */
     public AsnSchemaTypeDefinition getType(String typeName)

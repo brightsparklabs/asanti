@@ -85,7 +85,7 @@ public final class AnsSchemaTagTypeParser
     private static final Pattern PATTERN_TYPE_DEFINITION_GENERAL_STRING = Pattern.compile(
             "^GeneralString ?(\\((.+)\\))?$");
 
-    /** pattern to match a GeneralString type definition */
+    /** pattern to match a PrintableString type definition */
     private static final Pattern PATTERN_TAG_TYPE_PRINTABLE_STRING = Pattern.compile(
             "^PrintableString ?(\\((.+)\\))?$");
 
@@ -183,7 +183,7 @@ public final class AnsSchemaTagTypeParser
      *         the value of the defined type (i.e. the text on the right hand side of the {@code
      *         ::=})
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} objects representing the parsed
+     * @return an ImmutableList of {@link OLDAsnSchemaTypeDefinition} objects representing the parsed
      * type definitions
      *
      * @throws ParseException
@@ -230,7 +230,7 @@ public final class AnsSchemaTagTypeParser
         matcher = PATTERN_TYPE_DEFINITION_ENUMERATED.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseEnumerated(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseEnumerated(name, matcher));
         }
 */
         // check if defining an OCTET STRING
@@ -252,7 +252,7 @@ public final class AnsSchemaTagTypeParser
         matcher = PATTERN_TYPE_DEFINITION_IA5_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseIA5String(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseIA5String(name, matcher));
         }
 
 */
@@ -267,21 +267,21 @@ public final class AnsSchemaTagTypeParser
         matcher = PATTERN_TYPE_DEFINITION_NUMERIC_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseNumericString(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseNumericString(name, matcher));
         }
 
         // check if defining a VisibleString
         matcher = PATTERN_TYPE_DEFINITION_VISIBLE_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseVisibleString(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseVisibleString(name, matcher));
         }
 
         // check if defining a GeneralString
         matcher = PATTERN_TYPE_DEFINITION_GENERAL_STRING.matcher(value);
         if (matcher.matches())
         {
-            return ImmutableList.<AsnSchemaTypeDefinition>of(parseGeneralString(name, matcher));
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(parseGeneralString(name, matcher));
         }
 */
         // check if defining a PrintableString
@@ -327,7 +327,7 @@ public final class AnsSchemaTagTypeParser
         {
             // TODO ASN-39 - handle CLASS
             logger.warn("Type Definitions for CLASS not yet supported");
-            return ImmutableList.<AsnSchemaTypeDefinition>of(AsnSchemaTypeDefinition.NULL);
+            return ImmutableList.<OLDAsnSchemaTypeDefinition>of(OLDAsnSchemaTypeDefinition.NULL);
         }
 */
 

@@ -62,7 +62,7 @@ public class AsnSchemaTagTypeInteger extends AbstractAsnSchemaTagType
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // IMPLEMENTATION: OLDAsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
 /* TODO MJF - do we need this?  I assume that a Component that is an Integer can have distinguished
           values?

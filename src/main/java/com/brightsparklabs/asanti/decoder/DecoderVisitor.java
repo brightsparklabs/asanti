@@ -11,11 +11,13 @@
 package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
+import com.brightsparklabs.asanti.model.schema.primitive.*;
 import com.brightsparklabs.asanti.model.schema.tagtype.*;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
- * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the most appropriate
+ * Visitor that visits {@link OLDAsnSchemaTypeDefinition} objects and returns the most appropriate
  * {@link BuiltinTypeDecoder} pertaining to it.
  *
  * @author brightSPARK Labs
@@ -27,10 +29,10 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     // -------------------------------------------------------------------------
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinition.Null visitable)
+    public BuiltinTypeDecoder.Null visit(final OLDAsnSchemaTypeDefinition.Null visitable)
     {
         return new BuiltinTypeDecoder.Null(
-                "null instances of AsnSchemaTypeDefinition cannot be decoded");
+                "null instances of OLDAsnSchemaTypeDefinition cannot be decoded");
     }
 
     @Override
@@ -39,9 +41,15 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
         return new BuiltinTypeDecoder.Null(
                 "null instances of AsnSchemaTagType cannot be decoded");
     }
+    @Override
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveType.Null visitable)
+    {
+        return new BuiltinTypeDecoder.Null(
+                "null instances of AsnSchemaTagType cannot be decoded");
+    }
 
     @Override
-    public BitStringDecoder visit(final AsnSchemaTypeDefinitionBitString visitable)
+    public BitStringDecoder visit(final OLDAsnSchemaTypeDefinitionBitString visitable)
     {
         return BitStringDecoder.getInstance();
     }
@@ -53,19 +61,31 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionChoice visitable)
+    public BitStringDecoder visit(final AsnPrimitiveTypeBitString visitable)
+    {
+        return BitStringDecoder.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeDecoder.Null visit(final OLDAsnSchemaTypeDefinitionChoice visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 CHOICE types cannot be decoded");
     }
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionEnumerated visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeChoice visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 CHOICE types cannot be decoded");
+    }
+
+    @Override
+    public BuiltinTypeDecoder.Null visit(final OLDAsnSchemaTypeDefinitionEnumerated visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 ENUMERATED types cannot be decoded");
     }
 
     @Override
-    public GeneralizedTimeDecoder visit(final AsnSchemaTypeDefinitionGeneralizedTime visitable)
+    public GeneralizedTimeDecoder visit(final OLDAsnSchemaTypeDefinitionGeneralizedTime visitable)
     {
         return GeneralizedTimeDecoder.getInstance();
     }
@@ -77,9 +97,21 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
-    public GeneralStringDecoder visit(final AsnSchemaTypeDefinitionGeneralString visitable)
+    public GeneralizedTimeDecoder visit(final AsnPrimitiveTypeGeneralizedTime visitable)
+    {
+        return GeneralizedTimeDecoder.getInstance();
+    }
+
+    @Override
+    public GeneralStringDecoder visit(final OLDAsnSchemaTypeDefinitionGeneralString visitable)
     {
         return GeneralStringDecoder.getInstance();
+    }
+
+    @Override
+    public PrintableStringDecoder visit(final AsnPrimitiveTypePrintableString visitable)
+    {
+        return PrintableStringDecoder.getInstance();
     }
 
     @Override
@@ -89,29 +121,35 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
-    public Ia5StringDecoder visit(final AsnSchemaTypeDefinitionIa5String visitable)
+    public Ia5StringDecoder visit(final OLDAsnSchemaTypeDefinitionIa5String visitable)
     {
         return Ia5StringDecoder.getInstance();
     }
 
     @Override
-    public IntegerDecoder visit(final AsnSchemaTypeDefinitionInteger visitable)
+    public IntegerDecoder visit(final OLDAsnSchemaTypeDefinitionInteger visitable)
     {
         return IntegerDecoder.getInstance();
     }
+    @Override
     public IntegerDecoder visit(AsnSchemaTagTypeInteger visitable)
+    {
+        return IntegerDecoder.getInstance();
+    }
+    @Override
+    public IntegerDecoder visit(AsnPrimitiveTypeInteger visitable)
     {
         return IntegerDecoder.getInstance();
     }
 
     @Override
-    public NumericStringDecoder visit(final AsnSchemaTypeDefinitionNumericString visitable)
+    public NumericStringDecoder visit(final OLDAsnSchemaTypeDefinitionNumericString visitable)
     {
         return NumericStringDecoder.getInstance();
     }
 
     @Override
-    public OctetStringDecoder visit(final AsnSchemaTypeDefinitionOctetString visitable)
+    public OctetStringDecoder visit(final OLDAsnSchemaTypeDefinitionOctetString visitable)
     {
         return OctetStringDecoder.getInstance();
     }
@@ -120,9 +158,14 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     {
         return OctetStringDecoder.getInstance();
     }
+    @Override
+    public OctetStringDecoder visit(final AsnPrimitiveTypeOctetString visitable)
+    {
+        return OctetStringDecoder.getInstance();
+    }
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSequence visitable)
+    public BuiltinTypeDecoder.Null visit(final OLDAsnSchemaTypeDefinitionSequence visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE types cannot be decoded");
     }
@@ -131,9 +174,14 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE types cannot be decoded");
     }
+    @Override
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeSequence visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE types cannot be decoded");
+    }
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSequenceOf visitable)
+    public BuiltinTypeDecoder.Null visit(final OLDAsnSchemaTypeDefinitionSequenceOf visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE OF types cannot be decoded");
     }
@@ -142,15 +190,26 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE OF types cannot be decoded");
     }
+    @Override
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeSequenceOf visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE OF types cannot be decoded");
+    }
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSet visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeSet visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SET types cannot be decoded");
     }
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnSchemaTypeDefinitionSetOf visitable)
+    public BuiltinTypeDecoder.Null visit(final OLDAsnSchemaTypeDefinitionSet visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 SET types cannot be decoded");
+    }
+
+    @Override
+    public BuiltinTypeDecoder.Null visit(final OLDAsnSchemaTypeDefinitionSetOf visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SET OF types cannot be decoded");
     }
@@ -159,9 +218,14 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SET OF types cannot be decoded");
     }
+    @Override
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeSetOf visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 SET OF types cannot be decoded");
+    }
 
     @Override
-    public Utf8StringDecoder visit(final AsnSchemaTypeDefinitionUtf8String visitable)
+    public Utf8StringDecoder visit(final OLDAsnSchemaTypeDefinitionUtf8String visitable)
     {
         return Utf8StringDecoder.getInstance();
     }
@@ -170,9 +234,14 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     {
         return Utf8StringDecoder.getInstance();
     }
+    @Override
+    public Utf8StringDecoder visit(final AsnPrimitiveTypeUtf8String visitable)
+    {
+        return Utf8StringDecoder.getInstance();
+    }
 
     @Override
-    public VisibleStringDecoder visit(final AsnSchemaTypeDefinitionVisibleString visitable)
+    public VisibleStringDecoder visit(final OLDAsnSchemaTypeDefinitionVisibleString visitable)
     {
         return VisibleStringDecoder.getInstance();
     }
@@ -182,4 +251,11 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     {
         return OidDecoder.getInstance();
     }
+
+    @Override
+    public OidDecoder visit(final AsnPrimitiveTypeOid visitable)
+    {
+        return OidDecoder.getInstance();
+    }
+
 }

@@ -6,12 +6,12 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 
 /**
  * Unit tests for {@link AsnSchemaModule}
@@ -112,15 +112,15 @@ public class AsnSchemaModuleTest
         assertEquals("Paragraph", instance.getType("Paragraph")
                 .getName());
         // test imports
-        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("People"));
-        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("Person"));
+        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType("People"));
+        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType("Person"));
         // test unknown
-        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("NON_EXISTING_TYPE"));
+        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType("NON_EXISTING_TYPE"));
         // test blank
-        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(""));
-        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(" "));
+        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType(""));
+        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType(" "));
         // test null
-        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(null));
+        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType(null));
     }
 
     @Test

@@ -18,12 +18,12 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactNumericV
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.base.Strings;
 
 /**
- * Logic for parsing Constraints from an {@link AbstractAsnSchemaTypeDefinition} or
+ * Logic for parsing Constraints from an {@link AbstractOLDAsnSchemaTypeDefinition} or
  * {@link AsnSchemaComponentType}
  *
  * @author brightSPARK Labs
@@ -64,7 +64,7 @@ public class AsnSchemaConstraintParser
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the constraint from an {@link AbstractAsnSchemaTypeDefinition} or
+     * Parses the constraint from an {@link AbstractOLDAsnSchemaTypeDefinition} or
      * {@link AsnSchemaComponentType}
      *
      * @param constraintText

@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -116,11 +116,13 @@ public class MockAsnSchemaModule
         moduleBuilder.setName("Document-PDU")
                 .addImport("People", "People-Protocol")
                 .addImport("Person", "People-Protocol");
-        final ImmutableList<AbstractAsnSchemaTypeDefinition> typeDefinitions
+        final ImmutableList<AbstractOLDAsnSchemaTypeDefinition> typeDefinitions
                 = MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForDocumentPdu();
-        for (final AbstractAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
+        for (final AbstractOLDAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
         {
+            /* TODO MJF
             moduleBuilder.addType(typeDefinition);
+            */
         }
         return moduleBuilder.build();
     }
@@ -135,11 +137,13 @@ public class MockAsnSchemaModule
     {
         final Builder moduleBuilder = AsnSchemaModule.builder();
         moduleBuilder.setName("People-Protocol");
-        final ImmutableList<AbstractAsnSchemaTypeDefinition> typeDefinitions
+        final ImmutableList<AbstractOLDAsnSchemaTypeDefinition> typeDefinitions
                 = MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForPeopleProtocol();
-        for (final AbstractAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
+        for (final AbstractOLDAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
         {
+            /* TODO MJF
             moduleBuilder.addType(typeDefinition);
+            */
         }
         return moduleBuilder.build();
     }

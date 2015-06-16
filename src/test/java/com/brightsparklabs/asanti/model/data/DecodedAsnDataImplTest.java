@@ -381,7 +381,7 @@ public class DecodedAsnDataImplTest
     {
         /*
          * TODO ASN-89 - until implemented the below always return
-         * AsnSchemaTypeDefinition.NULL
+         * OLDAsnSchemaTypeDefinition.NULL
          *
          * assertEquals(AsnBuiltinType.GeneralizedTime,
          * instance.getType("/Document/header/published/date"
@@ -399,22 +399,22 @@ public class DecodedAsnDataImplTest
 
         // test unmapped tags
         assertEquals(AsnBuiltinType.Null,
-                instance.getType("/Document/body/content/99").getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/99/1/1").getBuiltinType());
+                instance.getType("/Document/body/content/99").getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/99/1/1").getPrimitiveType().getBuiltinType());
 
         // test raw tags
-        assertEquals(AsnBuiltinType.Null, instance.getType("/2/2/99").getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/99/1/1").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/2/2/99").getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/99/1/1").getPrimitiveType().getBuiltinType());
 
         // test unknown tags
-        assertEquals(AsnBuiltinType.Null, instance.getType("").getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/0/0/0").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("").getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/0/0/0").getPrimitiveType().getBuiltinType());
 
-        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("").getPrimitiveType().getBuiltinType());
         assertEquals(AsnBuiltinType.Null,
-                emptyInstance.getType("/Document/0/0/0").getBuiltinType());
+                emptyInstance.getType("/Document/0/0/0").getPrimitiveType().getBuiltinType());
         assertEquals(AsnBuiltinType.Null,
-                emptyInstance.getType("/Document/header/published/date").getBuiltinType());
+                emptyInstance.getType("/Document/header/published/date").getPrimitiveType().getBuiltinType());
     }
 
     @Test

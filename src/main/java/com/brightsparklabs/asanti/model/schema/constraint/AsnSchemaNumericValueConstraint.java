@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.*;
 
 /**
  * Models a minimum/maximum value 'bounded' numeric value constraint from within a {@link
- * AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g. {@code INTEGER (0 ..
+ * AbstractOLDAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g. {@code INTEGER (0 ..
  * 256)}.
  *
  * @author brightSPARK Labs

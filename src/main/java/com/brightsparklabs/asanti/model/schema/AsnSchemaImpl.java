@@ -8,10 +8,12 @@ package com.brightsparklabs.asanti.model.schema;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypePlaceHolder;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionCollectionOf;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionConstructed;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePlaceholder;
+import com.brightsparklabs.asanti.model.schema.typedefinition.*;
+import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinitionConstructed;
+import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinitionCollectionOf;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -159,6 +161,136 @@ public class AsnSchemaImpl implements AsnSchema
         String typeName = containingTypeName;
         final DecodedTagsAndType result = new DecodedTagsAndType();
 
+        Set<AsnSchemaType> allTypeDefs = Sets.newHashSet();
+
+        // The module stores all the TypeDefs defined within it.
+        // this is now the Type of the tag's container (ie we are assuming this is in a Sequence/Set etc)
+        AsnSchemaTypeDefinition typeDefinition = module.getType(typeName);
+        AsnSchemaType type = typeDefinition.getType();
+
+        while (rawTags.hasNext())
+        {
+            if (Strings.isNullOrEmpty(typeName))
+            {
+                // no type to delve into
+                break;
+            }
+
+            if (type == AsnSchemaType.NULL)
+            {
+                // type is not defined in module, test if it is imported
+                final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
+                if (!AsnSchemaModule.NULL.equals(importedModule))
+                {
+                    // found the module the type is defined in
+                    final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
+                            typeName,
+                            importedModule);
+                    result.type = tagsAndType.type;
+                    result.decodedTags.addAll(tagsAndType.decodedTags);
+                    // TODO MJF.  test this...
+                }
+                break;
+            }
+
+            // Get the tag
+            final String tag = rawTags.next();
+
+
+            if (type instanceof AsnSchemaTypeConstructed)
+            {
+                AsnSchemaTypeConstructed constructed = (AsnSchemaTypeConstructed)type;
+                final String tagName = constructed.getTagName(tag);
+                //final String tagName = type.getTagName(tag);
+
+                AsnSchemaComponentType component = constructed.getComponent(tag);
+
+                if (Strings.isNullOrEmpty(tagName))
+                {
+                    // unknown tag
+                    result.type = AsnSchemaType.NULL;
+                    break;
+                }
+
+                AsnSchemaType tagType = component.getType();
+
+                if (tagType instanceof AsnSchemaTypePlaceholder)
+                {
+                    // we only want the 'chain' of the type of the tag, not anything of the parent
+                    // structures.
+                    if (!rawTags.hasNext())
+                    {
+                        allTypeDefs.add(tagType);
+                    }
+                    typeName = component.getTypeName();
+                    typeDefinition = module.getType(typeName);
+                    if (typeDefinition != null)
+                    {
+                        tagType = typeDefinition.getType();
+                    }
+                    else
+                    {
+                        tagType = AsnSchemaType.NULL;
+                    }
+                }
+
+
+
+                //result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
+                result.type = tagType;//type;
+                result.decodedTags.add(tagName);
+
+                // TODO - MJF.  We need to prepare for the next go round the while loop (ie the next
+                // level down in the chain). So either the component need to be able to give us that
+                // child, or we need to be able to get it from somewhere else.  Previously this was
+                // what module.getType did.
+                // Get the next type.
+                typeName = component.getTypeName();
+                typeDefinition = module.getType(typeName);
+                if (typeDefinition != AsnSchemaTypeDefinition.NULL)
+                {
+                    type = typeDefinition.getType();
+                }
+                else
+                {
+                    tagType = AsnSchemaType.NULL;
+                }
+
+            }
+            /*
+            else if (type instanceof OLDAsnSchemaTypeDefinitionCollectionOf)
+            {
+                // TODO MJF -
+                OLDAsnSchemaTypeDefinitionCollectionOf
+                        collection = (OLDAsnSchemaTypeDefinitionCollectionOf)type;
+
+                final String tagName = tag;// type.getTagName(tag);
+                typeName = collection.getTypeName(tag);
+
+                type = module.getType(typeName);
+
+                result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
+                result.type = OLDAsnSchemaTypeDefinition.NULL;
+                result.decodedTags.add(tagName);
+            }
+            */
+            else
+            {
+                // This is NOT a container type, so we can't go any further down - this is the end of the line!
+                type = AsnSchemaType.NULL;
+            }
+        }
+
+        return result;
+    }
+
+/*
+    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
+            AsnSchemaModule module)
+    {
+        String typeName = containingTypeName;
+        final DecodedTagsAndType result = new DecodedTagsAndType();
+
         Set<AsnSchemaTagType> allTypeDefs = Sets.newHashSet();
 
         // The module stores all the TypeDefs defined within it.
@@ -173,7 +305,7 @@ public class AsnSchemaImpl implements AsnSchema
                 break;
             }
 
-            if (type == AsnSchemaTypeDefinition.NULL)
+            if (type == OLDAsnSchemaTypeDefinition.NULL)
             {
                 // type is not defined in module, test if it is imported
                 final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
@@ -208,7 +340,8 @@ public class AsnSchemaImpl implements AsnSchema
             // Something like:
             if (type instanceof AsnSchemaTypeDefinitionConstructed)
             {
-                AsnSchemaTypeDefinitionConstructed constructed = (AsnSchemaTypeDefinitionConstructed)type;
+                AsnSchemaTypeDefinitionConstructed
+                        constructed = (AsnSchemaTypeDefinitionConstructed)type;
                 //final String tagName = constructed.getTagName(tag);
                 final String tagName = type.getTagName(tag);
 
@@ -259,10 +392,11 @@ public class AsnSchemaImpl implements AsnSchema
 
 
             }
-            else if (type instanceof AsnSchemaTypeDefinitionCollectionOf)
+            else if (type instanceof OLDAsnSchemaTypeDefinitionCollectionOf)
             {
                 // TODO MJF -
-                AsnSchemaTypeDefinitionCollectionOf collection = (AsnSchemaTypeDefinitionCollectionOf)type;
+                OLDAsnSchemaTypeDefinitionCollectionOf
+                        collection = (OLDAsnSchemaTypeDefinitionCollectionOf)type;
 
                 final String tagName = tag;// type.getTagName(tag);
                 typeName = collection.getTypeName(tag);
@@ -270,35 +404,36 @@ public class AsnSchemaImpl implements AsnSchema
                 type = module.getType(typeName);
 
                 result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
-                result.type = AsnSchemaTypeDefinition.NULL;
+                result.type = OLDAsnSchemaTypeDefinition.NULL;
                 result.decodedTags.add(tagName);
             }
             else
             {
                 // This is NOT a container type, so we can't go any further down - this is the end of the line!
-                type = AsnSchemaTypeDefinition.NULL;
+                type = OLDAsnSchemaTypeDefinition.NULL;
             }
 
 
             // TODO - Now we need to go back to the parser and ensure that the things that are
             // components end up in this list, and not just the anonymouse sequences, set etc
             // There are a couple of steps to do that.
-            // 1/ It is in private static ImmutableList<AsnSchemaTypeDefinition> parseSequence
+            // 1/ It is in private static ImmutableList<OLDAsnSchemaTypeDefinition> parseSequence
             //    in AsnSchemaTypeDefinitionParser where we are collecting all these types for the
             //    components.  So it needs to collect more than the anon sequences
-            // 2/ It is still using AsnSchemaTypeDefinition, so we need to get this to use the base
+            // 2/ It is still using OLDAsnSchemaTypeDefinition, so we need to get this to use the base
             //    which is AsnSchemaTagType.
 
         }
 
         return result;
     }
+*/
 /*
     private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
             AsnSchemaModule module)
     {
         String typeName = containingTypeName;
-        AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
+        OLDAsnSchemaTypeDefinition type = OLDAsnSchemaTypeDefinition.NULL;
         final DecodedTagsAndType result = new DecodedTagsAndType();
 
         while (rawTags.hasNext())
@@ -310,7 +445,7 @@ public class AsnSchemaImpl implements AsnSchema
             }
 
             type = module.getType(typeName);
-            if (type == AsnSchemaTypeDefinition.NULL)
+            if (type == OLDAsnSchemaTypeDefinition.NULL)
             {
                 // type is not defined in module, test if it is imported
                 final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
@@ -331,7 +466,7 @@ public class AsnSchemaImpl implements AsnSchema
             if (Strings.isNullOrEmpty(tagName))
             {
                 // unknown tag
-                result.type = AsnSchemaTypeDefinition.NULL;
+                result.type = OLDAsnSchemaTypeDefinition.NULL;
                 break;
             }
 
@@ -401,9 +536,10 @@ public class AsnSchemaImpl implements AsnSchema
         private final List<String> decodedTags = Lists.newArrayList();
 
         /** the type of the final tag */
-        //private AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
-        private AsnSchemaTagType type = AsnSchemaTypeDefinition.NULL;
+        //private OLDAsnSchemaTypeDefinition type = OLDAsnSchemaTypeDefinition.NULL;
+        //private AsnSchemaTagType type = OLDAsnSchemaTypeDefinition.NULL;
+        private AsnSchemaType type = null;//AsnSchemaType.NULL;
 
-        private ImmutableSet<AsnSchemaTagType> allTypeDefinitions = ImmutableSet.<AsnSchemaTagType>of();
+        private ImmutableSet<AsnSchemaType> allTypeDefinitions = ImmutableSet.<AsnSchemaType>of();
     }
 }

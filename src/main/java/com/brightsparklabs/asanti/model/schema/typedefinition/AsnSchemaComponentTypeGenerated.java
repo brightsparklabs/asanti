@@ -9,6 +9,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypePlaceHolder;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeSequence;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePlaceholder;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -56,7 +57,8 @@ public class AsnSchemaComponentTypeGenerated extends AsnSchemaComponentType
     {
         // TODO - we should be passing in the constraints (if there is such a thing on a nested sequence/set/enumerated etc?
         // This is making a new "pseudo" type, which is something that we can then lookup later.
-        super(tagName, tag, typeName, isOptional, new AsnSchemaTagTypePlaceHolder("", typeName, AsnSchemaConstraint.NULL));
+        //super(tagName, tag, typeName, isOptional, new AsnSchemaTagTypePlaceHolder("", typeName, AsnSchemaConstraint.NULL));
+        super(tagName, tag, typeName, isOptional, new AsnSchemaTypePlaceholder("", typeName, AsnSchemaConstraint.NULL));
 
         checkNotNull(typeDefinitionText);
         checkArgument(!typeDefinitionText.trim().isEmpty(),

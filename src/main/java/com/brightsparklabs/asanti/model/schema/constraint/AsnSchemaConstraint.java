@@ -5,13 +5,13 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Models a Constraint from within a {@link AbstractAsnSchemaTypeDefinition} or {@link
+ * Models a Constraint from within a {@link AbstractOLDAsnSchemaTypeDefinition} or {@link
  * AsnSchemaComponentType}
  *
  * @author brightSPARK Labs
@@ -44,7 +44,7 @@ public interface AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractAsnSchemaTypeDefinition}
+     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}
      */
     public static class Null implements AsnSchemaConstraint
     {

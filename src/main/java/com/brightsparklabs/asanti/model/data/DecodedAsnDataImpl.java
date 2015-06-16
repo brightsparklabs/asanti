@@ -10,8 +10,10 @@ import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -191,8 +193,9 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
 
         final byte[] bytes = getBytes(tag);
-        //final AsnSchemaTypeDefinition type = decodedTag.getType();
-        final AsnSchemaTagType type = decodedTag.getType();
+        //final OLDAsnSchemaTypeDefinition type = decodedTag.getType();
+        final AsnSchemaType schemaType = decodedTag.getType();
+        final AsnPrimitiveType type = schemaType.getPrimitiveType();
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(
                 decoderVisitor);
         return decoder.decodeAsString(bytes);
@@ -212,22 +215,21 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    //public AsnSchemaTypeDefinition getType(String tag)
-    public AsnSchemaTagType getType(String tag)
+    //public OLDAsnSchemaTypeDefinition getType(String tag)
+    public AsnSchemaType getType(String tag)
     {
         final DecodedTag decodedTag = allTags.get(tag);
-        return (decodedTag == null) ? AsnSchemaTypeDefinition.NULL : decodedTag.getType();
+        return (decodedTag == null) ? AsnSchemaType.NULL : decodedTag.getType();
     }
 
     @Override
-    public ImmutableSet<AsnSchemaTagType> getAllTypes(String tag)
+    public ImmutableSet<AsnSchemaType> getAllTypes(String tag)
     {
         final DecodedTag decodedTag = allTags.get(tag);
-        return (decodedTag == null) ? ImmutableSet.<AsnSchemaTagType>of() :
+        return (decodedTag == null) ? ImmutableSet.<AsnSchemaType>of() :
                                       decodedTag.getAllTypes();
 
     }
-
 
     @Override
     public Object getDecodedObject(String tag) throws DecodeException
@@ -241,8 +243,10 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
 
         final byte[] bytes = getBytes(tag);
-        //final AsnSchemaTypeDefinition type = decodedTag.getType();
-        final AsnSchemaTagType type = decodedTag.getType();
+        //final OLDAsnSchemaTypeDefinition type = decodedTag.getType();
+        final AsnSchemaType schemaType = decodedTag.getType();
+        final AsnPrimitiveType type = schemaType.getPrimitiveType();
+
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(
                 decoderVisitor);
         return decoder.decode(bytes);

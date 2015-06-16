@@ -40,7 +40,7 @@ public class AsnSchemaTagTypeSequenceOf extends AbstractAsnSchemaTagType
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaTypeDefinition
+    // IMPLEMENTATION: OLDAsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
 
     @Override

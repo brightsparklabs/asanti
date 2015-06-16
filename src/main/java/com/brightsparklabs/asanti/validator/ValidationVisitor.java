@@ -5,13 +5,14 @@
 
 package com.brightsparklabs.asanti.validator;
 
+import com.brightsparklabs.asanti.model.schema.primitive.*;
 import com.brightsparklabs.asanti.model.schema.tagtype.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
 /**
- * Visitor that visits {@link AsnSchemaTypeDefinition} objects and returns the most appropriate
+ * Visitor that visits {@link OLDAsnSchemaTypeDefinition} objects and returns the most appropriate
  * {@link ValidationRule} pertaining to it.
  *
  * @author brightSPARK Labs
@@ -23,7 +24,7 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     // -------------------------------------------------------------------------
 
     @Override
-    public BuiltinTypeValidator.Null visit(AsnSchemaTypeDefinition.Null visitable)
+    public BuiltinTypeValidator.Null visit(OLDAsnSchemaTypeDefinition.Null visitable)
     {
         return BuiltinTypeValidator.NULL;
     }
@@ -33,9 +34,14 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     {
         return BuiltinTypeValidator.NULL;
     }
+    @Override
+    public BuiltinTypeValidator.Null visit(AsnPrimitiveType.Null visitable)
+    {
+        return BuiltinTypeValidator.NULL;
+    }
 
     @Override
-    public BitStringValidator visit(AsnSchemaTypeDefinitionBitString visitable)
+    public BitStringValidator visit(OLDAsnSchemaTypeDefinitionBitString visitable)
     {
         return BitStringValidator.getInstance();
     }
@@ -47,7 +53,13 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionChoice visitable)
+    public BitStringValidator visit(AsnPrimitiveTypeBitString visitable)
+    {
+        return BitStringValidator.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(OLDAsnSchemaTypeDefinitionChoice visitable)
     {
         // TODO ASN-113
         return BuiltinTypeValidator.NULL;
@@ -55,7 +67,7 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionEnumerated visitable)
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeChoice visitable)
     {
         // TODO ASN-113
         return BuiltinTypeValidator.NULL;
@@ -63,7 +75,15 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
-    public GeneralizedTimeValidator visit(AsnSchemaTypeDefinitionGeneralizedTime visitable)
+    public BuiltinTypeValidator visit(OLDAsnSchemaTypeDefinitionEnumerated visitable)
+    {
+        // TODO ASN-113
+        return BuiltinTypeValidator.NULL;
+        //return null;
+    }
+
+    @Override
+    public GeneralizedTimeValidator visit(OLDAsnSchemaTypeDefinitionGeneralizedTime visitable)
     {
         return GeneralizedTimeValidator.getInstance();
     }
@@ -75,7 +95,13 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
-    public GeneralStringValidator visit(AsnSchemaTypeDefinitionGeneralString visitable)
+    public GeneralizedTimeValidator visit(AsnPrimitiveTypeGeneralizedTime visitable)
+    {
+        return GeneralizedTimeValidator.getInstance();
+    }
+
+    @Override
+    public GeneralStringValidator visit(OLDAsnSchemaTypeDefinitionGeneralString visitable)
     {
         return GeneralStringValidator.getInstance();
     }
@@ -87,28 +113,41 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
-    public Ia5StringValidator visit(AsnSchemaTypeDefinitionIa5String visitable)
+    public PrintableStringValidator visit(AsnPrimitiveTypePrintableString visitable)
+    {
+        return PrintableStringValidator.getInstance();
+    }
+
+    @Override
+    public Ia5StringValidator visit(OLDAsnSchemaTypeDefinitionIa5String visitable)
     {
         return Ia5StringValidator.getInstance();
     }
 
-    public IntegerValidator visit(AsnSchemaTypeDefinitionInteger visitable)
+    @Override
+    public IntegerValidator visit(OLDAsnSchemaTypeDefinitionInteger visitable)
     {
         return IntegerValidator.getInstance();
     }
+    @Override
     public IntegerValidator visit(AsnSchemaTagTypeInteger visitable)
+    {
+        return IntegerValidator.getInstance();
+    }
+    @Override
+    public IntegerValidator visit(AsnPrimitiveTypeInteger visitable)
     {
         return IntegerValidator.getInstance();
     }
 
     @Override
-    public NumericStringValidator visit(AsnSchemaTypeDefinitionNumericString visitable)
+    public NumericStringValidator visit(OLDAsnSchemaTypeDefinitionNumericString visitable)
     {
         return NumericStringValidator.getInstance();
     }
 
     @Override
-    public OctetStringValidator visit(AsnSchemaTypeDefinitionOctetString visitable)
+    public OctetStringValidator visit(OLDAsnSchemaTypeDefinitionOctetString visitable)
     {
         return OctetStringValidator.getInstance();
     }
@@ -120,7 +159,13 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSequence visitable)
+    public OctetStringValidator visit(AsnPrimitiveTypeOctetString visitable)
+    {
+        return OctetStringValidator.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(OLDAsnSchemaTypeDefinitionSequence visitable)
     {
         // TODO ASN-113
         return null;
@@ -131,9 +176,15 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
         // TODO ASN-113
         return null;
     }
+    @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeSequence visitable)
+    {
+        // TODO ASN-113
+        return null;
+    }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSequenceOf visitable)
+    public BuiltinTypeValidator visit(OLDAsnSchemaTypeDefinitionSequenceOf visitable)
     {
         // TODO ASN-113
         return null;
@@ -144,16 +195,29 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
         // TODO ASN-113
         return null;
     }
-
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSet visitable)
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeSequenceOf visitable)
     {
         // TODO ASN-113
         return null;
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnSchemaTypeDefinitionSetOf visitable)
+    public BuiltinTypeValidator visit(OLDAsnSchemaTypeDefinitionSet visitable)
+    {
+        // TODO ASN-113
+        return null;
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeSet visitable)
+    {
+        // TODO ASN-113
+        return null;
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(OLDAsnSchemaTypeDefinitionSetOf visitable)
     {
         // TODO ASN-113
         return null;
@@ -167,7 +231,14 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
-    public Utf8StringValidator visit(AsnSchemaTypeDefinitionUtf8String visitable)
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeSetOf visitable)
+    {
+        // TODO ASN-113
+        return null;
+    }
+
+    @Override
+    public Utf8StringValidator visit(OLDAsnSchemaTypeDefinitionUtf8String visitable)
     {
         return Utf8StringValidator.getInstance();
     }
@@ -177,15 +248,26 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     {
         return Utf8StringValidator.getInstance();
     }
+    @Override
+    public Utf8StringValidator visit(AsnPrimitiveTypeUtf8String visitable)
+    {
+        return Utf8StringValidator.getInstance();
+    }
 
     @Override
-    public VisibleStringValidator visit(AsnSchemaTypeDefinitionVisibleString visitable)
+    public VisibleStringValidator visit(OLDAsnSchemaTypeDefinitionVisibleString visitable)
     {
         return VisibleStringValidator.getInstance();
     }
 
     @Override
     public OidValidator visit(AsnSchemaTagTypeObjectIdentifier visitable)
+    {
+        return OidValidator.getInstance();
+    }
+
+    @Override
+    public OidValidator visit(AsnPrimitiveTypeOid visitable)
     {
         return OidValidator.getInstance();
     }
