@@ -83,6 +83,13 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeEnumerated visitable)
+    {
+        // TODO ASN-113
+        return BuiltinTypeValidator.NULL;
+        //return null;
+    }
+    @Override
     public GeneralizedTimeValidator visit(OLDAsnSchemaTypeDefinitionGeneralizedTime visitable)
     {
         return GeneralizedTimeValidator.getInstance();
@@ -286,6 +293,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
 
     @Override
     public OidValidator visit(AsnPrimitiveTypeOid visitable)
+    {
+        return OidValidator.getInstance();
+    }
+
+    @Override
+    public OidValidator visit(AsnPrimitiveTypeRelativeOid visitable)
     {
         return OidValidator.getInstance();
     }

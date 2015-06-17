@@ -4,17 +4,17 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
 
 /**
- * A type used to represent the primitive builtin types within ASN.1
+ * A type used to represent the primitive builtin type Bit String within ASN.1
  * This class is used as a 'key' for the Visitor.
  * @author brightSPARK Labs
  */
-public class AsnPrimitiveTypeInteger implements AsnPrimitiveType
+public class AsnPrimitiveTypeRelativeOid implements AsnPrimitiveType
 {
 
     @Override
     public AsnBuiltinType getBuiltinType()
     {
-        return AsnBuiltinType.Integer;
+        return AsnBuiltinType.RelativeOid;
     }
 
     @Override
@@ -22,4 +22,5 @@ public class AsnPrimitiveTypeInteger implements AsnPrimitiveType
     {
         return visitor.visit(this);
     }
+
 }

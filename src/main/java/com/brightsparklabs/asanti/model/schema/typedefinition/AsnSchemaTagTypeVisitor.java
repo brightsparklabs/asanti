@@ -68,6 +68,8 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(OLDAsnSchemaTypeDefinitionEnumerated visitable);
+    public T visit(AsnPrimitiveTypeEnumerated visitable);
+
 
     /**
      * Processes the supplied object with this visitor
@@ -232,5 +234,8 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      */
     public T visit(AsnSchemaTagTypeObjectIdentifier visitable);
     public T visit(AsnPrimitiveTypeOid visitable);
+
+    public T visit(AsnPrimitiveTypeRelativeOid visitable);
+
 
 }

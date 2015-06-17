@@ -15,7 +15,7 @@ public class AsnPrimitiveTypeVisibleString implements AsnPrimitiveType
     @Override
     public AsnBuiltinType getBuiltinType()
     {
-        return AsnBuiltinType.Utf8String;
+        return AsnBuiltinType.VisibleString;
     }
 
     @Override

@@ -85,6 +85,12 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeEnumerated visitable)
+    {
+        return new BuiltinTypeDecoder.Null("ASN.1 ENUMERATED types cannot be decoded");
+    }
+
+    @Override
     public GeneralizedTimeDecoder visit(final OLDAsnSchemaTypeDefinitionGeneralizedTime visitable)
     {
         return GeneralizedTimeDecoder.getInstance();
@@ -272,6 +278,12 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
 
     @Override
     public OidDecoder visit(final AsnPrimitiveTypeOid visitable)
+    {
+        return OidDecoder.getInstance();
+    }
+
+    @Override
+    public OidDecoder visit(final AsnPrimitiveTypeRelativeOid visitable)
     {
         return OidDecoder.getInstance();
     }

@@ -68,6 +68,7 @@ public class AsnSchemaNamedTagParser
 
         final Iterable<String> lines = COMMA_SPLITTER.split(enumeratedOptionsText);
 
+        int i = 0;
         for (final String optionLine : lines)
         {
             if ("...".equals(optionLine))
@@ -76,8 +77,10 @@ public class AsnSchemaNamedTagParser
                 continue;
             }
 
-            final AsnSchemaNamedTag option = parseOption(optionLine);
+            final AsnSchemaNamedTag option = parseOption(optionLine, i);
             builder.add(option);
+
+            i++;
         }
         return builder.build();
     }
@@ -122,12 +125,15 @@ public class AsnSchemaNamedTagParser
      * @param optionLine
      *            the option text to parse
      *
+     * @param optionalTag
+     *          an optional tag to use if one is not parse out from the optionLine
+     *
      * @return an {@link AsnSchemaNamedTag} representing the parsed text
      *
      * @throws ParseException
      *             if any errors occur while parsing the data
      */
-    private static AsnSchemaNamedTag parseOption(String optionLine) throws ParseException
+    private static AsnSchemaNamedTag parseOption(String optionLine, Integer optionalTag) throws ParseException
     {
         final Matcher matcher = PATTERN_ENUMERATED_OPTION.matcher(optionLine);
 
@@ -140,7 +146,15 @@ public class AsnSchemaNamedTagParser
         }
 
         final String tagName = matcher.group(1);
-        final String tag = matcher.group(3);
+        String tag = matcher.group(3);
+        // TODO MJF - what is the correct thing to do here - read the spec?
+        // I'm only doing this because we throw later if all the tags are not unique
+        // Look at what the constructor for AsnSchemaTypeConstructed does.
+        // Should this logic be in the constructor for AsnSchemaTypeWithNamesTags???
+        if (tag == null)
+        {
+            tag = optionalTag.toString();
+        }
         return new AsnSchemaNamedTag(tagName, tag);
     }
 

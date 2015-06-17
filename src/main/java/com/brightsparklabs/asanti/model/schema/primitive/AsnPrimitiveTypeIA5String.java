@@ -15,7 +15,7 @@ public class AsnPrimitiveTypeIA5String implements AsnPrimitiveType
     @Override
     public AsnBuiltinType getBuiltinType()
     {
-        return AsnBuiltinType.Utf8String;
+        return AsnBuiltinType.Ia5String;
     }
 
     @Override

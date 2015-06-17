@@ -15,7 +15,7 @@ public class AsnPrimitiveTypeNumericString implements AsnPrimitiveType
     @Override
     public AsnBuiltinType getBuiltinType()
     {
-        return AsnBuiltinType.Utf8String;
+        return AsnBuiltinType.NumericString;
     }
 
     @Override

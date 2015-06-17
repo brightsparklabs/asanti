@@ -14,6 +14,8 @@ import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * Logic for parsing a type (either a Type Definition, or Component Type)
  *
@@ -43,7 +45,6 @@ public class AsnSchemaTypeParser
     /** pattern to match a SET OF type definition */
     private static final Pattern PATTERN_TYPE_COLLECTION = Pattern.compile(
             "^(SEQUENCE|SET)(( SIZE)? \\(.+?\\)\\)?)? OF (.+)$");
-    // TODO MJF - add the others
     private static final ImmutableMap<String, AsnPrimitiveType> collectionTypes = ImmutableMap.of(
             "SEQUENCE", AsnPrimitiveType.SEQUENCE_OF,
             "SET", AsnPrimitiveType.SET_OF);
@@ -51,20 +52,20 @@ public class AsnSchemaTypeParser
     // -------------------------------------------------------------------------
     // Constructed types (SEQUENCE, Set etc)
     // -------------------------------------------------------------------------
-    /** pattern to match a SET/SEQUENCE type definition */
-    private static final Pattern PATTERN_TYPE_SEQUENCE = Pattern.compile(
-            "^SEQUENCE ?\\{(.+)\\} ?(\\(.+\\))?$");
+//    /** pattern to match a SET/SEQUENCE type definition */
+//    private static final Pattern PATTERN_TYPE_SEQUENCE = Pattern.compile(
+//            "^SEQUENCE ?\\{(.+)\\} ?(\\(.+\\))?$");
+//
+//    /** pattern to match a SET/SEQUENCE type definition */
+//    private static final Pattern PATTERN_TYPE_SET = Pattern.compile(
+//            "^SET ?\\{(.+)\\} ?(\\(.+\\))?$");
+//
+//    /** pattern to match a CHOICE type definition */
+//    private static final Pattern PATTERN_TYPE_CHOICE = Pattern.compile(
+//            "^CHOICE ?\\{(.+)\\} ?(\\(.+\\))?$");
 
-    /** pattern to match a SET/SEQUENCE type definition */
-    private static final Pattern PATTERN_TYPE_SET = Pattern.compile(
-            "^SET ?\\{(.+)\\} ?(\\(.+\\))?$");
 
-    /** pattern to match a CHOICE type definition */
-    private static final Pattern PATTERN_TYPE_CHOICE = Pattern.compile(
-            "^CHOICE ?\\{(.+)\\} ?(\\(.+\\))?$");
-
-
-    /** pattern to match a CHOICE type definition */
+    /** pattern to match a Constructed type definition */
     private static final Pattern PATTERN_TYPE_CONSTRUCTED = Pattern.compile(
             "^(SEQUENCE|SET|CHOICE) ?\\{(.+)\\} ?(\\(.+\\))?$");
 
@@ -73,6 +74,8 @@ public class AsnSchemaTypeParser
             "SET", AsnPrimitiveType.SET,
             "CHOICE", AsnPrimitiveType.CHOICE);
 
+
+    // TODO MJF - how to handle Enumerated??
     /** pattern to match a ENUMERATED type definition */
     private static final Pattern PATTERN_TYPE_ENUMERATED = Pattern.compile(
             "^ENUMERATED ?\\{(.+)\\}$");
@@ -88,13 +91,22 @@ public class AsnSchemaTypeParser
     // -------------------------------------------------------------------------
     // types with Constraints and Distinguished values
     // -------------------------------------------------------------------------
-    /** pattern to match an Integer type definition */
-    private static final Pattern PATTERN_TYPE_INTEGER = Pattern.compile(
-            "^INTEGER ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+//    /** pattern to match an Integer type definition */
+//    private static final Pattern PATTERN_TYPE_INTEGER = Pattern.compile(
+//            "^INTEGER ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+//
+//    /** pattern to match a BIT STRING type definition */
+//    private static final Pattern PATTERN_TYPE_BIT_STRING = Pattern.compile(
+//            "^BIT STRING ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
 
-    /** pattern to match a BIT STRING type definition */
-    private static final Pattern PATTERN_TYPE_BIT_STRING = Pattern.compile(
-            "^BIT STRING ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
+    /** pattern to match a type with distinguished values */
+    private static final Pattern PATTERN_TYPE_WITH_DISTINGUISHED_VALUES = Pattern.compile(
+            "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
+
+    private static final ImmutableMap<String, AsnPrimitiveType> distiguishedValuesTypes = ImmutableMap.of(
+            "BIT STRING", AsnPrimitiveType.BIT_STRING,
+            "INTEGER", AsnPrimitiveType.INTEGER
+    );
 
 
     // -------------------------------------------------------------------------
@@ -102,7 +114,7 @@ public class AsnSchemaTypeParser
     // -------------------------------------------------------------------------
     /** pattern to match a type with constraints */
     private static final Pattern PATTERN_TYPE_WITH_CONSTRAINTS = Pattern.compile(
-            "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String) ?(\\((.+)\\))?$");
+            "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String|RELATIVE-OID) ?(\\((.+)\\))?$");
 
 
     // TODO MJF - add the others
@@ -114,7 +126,7 @@ public class AsnSchemaTypeParser
             .put("IA5String", AsnPrimitiveType.IA5_STRING)
             .put("VisibleString", AsnPrimitiveType.VISIBLE_STRING)
             .put("NumericString", AsnPrimitiveType.NUMERIC_STRING)
-            .build();
+            .put("RELATIVE-OID", AsnPrimitiveType.RELATIVE_OID).build();
 
     // -------------------------------------------------------------------------
     // types without Constraints
@@ -197,35 +209,42 @@ public class AsnSchemaTypeParser
         // TODO MJF - give that this is regex'ing each of these in order, from a performance
         // perspective we should put the checks in order of frequency of the expected data?!
 
-
-        // check if defining a constructed type
+        // -------------------------------------------------------------------------
+        // Constructed types (SEQUENCE, Set etc)
+        // -------------------------------------------------------------------------
         matcher = PATTERN_TYPE_CONSTRUCTED.matcher(value);
         if (matcher.matches())
         {
             return parseConstructed(matcher);
         }
+        matcher = PATTERN_TYPE_ENUMERATED.matcher(value);
+        if (matcher.matches())
+        {
+            return parseEnumerated(matcher);
+        }
+
+
 
         // -------------------------------------------------------------------------
         // Collection types (SEQUENCE Of and Set Of)
         // -------------------------------------------------------------------------
-
         matcher = PATTERN_TYPE_COLLECTION.matcher(value);
         if (matcher.matches())
         {
             return parseCollection(matcher);
         }
 
-        // -------------------------------------------------------------------------
-        // Constructed types (SEQUENCE, Set etc)
-        // -------------------------------------------------------------------------
 
 
         // -------------------------------------------------------------------------
         // types with Constraints and Distinguished values
         // -------------------------------------------------------------------------
-        // TODO MJF - I think we could have one regex to get the group of the type name,
-        // and then a lookup from there to get the AsnPrimitiveType based on the type name.
-
+        matcher = PATTERN_TYPE_WITH_DISTINGUISHED_VALUES.matcher(value);
+        if (matcher.matches())
+        {
+            return parseWithDistinguishedValues(matcher);
+        }
+/*
         // check if defining a Integer
         matcher = PATTERN_TYPE_INTEGER.matcher(value);
         if (matcher.matches())
@@ -238,7 +257,7 @@ public class AsnSchemaTypeParser
         {
             return parseWithDistinguishedValues(matcher, AsnPrimitiveType.BIT_STRING);
         }
-
+*/
 
         // -------------------------------------------------------------------------
         // types with Constraints
@@ -260,7 +279,7 @@ public class AsnSchemaTypeParser
         matcher = PATTERN_TYPE_GENERALIZED_TIME.matcher(value);
         if (matcher.matches())
         {
-            return parseWithoutConstraints(matcher, AsnPrimitiveType.OID);
+            return parseWithoutConstraints(matcher, AsnPrimitiveType.GENERALIZED_TIME);
         }
 
 
@@ -302,7 +321,7 @@ public class AsnSchemaTypeParser
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
     /**
-     * Parses a collection type (eg SEQUENCE Of)
+     * Parses a constructed type (eg SEQUENCE)
      *
      * @param matcher
      *         matcher which matched on a corresponding
@@ -343,6 +362,33 @@ public class AsnSchemaTypeParser
         return ImmutableList.copyOf(parsedTypes);
 */
     }
+
+    /**
+     * Parses an Enumerated type
+     *
+     * @param matcher
+     *         matcher which matched on eg {@link #PATTERN_TYPE_ENUMERATED}
+     *
+     * @return an {@link AsnSchemaTypeWithNamesTags} representing the parsed data
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the type
+     */
+    private static AsnSchemaTypeWithNamesTags parseEnumerated(Matcher matcher)
+            throws ParseException
+    {
+
+        final String namedValuesText = matcher.group(1);
+        logger.debug("named values {}", namedValuesText);
+        final ImmutableList<AsnSchemaNamedTag> namedValues
+                = AsnSchemaNamedTagParser.parseEnumeratedOptions(namedValuesText);
+        /*
+        final String constraintText = Strings.nullToEmpty(matcher.group(4));
+        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
+       */
+        return new AsnSchemaTypeWithNamesTags(namedValues, AsnSchemaConstraint.NULL, AsnPrimitiveType.ENUMERATED);
+    }
+
 
 
     /**
@@ -432,21 +478,29 @@ public class AsnSchemaTypeParser
      * @param matcher
      *         matcher which matched on eg {@link #PATTERN_TYPE_INTEGER}
      *
-     * @return an {@link AsnSchemaTypeWithDistinguishedValues} representing the parsed data
+     * @return an {@link AsnSchemaTypeWithNamesTags} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeWithDistinguishedValues parseWithDistinguishedValues(Matcher matcher, AsnPrimitiveType primitiveType)
+    private static AsnSchemaTypeWithNamesTags parseWithDistinguishedValues(Matcher matcher)
             throws ParseException
     {
-        final String distinguishedValuesText = matcher.group(2);
+        AsnPrimitiveType primitiveType = distiguishedValuesTypes.get(matcher.group(1));
+        if (primitiveType == null) // TODO MJF - make reusable
+        {
+            // unknown definition
+            final String error = ERROR_UNKNOWN_BUILT_IN_TYPE + matcher.group(0);
+            throw new ParseException(error, -1);
+        }
+
+        final String distinguishedValuesText = matcher.group(3);
         final ImmutableList<AsnSchemaNamedTag> distinguishedValues
                 = AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesText);
-        final String constraintText = Strings.nullToEmpty(matcher.group(3));
+        final String constraintText = Strings.nullToEmpty(matcher.group(4));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        return new AsnSchemaTypeWithDistinguishedValues(distinguishedValues, constraint, primitiveType);
+        return new AsnSchemaTypeWithNamesTags(distinguishedValues, constraint, primitiveType);
     }
 
     /**

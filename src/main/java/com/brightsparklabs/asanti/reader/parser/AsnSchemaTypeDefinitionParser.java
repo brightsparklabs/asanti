@@ -93,6 +93,7 @@ public final class AsnSchemaTypeDefinitionParser
 
         // Get the underlying type
         AsnSchemaType type = AsnSchemaTypeParser.parse(value);
+        logger.debug("\t{} is type {}", name, type.getPrimitiveType().getBuiltinType());
         // wrap it with the typedefinition name.
         return ImmutableList.<AsnSchemaTypeDefinition>of(new AsnSchemaTypeDefinitionImpl(name, type))  ;
 

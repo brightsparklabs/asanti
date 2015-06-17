@@ -9,7 +9,13 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * Created by Michael on 17/06/2015.
+ * A type used to model the types for objects within ASN.1 schema that are Collections, meaning that
+ * they are the equivalent of a List of the element type the surround.
+ * These objects can be either Type Definitions, eg Type ::= SomeType,
+ * or components within a constructed type (SEQUENCE etc), eg component SomeType
+ *
+ *
+ * @author brightSPARK Labs
  */
 public class AsnSchemaTypeCollection extends AbstractAsnSchemaType
 {

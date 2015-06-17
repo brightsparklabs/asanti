@@ -102,6 +102,11 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     @Override
+    public String visit(AsnPrimitiveTypeEnumerated visitable)
+    {
+        return visitable.getClass().getCanonicalName();
+    }
+    @Override
     public String visit(OLDAsnSchemaTypeDefinitionIa5String visitable)
     {
         return visitable.getClass().getCanonicalName();
@@ -295,6 +300,12 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
 
     @Override
     public String visit(AsnPrimitiveTypeOid visitable)
+    {
+        return visitable.getClass().getCanonicalName();
+    }
+
+    @Override
+    public String visit(AsnPrimitiveTypeRelativeOid visitable)
     {
         return visitable.getClass().getCanonicalName();
     }

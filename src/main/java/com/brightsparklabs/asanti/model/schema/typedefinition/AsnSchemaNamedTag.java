@@ -5,6 +5,8 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
+import com.brightsparklabs.asanti.decoder.builtin.IntegerDecoder;
+
 import static com.google.common.base.Preconditions.*;
 
 /**
@@ -54,6 +56,7 @@ public class AsnSchemaNamedTag
         this.tagName = tagName.trim();
         this.tag = (tag == null) ? "" : tag.trim();
     }
+
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS

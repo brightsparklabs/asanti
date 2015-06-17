@@ -8,13 +8,14 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVi
  * This class is used as a 'key' for the Visitor.
  * @author brightSPARK Labs
  */
-public class AsnPrimitiveTypeInteger implements AsnPrimitiveType
+public class AsnPrimitiveTypeEnumerated implements AsnPrimitiveType
 {
+
 
     @Override
     public AsnBuiltinType getBuiltinType()
     {
-        return AsnBuiltinType.Integer;
+        return AsnBuiltinType.Enumerated;
     }
 
     @Override
@@ -22,4 +23,5 @@ public class AsnPrimitiveTypeInteger implements AsnPrimitiveType
     {
         return visitor.visit(this);
     }
+
 }

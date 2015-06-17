@@ -8,14 +8,18 @@ import com.google.common.collect.ImmutableSet;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * Created by Michael on 16/06/2015.
+ * A concrete implementation of class that can model the types for objects within ASN.1 schema.
+ * These objects can be either Type Definitions, eg Type ::= SomeType,
+ * or components within a constructed type (SEQUENCE etc), eg component SomeType
+ *
+ *
+ * @author brightSPARK Labs
  */
 public class AbstractAsnSchemaType implements AsnSchemaType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
-
 
     /** the primitiveType of this definition */
     private final AsnPrimitiveType primitiveType;

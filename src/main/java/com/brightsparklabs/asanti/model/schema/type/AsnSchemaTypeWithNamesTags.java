@@ -10,14 +10,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by Michael on 16/06/2015.
  */
-public class AsnSchemaTypeWithDistinguishedValues extends AbstractAsnSchemaType
+public class AsnSchemaTypeWithNamesTags extends AbstractAsnSchemaType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** mapping from raw tag to distinguished value */
-    private final ImmutableMap<String, AsnSchemaNamedTag> tagsToDistinguishedValues;
+    /** mapping from raw tag to named value */
+    private final ImmutableMap<String, AsnSchemaNamedTag> tagsToNamedValues;
 
 
     // -------------------------------------------------------------------------
@@ -27,10 +27,10 @@ public class AsnSchemaTypeWithDistinguishedValues extends AbstractAsnSchemaType
     /**
      * Default constructor.
      *
-     * @param distinguishedValues
-     *            the optional list of distinguished values in this INTEGER type
-     *            definition. Use an empty iterable if there are no
-     *            distinguished values.
+     * @param namedValues
+     *            the optional list of named values in this type.
+     *            Use an empty iterable if there are no
+     *            named values.
      *
      * @param constraint
      *            The constraint on the type. Use
@@ -39,23 +39,23 @@ public class AsnSchemaTypeWithDistinguishedValues extends AbstractAsnSchemaType
      *            E.g. For {@code Integer (1..56)} this would be {@code (1..56)}
      *
      * @throws NullPointerException
-     *             if {@code distinguishedValues} is {@code null}
+     *             if {@code namedValues} is {@code null}
      *
      */
-    public AsnSchemaTypeWithDistinguishedValues(Iterable<AsnSchemaNamedTag> distinguishedValues,
+    public AsnSchemaTypeWithNamesTags(Iterable<AsnSchemaNamedTag> namedValues,
             AsnSchemaConstraint constraint, AsnPrimitiveType primitiveType)
     {
         super(primitiveType, constraint);
-        checkNotNull(distinguishedValues);
+        checkNotNull(namedValues);
 
-        final ImmutableMap.Builder<String, AsnSchemaNamedTag> tagsToDistinguishedValuesBuilder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, AsnSchemaNamedTag> tagsToNamedValuesBuilder = ImmutableMap.builder();
 
-        for (final AsnSchemaNamedTag distinguishedValue : distinguishedValues)
+        for (final AsnSchemaNamedTag namedValue : namedValues)
         {
-            final String tag = distinguishedValue.getTag();
-            tagsToDistinguishedValuesBuilder.put(tag, distinguishedValue);
+            final String tag = namedValue.getTag();
+            tagsToNamedValuesBuilder.put(tag, namedValue);
         }
-        tagsToDistinguishedValues = tagsToDistinguishedValuesBuilder.build();
+        tagsToNamedValues = tagsToNamedValuesBuilder.build();
 
     }
 

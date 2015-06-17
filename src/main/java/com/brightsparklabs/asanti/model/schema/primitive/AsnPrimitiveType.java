@@ -31,7 +31,8 @@ public interface AsnPrimitiveType extends Visitable<AsnSchemaTagTypeVisitor<?>>
     public static final AsnPrimitiveType IA5_STRING = new AsnPrimitiveTypeIA5String();
     public static final AsnPrimitiveType VISIBLE_STRING = new AsnPrimitiveTypeVisibleString();
     public static final AsnPrimitiveType NUMERIC_STRING = new AsnPrimitiveTypeNumericString();
-
+    public static final AsnPrimitiveType ENUMERATED = new AsnPrimitiveTypeEnumerated();
+    public static final AsnPrimitiveType RELATIVE_OID = new AsnPrimitiveTypeRelativeOid();
 
     /**
      * Returns the ASN.1 built-in type for this type

@@ -14,7 +14,7 @@ public class AsnPrimitiveTypeOctetString implements AsnPrimitiveType
     @Override
     public AsnBuiltinType getBuiltinType()
     {
-        return AsnBuiltinType.SequenceOf;
+        return AsnBuiltinType.OctetString;
     }
 
     @Override
