@@ -29,21 +29,21 @@ public class OLDAsnSchemaTypeDefinitionNullInstanceTest
     @Test
     public void testGetBuiltinType() throws Exception
     {
-        final Null instance = OLDAsnSchemaTypeDefinition.NULL;
-        assertEquals(AsnBuiltinType.Null, instance.getBuiltinType());
+        final NULL instance = OLDAsnSchemaTypeDefinition.NULL;
+        assertEquals(AsnBuiltinType.NULL, instance.getBuiltinType());
     }
 
     @Test
     public void testGetConstraint() throws Exception
     {
-        final OLDAsnSchemaTypeDefinition.Null instance = OLDAsnSchemaTypeDefinition.NULL;
+        final OLDAsnSchemaTypeDefinition.NULL instance = OLDAsnSchemaTypeDefinition.NULL;
         assertEquals(AsnSchemaConstraint.NULL, instance.getConstraint());
     }
 
     @Test
     public void testGetTagName() throws Exception
     {
-        final OLDAsnSchemaTypeDefinition.Null instance = OLDAsnSchemaTypeDefinition.NULL;
+        final OLDAsnSchemaTypeDefinition.NULL instance = OLDAsnSchemaTypeDefinition.NULL;
         assertEquals("", instance.getTagName("0"));
         assertEquals("", instance.getTagName("1"));
         assertEquals("", instance.getTagName("2"));
@@ -54,7 +54,7 @@ public class OLDAsnSchemaTypeDefinitionNullInstanceTest
     @Test
     public void testGetTypeName() throws Exception
     {
-        final OLDAsnSchemaTypeDefinition.Null instance = OLDAsnSchemaTypeDefinition.NULL;
+        final OLDAsnSchemaTypeDefinition.NULL instance = OLDAsnSchemaTypeDefinition.NULL;
         assertEquals("", instance.getTypeName("0"));
         assertEquals("", instance.getTypeName("1"));
         assertEquals("", instance.getTypeName("2"));
@@ -65,8 +65,8 @@ public class OLDAsnSchemaTypeDefinitionNullInstanceTest
     @Test
     public void testVisit() throws Exception
     {
-        final OLDAsnSchemaTypeDefinition.Null instance = OLDAsnSchemaTypeDefinition.NULL;
-        assertEquals(OLDAsnSchemaTypeDefinition.Null.class.getCanonicalName(),
+        final OLDAsnSchemaTypeDefinition.NULL instance = OLDAsnSchemaTypeDefinition.NULL;
+        assertEquals(OLDAsnSchemaTypeDefinition.NULL.class.getCanonicalName(),
                 instance.visit(MockAsnSchemaTypeDefinitionVisitor.getInstance()));
     }
 */

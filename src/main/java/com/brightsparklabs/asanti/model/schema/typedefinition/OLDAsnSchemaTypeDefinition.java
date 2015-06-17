@@ -59,11 +59,11 @@ public interface OLDAsnSchemaTypeDefinition extends AsnSchemaTagType
     public String getTypeName(String tag);
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaTagType.Null
+    // INTERNAL CLASS: AsnSchemaTagType.NULL
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
+     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.

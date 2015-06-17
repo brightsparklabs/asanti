@@ -9,6 +9,7 @@ import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypePlaceHolder;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeCollection;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePlaceholder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
@@ -94,6 +95,10 @@ public class AsnSchemaImpl implements AsnSchema
     @Override
     public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
     {
+        if (rawTag.equals("/2/0/2/5/1/1/2/0"))
+        {
+            int breakpoint = 0;
+        }
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(),
                 topLevelTypeName,
@@ -164,7 +169,7 @@ public class AsnSchemaImpl implements AsnSchema
         Set<AsnSchemaType> allTypeDefs = Sets.newHashSet();
 
         // The module stores all the TypeDefs defined within it.
-        // this is now the Type of the tag's container (ie we are assuming this is in a Sequence/Set etc)
+        // this is now the Type of the tag's container (ie we are assuming this is in a SEQUENCE/Set etc)
         AsnSchemaTypeDefinition typeDefinition = module.getType(typeName);
         AsnSchemaType type = typeDefinition.getType();
 
@@ -224,6 +229,59 @@ public class AsnSchemaImpl implements AsnSchema
                     }
                     typeName = component.getTypeName();
                     typeDefinition = module.getType(typeName);
+                    if (typeDefinition == AsnSchemaTypeDefinition.NULL)
+                    {
+                        // type is not defined in module, test if it is imported
+                        final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
+                        if (!AsnSchemaModule.NULL.equals(importedModule))
+                        {
+                            // TODO MJF - this is not working because the Iterator was already advanced, we
+                            // needed to have called this before the rawTags.next()
+
+                            // found the module the type is defined in
+                            final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
+                                    typeName,
+                                    importedModule);
+                            result.type = tagsAndType.type;
+                            result.decodedTags.addAll(tagsAndType.decodedTags);
+                            // TODO MJF.  test this...
+                        }
+                        break;
+                    }
+
+                    if (typeDefinition != null)
+                    {
+                        tagType = typeDefinition.getType();
+                    }
+                    else
+                    {
+                        tagType = AsnSchemaType.NULL;
+                    }
+                }
+
+                // TODO MJF - is this true???
+                // We want collections types to be transparent.
+                if (tagType instanceof AsnSchemaTypeCollection)
+                {
+                    tagType = ((AsnSchemaTypeCollection)tagType).getElementType();
+                }
+
+                // TODO MJF - this is stupid!  but the "transparent" replacement above for the
+                // collection may have given us another placeholder.
+                // We need to do a sweep at the end of schema parsing to get rid of all placeholders!!!
+                if (tagType instanceof AsnSchemaTypePlaceholder)
+                {
+                    // we only want the 'chain' of the type of the tag, not anything of the parent
+                    // structures.
+                    if (!rawTags.hasNext())
+                    {
+                        allTypeDefs.add(tagType);
+                    }
+
+                    //typeDefinition = getTypeDefinition((AsnSchemaTypePlaceholder)tagType, module);
+
+                    typeName = component.getTypeName();
+                    typeDefinition = module.getType(typeName);
                     if (typeDefinition != null)
                     {
                         tagType = typeDefinition.getType();
@@ -235,16 +293,16 @@ public class AsnSchemaImpl implements AsnSchema
                 }
 
 
-
-                //result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
-                result.type = tagType;//type;
+                result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
+                result.type = tagType;
                 result.decodedTags.add(tagName);
 
-                // TODO - MJF.  We need to prepare for the next go round the while loop (ie the next
-                // level down in the chain). So either the component need to be able to give us that
-                // child, or we need to be able to get it from somewhere else.  Previously this was
-                // what module.getType did.
                 // Get the next type.
+                type = tagType;
+
+                // TODO MJF.  In theory the next type is tagType...  By now storing the "generated" types directly
+                // we don't need to do the module lookup.  The only time we now need that is for Placeholder and import.
+                /*
                 typeName = component.getTypeName();
                 typeDefinition = module.getType(typeName);
                 if (typeDefinition != AsnSchemaTypeDefinition.NULL)
@@ -253,27 +311,24 @@ public class AsnSchemaImpl implements AsnSchema
                 }
                 else
                 {
-                    tagType = AsnSchemaType.NULL;
+                    type = AsnSchemaType.NULL;
                 }
+                */
 
             }
-            /*
-            else if (type instanceof OLDAsnSchemaTypeDefinitionCollectionOf)
+            else if (type instanceof AsnSchemaTypeCollection)
             {
                 // TODO MJF -
-                OLDAsnSchemaTypeDefinitionCollectionOf
-                        collection = (OLDAsnSchemaTypeDefinitionCollectionOf)type;
+                AsnSchemaTypeCollection
+                        collection = (AsnSchemaTypeCollection)type;
 
                 final String tagName = tag;// type.getTagName(tag);
-                typeName = collection.getTypeName(tag);
-
-                type = module.getType(typeName);
+                type = collection.getElementType();
 
                 result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
-                result.type = OLDAsnSchemaTypeDefinition.NULL;
+                result.type = AsnSchemaType.NULL;
                 result.decodedTags.add(tagName);
             }
-            */
             else
             {
                 // This is NOT a container type, so we can't go any further down - this is the end of the line!
@@ -285,6 +340,20 @@ public class AsnSchemaImpl implements AsnSchema
     }
 
 /*
+    private AsnSchemaTypeDefinition getTypeDefinition(AsnSchemaTypePlaceholder placeholder, AsnSchemaModule module)
+    {
+        String moduleName = placeholder.getModuleName();
+        String typeName = placeholder.getTypeName();
+
+        AsnSchemaTypeDefinition typeDefinition = module.getType(typeName);
+        if (typeDefinition == AsnSchemaTypeDefinition.NULL)
+        {
+
+        }
+
+    }
+*/
+/*
     private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
             AsnSchemaModule module)
     {
@@ -294,7 +363,7 @@ public class AsnSchemaImpl implements AsnSchema
         Set<AsnSchemaTagType> allTypeDefs = Sets.newHashSet();
 
         // The module stores all the TypeDefs defined within it.
-        // this is now the Type of the tag's container (ie we are assuming this is in a Sequence/Set etc)
+        // this is now the Type of the tag's container (ie we are assuming this is in a SEQUENCE/Set etc)
         AsnSchemaTypeDefinition type = module.getType(typeName);
 
         while (rawTags.hasNext())
@@ -332,7 +401,7 @@ public class AsnSchemaImpl implements AsnSchema
 
             // What this is trying to do is follow the sequence of raw tags /0/1/2 etc and map that to a set
             // of names /Human/name/first AND to provide the Type of that last one
-            // It is only sensible to have a "lower" tag if the "parent" is a Container type (Sequence, set etc)
+            // It is only sensible to have a "lower" tag if the "parent" is a Container type (SEQUENCE, set etc)
 
 
             // So instead of dealing with "generic" types we could determine whether something is a container, and if it is
@@ -358,7 +427,7 @@ public class AsnSchemaImpl implements AsnSchema
 
                 // TODO MJF.  This is just temporary.  We should do this scan for all PlaceHolders
                 // as part of the schema parsing.  But just to test the concept, lets try here...
-                // Also TypeDefs may be indirect, eg in a Sequence we may have:
+                // Also TypeDefs may be indirect, eg in a SEQUENCE we may have:
                 //    age MyAge
                 // then
                 //  MyAge ::= ShortInt (1..200)

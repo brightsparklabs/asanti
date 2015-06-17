@@ -30,30 +30,10 @@ public class AsnSchemaComponentTypeParserTest
     @Test
     public void testParse_NullOrEmpty() throws Exception
     {
-        // test empty containingTypeName
-        try
-        {
-            AsnSchemaComponentTypeParser.parse("", "TEST_COMPONENT_TYPES_TEXT");
-            fail("IllegalArgumentException not thrown");
-        }
-        catch (final IllegalArgumentException ex)
-        {
-        }
-
-        // test null containingTypeName
-        try
-        {
-            AsnSchemaComponentTypeParser.parse(null, "TEST_COMPONENT_TYPES_TEXT");
-            fail("NullPointerException not thrown");
-        }
-        catch (final NullPointerException ex)
-        {
-        }
-
         // test empty componentTypesText
         try
         {
-            AsnSchemaComponentTypeParser.parse("TEST_CONTAINING_TYPE_NAME", "");
+            AsnSchemaComponentTypeParser.parse("");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -63,7 +43,7 @@ public class AsnSchemaComponentTypeParserTest
         // test null componentTypesText
         try
         {
-            AsnSchemaComponentTypeParser.parse("TEST_CONTAINING_TYPE_NAME", null);
+            AsnSchemaComponentTypeParser.parse(null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -77,8 +57,7 @@ public class AsnSchemaComponentTypeParserTest
         // test parse invalid type name
         try
         {
-            AsnSchemaComponentTypeParser.parse("TEST_CONTAINING_TYPE_NAME",
-                    "!invalidType [0] type");
+            AsnSchemaComponentTypeParser.parse("!invalidType [0] type");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -88,7 +67,7 @@ public class AsnSchemaComponentTypeParserTest
         // test parse no type
         try
         {
-            AsnSchemaComponentTypeParser.parse("TEST_CONTAINING_TYPE_NAME", "typeName [0]");
+            AsnSchemaComponentTypeParser.parse("typeName [0]");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -98,7 +77,7 @@ public class AsnSchemaComponentTypeParserTest
         // test parse no type name
         try
         {
-            AsnSchemaComponentTypeParser.parse("TEST_CONTAINING_TYPE_NAME", "[0] type");
+            AsnSchemaComponentTypeParser.parse("[0] type");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -108,7 +87,7 @@ public class AsnSchemaComponentTypeParserTest
         // test parse invalid type
         try
         {
-            AsnSchemaComponentTypeParser.parse("TEST_CONTAINING_TYPE_NAME", "typeName [0] type?");
+            AsnSchemaComponentTypeParser.parse("typeName [0] type?");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -118,8 +97,7 @@ public class AsnSchemaComponentTypeParserTest
         // test invalid pseudo type
         try
         {
-            AsnSchemaComponentTypeParser.parse("TEST_CONTAINING_TYPE_NAME",
-                    "typeName [0] SEQUENCE {");
+            AsnSchemaComponentTypeParser.parse("typeName [0] SEQUENCE {");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -133,21 +111,20 @@ public class AsnSchemaComponentTypeParserTest
 /* TODO MJF - broken as part of ASN-126
         // Document type
         ImmutableList<AsnSchemaComponentType> actualComponents = AsnSchemaComponentTypeParser.parse(
-                "Document",
                 "header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL");
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForDocument(),
                 actualComponents);
 
         // Body type
-        actualComponents = AsnSchemaComponentTypeParser.parse("Body",
+        actualComponents = AsnSchemaComponentTypeParser.parse(
                 "lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL");
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForBody(),
                 actualComponents);
 
         // Section-Main type
-        actualComponents = AsnSchemaComponentTypeParser.parse("Section-Main",
+        actualComponents = AsnSchemaComponentTypeParser.parse(
                 "text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph, sections [3] SET OF SET { number [1] INTEGER, text [2] OCTET STRING }");
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForSectionMain(),

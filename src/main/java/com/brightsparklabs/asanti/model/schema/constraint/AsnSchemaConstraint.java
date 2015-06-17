@@ -44,7 +44,7 @@ public interface AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}
+     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}
      */
     public static class Null implements AsnSchemaConstraint
     {

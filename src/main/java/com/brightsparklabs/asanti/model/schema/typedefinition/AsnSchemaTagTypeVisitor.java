@@ -112,6 +112,8 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(OLDAsnSchemaTypeDefinitionIa5String visitable);
+    public T visit(AsnPrimitiveTypeIA5String visitable);
+
 
     /**
      * Processes the supplied object with this visitor
@@ -135,6 +137,7 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(OLDAsnSchemaTypeDefinitionNumericString visitable);
+    public T visit(AsnPrimitiveTypeNumericString visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -217,6 +220,7 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(OLDAsnSchemaTypeDefinitionVisibleString visitable);
+    public T visit(AsnPrimitiveTypeVisibleString visitable);
 
     /**
      * Processes the supplied object with this visitor

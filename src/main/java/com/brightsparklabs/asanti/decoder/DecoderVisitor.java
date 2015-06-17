@@ -127,6 +127,12 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public Ia5StringDecoder visit(final AsnPrimitiveTypeIA5String visitable)
+    {
+        return Ia5StringDecoder.getInstance();
+    }
+
+    @Override
     public IntegerDecoder visit(final OLDAsnSchemaTypeDefinitionInteger visitable)
     {
         return IntegerDecoder.getInstance();
@@ -144,6 +150,12 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
 
     @Override
     public NumericStringDecoder visit(final OLDAsnSchemaTypeDefinitionNumericString visitable)
+    {
+        return NumericStringDecoder.getInstance();
+    }
+
+    @Override
+    public NumericStringDecoder visit(final AsnPrimitiveTypeNumericString visitable)
     {
         return NumericStringDecoder.getInstance();
     }
@@ -242,6 +254,12 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
 
     @Override
     public VisibleStringDecoder visit(final OLDAsnSchemaTypeDefinitionVisibleString visitable)
+    {
+        return VisibleStringDecoder.getInstance();
+    }
+
+    @Override
+    public VisibleStringDecoder visit(final AsnPrimitiveTypeVisibleString visitable)
     {
         return VisibleStringDecoder.getInstance();
     }

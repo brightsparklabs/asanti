@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableSet;
 /**
  * A base type used to model the types for objects within ASN.1 schema.
  * These objects can be either Type Definitions, eg Type ::= SomeType,
- * or components within a constructed type (Sequence etc), eg component SomeType
+ * or components within a constructed type (SEQUENCE etc), eg component SomeType
  *
  *
  * @author brightSPARK Labs
@@ -37,11 +37,11 @@ public interface AsnSchemaType
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaTagType.Null
+    // INTERNAL CLASS: AsnSchemaTagType.NULL
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
+     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
@@ -66,7 +66,7 @@ public interface AsnSchemaType
         @Override
         public AsnPrimitiveType getPrimitiveType()
         {
-            return AsnPrimitiveType.Null;
+            return AsnPrimitiveType.NULL;
         }
 
         @Override

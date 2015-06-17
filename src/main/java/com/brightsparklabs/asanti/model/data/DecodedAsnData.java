@@ -6,10 +6,8 @@
 package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -131,18 +129,15 @@ public interface DecodedAsnData
             throws DecodeException;
 
     /**
-     * Gets the ASN.1 Type Definition of the specified tag
+     * Gets the ASN.1 Type of the specified tag
      *
      * @param tag
      *         tag to retrieve the type of
      *
-     * @return the ASN.1 Type Definition of the specified tag or {@link OLDAsnSchemaTypeDefinition#NULL}
+     * @return the ASN.1 Type Definition of the specified tag or {@link AsnPrimitiveType#NULL}
      * if the tag does not exist
-     */
-    //public OLDAsnSchemaTypeDefinition getType(String tag);
-    //public AsnSchemaTagType getType(String tag);
+     */ // TODO MJF - we need the type because it contains the constraints.
     public AsnSchemaType getType(String tag);
-
 
 
     // TODO - MJF, is this the best way to get the chain??? - mostly this is so that we can process
@@ -190,11 +185,11 @@ public interface DecodedAsnData
             throws DecodeException;
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: Null
+    // INTERNAL CLASS: NULL
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link DecodedAsnData}
+     * NULL instance of {@link DecodedAsnData}
      *
      * @author brightSPARK Labs
      */

@@ -215,7 +215,6 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    //public OLDAsnSchemaTypeDefinition getType(String tag)
     public AsnSchemaType getType(String tag)
     {
         final DecodedTag decodedTag = allTags.get(tag);

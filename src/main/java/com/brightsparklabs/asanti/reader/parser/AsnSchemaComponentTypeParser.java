@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
@@ -44,9 +45,6 @@ public class AsnSchemaComponentTypeParser
     private static final Pattern PATTERN_RAW_TYPE = Pattern.compile(
             "(((SET)|(SEQUENCE))(( SIZE)? \\(.+?\\)\\)?)? OF )?([a-zA-Z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
 
-    /** pattern to determine whether the raw type is a pseudo type definition */
-    private static final Pattern PATTERN_PSEUDO_TYPE = Pattern.compile(
-            "(SEQUENCE *\\{|(SET|SEQUENCE)(( SIZE)? \\(.+?\\)\\)?)? OF (SET|SEQUENCE) *\\{|SET *\\{|ENUMERATED *\\{|CHOICE *\\{)(.*?)\\}");
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -63,8 +61,6 @@ public class AsnSchemaComponentTypeParser
     /**
      * Parses the component types in a construct
      *
-     * @param containingTypeName
-     *         the name of the parent containing type
      * @param componentTypesText
      *         all component types contained in the construct as a string
      *
@@ -77,12 +73,8 @@ public class AsnSchemaComponentTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
-    public static ImmutableList<AsnSchemaComponentType> parse(String containingTypeName,
-            String componentTypesText) throws ParseException
+    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText) throws ParseException
     {
-        checkNotNull(containingTypeName);
-        checkArgument(!containingTypeName.trim().isEmpty(),
-                "Containing Type Name must be specified");
         checkNotNull(componentTypesText);
         checkArgument(!componentTypesText.trim().isEmpty(),
                 "Component Types Text must be specified");
@@ -91,8 +83,7 @@ public class AsnSchemaComponentTypeParser
         final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
         for (final String componentTypeLine : componentTypeLines)
         {
-            final AsnSchemaComponentType componentType = parseComponentType(containingTypeName,
-                    componentTypeLine);
+            final AsnSchemaComponentType componentType = parseComponentType(componentTypeLine);
             builder.add(componentType);
         }
         return builder.build();
@@ -178,8 +169,7 @@ public class AsnSchemaComponentTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
-    private static AsnSchemaComponentType parseComponentType(String containingTypeName,
-            String componentTypeLine) throws ParseException
+    private static AsnSchemaComponentType parseComponentType(String componentTypeLine) throws ParseException
     {
         Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
         if (!matcher.matches())
@@ -196,47 +186,31 @@ public class AsnSchemaComponentTypeParser
 
 
 
-        // check if type is a pseudo type
-        matcher = PATTERN_PSEUDO_TYPE.matcher(rawType);
+        matcher = PATTERN_RAW_TYPE.matcher(rawType);
+
         if (matcher.matches())
         {
+            final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType);
 
-            // TODO MJF - Sequence and Set are both types that are 'complex' in that they contain
-            // other tags and and are not "directly" tags themselves (ie you can't get bytes/data for them)
-            // Enumerated however is something you can get bytes for.
-            // Not sure about Choice?
-
-
-            // auto-generate pseudo type name in the format
-            // generated.<containingTypeName>.<componentTypeName>
-            final String generatedTypeName = "generated." + containingTypeName + "." + tagName;
-            return new AsnSchemaComponentTypeGenerated(tagName,
-                    tag,
-                    generatedTypeName,
-                    rawType,
-                    isOptional);
+            String typeName = matcher.group(7);
+            if (!typeName.equals(rawType))
+            {
+                int breakpoint = 0;
+            }
+            // TODO MJF - figure out the regex so we don't need to trim...
+            typeName = typeName.trim();
+            return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
         }
         else
         {
-            matcher = PATTERN_RAW_TYPE.matcher(rawType);
+            // TODO MJF - getting here in the case of some cases we are not yet handling.  Try continue anyway...
+            AsnSchemaType tagType = AsnSchemaType.NULL;
+            return new AsnSchemaComponentType("junk", tag, "junk", true, tagType);
 
-            if (matcher.matches())
-            {
-                // TODO MJF -
-                //final AsnSchemaTagType tagType = AnsSchemaTagTypeParser.parse(tagName, rawType);
-                final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType);
 
-                String typeName = matcher.group(7);
-                // TODO MJF - figure out the regex so we don't need to trim...
-                typeName = typeName.trim();
-                return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
-            }
-            else
-            {
-                final String error =
-                        "Could not match type within component type definition. Found: " + rawType;
-                throw new ParseException(error, -1);
-            }
+//            final String error =
+//                    "Could not match type within component type definition. Found: " + rawType;
+//            throw new ParseException(error, -1);
         }
     }
 }

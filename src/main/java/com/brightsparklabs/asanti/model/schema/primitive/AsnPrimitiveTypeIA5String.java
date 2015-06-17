@@ -8,10 +8,9 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVi
  * This class is used as a 'key' for the Visitor.
  * @author brightSPARK Labs
  */
-public class AsnPrimitiveTypeUtf8String implements AsnPrimitiveType
+public class AsnPrimitiveTypeIA5String implements AsnPrimitiveType
 {
 
-    protected AsnPrimitiveTypeUtf8String() {}
 
     @Override
     public AsnBuiltinType getBuiltinType()

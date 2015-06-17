@@ -48,7 +48,7 @@ public interface AsnSchemaTagType extends Visitable<AsnSchemaTagTypeVisitor<?>>
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
+     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.

@@ -49,7 +49,7 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
      */
     public AsnSchemaTypePlaceholder(String moduleName, String typeName, AsnSchemaConstraint constraint)
     {
-        super(AsnPrimitiveType.Null, constraint);
+        super(AsnPrimitiveType.NULL, constraint);
 
         checkNotNull(typeName);
         checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");  // TODO MJF. Test case it!
@@ -59,4 +59,13 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
 
     }
 
+    public String getModuleName()
+    {
+        return moduleName;
+    }
+
+    public String getTypeName()
+    {
+        return typeName;
+    }
 }

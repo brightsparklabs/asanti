@@ -34,11 +34,11 @@ public interface AsnSchemaTypeDefinition
     AsnSchemaType getType();
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaTypeDefinition.Null
+    // INTERNAL CLASS: AsnSchemaTypeDefinition.NULL
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
+     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.

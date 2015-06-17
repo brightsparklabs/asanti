@@ -140,7 +140,7 @@ public class AsnSchemaParserTest
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
             "       age INTEGER (1..100),\n" +
-            "       name UTF8String\n" +
+            "       name UTF8String (SIZE (1..10))\n" +
             "   }\n" +
             "END";
 
@@ -227,6 +227,21 @@ public class AsnSchemaParserTest
             "   PersonAge ::= INTEGER (1..200)\n" +
             "END";
 
+
+    private static final String HUMAN_SEQUENCEOF_PRIMITIVE = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       age SEQUENCE OF INTEGER (1..100)\n" +
+            "   }\n" +
+            "END";
+
+
     private static final String HUMAN_SEQUENCEOF_SEQUENCE = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
@@ -262,6 +277,42 @@ public class AsnSchemaParserTest
             "   }\n" +
             "END";
 
+    private static final String HUMAN_SEQUENCEOF_SEQUENCE3 = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       age INTEGER (1..100),\n" +
+            "       name UTF8String,\n" +
+            "       friends SEQUENCE OF SEQUENCE\n" +
+            "       {\n" +
+            "           age INTEGER (1..100),\n" +
+            "           name UTF8String\n" +
+            "       }\n" +
+            "   }\n" +
+            "END";
+    private static final String HUMAN_SEQUENCEOF_SEQUENCE4 = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "IMPORTS\n" +
+            "BEGIN\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       age INTEGER (1..100),\n" +
+            "       name UTF8String,\n" +
+            "       friends SEQUENCE OF Friend\n" +
+            "   }\n" +
+            "   Friend ::= SEQUENCE {\n" +
+            "           age INTEGER (1..100),\n" +
+            "           name UTF8String\n" +
+            "   }\n" +
+            "END";
 
     private static final String HUMAN_USING_TYPEDEF_SETOF = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
@@ -320,7 +371,7 @@ public class AsnSchemaParserTest
     @Test
     public void testParse_HumanSimple() throws Exception
     {
-        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE3);
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE);
 
         String tag = "/0";
         logger.info("get tag " + tag);
@@ -440,20 +491,6 @@ public class AsnSchemaParserTest
                 topLevelType);
 
 
-        for (int i = 0; i < pdus.size(); i++)
-        {
-
-            logger.info("Parsing PDU[{}]", i);
-            final DecodedAsnData pdu = pdus.get(i);
-            for (String t : pdu.getTags())
-            {
-                logger.info("\t{} => {} as {}", t, pdu.getHexString(t), pdu.getType(t).getPrimitiveType().getBuiltinType() );
-            }
-            for (String t : pdu.getUnmappedTags())
-            {
-                logger.info("\t{} => {}", t, pdu.getHexString(t));
-            }
-        }
 
 
 /*
@@ -592,7 +629,7 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + age);
         assertEquals(new BigInteger("32"), age);
 
-
+/*
         ValidatorImpl validator = new ValidatorImpl();
         ValidationResult validationresult = validator.validate(pdu);
 
@@ -609,7 +646,7 @@ public class AsnSchemaParserTest
                     " reason: " + fail.getFailureReason() +
                     " type: " + fail.getFailureType());
         }
-
+*/
     }
 
     @Test
@@ -636,6 +673,8 @@ public class AsnSchemaParserTest
                 final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
                         schema,
                         topLevelType);
+
+                debugPdus(pdus);
 
                 DecodedAsnData pdu = pdus.get(0);
 
@@ -684,6 +723,8 @@ public class AsnSchemaParserTest
                 schema,
                 topLevelType);
 
+        debugPdus(pdus);
+
         DecodedAsnData pdu = pdus.get(0);
 
         assertEquals(0, pdu.getUnmappedTags().size());
@@ -727,13 +768,14 @@ public class AsnSchemaParserTest
 */
     }
 
+
+
     @Test
-    public void testParse_HumanSequenceOfSequence() throws Exception
+    public void testParse_HumanSequenceOfPrimitive() throws Exception
     {
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_PRIMITIVE);
 
-        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE);
-
-        String berFilename = getClass().getResource("/Human_SequenceOfSequence.ber").getFile();
+        String berFilename = getClass().getResource("/Human_SequenceOfPrimitive.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
@@ -741,26 +783,96 @@ public class AsnSchemaParserTest
                 schema,
                 topLevelType);
 
+        debugPdus(pdus);
 
+    }
+
+    @Test
+    public void testParse_HumanSequenceOfSequence3() throws Exception
+    {
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE3);
+
+        String berFilename = getClass().getResource("/Human_SequenceOfSequence3.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
 
         DecodedAsnData pdu = pdus.get(0);
 
-        //assertEquals(0, pdu.getUnmappedTags().size());
+        assertEquals(0, pdu.getUnmappedTags().size());
 
-        for (String tag : pdu.getTags())
-        {
-            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
-        }
-        for (String tag : pdu.getUnmappedTags())
-        {
-            logger.info("\t{} => {}", tag, pdu.getHexString(tag));
-        }
+        debugPdus(pdus);
 
-        /* TODO MJF
-        String tag = "/Human/faveNumbers";
-        BigInteger fave0 = (BigInteger)pdu.getDecodedObject(tag+"[0]");
-        */
+        String tag = "/Human/age";
+        BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
+        assertEquals(32, age.intValue());
 
+        tag = "/Human/name";
+        String name = (String)pdu.getDecodedObject(tag);
+        assertEquals("Adam", name);
+
+        tag = "/Human/friends[0]/name";
+        name = (String)pdu.getDecodedObject(tag);
+        assertEquals("Finn", name);
+
+        tag = "/Human/friends[0]/age";
+        age = (BigInteger)pdu.getDecodedObject(tag);
+        assertEquals(5, age.intValue());
+
+        tag = "/Human/friends[1]/name";
+        name = (String)pdu.getDecodedObject(tag);
+        assertEquals("Fatty", name);
+
+        tag = "/Human/friends[1]/age";
+        age = (BigInteger)pdu.getDecodedObject(tag);
+        assertEquals(3, age.intValue());
+    }
+    @Test
+    public void testParse_HumanSequenceOfSequence4() throws Exception
+    {
+
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE4);
+
+        String berFilename = getClass().getResource("/Human_SequenceOfSequence3.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+
+        DecodedAsnData pdu = pdus.get(0);
+
+        assertEquals(0, pdu.getUnmappedTags().size());
+
+        debugPdus(pdus);
+
+        String tag = "/Human/age";
+        BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
+        assertEquals(32, age.intValue());
+
+        tag = "/Human/name";
+        String name = (String)pdu.getDecodedObject(tag);
+        assertEquals("Adam", name);
+
+        tag = "/Human/friends[0]/name";
+        name = (String)pdu.getDecodedObject(tag);
+        assertEquals("Finn", name);
+
+        tag = "/Human/friends[0]/age";
+        age = (BigInteger)pdu.getDecodedObject(tag);
+        assertEquals(5, age.intValue());
+
+        tag = "/Human/friends[1]/name";
+        name = (String)pdu.getDecodedObject(tag);
+        assertEquals("Fatty", name);
+
+        tag = "/Human/friends[1]/age";
+        age = (BigInteger)pdu.getDecodedObject(tag);
+        assertEquals(3, age.intValue());
     }
 
     @Test
@@ -839,7 +951,7 @@ public class AsnSchemaParserTest
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
         {
-            String tag = "/2/0/2/5/1/1/2/0";
+            String tag = "1/1";//"/2/0/2/5/1/1/2/0";
             logger.info("get tag " + tag);
             OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
             int breakpoint = 0;
@@ -1082,5 +1194,24 @@ public class AsnSchemaParserTest
 
         }
 */
+    }
+
+    private void debugPdus(ImmutableList<DecodedAsnData> pdus)
+    {
+        for (int i = 0; i < pdus.size(); i++)
+        {
+
+            logger.info("Parsing PDU[{}]", i);
+            final DecodedAsnData pdu = pdus.get(i);
+            for (String t : pdu.getTags())
+            {
+                logger.info("\t{} => {} as {}", t, pdu.getHexString(t), pdu.getType(t).getPrimitiveType().getBuiltinType() );
+            }
+            for (String t : pdu.getUnmappedTags())
+            {
+                logger.info("\t{} => {}", t, pdu.getHexString(t));
+            }
+        }
+
     }
 }

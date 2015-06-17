@@ -5,19 +5,31 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Created by Michael on 16/06/2015.
  */
 public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType
 {
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+
+    /**
+     * built-in types which are considered 'collection'. Currently: SET OF and
+     * SEQUENCE OF
+     */
+    public static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(AsnPrimitiveType.SET,
+            AsnPrimitiveType.SEQUENCE, AsnPrimitiveType.CHOICE); // TODO MJF Enumerated
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -62,6 +74,8 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType
     public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, Iterable<AsnSchemaComponentType> componentTypes, AsnSchemaConstraint constraint)
     {
         super(primitiveType, constraint);
+
+        checkArgument(validTypes.contains(primitiveType), "Type must be either SET, SEQUENCE, CHOICE or ENUMERATED");
 
         checkNotNull(componentTypes);
 

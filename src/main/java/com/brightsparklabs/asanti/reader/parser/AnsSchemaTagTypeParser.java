@@ -351,7 +351,7 @@ public final class AnsSchemaTagTypeParser
             logger.debug("Did not otherwise parse Primitive: " + value);
         }
 
-        /* TODO - MJF. What happens if this is an indirection, eg (within a Sequence):
+        /* TODO - MJF. What happens if this is an indirection, eg (within a SEQUENCE):
          *    foo Bar
          * where Bar is defined somewhere else.  Surely that is legal?
          * Complicated by the fact that Bar may not have been parsed by the time we get to the line Foo ::= Bar
@@ -361,7 +361,6 @@ public final class AnsSchemaTagTypeParser
         matcher = PATTERN_DEFINED_TYPE.matcher(value);
         if (matcher.matches())
         {
-            //return ImmutableList.<AsnSchemaTagType>of(parseInteger(name, matcher));
             return parsePlaceHolder(name, matcher);
         }
 
@@ -513,7 +512,7 @@ public final class AnsSchemaTagTypeParser
     }
 
     /**
-     * Parses a Sequence Of tag type
+     * Parses a SEQUENCE Of tag type
      *
      * @param name
      *         name of the defined type

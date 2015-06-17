@@ -31,9 +31,9 @@ public interface BuiltinTypeValidator
     public static final String IA5STRING_VALIDATION_ERROR
             = "Supplied bytes do not conform to the IA5String format. All bytes must be within the range 0x00 - 0x7f. Supplied bytes contain a byte with invalid value: ";
 
-    /** validation error string for Null failures */
+    /** validation error string for NULL failures */
     public static final String NULL_VALIDATION_ERROR
-            = "Null type must be zero length.";
+            = "NULL type must be zero length.";
 
     /** validation error string for NumericString failures */
     public static final String NUMERICSTRING_VALIDATION_ERROR
@@ -91,11 +91,11 @@ public interface BuiltinTypeValidator
     public ImmutableSet<ByteValidationFailure> validate(byte[] bytes);
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: Null
+    // INTERNAL CLASS: NULL
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link BuiltinTypeDecoder}.
+     * NULL instance of {@link BuiltinTypeDecoder}.
      *
      * <p>The {@code validate} methods will return an empty set.</p>
      *

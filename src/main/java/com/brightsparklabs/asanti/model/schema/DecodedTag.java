@@ -88,6 +88,14 @@ public class DecodedTag
 
         checkArgument(!this.tag.isEmpty(), "Decoded tag cannot be blank");
         checkArgument(!this.rawTag.isEmpty(), "Raw tag cannot be blank");
+
+
+        if (this.type == null)
+        {
+        int breakpoint = 0;
+        }
+
+
         checkNotNull(this.type);
     }
 

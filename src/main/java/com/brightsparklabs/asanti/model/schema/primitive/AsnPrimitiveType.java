@@ -7,7 +7,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVi
 
 /**
  * A base type used to represent the primitive builtin types within ASN.1
- * This class is used as a 'key' for the Visitor, and has no behaviour
+ * This class is used as a 'key' for the Visitor.
  * @author brightSPARK Labs
  */
 public interface AsnPrimitiveType extends Visitable<AsnSchemaTagTypeVisitor<?>>
@@ -15,19 +15,22 @@ public interface AsnPrimitiveType extends Visitable<AsnSchemaTagTypeVisitor<?>>
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
-    public static final AsnPrimitiveType Null = new AsnPrimitiveType.Null();
-    public static final AsnPrimitiveType Sequence = new AsnPrimitiveTypeSequence();
-    public static final AsnPrimitiveType Choice = new AsnPrimitiveTypeChoice();
-    public static final AsnPrimitiveType Set = new AsnPrimitiveTypeSet();
-    public static final AsnPrimitiveType SequenceOf = new AsnPrimitiveTypeSequenceOf();
-    public static final AsnPrimitiveType SetOf = new AsnPrimitiveTypeSetOf();
-    public static final AsnPrimitiveType Utf8String = new AsnPrimitiveTypeUtf8String();
-    public static final AsnPrimitiveType Integer = new AsnPrimitiveTypeInteger();
-    public static final AsnPrimitiveType Oid = new AsnPrimitiveTypeOid();
-    public static final AsnPrimitiveType PrintableString = new AsnPrimitiveTypePrintableString();
-    public static final AsnPrimitiveType GeneralizedTime = new AsnPrimitiveTypeGeneralizedTime();
-    public static final AsnPrimitiveType BitString = new AsnPrimitiveTypeBitString();
-    public static final AsnPrimitiveType OctetString = new AsnPrimitiveTypeOctetString();
+    public static final AsnPrimitiveType NULL = new AsnPrimitiveType.Null();
+    public static final AsnPrimitiveType SEQUENCE = new AsnPrimitiveTypeSequence();
+    public static final AsnPrimitiveType CHOICE = new AsnPrimitiveTypeChoice();
+    public static final AsnPrimitiveType SET = new AsnPrimitiveTypeSet();
+    public static final AsnPrimitiveType SEQUENCE_OF = new AsnPrimitiveTypeSequenceOf();
+    public static final AsnPrimitiveType SET_OF = new AsnPrimitiveTypeSetOf();
+    public static final AsnPrimitiveType UTF8_STRING = new AsnPrimitiveTypeUtf8String();
+    public static final AsnPrimitiveType INTEGER = new AsnPrimitiveTypeInteger();
+    public static final AsnPrimitiveType OID = new AsnPrimitiveTypeOid();
+    public static final AsnPrimitiveType PRINTABLE_STRING = new AsnPrimitiveTypePrintableString();
+    public static final AsnPrimitiveType GENERALIZED_TIME = new AsnPrimitiveTypeGeneralizedTime();
+    public static final AsnPrimitiveType BIT_STRING = new AsnPrimitiveTypeBitString();
+    public static final AsnPrimitiveType OCTET_STRING = new AsnPrimitiveTypeOctetString();
+    public static final AsnPrimitiveType IA5_STRING = new AsnPrimitiveTypeIA5String();
+    public static final AsnPrimitiveType VISIBLE_STRING = new AsnPrimitiveTypeVisibleString();
+    public static final AsnPrimitiveType NUMERIC_STRING = new AsnPrimitiveTypeNumericString();
 
 
     /**
@@ -44,7 +47,7 @@ public interface AsnPrimitiveType extends Visitable<AsnSchemaTagTypeVisitor<?>>
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
+     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.

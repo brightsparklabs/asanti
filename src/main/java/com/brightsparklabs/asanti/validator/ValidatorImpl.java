@@ -41,9 +41,7 @@ public class ValidatorImpl implements Validator
                 = DecodedAsnDataValidationResult.builder();
         for (final String tag : decodedAsnData.getTags())
         {
-            //final OLDAsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
-            final AsnSchemaType schemaType = decodedAsnData.getType(tag);
-            final AsnPrimitiveType type = schemaType.getPrimitiveType();
+            final AsnPrimitiveType type = decodedAsnData.getType(tag).getPrimitiveType();
             final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.visit(
                     validationVisitor);
             final ImmutableSet<DecodedTagValidationFailure> failures = tagValidator.validate(tag,

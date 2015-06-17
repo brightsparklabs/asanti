@@ -125,6 +125,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public Ia5StringValidator visit(AsnPrimitiveTypeIA5String visitable)
+    {
+        return Ia5StringValidator.getInstance();
+    }
+
+    @Override
     public IntegerValidator visit(OLDAsnSchemaTypeDefinitionInteger visitable)
     {
         return IntegerValidator.getInstance();
@@ -142,6 +148,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
 
     @Override
     public NumericStringValidator visit(OLDAsnSchemaTypeDefinitionNumericString visitable)
+    {
+        return NumericStringValidator.getInstance();
+    }
+
+    @Override
+    public NumericStringValidator visit(AsnPrimitiveTypeNumericString visitable)
     {
         return NumericStringValidator.getInstance();
     }
@@ -252,6 +264,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     public Utf8StringValidator visit(AsnPrimitiveTypeUtf8String visitable)
     {
         return Utf8StringValidator.getInstance();
+    }
+
+    @Override
+    public VisibleStringValidator visit(AsnPrimitiveTypeVisibleString visitable)
+    {
+        return VisibleStringValidator.getInstance();
     }
 
     @Override
