@@ -50,7 +50,8 @@ public class ValidationVisitorTest
     {
         // TODO: ASN-113
         final Object result = instance.visit(AsnPrimitiveType.CHOICE);
-        assertNull(result);
+        assertEquals(BuiltinTypeValidator.NULL, result);
+        //assertNull(result);
     }
 
     @Test
@@ -58,7 +59,8 @@ public class ValidationVisitorTest
     {
         // TODO: ASN-113
         final Object result = instance.visit(AsnPrimitiveType.ENUMERATED);
-        assertNull(result);
+        assertEquals(BuiltinTypeValidator.NULL, result);
+        //assertNull(result);
     }
 
     @Test
