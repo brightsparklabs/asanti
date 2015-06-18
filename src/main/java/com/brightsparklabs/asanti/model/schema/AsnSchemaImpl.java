@@ -107,7 +107,7 @@ public class AsnSchemaImpl implements AsnSchema
 
         // check if decode was successful
         boolean decodeSuccessful = true;
-        if (tags.size() != decodedTags.size()-1) // -1 because the decodeTags adds the containing type
+        if (tags.size() != decodedTags.size()) // -1 because the decodeTags adds the containing type
         {
             // could not decode
             decodeSuccessful = false;
@@ -121,8 +121,13 @@ public class AsnSchemaImpl implements AsnSchema
             }
         }
 
+
+        decodedTags.add(0, topLevelTypeName);
         decodedTags.add(0, ""); // empty string prefixes just the root separator
         final String decodedTagPath = tagJoiner.join(decodedTags);
+
+        logger.debug("getDecodedTag {} => {} ({})", rawTag, decodedTagPath, decodeSuccessful);
+
 
         final DecodedTag decodedTag = new DecodedTag(decodedTagPath,
                 rawTag,
@@ -172,7 +177,7 @@ public class AsnSchemaImpl implements AsnSchema
         AsnSchemaType type = typeDefinition.getType();
 
         result.type = type;
-        result.decodedTags.add(containingTypeName);
+
 
         while (rawTags.hasNext())
         {
@@ -236,22 +241,16 @@ public class AsnSchemaImpl implements AsnSchema
                         final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
                         if (!AsnSchemaModule.NULL.equals(importedModule))
                         {
-                            if (!rawTags.hasNext())
-                            {
-                                // it can't be a constructed type.
-                                typeDefinition = importedModule.getType(typeName);
-                            }
-                            else
-                            {
-                                // found the module the type is defined in
-                                final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
-                                        typeName,
-                                        importedModule);
-                                result.type = tagsAndType.type;
-                                result.decodedTags.addAll(tagsAndType.decodedTags);
-                                break;
-                                // TODO MJF.  test this...
-                            }
+                            result.decodedTags.add(tagName);
+
+                            // found the module the type is defined in
+                            final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
+                                    typeName,
+                                    importedModule);
+                            result.type = tagsAndType.type;
+                            result.decodedTags.addAll(tagsAndType.decodedTags);
+                            break;
+                            // TODO MJF.  test this...
                         }
                     }
 

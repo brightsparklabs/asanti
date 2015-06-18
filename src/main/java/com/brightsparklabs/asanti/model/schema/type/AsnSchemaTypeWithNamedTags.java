@@ -8,9 +8,15 @@ import com.google.common.collect.ImmutableMap;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by Michael on 16/06/2015.
+ * A type used to model the types for objects within ASN.1 schema that may contain Named Values,
+ * for example Enumerated and Integer.
+ * These objects can be either Type Definitions, eg Type ::= SomeType,
+ * or components within a constructed type (SEQUENCE etc), eg component SomeType
+ *
+ *
+ * @author brightSPARK Labs
  */
-public class AsnSchemaTypeWithNamesTags extends AbstractAsnSchemaType
+public class AsnSchemaTypeWithNamedTags extends AbstractAsnSchemaType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -42,7 +48,7 @@ public class AsnSchemaTypeWithNamesTags extends AbstractAsnSchemaType
      *             if {@code namedValues} is {@code null}
      *
      */
-    public AsnSchemaTypeWithNamesTags(Iterable<AsnSchemaNamedTag> namedValues,
+    public AsnSchemaTypeWithNamedTags(Iterable<AsnSchemaNamedTag> namedValues,
             AsnSchemaConstraint constraint, AsnPrimitiveType primitiveType)
     {
         super(primitiveType, constraint);

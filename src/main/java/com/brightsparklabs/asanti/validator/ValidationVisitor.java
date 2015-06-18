@@ -59,6 +59,12 @@ public class ValidationVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public BooleanValidator visit(AsnPrimitiveTypeBoolean visitable)
+    {
+        return BooleanValidator.getInstance();
+    }
+
+    @Override
     public BuiltinTypeValidator visit(OLDAsnSchemaTypeDefinitionChoice visitable)
     {
         // TODO ASN-113

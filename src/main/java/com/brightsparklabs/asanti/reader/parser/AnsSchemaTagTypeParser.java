@@ -111,7 +111,53 @@ public final class AnsSchemaTagTypeParser
 
     /** pattern to match a PRIMITIVE type definition */
     private static final Pattern PATTERN_TYPE_DEFINITION_PRIMITIVE = Pattern.compile(
-            "^(BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|EXTERNAL|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING|BIT STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+            "^(BOOLEAN|DATE|CHARACTER STRING|DATE_TIME|DURATION|EMBEDDED PDV|INTEGER|OID-IRI|NULL|OBJECT IDENTIFIER|REAL|RELATIVE-OID-IRI|RELATIVE-OID|BMPString|GraphicString|ISO646String|PrintableString|TeletexString|T61String|UniversalString|VideotexString|TIME|TIME-OF-DAY|CHARACTER STRING|BIT STRING) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+
+
+/*
+BIT STRING
+BOOLEAN
+CHARACTER STRING
+DATE
+DATE_TIME
+DURATION
+EMBEDDED PDV
+INTEGER
+OID-IRI
+NULL
+OBJECT IDENTIFIER
+REAL
+RELATIVE-OID-IRI
+RELATIVE-OID
+BMPString
+GraphicString
+ISO646String
+PrintableString
+TeletexString
+T61String
+UniversalString
+VideotexString
+TIME
+TIME-OF-DAY
+
+
+OCTET STRING
+NumericString
+VisibleString
+IA5String
+GeneralString
+UTF8String
+GeneralizedTime
+UTCTime
+
+
+    ENUMERATED      - constructed
+
+*/
+
+
+
+
 
     /** error message if an unknown ASN.1 built-in type is found */
     private static final String ERROR_UNKNOWN_BUILT_IN_TYPE

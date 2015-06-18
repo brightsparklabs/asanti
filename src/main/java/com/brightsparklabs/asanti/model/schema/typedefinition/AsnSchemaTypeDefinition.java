@@ -1,11 +1,13 @@
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 
 /**
- * Created by Michael on 16/06/2015.
+ * A Type Definition is a named type that can be used to replace a primitive type when declaring
+ * other objects within an ASN.1 Schema, where those objects can be either other Type Definitions
+ * or component types.
+ * It is essentially a Name and a (@code AsnSchemaType)
+ * @author brightSPARK Labs
  */
 public interface AsnSchemaTypeDefinition
 {
@@ -38,7 +40,7 @@ public interface AsnSchemaTypeDefinition
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
+     * NULL instance of {@link AsnSchemaTypeDefinitionImpl}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
@@ -51,7 +53,7 @@ public interface AsnSchemaTypeDefinition
 
         /**
          * Default constructor. This is private. Use
-         * {@link AbstractOLDAsnSchemaTypeDefinition#NULL} to obtain an instance.
+         * {@link AsnSchemaTypeDefinition#NULL} to obtain an instance.
          */
         private Null()
         {

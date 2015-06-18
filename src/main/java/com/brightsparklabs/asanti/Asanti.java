@@ -124,11 +124,11 @@ public class Asanti
                 final DecodedAsnData pdu = pdus.get(i);
                 for (String tag : pdu.getTags())
                 {
-                    logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                    logger.info("\t{} => {} as {}", tag, pdu.getHexString(tag), pdu.getType(tag).getPrimitiveType());
                 }
                 for (String tag : pdu.getUnmappedTags())
                 {
-                    logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                    logger.info("\t?{} => {}", tag, pdu.getHexString(tag));
                 }
             }
         }

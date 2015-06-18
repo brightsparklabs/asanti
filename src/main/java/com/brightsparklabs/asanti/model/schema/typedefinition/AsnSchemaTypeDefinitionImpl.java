@@ -7,7 +7,9 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * Created by Michael on 16/06/2015.
+ * A concrete {@code AsnSchemaTypeDefinition}
+ *
+ * @author brightSPARK Labs
  */
 public class AsnSchemaTypeDefinitionImpl implements AsnSchemaTypeDefinition
 {

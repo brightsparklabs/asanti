@@ -150,7 +150,7 @@ public class AsnSchemaNamedTagParser
         // TODO MJF - what is the correct thing to do here - read the spec?
         // I'm only doing this because we throw later if all the tags are not unique
         // Look at what the constructor for AsnSchemaTypeConstructed does.
-        // Should this logic be in the constructor for AsnSchemaTypeWithNamesTags???
+        // Should this logic be in the constructor for AsnSchemaTypeWithNamedTags???
         if (tag == null)
         {
             tag = optionalTag.toString();

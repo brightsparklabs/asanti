@@ -67,6 +67,12 @@ public class DecoderVisitor implements AsnSchemaTagTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public BooleanDecoder visit(final AsnPrimitiveTypeBoolean visitable)
+    {
+        return BooleanDecoder.getInstance();
+    }
+
+    @Override
     public BuiltinTypeDecoder.Null visit(final OLDAsnSchemaTypeDefinitionChoice visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 CHOICE types cannot be decoded");

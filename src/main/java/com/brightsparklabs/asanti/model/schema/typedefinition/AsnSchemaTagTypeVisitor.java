@@ -48,6 +48,9 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
     public T visit(AsnSchemaTagTypeBitString visitable);
     public T visit(AsnPrimitiveTypeBitString visitable);
 
+    public T visit(AsnPrimitiveTypeBoolean visitable);
+
+
     /**
      * Processes the supplied object with this visitor
      *

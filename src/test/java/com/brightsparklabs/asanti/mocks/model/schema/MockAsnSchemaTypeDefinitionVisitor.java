@@ -84,6 +84,12 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     @Override
+    public String visit(AsnPrimitiveTypeBoolean visitable)
+    {
+        return visitable.getClass().getCanonicalName();
+    }
+
+    @Override
     public String visit(OLDAsnSchemaTypeDefinitionChoice visitable)
     {
         return visitable.getClass().getCanonicalName();
