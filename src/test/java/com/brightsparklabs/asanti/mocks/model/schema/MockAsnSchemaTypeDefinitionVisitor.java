@@ -5,7 +5,6 @@
 package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.primitive.*;
-import com.brightsparklabs.asanti.model.schema.tagtype.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
@@ -13,7 +12,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.*;
  *
  * @author brightSPARK Labs
  */
-public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisitor<String>
+public class MockAsnSchemaTypeDefinitionVisitor implements AsnPrimitiveTypeVisitor<String>
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -45,34 +44,11 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaTagTypeVisitor
+    // IMPLEMENTATION: AsnPrimitiveTypeVisitor
     // -------------------------------------------------------------------------
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinition.Null visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(AsnSchemaTagType.Null visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
     public String visit(AsnPrimitiveType.Null visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(OLDAsnSchemaTypeDefinitionBitString visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(AsnSchemaTagTypeBitString visitable)
     {
         return visitable.getClass().getCanonicalName();
     }
@@ -90,30 +66,13 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinitionChoice visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
     public String visit(AsnPrimitiveTypeChoice visitable)
     {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinitionEnumerated visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
     public String visit(AsnPrimitiveTypeEnumerated visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
-    public String visit(OLDAsnSchemaTypeDefinitionIa5String visitable)
     {
         return visitable.getClass().getCanonicalName();
     }
@@ -125,23 +84,7 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinitionInteger visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
-    public String visit(AsnSchemaTagTypeInteger visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
     public String visit(AsnPrimitiveTypeInteger visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(OLDAsnSchemaTypeDefinitionNumericString visitable)
     {
         return visitable.getClass().getCanonicalName();
     }
@@ -153,33 +96,11 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinitionOctetString visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(AsnSchemaTagTypeOctetString visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
     public String visit(AsnPrimitiveTypeOctetString visitable)
     {
         return visitable.getClass().getCanonicalName();
     }
 
-    @Override
-    public String visit(OLDAsnSchemaTypeDefinitionSequence visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
-    public String visit(AsnSchemaTagTypeSequence visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
     @Override
     public String visit(AsnPrimitiveTypeSequence visitable)
     {
@@ -187,23 +108,7 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinitionSequenceOf visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
-    public String visit(AsnSchemaTagTypeSequenceOf visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
     public String visit(AsnPrimitiveTypeSequenceOf visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(OLDAsnSchemaTypeDefinitionSet visitable)
     {
         return visitable.getClass().getCanonicalName();
     }
@@ -215,41 +120,13 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinitionSetOf visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(AsnSchemaTagTypeSetOf visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
     public String visit(AsnPrimitiveTypeSetOf visitable)
     {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinitionUtf8String visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
-    public String visit(AsnSchemaTagTypeUtf8String visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-    @Override
     public String visit(AsnPrimitiveTypeUtf8String visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(OLDAsnSchemaTypeDefinitionVisibleString visitable)
     {
         return visitable.getClass().getCanonicalName();
     }
@@ -261,22 +138,9 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     }
 
     @Override
-    public String visit(OLDAsnSchemaTypeDefinitionGeneralString visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
     public String visit(AsnPrimitiveTypePrintableString visitable)
     {
         return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(AsnSchemaTagTypePrintableString visitable)
-    {
-        return visitable.getClass()
-                .getCanonicalName();
     }
 
     @Override
@@ -284,24 +148,6 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnSchemaTagTypeVisit
     {
         return visitable.getClass()
                 .getCanonicalName();
-    }
-
-    @Override
-    public String visit(OLDAsnSchemaTypeDefinitionGeneralizedTime visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(AsnSchemaTagTypeGeneralizedTime visitable)
-    {
-        return visitable.getClass().getCanonicalName();
-    }
-
-    @Override
-    public String visit(AsnSchemaTagTypeObjectIdentifier visitable)
-    {
-        return visitable.getClass().getCanonicalName();
     }
 
     @Override

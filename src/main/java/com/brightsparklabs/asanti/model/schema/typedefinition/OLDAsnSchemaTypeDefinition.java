@@ -4,9 +4,6 @@
  */
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 
 /**
@@ -15,7 +12,7 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
  *
  * @author brightSPARK Labs
  */
-public interface OLDAsnSchemaTypeDefinition extends AsnSchemaTagType
+public interface OLDAsnSchemaTypeDefinition //extends AsnSchemaTagType
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -59,7 +56,7 @@ public interface OLDAsnSchemaTypeDefinition extends AsnSchemaTagType
     public String getTypeName(String tag);
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaTagType.NULL
+    // INTERNAL CLASS: OLDAsnSchemaTypeDefinition.NULL
     // -------------------------------------------------------------------------
 
     /**

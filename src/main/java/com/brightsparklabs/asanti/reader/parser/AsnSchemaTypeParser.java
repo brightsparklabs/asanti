@@ -284,7 +284,6 @@ public class AsnSchemaTypeParser
         matcher = PATTERN_DEFINED_TYPE.matcher(value);
         if (matcher.matches())
         {
-            //return ImmutableList.<AsnSchemaTagType>of(parseWithNamedValues(name, matcher));
             return parsePlaceHolder(matcher);
         }
 

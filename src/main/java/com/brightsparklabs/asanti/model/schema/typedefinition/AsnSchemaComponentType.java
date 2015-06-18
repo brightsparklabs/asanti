@@ -5,8 +5,6 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 
 import static com.google.common.base.Preconditions.*;

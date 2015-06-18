@@ -1,7 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.primitive;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTagTypeVisitor;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnPrimitiveTypeVisitor;
 
 /**
  * A type used to represent the primitive builtin type Generalized Time within ASN.1
@@ -18,7 +18,7 @@ public class AsnPrimitiveTypeGeneralizedTime implements AsnPrimitiveType
     }
 
     @Override
-    public Object visit(AsnSchemaTagTypeVisitor<?> visitor)
+    public Object visit(AsnPrimitiveTypeVisitor<?> visitor)
     {
         return visitor.visit(this);
     }

@@ -2,35 +2,22 @@ package com.brightsparklabs.asanti.integration;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnDecoder;
-import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagTypeOctetString;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
-import com.brightsparklabs.asanti.reader.parser.AnsSchemaTagTypeParser;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
-import com.brightsparklabs.asanti.validator.Validator;
 import com.brightsparklabs.asanti.validator.ValidatorImpl;
-import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResult;
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Ordering;
-import com.google.common.io.BaseEncoding;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.math.BigInteger;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 

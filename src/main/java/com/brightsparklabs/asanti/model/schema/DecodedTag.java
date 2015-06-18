@@ -7,7 +7,6 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
@@ -30,8 +29,6 @@ public class DecodedTag
     private final String rawTag;
 
     /** the type of construct represented by the tag */
-    //private final OLDAsnSchemaTypeDefinition type;
-    //private final AsnSchemaTagType type;
     private final AsnSchemaType type;
 
     /** the Type Definition chain that got to the end primitive type */
@@ -70,8 +67,6 @@ public class DecodedTag
      * @throws IllegalArgumentException
      *             if {@code decodedTag} or {@code rawTag} are blank
      */
-    //public DecodedTag(String decodedTag, String rawTag, OLDAsnSchemaTypeDefinition type, boolean isFullyDecoded)
-    //public DecodedTag(String decodedTag, String rawTag, AsnSchemaTagType type, boolean isFullyDecoded)
     public DecodedTag(String decodedTag,
                       String rawTag,
                       AsnSchemaType type,

@@ -10,9 +10,7 @@
 package com.brightsparklabs.asanti.mocks.model.data;
 
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.tagtype.AsnSchemaTagType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableSet;
 
 import static org.mockito.Mockito.*;

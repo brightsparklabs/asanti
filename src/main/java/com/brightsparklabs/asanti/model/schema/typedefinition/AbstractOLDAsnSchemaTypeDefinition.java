@@ -85,15 +85,15 @@ public abstract class AbstractOLDAsnSchemaTypeDefinition implements OLDAsnSchema
         return name;
     }
 
-    @Override
-    public AsnBuiltinType getBuiltinType()
-    {
-        return builtinType;
-    }
-
-    @Override
-    public AsnSchemaConstraint getConstraint()
-    {
-        return constraint;
-    }
+//    @Override
+//    public AsnBuiltinType getBuiltinType()
+//    {
+//        return builtinType;
+//    }
+//
+//    @Override
+//    public AsnSchemaConstraint getConstraint()
+//    {
+//        return constraint;
+//    }
 }

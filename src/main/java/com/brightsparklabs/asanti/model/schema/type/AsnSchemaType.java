@@ -37,7 +37,7 @@ public interface AsnSchemaType
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaTagType.NULL
+    // INTERNAL CLASS: AsnSchemaType.NULL
     // -------------------------------------------------------------------------
 
     /**

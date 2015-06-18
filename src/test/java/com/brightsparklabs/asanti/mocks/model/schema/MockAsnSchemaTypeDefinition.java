@@ -15,7 +15,7 @@ import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.*;
 
 /**
- * Utility class for obtaining mocked instances of {@link AbstractOLDAsnSchemaTypeDefinition} which
+ * Utility class for obtaining mocked instances of {@link AsnSchemaTypeDefinitionImpl} which
  * conform to the test ASN.1 schema defined in the {@code README.md} file
  *
  * @author brightSPARK Labs
@@ -211,9 +211,9 @@ public class MockAsnSchemaTypeDefinition
          */
         private MockAsnSchemaTypeDefinitionBuilder(String name, AsnBuiltinType builtinType)
         {
-            when(mockedInstance.getBuiltinType()).thenReturn(builtinType);
+            // TODO MJF when(mockedInstance.getBuiltinType()).thenReturn(builtinType);
             when(mockedInstance.getName()).thenReturn(name);
-            when(mockedInstance.getConstraint()).thenReturn(AsnSchemaConstraint.NULL);
+            // TODO MJF when(mockedInstance.getConstraint()).thenReturn(AsnSchemaConstraint.NULL);
         }
 
         // ---------------------------------------------------------------------
@@ -230,7 +230,7 @@ public class MockAsnSchemaTypeDefinition
          */
         public MockAsnSchemaTypeDefinitionBuilder setConstraint(AsnSchemaConstraint constraint)
         {
-            when(mockedInstance.getConstraint()).thenReturn(constraint);
+            // TODO MJF when(mockedInstance.getConstraint()).thenReturn(constraint);
             return this;
         }
 

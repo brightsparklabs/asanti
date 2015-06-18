@@ -7,8 +7,6 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import com.brightsparklabs.asanti.common.Visitor;
 import com.brightsparklabs.asanti.model.schema.primitive.*;
-import com.brightsparklabs.asanti.model.schema.tagtype.*;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 
 /**
  * Interface for visitors that can visit {@link AbstractOLDAsnSchemaTypeDefinition} objects
@@ -18,7 +16,7 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
  *
  * @author brightSPARK Labs
  */
-public interface AsnSchemaTagTypeVisitor<T> extends Visitor
+public interface AsnPrimitiveTypeVisitor<T> extends Visitor
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -32,8 +30,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinition.Null visitable);
-    public T visit(AsnSchemaTagType.Null visitable);
     public T visit(AsnPrimitiveType.Null visitable);
 
     /**
@@ -44,10 +40,17 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionBitString visitable);
-    public T visit(AsnSchemaTagTypeBitString visitable);
     public T visit(AsnPrimitiveTypeBitString visitable);
 
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnPrimitiveTypeBoolean visitable);
 
 
@@ -59,7 +62,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionChoice visitable);
     public T visit(AsnPrimitiveTypeChoice visitable);
 
     /**
@@ -70,7 +72,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionEnumerated visitable);
     public T visit(AsnPrimitiveTypeEnumerated visitable);
 
 
@@ -82,8 +83,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionGeneralizedTime visitable);
-    public T visit(AsnSchemaTagTypeGeneralizedTime visitable);
     public T visit(AsnPrimitiveTypeGeneralizedTime visitable);
 
     /**
@@ -94,7 +93,7 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionGeneralString visitable);
+    //TODO MJF public T visit(AsnPrimitiveTypeGeneralString visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -104,8 +103,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-
-    public T visit(AsnSchemaTagTypePrintableString visitable);
     public T visit(AsnPrimitiveTypePrintableString visitable);
 
     /**
@@ -116,7 +113,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionIa5String visitable);
     public T visit(AsnPrimitiveTypeIA5String visitable);
 
 
@@ -128,8 +124,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionInteger visitable);
-    public T visit(AsnSchemaTagTypeInteger visitable);
     public T visit(AsnPrimitiveTypeInteger visitable);
 
 
@@ -141,7 +135,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionNumericString visitable);
     public T visit(AsnPrimitiveTypeNumericString visitable);
 
     /**
@@ -152,8 +145,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionOctetString visitable);
-    public T visit(AsnSchemaTagTypeOctetString visitable);
     public T visit(AsnPrimitiveTypeOctetString visitable);
 
     /**
@@ -164,8 +155,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionSequence visitable);
-    public T visit(AsnSchemaTagTypeSequence visitable);
     public T visit(AsnPrimitiveTypeSequence visitable);
 
     /**
@@ -176,8 +165,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionSequenceOf visitable);
-    public T visit(AsnSchemaTagTypeSequenceOf visitable);
     public T visit(AsnPrimitiveTypeSequenceOf visitable);
 
 
@@ -189,7 +176,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionSet visitable);
     public T visit(AsnPrimitiveTypeSet visitable);
 
     /**
@@ -200,8 +186,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionSetOf visitable);
-    public T visit(AsnSchemaTagTypeSetOf visitable);
     public T visit(AsnPrimitiveTypeSetOf visitable);
 
     /**
@@ -212,8 +196,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionUtf8String visitable);
-    public T visit(AsnSchemaTagTypeUtf8String visitable);
     public T visit(AsnPrimitiveTypeUtf8String visitable);
 
     /**
@@ -224,7 +206,6 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(OLDAsnSchemaTypeDefinitionVisibleString visitable);
     public T visit(AsnPrimitiveTypeVisibleString visitable);
 
     /**
@@ -235,9 +216,16 @@ public interface AsnSchemaTagTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(AsnSchemaTagTypeObjectIdentifier visitable);
     public T visit(AsnPrimitiveTypeOid visitable);
 
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnPrimitiveTypeRelativeOid visitable);
 
 
