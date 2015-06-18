@@ -90,6 +90,10 @@ public final class AsnSchemaTypeDefinitionParser
             throw new ParseException("A value must be supplied for a Type Definition", -1);
         }
 
+        if (name.equals("Invoke{InvokeId:InvokeIdSet, OPERATION:Operations}"))
+        {
+            int breakpoint = 0;
+        }
 
         // Get the underlying type
         AsnSchemaType type = AsnSchemaTypeParser.parse(value);

@@ -984,26 +984,26 @@ public class AsnSchemaParserTest
     public void testParse_HumanUsingTypeEtsi() throws Exception
     {
         // commented all out while fixing some of the other tests in the test package and needign to run all...
-//        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
-//        File schemaFile = new File(schemaFilename);
-//        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
-//
-//        {
-//            String tag = "/2/1/2/2/1/0";
-//            logger.info("get tag " + tag);
-//            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
-//            int breakpoint = 0;
-//
-//        }
-//        {
-//            String tag = "1/1";
-//            logger.info("get tag " + tag);
-//            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
-//            int breakpoint = 0;
-//
-//        }
-//
-//
+        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+
+        {
+            String tag = "/2/1/2/2/1/0";
+            logger.info("get tag " + tag);
+            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
+            int breakpoint = 0;
+
+        }
+        {
+            String tag = "1/1";
+            logger.info("get tag " + tag);
+            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
+            int breakpoint = 0;
+
+        }
+
+
 //        {
 //            String berFilename = getClass().getResource("/test5.ber").getFile();
 //            final File berFile = new File(berFilename);

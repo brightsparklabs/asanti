@@ -288,6 +288,16 @@ public class AsnSchemaTypeParser
         }
 
 
+        // check if defining a CLASS
+        matcher = PATTERN_TYPE_CLASS.matcher(value);
+        if (matcher.matches())
+        {
+            // TODO ASN-39 - handle CLASS
+            logger.warn("Type Definitions for CLASS not yet supported");
+            return AsnSchemaType.NULL;
+        }
+
+
         // TODO MJF - for now if we are here it is most likely because we have not implemented something
         // to see where we are at I will create a placeholder
 
