@@ -61,16 +61,20 @@ public class BitStringDecoder extends AbstractBuiltinTypeDecoder<String>
                 bytes);
         DecodeException.throwIfHasFailures(failures);
 
-        // loop through all bytes and append binary string
+        // first byte is always the length of unused bits
+        final int unusedBitLength = bytes[0];
+
+        // loop through all bytes after first byte and append binary string
         final StringBuilder bitStringBuilder = new StringBuilder();
-        for (final byte b : bytes)
+        for (int i = 1; i < bytes.length; i++)
         {
             // convert to unsigned byte while using Integer.toBinaryString method and pad with zeros
             // to ensure 8 bits in length
-            bitStringBuilder.append(String.format("%8s", Integer.toBinaryString(b & 0xFF))
+            bitStringBuilder.append(String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF))
                     .replace(' ', '0'));
         }
 
-        return bitStringBuilder.toString();
+        // remove unused bits from final string
+        return bitStringBuilder.substring(0, bitStringBuilder.length() - unusedBitLength);
     }
 }

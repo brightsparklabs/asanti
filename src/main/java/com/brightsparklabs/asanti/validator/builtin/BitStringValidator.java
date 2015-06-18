@@ -59,7 +59,30 @@ public class BitStringValidator extends PrimitiveBuiltinTypeValidator
     @Override
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
-        // no validation required
-        return ImmutableSet.of();
+        final Set<ByteValidationFailure> failures = Sets.newHashSet();
+
+        if (bytes.length > 0)
+        {
+            int firstByte = bytes[0] & 0xFF;
+            if (firstByte > 0x07)
+            {
+                final String error = BIT_STRING_VALIDATION_ERROR + String.format("0x%02X ",
+                        firstByte);
+                final ByteValidationFailure failure = new ByteValidationFailure(0,
+                        FailureType.DataIncorrectlyFormatted,
+                        error);
+                failures.add(failure);
+            }
+        }
+        else
+        {
+            final String error = String.format(EMPTY_BYTE_ARRAY_VALIDATION_ERROR, "BIT STRING");
+            final ByteValidationFailure failure = new ByteValidationFailure(0,
+                    FailureType.DataIncorrectlyFormatted,
+                    error);
+            failures.add(failure);
+        }
+
+        return ImmutableSet.copyOf(failures);
     }
 }
