@@ -161,7 +161,6 @@ public class AsnSchemaImpl implements AsnSchema
         String typeName = containingTypeName;
         final DecodedTagsAndType result = new DecodedTagsAndType();
 
-        Set<AsnSchemaType> allTypeDefs = Sets.newHashSet();
 
         // The module stores all the TypeDefs defined within it.
         // this is now the Type of the tag's container (ie we are assuming this is in a SEQUENCE/Set etc)
@@ -224,12 +223,6 @@ public class AsnSchemaImpl implements AsnSchema
 
                 if (tagType instanceof AsnSchemaTypePlaceholder)
                 {
-                    // we only want the 'chain' of the type of the tag, not anything of the parent
-                    // structures.
-                    if (!rawTags.hasNext())
-                    {
-                        allTypeDefs.add(tagType);
-                    }
                     typeName = component.getTypeName();
                     typeDefinition = module.getType(typeName);
                     if (typeDefinition == AsnSchemaTypeDefinition.NULL)
@@ -277,15 +270,6 @@ public class AsnSchemaImpl implements AsnSchema
                 // We need to do a sweep at the end of schema parsing to get rid of all placeholders!!!
                 if (tagType instanceof AsnSchemaTypePlaceholder)
                 {
-                    // we only want the 'chain' of the type of the tag, not anything of the parent
-                    // structures.
-                    if (!rawTags.hasNext())
-                    {
-                        allTypeDefs.add(tagType);
-                    }
-
-                    //typeDefinition = getTypeDefinition((AsnSchemaTypePlaceholder)tagType, module);
-
                     typeName = component.getTypeName();
                     typeDefinition = module.getType(typeName);
                     if (typeDefinition != null)
