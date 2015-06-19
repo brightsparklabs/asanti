@@ -93,7 +93,7 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    //TODO MJF public T visit(AsnPrimitiveTypeGeneralString visitable);
+    public T visit(AsnPrimitiveTypeGeneralString visitable);
 
     /**
      * Processes the supplied object with this visitor

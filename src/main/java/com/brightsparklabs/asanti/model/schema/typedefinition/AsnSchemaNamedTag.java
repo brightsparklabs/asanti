@@ -54,6 +54,7 @@ public class AsnSchemaNamedTag
                 .isEmpty(), "Tag name must be specified");
 
         this.tagName = tagName.trim();
+        // TODO ASN-133 - is this the correct behavior
         this.tag = (tag == null) ? "" : tag.trim();
     }
 

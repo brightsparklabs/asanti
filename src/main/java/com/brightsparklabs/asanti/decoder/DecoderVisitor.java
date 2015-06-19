@@ -64,6 +64,12 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public GeneralStringDecoder visit(final AsnPrimitiveTypeGeneralString visitable)
+    {
+        return GeneralStringDecoder.getInstance();
+    }
+
+    @Override
     public PrintableStringDecoder visit(final AsnPrimitiveTypePrintableString visitable)
     {
         return PrintableStringDecoder.getInstance();

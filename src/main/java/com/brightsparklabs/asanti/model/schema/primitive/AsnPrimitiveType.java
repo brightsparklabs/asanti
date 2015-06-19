@@ -21,6 +21,7 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
     public static final AsnPrimitiveTypeBoolean BOOLEAN = new AsnPrimitiveTypeBoolean();
     public static final AsnPrimitiveTypeChoice CHOICE = new AsnPrimitiveTypeChoice();
     public static final AsnPrimitiveTypeEnumerated ENUMERATED = new AsnPrimitiveTypeEnumerated();
+    public static final AsnPrimitiveTypeGeneralString GENERAL_STRING = new AsnPrimitiveTypeGeneralString();
     public static final AsnPrimitiveTypeGeneralizedTime GENERALIZED_TIME = new AsnPrimitiveTypeGeneralizedTime();
     public static final AsnPrimitiveTypeIA5String IA5_STRING = new AsnPrimitiveTypeIA5String();
     public static final AsnPrimitiveTypeInteger INTEGER = new AsnPrimitiveTypeInteger();

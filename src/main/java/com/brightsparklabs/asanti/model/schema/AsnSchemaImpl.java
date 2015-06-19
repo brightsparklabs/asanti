@@ -6,10 +6,7 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeCollection;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePlaceholder;
+import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -103,7 +100,7 @@ public class AsnSchemaImpl implements AsnSchema
 
         // check if decode was successful
         boolean decodeSuccessful = true;
-        if (tags.size() != decodedTags.size()) // -1 because the decodeTags adds the containing type
+        if (tags.size() != decodedTags.size())
         {
             // could not decode
             decodeSuccessful = false;
@@ -128,7 +125,6 @@ public class AsnSchemaImpl implements AsnSchema
         final DecodedTag decodedTag = new DecodedTag(decodedTagPath,
                 rawTag,
                 decodedTagsAndType.type,
-                decodedTagsAndType.allTypeDefinitions,
                 decodeSuccessful);
         final OperationResult<DecodedTag> result = decodeSuccessful ?
                 OperationResult.createSuccessfulInstance(decodedTag) :
@@ -174,6 +170,7 @@ public class AsnSchemaImpl implements AsnSchema
 
         result.type = type;
 
+        int whileCounter = 0; // TODO MJF - delete - this is just for debugging!
 
         while (rawTags.hasNext())
         {
@@ -203,6 +200,10 @@ public class AsnSchemaImpl implements AsnSchema
             // Get the tag
             final String tag = rawTags.next();
 
+            if (whileCounter == 0 && tag.equals("1") && containingTypeName.equals("IRIsContent"))
+            {
+                int breakpoint = 0;
+            }
 
             if (type instanceof AsnSchemaTypeConstructed)
             {
@@ -239,6 +240,10 @@ public class AsnSchemaImpl implements AsnSchema
                         {
                             result.decodedTags.add(tagName);
 
+                            if (typeName.equals("IRIsContent")) // TODO MJF - delete
+                            {
+                                int breakpoint = 0;
+                            }
                             // found the module the type is defined in
                             final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
                                     typeName,
@@ -293,8 +298,6 @@ public class AsnSchemaImpl implements AsnSchema
                     }
                 }
 
-
-                result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
                 result.type = tagType;
                 result.decodedTags.add(tagName);
 
@@ -310,21 +313,21 @@ public class AsnSchemaImpl implements AsnSchema
                 final String tagName = tag;// type.getTagName(tag);
                 type = collection.getElementType();
 
-                result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
                 result.type = AsnSchemaType.NULL;
                 result.decodedTags.add(tagName);
             }
             else
             {
                 // This is NOT a container type, so we can't go any further down - this is the end of the line!
-                result.allTypeDefinitions = ImmutableSet.copyOf(allTypeDefs);
                 result.type = type;
                 result.decodedTags.add(containingTypeName);
             }
+            whileCounter++;
         }
 
         return result;
     }
+
 
     /**
      * Returns the imported module which contains the specified type module.
@@ -378,8 +381,6 @@ public class AsnSchemaImpl implements AsnSchema
         private final List<String> decodedTags = Lists.newArrayList();
 
         /** the type of the final tag */
-        private AsnSchemaType type = null;//AsnSchemaType.NULL;
-
-        private ImmutableSet<AsnSchemaType> allTypeDefinitions = ImmutableSet.<AsnSchemaType>of();
+        private AsnSchemaType type = null;//AsnSchemaType.NULL; // TODO MJF - null or AsnSchemaType.NULL???
     }
 }

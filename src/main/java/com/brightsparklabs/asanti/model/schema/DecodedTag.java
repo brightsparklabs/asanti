@@ -31,9 +31,6 @@ public class DecodedTag
     /** the type of construct represented by the tag */
     private final AsnSchemaType type;
 
-    /** the Type Definition chain that got to the end primitive type */
-    private final ImmutableSet<AsnSchemaType> allTypeDefinitions;
-
     /** whether the raw tag was completely decoded */
     private final boolean isFullyDecoded;
 
@@ -55,9 +52,6 @@ public class DecodedTag
      * @param type
      *            the type of construct represented by the tag
      *
-     * @param allTypeDefinitions
-     *            the chain of Type Definitions to ended with the {@code type}
-     *
      * @param isFullyDecoded
      *            whether the raw tag was completely decoded
      *
@@ -70,7 +64,6 @@ public class DecodedTag
     public DecodedTag(String decodedTag,
                       String rawTag,
                       AsnSchemaType type,
-                      ImmutableSet<AsnSchemaType> allTypeDefinitions,
                       boolean isFullyDecoded)
     {
         this.tag = Strings.nullToEmpty(decodedTag)
@@ -78,7 +71,6 @@ public class DecodedTag
         this.rawTag = Strings.nullToEmpty(rawTag)
                 .trim();
         this.type = type;
-        this.allTypeDefinitions = allTypeDefinitions;
         this.isFullyDecoded = isFullyDecoded;
 
         checkArgument(!this.tag.isEmpty(), "Decoded tag cannot be blank");
@@ -123,23 +115,10 @@ public class DecodedTag
      *
      * @return the type of construct represented by the tag
      */
-
-    //public OLDAsnSchemaTypeDefinition getType()
     public AsnSchemaType getType()
     {
         return type;
     }
-
-    /**
-     * Returns the chain of Type Definitions that may have led to (@code type}
-     *
-     * @return the chain of Type Definitions that may have led to (@code type}
-     */
-    public ImmutableSet<AsnSchemaType>  getAllTypes()
-    {
-        return allTypeDefinitions;
-    }
-
 
     public boolean isFullyDecoded()
     {

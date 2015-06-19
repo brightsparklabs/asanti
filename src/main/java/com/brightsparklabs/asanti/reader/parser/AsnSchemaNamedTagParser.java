@@ -76,6 +76,7 @@ public class AsnSchemaNamedTagParser
                 // ignore extension markers
                 continue;
             }
+            // TODO MJF - get rid of the optionalTag
 
             final AsnSchemaNamedTag option = parseOption(optionLine, i);
             builder.add(option);
@@ -147,15 +148,14 @@ public class AsnSchemaNamedTagParser
 
         final String tagName = matcher.group(1);
         String tag = matcher.group(3);
-        // TODO MJF - what is the correct thing to do here - read the spec?
-        // I'm only doing this because we throw later if all the tags are not unique
-        // Look at what the constructor for AsnSchemaTypeConstructed does.
-        // Should this logic be in the constructor for AsnSchemaTypeWithNamedTags???
+
+        // TODO MJF - just here so I can parse the ETSI schema for testing.
         if (tag == null)
         {
             tag = optionalTag.toString();
         }
-        return new AsnSchemaNamedTag(tagName, tag);
+
+            return new AsnSchemaNamedTag(tagName, tag);
     }
 
     /**

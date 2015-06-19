@@ -5,25 +5,12 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeSequenceOf;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeUtf8String;
-import com.brightsparklabs.asanti.model.schema.type.AbstractAsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeCollection;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Logic for parsing a Type Definition from a module within an ASN.1 schema
@@ -67,14 +54,17 @@ public final class AsnSchemaTypeDefinitionParser
      *         the value of the defined type (i.e. the text on the right hand side of the {@code
      *         ::=})
      *
-     * @return an ImmutableList of {@link AsnSchemaTypeDefinition} objects representing the parsed
-     * type definitions
+     * @return an {@link AsnSchemaTypeDefinition} object representing the parsed type definition
      *
      * @throws ParseException
      *         if either of the parameters are {@code null}/empty or any errors occur while parsing
      *         the type
      */
+/* TODO MJF
     public static ImmutableList<AsnSchemaTypeDefinition> parse(String name, String value)
+            throws ParseException
+*/
+    public static AsnSchemaTypeDefinition parse(String name, String value)
             throws ParseException
     {
         // TODO MJF - not sure we still need to be returning a list of types.
@@ -92,6 +82,7 @@ public final class AsnSchemaTypeDefinitionParser
 
         if (name.equals("Invoke{InvokeId:InvokeIdSet, OPERATION:Operations}"))
         {
+            // TODO MJF
             int breakpoint = 0;
         }
 
@@ -99,7 +90,7 @@ public final class AsnSchemaTypeDefinitionParser
         AsnSchemaType type = AsnSchemaTypeParser.parse(value);
         logger.debug("\t{} is type {}", name, type.getPrimitiveType().getBuiltinType());
         // wrap it with the typedefinition name.
-        return ImmutableList.<AsnSchemaTypeDefinition>of(new AsnSchemaTypeDefinitionImpl(name, type))  ;
+        return new AsnSchemaTypeDefinitionImpl(name, type);
 
     }
 

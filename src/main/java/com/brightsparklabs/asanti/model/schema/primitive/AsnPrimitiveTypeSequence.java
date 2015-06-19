@@ -4,7 +4,9 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnPrimitiveTypeVisitor;
 
 /**
- * Created by Michael on 16/06/2015.
+ * A type used to represent the primitive builtin type Sequence within ASN.1
+ * This class is used as a 'key' for the Visitor.
+ * @author brightSPARK Labs
  */
 public class AsnPrimitiveTypeSequence implements AsnPrimitiveType
 {

@@ -63,6 +63,12 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public GeneralStringValidator visit(AsnPrimitiveTypeGeneralString visitable)
+    {
+        return GeneralStringValidator.getInstance();
+    }
+
+    @Override
     public PrintableStringValidator visit(AsnPrimitiveTypePrintableString visitable)
     {
         return PrintableStringValidator.getInstance();

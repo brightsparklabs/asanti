@@ -102,12 +102,36 @@ public class AsnSchemaParser
 
         if (!moduleLines.isEmpty()) { throw new ParseException(ERROR_MISSING_END_KEYWORD, -1); }
 
+// TODO - do the final sweep to resolve all the placeholders.
+//        final Map<String, AsnSchemaModule> resolvedModules = resolvePlaceholderTypes(modules);
+//        return new AsnSchemaImpl(primaryModule, resolvedModules);
         return new AsnSchemaImpl(primaryModule, modules);
     }
+
 
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
+
+    /**
+     * During parsing there may be "placeholder" types used because a type is used before it is
+     * defined.  Also a type may be from another module.
+     * This function walks all the modules and resolves all placeholders to point to actual types
+     * including cross module type definitions.
+     * @param modules
+     * @return
+     */
+    private static Map<String, AsnSchemaModule> resolvePlaceholderTypes(final Map<String, AsnSchemaModule> modules)
+    {
+        final Map<String, AsnSchemaModule> resolvedModules = Maps.newHashMap();
+
+        for (Map.Entry<String, AsnSchemaModule> module : modules.entrySet())
+        {
+            // TODO MJF - because everything is final and immutable, all the way through, we are going
+            // to make a ton of copies in this process.  Do we want to do that???
+        }
+        return modules;
+    }
 
     /**
      * Strips out comments and redundant whitespace from the supplied ASN.1

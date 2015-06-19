@@ -30,11 +30,12 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType
     // -------------------------------------------------------------------------
 
     /**
-     * built-in types which are considered 'collection'. Currently: SET OF and
-     * SEQUENCE OF
+     * built-in types which are considered 'constructed'. Currently: SEQUENCE, SET
+     * and CHOICE.
+     * ENUMERATED is treated differently.
      */
     public static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(AsnPrimitiveType.SET,
-            AsnPrimitiveType.SEQUENCE, AsnPrimitiveType.CHOICE); // TODO MJF Enumerated
+            AsnPrimitiveType.SEQUENCE, AsnPrimitiveType.CHOICE);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES

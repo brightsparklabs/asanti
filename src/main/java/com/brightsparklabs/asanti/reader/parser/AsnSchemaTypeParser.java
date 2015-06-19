@@ -83,9 +83,6 @@ public class AsnSchemaTypeParser
             "^ENUMERATED ?\\{(.+)\\}$");
 
 
-
-
-    // TODO MJF - parse class
     /** pattern to match a CLASS type definition */
     private static final Pattern PATTERN_TYPE_CLASS = Pattern.compile(
             "^CLASS ?\\{(.+)\\}$");
@@ -123,6 +120,7 @@ public class AsnSchemaTypeParser
     private static final ImmutableMap<String, AsnPrimitiveType> constrainedTypes = ImmutableMap.<String, AsnPrimitiveType>builder()
             .put("BOOLEAN", AsnPrimitiveType.BOOLEAN)
             .put("IA5String", AsnPrimitiveType.IA5_STRING)
+            .put("GeneralString", AsnPrimitiveType.GENERAL_STRING)
             .put("NULL", AsnPrimitiveType.NULL)
             .put("NumericString", AsnPrimitiveType.NUMERIC_STRING)
             .put("OBJECT IDENTIFIER", AsnPrimitiveType.OID)
@@ -298,20 +296,17 @@ public class AsnSchemaTypeParser
         }
 
 
-        // TODO MJF - for now if we are here it is most likely because we have not implemented something
-        // to see where we are at I will create a placeholder
-
         // TODO MJF.  Should we really throw or should we try such a placeholder to do our best to keep going?!
         final String constraintText = "";
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
         logger.warn("Creating last ditch tag type placeholder of type: " + value);
         return new AsnSchemaTypePlaceholder("", value, constraint);
 
-/*
+
         // unknown definition
-        final String error = ERROR_UNKNOWN_BUILT_IN_TYPE +  value;
-        throw new ParseException(error, -1);
-*/
+//        final String error = ERROR_UNKNOWN_BUILT_IN_TYPE +  value;
+//        throw new ParseException(error, -1);
+
 
     }
 
@@ -499,12 +494,6 @@ public class AsnSchemaTypeParser
     private static AsnSchemaTypePlaceholder parsePlaceHolder(Matcher matcher)
             throws ParseException
     {
-
-        //"^(((EXPLICIT)[ ]+)?(([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
-        //"^((([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) (EXPLICIT|IMPLICIT)? ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
-        //"^((([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
-
-
         final String moduleName = Strings.nullToEmpty(matcher.group(5));
         final String typeName = Strings.nullToEmpty(matcher.group(6));
 

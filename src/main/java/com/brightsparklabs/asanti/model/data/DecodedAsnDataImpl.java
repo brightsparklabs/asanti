@@ -220,15 +220,6 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public ImmutableSet<AsnSchemaType> getAllTypes(String tag)
-    {
-        final DecodedTag decodedTag = allTags.get(tag);
-        return (decodedTag == null) ? ImmutableSet.<AsnSchemaType>of() :
-                                      decodedTag.getAllTypes();
-
-    }
-
-    @Override
     public Object getDecodedObject(String tag) throws DecodeException
     {
         final DecodedTag decodedTag = decodedTags.get(tag);

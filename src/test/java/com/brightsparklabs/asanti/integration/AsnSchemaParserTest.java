@@ -82,7 +82,7 @@ public class AsnSchemaParserTest
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
-            "       pickOne ENUMERATED {\n" +
+            "       pickOne ENUMERATED\n" +
             "       {\n" +
             "           optA(0)\n" +
             "           optB(1)\n" +
@@ -129,7 +129,7 @@ public class AsnSchemaParserTest
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
             "       age [0] INTEGER,\n" +
-            "       gender ENUMERATED { male(0), female(1) }" +
+            "       gender ENUMERATED{male(0),female(1)}" +
             "   }\n" +
             "END";
 
@@ -143,8 +143,8 @@ public class AsnSchemaParserTest
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
-            "       age INTEGER (1..100),\n" +
-            "       name UTF8String (SIZE (1..10))\n" +
+            "       age INTEGER(1..100),\n" +
+            "       name UTF8String(SIZE( 1..10))\n" +
             "   }\n" +
             "END";
 
@@ -1004,20 +1004,20 @@ public class AsnSchemaParserTest
         }
 
 
-//        {
-//            String berFilename = getClass().getResource("/test5.ber").getFile();
-//            final File berFile = new File(berFilename);
-//            String topLevelType = "PS-PDU";
-//
-//            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-//                    schema,
-//                    topLevelType);
-//
-//            logger.debug("Results of /test5.ber");
-//
-//            debugPdus(pdus);
-//
-//        }
+        {
+            String berFilename = getClass().getResource("/test5.ber").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "PS-PDU";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            logger.debug("Results of /test5.ber");
+
+            debugPdus(pdus);
+
+        }
 
 
 

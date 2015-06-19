@@ -40,7 +40,7 @@ public class AsnSchemaComponentTypeParser
      * type definition, type constraints
      */
     private static final Pattern PATTERN_RAW_TYPE = Pattern.compile(
-            "(((SET)|(SEQUENCE))(( SIZE)? \\(.+?\\)\\)?)? OF )?([a-zA-Z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
+            "(((SET)|(SEQUENCE))(( SIZE)? \\(.+?\\)?)? OF )?([a-zA-Z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
 
 
     // -------------------------------------------------------------------------
@@ -195,6 +195,11 @@ public class AsnSchemaComponentTypeParser
                 int breakpoint = 0;
             }
             // TODO MJF - figure out the regex so we don't need to trim...
+            final String trimmed = typeName.trim();
+            if (!trimmed.equals(typeName))
+            {
+                int breakpoint = 0;
+            }
             typeName = typeName.trim();
             return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
         }

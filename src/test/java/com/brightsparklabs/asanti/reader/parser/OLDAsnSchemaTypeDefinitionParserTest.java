@@ -26,13 +26,17 @@ public class OLDAsnSchemaTypeDefinitionParserTest
     // TESTS
     // -------------------------------------------------------------------------
 
+
+    // TODO MJF - move most of tese to a new test TypeParser, and then just have a few simple
+    /// cases here to ensure we get a type and a name.
+
     @Test
     public void testParse() throws Exception
     {
         // null name
         try
         {
-            AsnSchemaTypeDefinitionParser.parse(null, "(SIZE (10))");
+            AsnSchemaTypeDefinitionParser.parse(null, "SomeType");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -42,7 +46,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         // blank name
         try
         {
-            AsnSchemaTypeDefinitionParser.parse("", "(SIZE (10))");
+            AsnSchemaTypeDefinitionParser.parse("", "SomeType");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -50,7 +54,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         }
         try
         {
-            AsnSchemaTypeDefinitionParser.parse(" ", "(SIZE (10))");
+            AsnSchemaTypeDefinitionParser.parse(" ", "SomeType");
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -66,92 +70,86 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         catch (final ParseException ex)
         {
         }
+        // nulll value
+        try
+        {
+            AsnSchemaTypeDefinitionParser.parse("TEST_NAME", null);
+            fail("ParseException not thrown");
+        }
+        catch (final ParseException ex)
+        {
+        }
 
     }
+    // TODO MJF - chnage these to test the different main level parses, Collection, Constructed etc...
 
     @Test
     public void testParseIa5String() throws Exception
     {
-        final ImmutableList<AsnSchemaTypeDefinition> result = AsnSchemaTypeDefinitionParser.parse(
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "IA5String (SIZE (10))");
-        assertEquals(1, result.size());
-        final AsnSchemaTypeDefinition instance = result.get(0);
-        assertEquals(AsnBuiltinType.Ia5String, instance.getType().getPrimitiveType().getBuiltinType());
-        assertEquals("TEST_NAME", instance.getName());
+        assertEquals(AsnBuiltinType.Ia5String, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals("TEST_NAME", result.getName());
     }
 
     @Test
     public void testParseOctetString() throws Exception
     {
-        final ImmutableList<AsnSchemaTypeDefinition> result = AsnSchemaTypeDefinitionParser.parse(
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "OCTET STRING (SIZE (10))");
-        assertEquals(1, result.size());
-        final AsnSchemaTypeDefinition instance = result.get(0);
-        assertEquals(AsnBuiltinType.OctetString, instance.getType().getPrimitiveType().getBuiltinType());
-        assertEquals("TEST_NAME", instance.getName());
+        assertEquals(AsnBuiltinType.OctetString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals("TEST_NAME", result.getName());
     }
 
     @Test
     public void testParseBitString() throws Exception
     {
-        final ImmutableList<AsnSchemaTypeDefinition> result = AsnSchemaTypeDefinitionParser.parse(
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "BIT STRING (SIZE (10))");
-        assertEquals(1, result.size());
-        final AsnSchemaTypeDefinition instance = result.get(0);
-        assertEquals(AsnBuiltinType.BitString, instance.getType().getPrimitiveType().getBuiltinType());
-        assertEquals("TEST_NAME", instance.getName());
+        assertEquals(AsnBuiltinType.BitString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals("TEST_NAME", result.getName());
     }
 
     @Test
     public void testParseNumericString() throws Exception
     {
-        final ImmutableList<AsnSchemaTypeDefinition> result = AsnSchemaTypeDefinitionParser.parse(
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "NumericString (SIZE (10))");
-        assertEquals(1, result.size());
-        final AsnSchemaTypeDefinition instance = result.get(0);
-        assertEquals(AsnBuiltinType.NumericString, instance.getType().getPrimitiveType().getBuiltinType());
-        assertEquals("TEST_NAME", instance.getName());
+        assertEquals(AsnBuiltinType.NumericString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals("TEST_NAME", result.getName());
     }
 
     @Test
     public void testParseVisibleString() throws Exception
     {
-        final ImmutableList<AsnSchemaTypeDefinition> result = AsnSchemaTypeDefinitionParser.parse(
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "VisibleString (SIZE (10))");
-        final AsnSchemaTypeDefinition instance = result.get(0);
-        assertEquals(1, result.size());
-        assertEquals(AsnBuiltinType.VisibleString, instance.getType().getPrimitiveType().getBuiltinType());
-        assertEquals("TEST_NAME", instance.getName());
+        assertEquals(AsnBuiltinType.VisibleString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals("TEST_NAME", result.getName());
     }
 
     @Test
     public void testParseGeneralString() throws Exception
     {
-        final ImmutableList<AsnSchemaTypeDefinition> result = AsnSchemaTypeDefinitionParser.parse(
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "GeneralString (SIZE (10))");
-        final AsnSchemaTypeDefinition instance = result.get(0);
-        assertEquals(1, result.size());
-        assertEquals(AsnBuiltinType.GeneralString, instance.getType().getPrimitiveType().getBuiltinType());
-        assertEquals("TEST_NAME", instance.getName());
-        assertEquals("TEST_NAME", instance.getName());
+        assertEquals(AsnBuiltinType.GeneralString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals("TEST_NAME", result.getName());
     }
 
     @Test
     public void testParseInteger() throws Exception
     {
-        final ImmutableList<AsnSchemaTypeDefinition> result = AsnSchemaTypeDefinitionParser.parse(
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "INTEGER (SIZE (10))");
-        assertEquals(1, result.size());
-        final AsnSchemaTypeDefinition instance = result.get(0);
-        assertEquals(AsnBuiltinType.Integer, instance.getType().getPrimitiveType().getBuiltinType());
-        assertEquals("TEST_NAME", instance.getName());
-        assertEquals("TEST_NAME", instance.getName());
+        assertEquals(AsnBuiltinType.Integer, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals("TEST_NAME", result.getName());
     }
 }

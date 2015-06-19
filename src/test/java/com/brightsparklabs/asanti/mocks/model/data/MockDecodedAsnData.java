@@ -86,7 +86,6 @@ public class MockDecodedAsnData
             when(mockedInstance.getBytes("/empty")).thenReturn(new byte[0]);
             when(mockedInstance.getType("/null")).thenReturn(type);
             when(mockedInstance.getBytes("/null")).thenReturn(null);
-            when(mockedInstance.getAllTypes(anyString())).thenReturn(ImmutableSet.<AsnSchemaType>of());
 
         }
 

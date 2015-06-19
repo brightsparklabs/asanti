@@ -299,12 +299,16 @@ public class AsnSchemaModuleParser
             {
                 final String name = matcher.group(1);
                 final String value = matcher.group(4);
+                /* TODO MJF
                 final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
                         AsnSchemaTypeDefinitionParser.parse(name, value);
+
                 for (AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
                 {
                     moduleBuilder.addType(typeDefinition);
                 }
+                */
+                moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name, value));
                 continue;
             }
 
