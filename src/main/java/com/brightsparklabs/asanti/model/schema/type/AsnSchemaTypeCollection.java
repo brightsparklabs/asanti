@@ -2,6 +2,7 @@ package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,18 @@ public class AsnSchemaTypeCollection extends AbstractAsnSchemaType
     // -------------------------------------------------------------------------
     // IMPLEMENTATION
     // -------------------------------------------------------------------------
+
+    @Override
+    public AsnSchemaType getChildType(String tag)
+    {
+        return elementType.getChildType(tag);
+    }
+
+    @Override
+    public String getChildName(String tag)
+    {
+        return elementType.getChildName(tag); // TODO MJF what to return???
+    }
 
     /**
      *

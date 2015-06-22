@@ -1,5 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
@@ -30,11 +32,32 @@ public interface AsnSchemaType
     AsnPrimitiveType getPrimitiveType();
 
     /**
+     * Returns the {@code AsnBuiltinType} enum for this type.
+     * This is simply a shortcut for getPrimitiveType().getBuiltinType()
+     *
+     * @return the {@code AsnBuiltinType} enum for this type.
+     */
+    AsnBuiltinType getBuiltinType();
+
+    /**
      * Returns the constraints of this type definition.  This will be all the constraints
      * the create this type (ie this and all the parent types)
      * @return
      */
     ImmutableSet<AsnSchemaConstraint> getConstraints();
+
+    /** TODO MJF - do these belong in this interface????
+     *
+     * @return
+     */
+    AsnSchemaType getChildType(String tag);
+
+    /** TODO MJF
+     *
+     * @param tag
+     * @return
+     */
+    String getChildName(String tag);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaType.NULL
@@ -70,10 +93,36 @@ public interface AsnSchemaType
         }
 
         @Override
+        public AsnBuiltinType getBuiltinType()
+        {
+            return getPrimitiveType().getBuiltinType();
+        }
+
+
+        @Override
         public ImmutableSet<AsnSchemaConstraint> getConstraints()
         {
             return ImmutableSet.<AsnSchemaConstraint>of();
         }
+
+        @Override
+        public AsnSchemaType getChildType(String tag)
+        {
+            return AsnSchemaType.NULL;
+        }
+
+        @Override
+        public String getChildName(String tag)
+        {
+            return "";
+        }
+/*
+        @Override
+        public AsnSchemaType getType()
+        {
+            return this;
+        }
+*/
     }
 
 

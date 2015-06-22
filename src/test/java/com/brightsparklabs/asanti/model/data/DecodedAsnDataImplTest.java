@@ -399,22 +399,22 @@ public class DecodedAsnDataImplTest
 
         // test unmapped tags
         assertEquals(AsnBuiltinType.Null,
-                instance.getType("/Document/body/content/99").getPrimitiveType().getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/99/1/1").getPrimitiveType().getBuiltinType());
+                instance.getType("/Document/body/content/99").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/99/1/1").getBuiltinType());
 
         // test raw tags
-        assertEquals(AsnBuiltinType.Null, instance.getType("/2/2/99").getPrimitiveType().getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/99/1/1").getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/2/2/99").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/99/1/1").getBuiltinType());
 
         // test unknown tags
-        assertEquals(AsnBuiltinType.Null, instance.getType("").getPrimitiveType().getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/0/0/0").getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/0/0/0").getBuiltinType());
 
-        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("").getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("").getBuiltinType());
         assertEquals(AsnBuiltinType.Null,
-                emptyInstance.getType("/Document/0/0/0").getPrimitiveType().getBuiltinType());
+                emptyInstance.getType("/Document/0/0/0").getBuiltinType());
         assertEquals(AsnBuiltinType.Null,
-                emptyInstance.getType("/Document/header/published/date").getPrimitiveType().getBuiltinType());
+                emptyInstance.getType("/Document/header/published/date").getBuiltinType());
     }
 
     @Test

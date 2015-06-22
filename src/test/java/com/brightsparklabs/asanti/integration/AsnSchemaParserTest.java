@@ -10,8 +10,10 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
 import com.brightsparklabs.asanti.validator.ValidatorImpl;
+import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResult;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -208,7 +210,8 @@ public class AsnSchemaParserTest
             "       age [0] PersonAge (0..150) OPTIONAL\n" +
             "   }\n" +
             "   PersonAge ::= ShortInt (0..200)\n" +
-            "   ShortInt ::= INTEGER (0..32767)\n" +
+            "   ShortInt ::= Int32 (0..32767)\n" +
+            "   Int32 ::= INTEGER (0..65536)\n" +
             "END";
 
     private static final String HUMAN_USING_TYPEDEF_SEQUENCE = "Test-Protocol\n" +
@@ -368,7 +371,7 @@ public class AsnSchemaParserTest
         if (result.wasSuccessful())
         {
             DecodedTag actualTag = result.getOutput();
-            logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+            logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
         }
     }
 
@@ -384,7 +387,7 @@ public class AsnSchemaParserTest
         assertTrue(result.wasSuccessful());
 
         DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
 
         tag = "/1";
@@ -393,7 +396,7 @@ public class AsnSchemaParserTest
 
 
         actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         //String berFilename = "d:\\tmp\\Human_Simple.ber";
         String berFilename = getClass().getResource("/Human_Simple.ber").getFile();
@@ -431,7 +434,7 @@ public class AsnSchemaParserTest
         assertTrue(result.wasSuccessful());
 
         DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         //String berFilename = "d:\\tmp\\Human_Simple2.ber";
         String berFilename = getClass().getResource("/Human_Simple2.ber").getFile();
@@ -471,7 +474,7 @@ public class AsnSchemaParserTest
         assertTrue(result.wasSuccessful());
 
         DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         //String berFilename = "d:\\tmp\\Human_Simple2.ber";
         String berFilename = getClass().getResource("/Human_SimpleEnumerated.ber").getFile();
@@ -505,7 +508,7 @@ public class AsnSchemaParserTest
         assertTrue(result.wasSuccessful());
 
         DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
 
         tag = "/1";
@@ -514,7 +517,7 @@ public class AsnSchemaParserTest
 
 
         actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         //String berFilename = "d:\\tmp\\Human_Simple.ber";
         String berFilename = getClass().getResource("/Human_SimpleChoice.ber").getFile();
@@ -554,7 +557,7 @@ public class AsnSchemaParserTest
         assertTrue(result.wasSuccessful());
 
         DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         String berFilename = getClass().getResource("/Human_SimpleSet.ber").getFile();
         final File berFile = new File(berFilename);
@@ -592,7 +595,17 @@ public class AsnSchemaParserTest
         assertTrue(result.wasSuccessful());
 
         DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+        tag = "/0/0";
+        logger.info("get tag " + tag);
+        result = schema.getDecodedTag(tag, "Human");
+        assertTrue(result.wasSuccessful());
+
+        actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+
 
         String berFilename = getClass().getResource("/Human_Nested.ber").getFile();
         final File berFile = new File(berFilename);
@@ -646,7 +659,7 @@ public class AsnSchemaParserTest
         assertTrue(result.wasSuccessful());
 
         DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         //String berFilename = "d:\\tmp\\Human_Typedef.ber";
         String berFilename = getClass().getResource("/Human_Typedef.ber").getFile();
@@ -666,7 +679,7 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + age);
         assertEquals(new BigInteger("32"), age);
 
-/*
+
         ValidatorImpl validator = new ValidatorImpl();
         ValidationResult validationresult = validator.validate(pdu);
 
@@ -683,50 +696,56 @@ public class AsnSchemaParserTest
                     " reason: " + fail.getFailureReason() +
                     " type: " + fail.getFailureType());
         }
-*/
+
     }
 
     @Test
     public void testParse_HumanUsingTypeDefIndirect() throws Exception
     {
 
-        try
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_INDIRECT);
+
+        String tag = "/0";
+        logger.info("get tag " + tag);
+        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
+
+        assertTrue(result.wasSuccessful());
+
+        DecodedTag actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+        //String berFilename = "d:\\tmp\\Human_Typedef.ber";
+        String berFilename = getClass().getResource("/Human_Typedef.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+
+        debugPdus(pdus);
+
+        DecodedAsnData pdu = pdus.get(0);
+
+        assertEquals(0, pdu.getUnmappedTags().size());
+
+        tag = "/Human/age";
+        BigInteger age = (BigInteger) pdu.getDecodedObject(tag);
+        logger.info(tag + " : " + age);
+
+        ValidatorImpl validator = new ValidatorImpl();
+        ValidationResult validationresult = validator.validate(pdu);
+
+        // dump any failures so we can see what went wrong
+        for (DecodedTagValidationFailure fail : validationresult.getFailures())
         {
-            AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_INDIRECT);
-
-            String tag = "/0";
-            logger.info("get tag " + tag);
-            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-            if (result.wasSuccessful())
-            {
-                DecodedTag actualTag = result.getOutput();
-                logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
-
-                //String berFilename = "d:\\tmp\\Human_Typedef.ber";
-                String berFilename = getClass().getResource("/Human_Typedef.ber").getFile();
-                final File berFile = new File(berFilename);
-                String topLevelType = "Human";
-
-                final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                        schema,
-                        topLevelType);
-
-                debugPdus(pdus);
-
-                DecodedAsnData pdu = pdus.get(0);
-
-                assertEquals(0, pdu.getUnmappedTags().size());
-
-                tag = "/Human/age";
-                BigInteger age = (BigInteger) pdu.getDecodedObject(tag);
-                logger.info(tag + " : " + age);
-            }
+            logger.info("Validation Failure for : " + fail.getTag() +
+                    " reason: " + fail.getFailureReason() +
+                    " type: " + fail.getFailureType());
         }
-        catch(Exception e)
-        {
-            // TODO - we are expecting this to fail as this feature is not yet implemented
-            logger.error("Expected (though undesirable error: " + e.getMessage());
-        }
+
+
+        assertFalse(validationresult.hasFailures());
 
     }
 
@@ -749,7 +768,7 @@ public class AsnSchemaParserTest
         assertTrue(result.wasSuccessful());
 
         DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         //String berFilename = "d:\\tmp\\Human_TypedefSequence.ber";
         String berFilename = getClass().getResource("/Human_TypedefSequence.ber").getFile();
@@ -768,7 +787,7 @@ public class AsnSchemaParserTest
 
         tag = "/Human/age";
 
-        AsnBuiltinType builtinType = pdu.getType(tag).getPrimitiveType().getBuiltinType();
+        AsnBuiltinType builtinType = pdu.getType(tag).getBuiltinType();
         assertEquals(builtinType, AsnBuiltinType.Integer);
 
         BigInteger age = (BigInteger) pdu.getDecodedObject(tag);
@@ -829,6 +848,18 @@ public class AsnSchemaParserTest
     {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE3);
 
+
+        String tag = "/2[0]/0";
+        logger.info("get tag " + tag);
+        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
+
+        assertTrue(result.wasSuccessful());
+
+        DecodedTag actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+
+
         String berFilename = getClass().getResource("/Human_SequenceOfSequence3.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
@@ -843,7 +874,7 @@ public class AsnSchemaParserTest
 
         debugPdus(pdus);
 
-        String tag = "/Human/age";
+        tag = "/Human/age";
         BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
         assertEquals(32, age.intValue());
 
@@ -873,6 +904,16 @@ public class AsnSchemaParserTest
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE4);
 
+        String tag = "/2[0]/0";
+        logger.info("get tag " + tag);
+        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
+
+        assertTrue(result.wasSuccessful());
+
+        DecodedTag actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+
         String berFilename = getClass().getResource("/Human_SequenceOfSequence3.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
@@ -887,7 +928,7 @@ public class AsnSchemaParserTest
 
         debugPdus(pdus);
 
-        String tag = "/Human/age";
+        tag = "/Human/age";
         BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
         assertEquals(32, age.intValue());
 
@@ -984,9 +1025,9 @@ public class AsnSchemaParserTest
     public void testParse_HumanUsingTypeEtsi() throws Exception
     {
         // commented all out while fixing some of the other tests in the test package and needign to run all...
-//        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
-//        File schemaFile = new File(schemaFilename);
-//        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 //
 //        {
 //            String tag = "/2/1/2/2/1/0";
@@ -1142,7 +1183,7 @@ public class AsnSchemaParserTest
         if (result.wasSuccessful())
         {
             DecodedTag actualTag = result.getOutput();
-            logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+            logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
         }
 
         tag = "/0";
@@ -1152,7 +1193,7 @@ public class AsnSchemaParserTest
         if (result.wasSuccessful())
         {
             DecodedTag actualTag = result.getOutput();
-            logger.info(actualTag.getTag() + " : " + actualTag.getType().getPrimitiveType().getBuiltinType());
+            logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
         }
 
         //String berFilename = "d:\\tmp\\Human_Typedef.ber";
@@ -1172,7 +1213,7 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         // However, we could not correctly determine the Type of "/0"
-        AsnBuiltinType builtinType = pdu.getType(tag).getPrimitiveType().getBuiltinType();
+        AsnBuiltinType builtinType = pdu.getType(tag).getBuiltinType();
         assertNotEquals(builtinType, AsnBuiltinType.Integer);
 
         try
@@ -1249,7 +1290,8 @@ public class AsnSchemaParserTest
             final DecodedAsnData pdu = pdus.get(i);
             for (String t : pdu.getTags())
             {
-                logger.info("\t{} => {} as {}", t, pdu.getHexString(t), pdu.getType(t).getPrimitiveType().getBuiltinType() );
+                logger.info("\t{} => {} as {}",
+                        t, pdu.getHexString(t), pdu.getType(t).getBuiltinType() );
             }
             for (String t : pdu.getUnmappedTags())
             {

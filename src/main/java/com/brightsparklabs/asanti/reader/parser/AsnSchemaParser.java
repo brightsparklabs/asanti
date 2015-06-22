@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
@@ -18,6 +19,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Logic for parsing an ASN.1 schema
@@ -77,6 +79,7 @@ public class AsnSchemaParser
         if (Strings.isNullOrEmpty(asnSchema)) { throw new ParseException(ERROR_EMPTY_FILE, -1); }
 
         final Map<String, AsnSchemaModule> modules = Maps.newHashMap();
+        final Map<String, AsnSchemaModule.Builder> moduleBuilders = Maps.newHashMap();
         final Iterator<String> lineIterator = getLines(asnSchema);
 
         String primaryModule = null;
@@ -89,8 +92,16 @@ public class AsnSchemaParser
             moduleLines.add(line);
             if ("END".equals(line))
             {
-                final AsnSchemaModule module = AsnSchemaModuleParser.parse(moduleLines);
-                modules.put(module.getName(), module);
+                //final AsnSchemaModule module = AsnSchemaModuleParser.parse(moduleLines);
+                final AsnSchemaModule.Builder module = AsnSchemaModuleParser.parse(moduleLines);
+
+                // tell this builder about all the other module builders so that at the build
+                // step it can resolve the imports.
+                module.addAllModules(moduleBuilders);
+                // TODO MJF - I don't like that I had to add the getName to the builder.
+                // In theory I could use a List/Set but then have to "find" the right module rather
+                // than a simple name lookup.  Might still be preferable to this getName...
+                moduleBuilders.put(module.getName(), module);
                 moduleLines.clear();
 
                 if (primaryModule == null)
@@ -102,9 +113,12 @@ public class AsnSchemaParser
 
         if (!moduleLines.isEmpty()) { throw new ParseException(ERROR_MISSING_END_KEYWORD, -1); }
 
-// TODO - do the final sweep to resolve all the placeholders.
-//        final Map<String, AsnSchemaModule> resolvedModules = resolvePlaceholderTypes(modules);
-//        return new AsnSchemaImpl(primaryModule, resolvedModules);
+        // do the final build, which will resolve all the placeholders and imports.
+        for(AsnSchemaModule.Builder module: moduleBuilders.values())
+        {
+            modules.put(module.getName(), module.build());
+        }
+
         return new AsnSchemaImpl(primaryModule, modules);
     }
 
@@ -113,25 +127,6 @@ public class AsnSchemaParser
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * During parsing there may be "placeholder" types used because a type is used before it is
-     * defined.  Also a type may be from another module.
-     * This function walks all the modules and resolves all placeholders to point to actual types
-     * including cross module type definitions.
-     * @param modules
-     * @return
-     */
-    private static Map<String, AsnSchemaModule> resolvePlaceholderTypes(final Map<String, AsnSchemaModule> modules)
-    {
-        final Map<String, AsnSchemaModule> resolvedModules = Maps.newHashMap();
-
-        for (Map.Entry<String, AsnSchemaModule> module : modules.entrySet())
-        {
-            // TODO MJF - because everything is final and immutable, all the way through, we are going
-            // to make a ton of copies in this process.  Do we want to do that???
-        }
-        return modules;
-    }
 
     /**
      * Strips out comments and redundant whitespace from the supplied ASN.1

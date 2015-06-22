@@ -1,7 +1,11 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.google.common.collect.ImmutableSet;
+
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -22,6 +26,12 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
     private final String moduleName;
     /** the name of the type we are placeholder for */
     private final String typeName;
+
+
+
+    /** name of the type for the elements in this collection */
+    private AsnSchemaType indirectType;
+
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -68,4 +78,78 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
     {
         return typeName;
     }
+
+    /** TODO MJF
+     * Changes the placeholder to an indirect???
+     * @param type
+     */
+    public void setIndirectType(AsnSchemaType type)
+    {
+        indirectType = type;
+    }
+
+    @Override
+    public ImmutableSet<AsnSchemaConstraint> getConstraints()
+    {
+        if (indirectType != null)
+        {
+            ImmutableSet<AsnSchemaConstraint> result = new ImmutableSet.Builder<AsnSchemaConstraint>()
+                    .add(constraint)
+                    .addAll(indirectType.getConstraints())
+                    .build();
+            return result;
+        }
+        else
+        {
+            return ImmutableSet.of(constraint);
+        }
+    }
+
+    @Override
+    public AsnPrimitiveType getPrimitiveType()
+    {
+        if (indirectType != null)
+        {
+            return indirectType.getPrimitiveType();
+        }
+        else
+        {
+            return AsnPrimitiveType.NULL;
+        }
+    }
+
+
+    @Override
+    public AsnSchemaType getChildType(String tag)
+    {
+        if (indirectType != null)
+        {
+            return indirectType.getChildType(tag);
+        }
+
+        return AsnSchemaType.NULL;
+    }
+
+    @Override
+    public String getChildName(String tag)
+    {
+        if (indirectType != null)
+        {
+            return indirectType.getChildName(tag);
+        }
+
+        return "";
+    }
+/*
+    @Override
+    public AsnSchemaType getType()
+    {
+        if (indirectType != null)
+        {
+            return indirectType.getType();
+        }
+
+        return AsnSchemaType.NULL;
+    }
+*/
 }

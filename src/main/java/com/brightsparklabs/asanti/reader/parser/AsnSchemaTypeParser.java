@@ -474,7 +474,7 @@ public class AsnSchemaTypeParser
         final String distinguishedValuesText = matcher.group(3);
         final ImmutableList<AsnSchemaNamedTag> distinguishedValues
                 = AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesText);
-        final String constraintText = Strings.nullToEmpty(matcher.group(4));
+        final String constraintText = Strings.nullToEmpty(matcher.group(7));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
         return new AsnSchemaTypeWithNamedTags(distinguishedValues, constraint, primitiveType);
@@ -503,7 +503,7 @@ public class AsnSchemaTypeParser
             logger.debug("Have a defined TAG mode. {} has tag mode of {}", typeName, tagMode);
         }
 
-        final String constraintText = Strings.nullToEmpty(matcher.group(8));
+        final String constraintText = Strings.nullToEmpty(matcher.group(10));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
         logger.debug("creating placeholder - moduleName:" + moduleName + " typeName: " + typeName + " contraints: " + constraintText);

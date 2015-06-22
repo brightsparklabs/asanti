@@ -181,6 +181,59 @@ public class AsnSchemaImpl implements AsnSchema
 
             if (type == AsnSchemaType.NULL)
             {
+                // no type to delve into
+                break;
+            }
+
+            // Get the tag
+            final String tag = rawTags.next();
+
+            if (whileCounter == 0 && tag.equals("1") && containingTypeName.equals("IRIsContent"))
+            {
+                int breakpoint = 0;
+            }
+
+
+            AsnSchemaType tagType = type.getChildType(tag);//.getType();
+            //AsnSchemaType tagType = tagType1.getType();
+            String tagName = type.getChildName(tag);
+            type = tagType;
+            result.type = tagType;
+            result.decodedTags.add(tagName);
+
+            whileCounter++;
+        }
+
+        return result;
+    }
+
+/*
+    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
+            AsnSchemaModule module)
+    {
+        String typeName = containingTypeName;
+        final DecodedTagsAndType result = new DecodedTagsAndType();
+
+
+        // The module stores all the TypeDefs defined within it.
+        // this is now the Type of the tag's container (ie we are assuming this is in a SEQUENCE/Set etc)
+        AsnSchemaTypeDefinition typeDefinition = module.getType(typeName);
+        AsnSchemaType type = typeDefinition.getType();
+
+        result.type = type;
+
+        int whileCounter = 0; // TODO MJF - delete - this is just for debugging!
+
+        while (rawTags.hasNext())
+        {
+            if (Strings.isNullOrEmpty(typeName))
+            {
+                // no type to delve into
+                break;
+            }
+
+            if (type == AsnSchemaType.NULL)
+            {
                 // type is not defined in module, test if it is imported
                 final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
                 if (!AsnSchemaModule.NULL.equals(importedModule))
@@ -311,7 +364,7 @@ public class AsnSchemaImpl implements AsnSchema
 
         return result;
     }
-
+*/
 
     /**
      * Returns the imported module which contains the specified type module.

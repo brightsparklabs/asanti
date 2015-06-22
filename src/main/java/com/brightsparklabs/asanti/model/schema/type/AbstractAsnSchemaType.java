@@ -1,5 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableList;
@@ -25,7 +26,7 @@ public class AbstractAsnSchemaType implements AsnSchemaType
     private final AsnPrimitiveType primitiveType;
 
     /** the constraint on the primitiveType */
-    private final AsnSchemaConstraint constraint;
+    protected final AsnSchemaConstraint constraint;
 
     /** the parent type if this type is defined in terms on another */
     //private final AsnSchemaType indirectType;
@@ -79,10 +80,37 @@ public class AbstractAsnSchemaType implements AsnSchemaType
     }
 
     @Override
+    public AsnBuiltinType getBuiltinType()
+    {
+        // getPrimitiveType may be overridden in some derived classes.
+        // by calling it here it means we are less likely to need to override this function too.
+        return getPrimitiveType().getBuiltinType();
+    }
+
+    @Override
     public ImmutableSet<AsnSchemaConstraint> getConstraints()
     {
+        int breakpoint = 0; // TODO MJF
         return ImmutableSet.<AsnSchemaConstraint>of(constraint);
     }
 
+    @Override
+    public AsnSchemaType getChildType(String tag)
+    {
+        return AsnSchemaType.NULL;
+    }
+
+    @Override
+    public String getChildName(String tag)
+    {
+        return "";
+    }
+/*
+    @Override
+    public AsnSchemaType getType()
+    {
+        return this;
+    }
+*/
 
 }

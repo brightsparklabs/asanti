@@ -89,7 +89,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "IA5String (SIZE (10))");
-        assertEquals(AsnBuiltinType.Ia5String, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.Ia5String, result.getType().getBuiltinType());
         assertEquals("TEST_NAME", result.getName());
     }
 
@@ -99,7 +99,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "OCTET STRING (SIZE (10))");
-        assertEquals(AsnBuiltinType.OctetString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.OctetString, result.getType().getBuiltinType());
         assertEquals("TEST_NAME", result.getName());
     }
 
@@ -109,7 +109,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "BIT STRING (SIZE (10))");
-        assertEquals(AsnBuiltinType.BitString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.BitString, result.getType().getBuiltinType());
         assertEquals("TEST_NAME", result.getName());
     }
 
@@ -119,7 +119,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "NumericString (SIZE (10))");
-        assertEquals(AsnBuiltinType.NumericString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.NumericString, result.getType().getBuiltinType());
         assertEquals("TEST_NAME", result.getName());
     }
 
@@ -129,7 +129,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "VisibleString (SIZE (10))");
-        assertEquals(AsnBuiltinType.VisibleString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.VisibleString, result.getType().getBuiltinType());
         assertEquals("TEST_NAME", result.getName());
     }
 
@@ -139,7 +139,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "GeneralString (SIZE (10))");
-        assertEquals(AsnBuiltinType.GeneralString, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.GeneralString, result.getType().getBuiltinType());
         assertEquals("TEST_NAME", result.getName());
     }
 
@@ -149,7 +149,7 @@ public class OLDAsnSchemaTypeDefinitionParserTest
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
                 "INTEGER (SIZE (10))");
-        assertEquals(AsnBuiltinType.Integer, result.getType().getPrimitiveType().getBuiltinType());
+        assertEquals(AsnBuiltinType.Integer, result.getType().getBuiltinType());
         assertEquals("TEST_NAME", result.getName());
     }
 }

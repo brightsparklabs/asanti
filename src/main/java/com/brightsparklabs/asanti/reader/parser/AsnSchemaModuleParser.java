@@ -76,8 +76,9 @@ public class AsnSchemaModuleParser
      * @throws ParseException
      *             if any errors occur while parsing the module
      *
-     */
-    public static AsnSchemaModule parse(Iterable<String> moduleText) throws ParseException
+     */ // TODO MJF
+    //public static AsnSchemaModule parse(Iterable<String> moduleText) throws ParseException
+    public static AsnSchemaModule.Builder parse(Iterable<String> moduleText) throws ParseException
     {
         checkNotNull(moduleText);
 
@@ -85,9 +86,12 @@ public class AsnSchemaModuleParser
         final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
         parseHeader(iterator, moduleBuilder);
         parseBody(iterator, moduleBuilder);
-        final AsnSchemaModule module = moduleBuilder.build();
-        return module;
+
+        //final AsnSchemaModule module = moduleBuilder.build();
+        return moduleBuilder;
+        //return module;
     }
+
 
     // -------------------------------------------------------------------------
     // PRIVATE METHODS

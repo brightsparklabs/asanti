@@ -142,6 +142,38 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType
         return componentType;
     }
 
+
+    @Override
+    public AsnSchemaType getChildType(String tag)
+    {
+        AsnSchemaComponentType componenet = getComponent(tag);
+        if (componenet ==  null)
+        {
+            return AsnSchemaType.NULL;
+        }
+
+        return componenet.getType();
+    }
+
+    @Override
+    public String getChildName(String tag)
+    {
+
+        // TODO MJF - if we keep this interface then maybe think about renaming to getChildTagName and getChildTagType
+        return getTagName(tag);
+
+    }
+
+    /**
+     * This function allows the 'tree' to be walked, by being able to get to child types.
+     *
+     * @return the Map of components - names to types.
+     */ // TODO MJF - do we need this or do we want some other design?
+    public ImmutableMap<String, AsnSchemaComponentType> getAllComponents()
+    {
+        return tagsToComponentTypes;
+    }
+
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTag
     // -------------------------------------------------------------------------
