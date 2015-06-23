@@ -68,7 +68,7 @@ public class AsnSchemaModuleParser
      * @param moduleText
      *            all text from module within the ASN.1 schema
      *
-     * @return an {@link AsnSchemaModule} representing the parsed data
+     * @return an {@link AsnSchemaModule.Builder} representing the parsed data
      *
      * @throws NullPointerException
      *             if {@code moduleText} is {@code null}
@@ -76,8 +76,7 @@ public class AsnSchemaModuleParser
      * @throws ParseException
      *             if any errors occur while parsing the module
      *
-     */ // TODO MJF
-    //public static AsnSchemaModule parse(Iterable<String> moduleText) throws ParseException
+     */
     public static AsnSchemaModule.Builder parse(Iterable<String> moduleText) throws ParseException
     {
         checkNotNull(moduleText);
@@ -87,9 +86,7 @@ public class AsnSchemaModuleParser
         parseHeader(iterator, moduleBuilder);
         parseBody(iterator, moduleBuilder);
 
-        //final AsnSchemaModule module = moduleBuilder.build();
         return moduleBuilder;
-        //return module;
     }
 
 
@@ -303,15 +300,7 @@ public class AsnSchemaModuleParser
             {
                 final String name = matcher.group(1);
                 final String value = matcher.group(4);
-                /* TODO MJF
-                final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
-                        AsnSchemaTypeDefinitionParser.parse(name, value);
 
-                for (AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
-                {
-                    moduleBuilder.addType(typeDefinition);
-                }
-                */
                 moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name, value));
                 continue;
             }

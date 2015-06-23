@@ -7,7 +7,6 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
-import java.util.List;
 import java.util.Map;
 
 import com.brightsparklabs.asanti.model.schema.type.*;
@@ -152,6 +151,13 @@ public class AsnSchemaModule
      */
     public static class Builder
     {
+        // -------------------------------------------------------------------------
+        // CLASS VARIABLES
+        // -------------------------------------------------------------------------
+
+        /** class logger */ // TODO MJF
+        private static final Logger logger = LoggerFactory.getLogger(Builder.class);
+
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
@@ -166,6 +172,8 @@ public class AsnSchemaModule
          * all types imported by this module. Map is of form {typeName =&gt;
          * importedModuleName}
          */
+        // TODO ASN-132 - by storing in a Map we can't have the same typeName come from
+        // multiple modules, which should be valid.
         private final Map<String, String> imports = Maps.newHashMap();
 
         /**
@@ -256,6 +264,14 @@ public class AsnSchemaModule
             return this;
         }
 
+        /**
+         * Adds the container holding all the other AsnSchemaModule.Builders
+         *
+         * @param otherModules
+         *          the Builders for the other modules (used so we can resolve inports across
+         *          the different modules
+         * @return this builder
+         */
         public Builder addAllModules(Map<String, AsnSchemaModule.Builder> otherModules)
         {
             this.otherModules.putAll(otherModules);
@@ -270,10 +286,7 @@ public class AsnSchemaModule
          */
         public AsnSchemaModule build()
         {
-
             resolveTypes();
-            // TODO MJF - from here we could do a placeholder sweep, but only for types that are
-            // used within this module
             final AsnSchemaModule module = new AsnSchemaModule(name, types, imports);
             return module;
         }
@@ -291,21 +304,16 @@ public class AsnSchemaModule
         /**
          * resolve all of the "placeholder" type definitions such that they point to actual types,
          * even across modules.
-         *
          */
         private void resolveTypes()
         {
-            for(Map.Entry<String, AsnSchemaTypeDefinition> entry : types.entrySet())
+            for(AsnSchemaTypeDefinition typeDef : types.values())
             {
-                String typeName = entry.getKey();
-                AsnSchemaTypeDefinition typeDef = entry.getValue();
-                AsnSchemaType type = typeDef.getType();
-
-                resolveType(type);
+                resolveType(typeDef.getType());
             }
         }
 
-        private void resolveType(final AsnSchemaType type)
+        private void resolveType(AsnSchemaType type)
         {
 
             // TODO MJF - is it worth trying to avoid the instanceof's here?
@@ -325,6 +333,7 @@ public class AsnSchemaModule
                     // then it will come from an import.
 
                     // figure out which module
+                    // the place holder may have specified it, if not then we need to look it up
                     if (Strings.isNullOrEmpty(moduleName))
                     {
                         moduleName = imports.get(typeName);
@@ -332,12 +341,13 @@ public class AsnSchemaModule
 
                     if (Strings.isNullOrEmpty(moduleName))
                     {
-                        logger.warn("Unable to resolve import of {}", typeName);
+                        logger.warn("Unable to resolve import of {}, it is not specified as an import",
+                                    typeName);
                         // TODO MJF - what to do???
                         return;
                     }
 
-                    AsnSchemaModule.Builder otherModule = otherModules.get(moduleName);
+                    final AsnSchemaModule.Builder otherModule = otherModules.get(moduleName);
                     if (otherModule == null)
                     {
                         logger.warn("Unable to resolve import of {} from module {}", typeName, moduleName);
@@ -347,7 +357,7 @@ public class AsnSchemaModule
 
                     newTypeDefinition = otherModule.types.get(typeName);
                     if ((newTypeDefinition == AsnSchemaTypeDefinition.NULL) ||
-                            (newTypeDefinition == null))
+                        (newTypeDefinition == null))
                     {
                         logger.warn("Unable to resolve import of {} from module {}", typeName, moduleName);
                         // TODO MJF - what to do???
@@ -356,18 +366,18 @@ public class AsnSchemaModule
 
                 }
 
-                AsnSchemaType newType = newTypeDefinition.getType();
+                final AsnSchemaType newType = newTypeDefinition.getType();
 
-                if ((newType != AsnSchemaType.NULL) &&
-                    (newType != null))
-                {
-                    placeholder.setIndirectType(newType);
-                }
-                else
+                if ((newType == AsnSchemaType.NULL) ||
+                    (newType == null))
                 {
                     logger.warn("Unable to resolve placeholder {} {}", moduleName, typeName);
                     // TODO MJF - what to do???
+                    return;
                 }
+
+                //We now have the actual type this placeholder was holding out for, so add it.
+                placeholder.setIndirectType(newType);
             }
             else if (type instanceof AsnSchemaTypeConstructed)
             {
@@ -386,9 +396,6 @@ public class AsnSchemaModule
                 resolveType(collection.getElementType());
             }
         }
-
-        /** class logger */ // TODO MJF
-        private static final Logger logger = LoggerFactory.getLogger(Builder.class);
 
 
         public void dumpComponents(int indent, AsnSchemaTypeConstructed components)
@@ -460,7 +467,7 @@ public class AsnSchemaModule
                 logger.debug("{}**** Placeholder {} points to {} of {}", indentStr, name, other, ofModule);
 
             }
-            else if ((type instanceof AbstractAsnSchemaType) ||
+            else if ((type instanceof BaseAsnSchemaType) ||
                 (type instanceof AsnSchemaTypeWithNamedTags))
             {
                 logger.debug("{}{} is {}", indentStr, name, builtInType);

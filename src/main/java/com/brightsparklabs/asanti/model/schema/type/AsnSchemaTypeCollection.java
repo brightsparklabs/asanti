@@ -2,23 +2,19 @@ package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static com.google.common.base.Preconditions.*;
 
 /**
  * A type used to model the types for objects within ASN.1 schema that are Collections, meaning that
- * they are the equivalent of a List of the element type the surround.
+ * they are the equivalent of a List of the element type they surround.
  * These objects can be either Type Definitions, eg Type ::= SomeType,
  * or components within a constructed type (SEQUENCE etc), eg component SomeType
  *
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeCollection extends AbstractAsnSchemaType
+public class AsnSchemaTypeCollection extends BaseAsnSchemaType
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -37,6 +33,7 @@ public class AsnSchemaTypeCollection extends AbstractAsnSchemaType
 
     /** name of the type for the elements in this collection */
     private final AsnSchemaType elementType;
+
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -92,13 +89,13 @@ public class AsnSchemaTypeCollection extends AbstractAsnSchemaType
     @Override
     public String getChildName(String tag)
     {
-        return elementType.getChildName(tag); // TODO MJF what to return???
+        return elementType.getChildName(tag);
     }
 
     /**
-     *
-     * @return the type for this Collection, eg if the definition was
-     * SEQUENCE OF Foo
+     * Returns the type that this Collection surrounds
+     * @return the underlying type for this Collection, eg if the definition was
+     *      SEQUENCE OF Foo
      * then the type for Foo will be returned
      */
     public AsnSchemaType getElementType()

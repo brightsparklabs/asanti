@@ -13,7 +13,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 
 /**
- * Unit tests for {@link AbstractOLDAsnSchemaTypeDefinition}
+ * Unit tests for {@link AsnSchemaTypeDefinitionImpl}
  *
  * @author brightSPARK Labs
  */

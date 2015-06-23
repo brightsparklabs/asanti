@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeWithNamedTags extends AbstractAsnSchemaType
+public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -62,7 +62,6 @@ public class AsnSchemaTypeWithNamedTags extends AbstractAsnSchemaType
             tagsToNamedValuesBuilder.put(tag, namedValue);
         }
         tagsToNamedValues = tagsToNamedValuesBuilder.build();
-
     }
 
 }

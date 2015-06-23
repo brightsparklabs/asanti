@@ -417,7 +417,7 @@ public class AsnSchemaTypeParser
             throws ParseException
     {
 
-        return new AbstractAsnSchemaType(primitiveType, AsnSchemaConstraint.NULL);
+        return new BaseAsnSchemaType(primitiveType, AsnSchemaConstraint.NULL);
     }
 
     /**
@@ -446,7 +446,7 @@ public class AsnSchemaTypeParser
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        return new AbstractAsnSchemaType(primitiveType, constraint);
+        return new BaseAsnSchemaType(primitiveType, constraint);
     }
 
     /**

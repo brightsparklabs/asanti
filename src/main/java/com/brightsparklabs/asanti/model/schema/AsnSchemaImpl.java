@@ -158,213 +158,34 @@ public class AsnSchemaImpl implements AsnSchema
     private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
             AsnSchemaModule module)
     {
-        String typeName = containingTypeName;
         final DecodedTagsAndType result = new DecodedTagsAndType();
-
 
         // The module stores all the TypeDefs defined within it.
         // this is now the Type of the tag's container (ie we are assuming this is in a SEQUENCE/Set etc)
-        AsnSchemaTypeDefinition typeDefinition = module.getType(typeName);
+        AsnSchemaTypeDefinition typeDefinition = module.getType(containingTypeName);
         AsnSchemaType type = typeDefinition.getType();
 
+        // It is possible to decode "/", which essentially means the containingTypeName
         result.type = type;
-
-        int whileCounter = 0; // TODO MJF - delete - this is just for debugging!
 
         while (rawTags.hasNext())
         {
-            if (Strings.isNullOrEmpty(typeName))
+            if (result.type == AsnSchemaType.NULL)
             {
                 // no type to delve into
                 break;
             }
 
-            if (type == AsnSchemaType.NULL)
-            {
-                // no type to delve into
-                break;
-            }
-
-            // Get the tag
+            // Get the tag that we are decoding
             final String tag = rawTags.next();
 
-            if (whileCounter == 0 && tag.equals("1") && containingTypeName.equals("IRIsContent"))
-            {
-                int breakpoint = 0;
-            }
-
-
-            AsnSchemaType tagType = type.getChildType(tag);//.getType();
-            //AsnSchemaType tagType = tagType1.getType();
-            String tagName = type.getChildName(tag);
-            type = tagType;
-            result.type = tagType;
-            result.decodedTags.add(tagName);
-
-            whileCounter++;
+            // By definition the new tag is the child of its container.
+            result.type = type.getChildType(tag);
+            result.decodedTags.add(type.getChildName(tag));
         }
 
         return result;
     }
-
-/*
-    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
-            AsnSchemaModule module)
-    {
-        String typeName = containingTypeName;
-        final DecodedTagsAndType result = new DecodedTagsAndType();
-
-
-        // The module stores all the TypeDefs defined within it.
-        // this is now the Type of the tag's container (ie we are assuming this is in a SEQUENCE/Set etc)
-        AsnSchemaTypeDefinition typeDefinition = module.getType(typeName);
-        AsnSchemaType type = typeDefinition.getType();
-
-        result.type = type;
-
-        int whileCounter = 0; // TODO MJF - delete - this is just for debugging!
-
-        while (rawTags.hasNext())
-        {
-            if (Strings.isNullOrEmpty(typeName))
-            {
-                // no type to delve into
-                break;
-            }
-
-            if (type == AsnSchemaType.NULL)
-            {
-                // type is not defined in module, test if it is imported
-                final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
-                if (!AsnSchemaModule.NULL.equals(importedModule))
-                {
-                    // found the module the type is defined in
-                    final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
-                            typeName,
-                            importedModule);
-                    result.type = tagsAndType.type;
-                    result.decodedTags.addAll(tagsAndType.decodedTags);
-                    // TODO MJF.  test this...
-                }
-                break;
-            }
-
-            // Get the tag
-            final String tag = rawTags.next();
-
-            if (whileCounter == 0 && tag.equals("1") && containingTypeName.equals("IRIsContent"))
-            {
-                int breakpoint = 0;
-            }
-
-            if (type instanceof AsnSchemaTypeConstructed)
-            {
-                AsnSchemaTypeConstructed constructed = (AsnSchemaTypeConstructed)type;
-                final String tagName = constructed.getTagName(tag);
-                //final String tagName = type.getTagName(tag);
-
-                AsnSchemaComponentType component = constructed.getComponent(tag);
-
-                if (Strings.isNullOrEmpty(tagName))
-                {
-                    // unknown tag
-                    result.type = AsnSchemaType.NULL;
-                    break;
-                }
-
-                AsnSchemaType tagType = component.getType();
-
-                if (tagType instanceof AsnSchemaTypePlaceholder)
-                {
-                    typeName = component.getTypeName();
-                    typeDefinition = module.getType(typeName);
-                    if (typeDefinition == AsnSchemaTypeDefinition.NULL)
-                    {
-                        // type is not defined in module, test if it is imported
-                        final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
-                        if (!AsnSchemaModule.NULL.equals(importedModule))
-                        {
-                            result.decodedTags.add(tagName);
-
-                            if (typeName.equals("IRIsContent")) // TODO MJF - delete
-                            {
-                                int breakpoint = 0;
-                            }
-                            // found the module the type is defined in
-                            final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
-                                    typeName,
-                                    importedModule);
-                            result.type = tagsAndType.type;
-                            result.decodedTags.addAll(tagsAndType.decodedTags);
-                            break;
-                            // TODO MJF.  test this...
-                        }
-                    }
-
-                    if (typeDefinition != AsnSchemaTypeDefinition.NULL)
-                    {
-                        tagType = typeDefinition.getType();
-                    }
-                    else
-                    {
-                        tagType = AsnSchemaType.NULL;
-                    }
-                }
-
-                // TODO MJF - is this true???
-                // We want collections types to be transparent.
-                if (tagType instanceof AsnSchemaTypeCollection)
-                {
-                    tagType = ((AsnSchemaTypeCollection)tagType).getElementType();
-                }
-
-                // TODO MJF - this is stupid!  but the "transparent" replacement above for the
-                // collection may have given us another placeholder.
-                // We need to do a sweep at the end of schema parsing to get rid of all placeholders!!!
-                if (tagType instanceof AsnSchemaTypePlaceholder)
-                {
-                    typeName = component.getTypeName();
-                    typeDefinition = module.getType(typeName);
-                    if (typeDefinition != null)
-                    {
-                        tagType = typeDefinition.getType();
-                    }
-                    else
-                    {
-                        tagType = AsnSchemaType.NULL;
-                    }
-                }
-
-                result.type = tagType;
-                result.decodedTags.add(tagName);
-
-                // Get the next type.
-                type = tagType;
-            }
-            else if (type instanceof AsnSchemaTypeCollection)
-            {
-                // TODO MJF -
-                AsnSchemaTypeCollection
-                        collection = (AsnSchemaTypeCollection)type;
-
-                final String tagName = tag;// type.getTagName(tag);
-                type = collection.getElementType();
-
-                result.type = AsnSchemaType.NULL;
-                result.decodedTags.add(tagName);
-            }
-            else
-            {
-                // This is NOT a container type, so we can't go any further down - this is the end of the line!
-                result.type = type;
-                result.decodedTags.add(containingTypeName);
-            }
-            whileCounter++;
-        }
-
-        return result;
-    }
-*/
 
     /**
      * Returns the imported module which contains the specified type module.
@@ -418,6 +239,6 @@ public class AsnSchemaImpl implements AsnSchema
         private final List<String> decodedTags = Lists.newArrayList();
 
         /** the type of the final tag */
-        private AsnSchemaType type = null;//AsnSchemaType.NULL; // TODO MJF - null or AsnSchemaType.NULL???
+        private AsnSchemaType type = null;
     }
 }

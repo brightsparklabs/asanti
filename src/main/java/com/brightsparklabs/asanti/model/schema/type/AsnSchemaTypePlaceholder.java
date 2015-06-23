@@ -1,11 +1,8 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
-
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -17,19 +14,18 @@ import static com.google.common.base.Preconditions.*;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
+public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
     /** the name of a module the type is defined in */
     private final String moduleName;
+
     /** the name of the type we are placeholder for */
     private final String typeName;
 
-
-
-    /** name of the type for the elements in this collection */
+    /** The actual type.  This is filled in once the parser has parsed all modules. */
     private AsnSchemaType indirectType;
 
 
@@ -62,24 +58,37 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
         super(AsnPrimitiveType.NULL, constraint);
 
         checkNotNull(typeName);
-        checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");  // TODO MJF. Test case it!
+        checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");
 
         this.typeName = typeName;
         this.moduleName = moduleName;
-
     }
 
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns the name of the Module that this placeholder should address.
+     * @return the name of the Module that this placeholder should address.
+     */
     public String getModuleName()
     {
         return moduleName;
     }
 
+    /**
+     * Returns the name of the Type that this placeholder should address.
+     * @return the name of the Type that this placeholder should address.
+     */
     public String getTypeName()
     {
         return typeName;
     }
 
-    /** TODO MJF
+
+    /** TODO MJF - this is pretty ugle because it means we are not final/immutable at construction
+     *
      * Changes the placeholder to an indirect???
      * @param type
      */
@@ -93,15 +102,14 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
     {
         if (indirectType != null)
         {
-            ImmutableSet<AsnSchemaConstraint> result = new ImmutableSet.Builder<AsnSchemaConstraint>()
-                    .add(constraint)
-                    .addAll(indirectType.getConstraints())
-                    .build();
-            return result;
+            return new ImmutableSet.Builder<AsnSchemaConstraint>()
+                        .addAll(super.getConstraints())
+                        .addAll(indirectType.getConstraints())
+                        .build();
         }
         else
         {
-            return ImmutableSet.of(constraint);
+            return super.getConstraints();
         }
     }
 
@@ -112,10 +120,8 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
         {
             return indirectType.getPrimitiveType();
         }
-        else
-        {
-            return AsnPrimitiveType.NULL;
-        }
+
+        return AsnPrimitiveType.NULL;
     }
 
 
@@ -140,16 +146,4 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType
 
         return "";
     }
-/*
-    @Override
-    public AsnSchemaType getType()
-    {
-        if (indirectType != null)
-        {
-            return indirectType.getType();
-        }
-
-        return AsnSchemaType.NULL;
-    }
-*/
 }

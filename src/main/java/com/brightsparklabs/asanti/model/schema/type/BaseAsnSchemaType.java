@@ -3,7 +3,6 @@ package com.brightsparklabs.asanti.model.schema.type;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import static com.google.common.base.Preconditions.*;
@@ -16,7 +15,7 @@ import static com.google.common.base.Preconditions.*;
  *
  * @author brightSPARK Labs
  */
-public class AbstractAsnSchemaType implements AsnSchemaType
+public class BaseAsnSchemaType implements AsnSchemaType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -26,7 +25,7 @@ public class AbstractAsnSchemaType implements AsnSchemaType
     private final AsnPrimitiveType primitiveType;
 
     /** the constraint on the primitiveType */
-    protected final AsnSchemaConstraint constraint;
+    private final ImmutableSet<AsnSchemaConstraint> constraints;
 
     /** the parent type if this type is defined in terms on another */
     //private final AsnSchemaType indirectType;
@@ -58,13 +57,13 @@ public class AbstractAsnSchemaType implements AsnSchemaType
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AbstractAsnSchemaType(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint)
+    public BaseAsnSchemaType(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint)
     {
         checkNotNull(primitiveType);
 
         this.primitiveType = primitiveType;
-        this.constraint = (constraint == null) ? AsnSchemaConstraint.NULL : constraint;
-
+        this.constraints = ImmutableSet.of((constraint == null) ? AsnSchemaConstraint.NULL :
+                                                                  constraint);
     }
 
 
@@ -90,8 +89,7 @@ public class AbstractAsnSchemaType implements AsnSchemaType
     @Override
     public ImmutableSet<AsnSchemaConstraint> getConstraints()
     {
-        int breakpoint = 0; // TODO MJF
-        return ImmutableSet.<AsnSchemaConstraint>of(constraint);
+        return constraints;
     }
 
     @Override
@@ -105,12 +103,4 @@ public class AbstractAsnSchemaType implements AsnSchemaType
     {
         return "";
     }
-/*
-    @Override
-    public AsnSchemaType getType()
-    {
-        return this;
-    }
-*/
-
 }

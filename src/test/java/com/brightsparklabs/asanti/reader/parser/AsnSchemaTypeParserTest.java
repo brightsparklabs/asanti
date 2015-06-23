@@ -1,10 +1,7 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.primitive.*;
 import com.brightsparklabs.asanti.model.schema.type.*;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-
 
 import org.junit.Test;
 
@@ -106,7 +103,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("GeneralString");
         assertEquals(AsnBuiltinType.GeneralString, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -114,7 +111,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("GeneralizedTime");
         assertEquals(AsnBuiltinType.GeneralizedTime, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -122,7 +119,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("IA5String");
         assertEquals(AsnBuiltinType.Ia5String, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -138,7 +135,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("NumericString");
         assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -146,7 +143,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("OCTET STRING");
         assertEquals(AsnBuiltinType.OctetString, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -154,7 +151,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("OBJECT IDENTIFIER");
         assertEquals(AsnBuiltinType.Oid, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -162,7 +159,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("PrintableString");
         assertEquals(AsnBuiltinType.PrintableString, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -170,7 +167,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("RELATIVE-OID");
         assertEquals(AsnBuiltinType.RelativeOid, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -215,7 +212,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("UTF8String");
         assertEquals(AsnBuiltinType.Utf8String, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test
@@ -223,7 +220,7 @@ public class AsnSchemaTypeParserTest
     {
         final AsnSchemaType result = AsnSchemaTypeParser.parse("VisibleString");
         assertEquals(AsnBuiltinType.VisibleString, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
 
     @Test

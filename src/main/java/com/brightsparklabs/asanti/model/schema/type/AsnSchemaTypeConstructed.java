@@ -23,11 +23,15 @@ import static com.google.common.base.Preconditions.*;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType
+public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
+
+    /** class logger */
+    private static final Logger logger = LoggerFactory.getLogger(
+            AsnSchemaTypeConstructed.class);
 
     /**
      * built-in types which are considered 'constructed'. Currently: SEQUENCE, SET
@@ -40,10 +44,6 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(
-            AsnSchemaTypeConstructed.class);
 
     /** mapping from raw tag to component type */
     private final ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
@@ -82,7 +82,7 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType
     {
         super(primitiveType, constraint);
 
-        checkArgument(validTypes.contains(primitiveType), "Type must be either SET, SEQUENCE, CHOICE or ENUMERATED");
+        checkArgument(validTypes.contains(primitiveType), "Type must be either SET, SEQUENCE or CHOICE");
 
         checkNotNull(componentTypes);
 
@@ -146,13 +146,13 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType
     @Override
     public AsnSchemaType getChildType(String tag)
     {
-        AsnSchemaComponentType componenet = getComponent(tag);
-        if (componenet ==  null)
+        final AsnSchemaComponentType component = getComponent(tag);
+        if (component ==  null)
         {
             return AsnSchemaType.NULL;
         }
 
-        return componenet.getType();
+        return component.getType();
     }
 
     @Override
