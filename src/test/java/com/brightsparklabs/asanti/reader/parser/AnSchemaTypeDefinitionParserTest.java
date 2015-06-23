@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  *
  * @author brightSPARK Labs
  */
-public class OLDAsnSchemaTypeDefinitionParserTest
+public class AnSchemaTypeDefinitionParserTest
 {
     // -------------------------------------------------------------------------
     // TESTS

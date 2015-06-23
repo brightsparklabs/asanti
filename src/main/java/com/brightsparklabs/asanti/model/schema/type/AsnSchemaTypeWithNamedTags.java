@@ -33,23 +33,23 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
     /**
      * Default constructor.
      *
-     * @param namedValues
-     *            the optional list of named values in this type.
-     *            Use an empty iterable if there are no
-     *            named values.
-     *
      * @param constraint
      *            The constraint on the type. Use
      *            {@link AsnSchemaConstraint#NULL} if no constraint.
      *            <p>
      *            E.g. For {@code Integer (1..56)} this would be {@code (1..56)}
      *
+     * @param namedValues
+     *            the optional list of named values in this type.
+     *            Use an empty iterable if there are no
+     *            named values.
+     *
      * @throws NullPointerException
      *             if {@code namedValues} is {@code null}
      *
      */
-    public AsnSchemaTypeWithNamedTags(Iterable<AsnSchemaNamedTag> namedValues,
-            AsnSchemaConstraint constraint, AsnPrimitiveType primitiveType)
+    public AsnSchemaTypeWithNamedTags(AsnPrimitiveType primitiveType,
+            AsnSchemaConstraint constraint, Iterable<AsnSchemaNamedTag> namedValues)
     {
         super(primitiveType, constraint);
         checkNotNull(namedValues);

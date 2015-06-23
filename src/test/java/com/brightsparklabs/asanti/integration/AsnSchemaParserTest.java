@@ -770,6 +770,20 @@ public class AsnSchemaParserTest
         DecodedTag actualTag = result.getOutput();
         logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
+
+        tag = "/1/0";
+        logger.info("get tag " + tag);
+        result = schema.getDecodedTag(tag, "Human");
+        actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+        tag = "/1/1";
+        logger.info("get tag " + tag);
+        result = schema.getDecodedTag(tag, "Human");
+        actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+
+
         //String berFilename = "d:\\tmp\\Human_TypedefSequence.ber";
         String berFilename = getClass().getResource("/Human_TypedefSequence.ber").getFile();
         final File berFile = new File(berFilename);
@@ -788,7 +802,7 @@ public class AsnSchemaParserTest
         tag = "/Human/age";
 
         AsnBuiltinType builtinType = pdu.getType(tag).getBuiltinType();
-        assertEquals(builtinType, AsnBuiltinType.Integer);
+        assertEquals(AsnBuiltinType.Integer, builtinType);
 
         BigInteger age = (BigInteger) pdu.getDecodedObject(tag);
         logger.info(tag + " : " + age);
@@ -1025,9 +1039,9 @@ public class AsnSchemaParserTest
     public void testParse_HumanUsingTypeEtsi() throws Exception
     {
         // commented all out while fixing some of the other tests in the test package and needign to run all...
-        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
-        File schemaFile = new File(schemaFilename);
-        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+//        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
+//        File schemaFile = new File(schemaFilename);
+//        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 //
 //        {
 //            String tag = "/2/1/2/2/1/0";

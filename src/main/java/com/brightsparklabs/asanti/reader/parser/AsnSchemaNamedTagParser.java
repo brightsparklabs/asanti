@@ -152,7 +152,7 @@ public class AsnSchemaNamedTagParser
         // TODO MJF - just here so I can parse the ETSI schema for testing.
         if (tag == null)
         {
-            tag = optionalTag.toString();
+            //tag = optionalTag.toString();
         }
 
             return new AsnSchemaNamedTag(tagName, tag);

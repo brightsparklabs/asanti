@@ -58,9 +58,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      * @param primitiveType
      *            the underlying primitiveType of the defined primitiveType
      *
-     * @param componentTypes
-     *            the component types within this defined type
-     *
      * @param constraint
      *            The constraint on the type. Use
      *            {@link AsnSchemaConstraint#NULL} if no constraint.
@@ -72,13 +69,17 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      *            Example 2<br>
      *            For {@code INTEGER (1..256)} this would be {@code (1..256)}.
      *
+     * @param componentTypes
+     *            the component types within this defined type
+     *
      * @throws NullPointerException
      *             if {@code name} or {@code builtinType} are {@code null}
      *
      * @throws IllegalArgumentException
      *             if {@code name} is blank
      */
-    public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, Iterable<AsnSchemaComponentType> componentTypes, AsnSchemaConstraint constraint)
+    public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
+            Iterable<AsnSchemaComponentType> componentTypes)
     {
         super(primitiveType, constraint);
 

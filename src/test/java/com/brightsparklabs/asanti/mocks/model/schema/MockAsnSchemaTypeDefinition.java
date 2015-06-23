@@ -6,7 +6,9 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -54,13 +56,13 @@ public class MockAsnSchemaTypeDefinition
      *
      * @return mock instances for use within the 'Document-PDU' module
      */
-    public static ImmutableList<AbstractOLDAsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForDocumentPdu()
+    public static ImmutableList<AsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForDocumentPdu()
     {
-        final ImmutableList.Builder<AbstractOLDAsnSchemaTypeDefinition> listBuilder
+        final ImmutableList.Builder<AsnSchemaTypeDefinition> listBuilder
                 = ImmutableList.builder();
 
         // build Document
-        AbstractOLDAsnSchemaTypeDefinition mocktypeDefinition = MockAsnSchemaTypeDefinition.builder(
+        AsnSchemaTypeDefinition mocktypeDefinition = MockAsnSchemaTypeDefinition.builder(
                 "Document",
                 AsnBuiltinType.Sequence)
                 .addComponentType("1", "header", "Header")
@@ -150,13 +152,13 @@ public class MockAsnSchemaTypeDefinition
      *
      * @return mock instances for use within the 'PeopleProtocol' module
      */
-    public static ImmutableList<AbstractOLDAsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForPeopleProtocol()
+    public static ImmutableList<AsnSchemaTypeDefinition> createMockedAsnSchemaTypeDefinitionsForPeopleProtocol()
     {
-        final ImmutableList.Builder<AbstractOLDAsnSchemaTypeDefinition> listBuilder
+        final ImmutableList.Builder<AsnSchemaTypeDefinition> listBuilder
                 = ImmutableList.builder();
 
         // build People
-        AbstractOLDAsnSchemaTypeDefinition mocktypeDefinition = MockAsnSchemaTypeDefinition.builder(
+        AsnSchemaTypeDefinition mocktypeDefinition = MockAsnSchemaTypeDefinition.builder(
                 "People",
                 AsnBuiltinType.SetOf).build();
         listBuilder.add(mocktypeDefinition);
@@ -194,8 +196,8 @@ public class MockAsnSchemaTypeDefinition
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
 
-        final AbstractOLDAsnSchemaTypeDefinition mockedInstance
-                = mock(AbstractOLDAsnSchemaTypeDefinition.class);
+        final AsnSchemaTypeDefinition mockedInstance
+                = mock(AsnSchemaTypeDefinition.class);
 
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -211,9 +213,8 @@ public class MockAsnSchemaTypeDefinition
          */
         private MockAsnSchemaTypeDefinitionBuilder(String name, AsnBuiltinType builtinType)
         {
-            // TODO MJF when(mockedInstance.getBuiltinType()).thenReturn(builtinType);
             when(mockedInstance.getName()).thenReturn(name);
-            // TODO MJF when(mockedInstance.getConstraint()).thenReturn(AsnSchemaConstraint.NULL);
+            when(mockedInstance.getType()).thenReturn(AsnSchemaType.NULL);
         }
 
         // ---------------------------------------------------------------------
@@ -249,8 +250,10 @@ public class MockAsnSchemaTypeDefinition
         public MockAsnSchemaTypeDefinitionBuilder addComponentType(String tag, String tagName,
                 String typeName)
         {
+            /* TODO MJF
             when(mockedInstance.getTagName(tag)).thenReturn(tagName);
             when(mockedInstance.getTypeName(tag)).thenReturn(typeName);
+            */
             return this;
         }
 
@@ -297,7 +300,7 @@ public class MockAsnSchemaTypeDefinition
          *
          * @return a mocked instance of {@link AbstractOLDAsnSchemaTypeDefinition}
          */
-        public AbstractOLDAsnSchemaTypeDefinition build()
+        public AsnSchemaTypeDefinition build()
         {
             return mockedInstance;
         }
@@ -322,6 +325,7 @@ public class MockAsnSchemaTypeDefinition
         private MockAsnSchemaTypeDefinitionBuilder addCollectionOfComponentType(String tag,
                 final String tagName, String elementTypeName)
         {
+            /* TODO MJF
             // handle without index supplied
             when(mockedInstance.getTagName(tag)).thenReturn(tagName);
             when(mockedInstance.getTypeName(tag)).thenReturn(elementTypeName);
@@ -339,6 +343,7 @@ public class MockAsnSchemaTypeDefinition
                 }
             });
             when(mockedInstance.getTypeName(matches(regex))).thenReturn(elementTypeName);
+            */
             return this;
         }
     }

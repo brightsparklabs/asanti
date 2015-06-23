@@ -215,11 +215,11 @@ public class AsnSchemaParserTest
 
     @Test
     public void testParse() throws Exception
-    {/* TODO MJF
+    {
         // prepare expected output to AsnSchemaModuleParser.parse()
-        final AsnSchemaModule expectedDocumentPduSchemaModule
+        final AsnSchemaModule.Builder expectedDocumentPduSchemaModule
                 = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu();
-        final AsnSchemaModule expectedPeopleProtocolSchemaModule
+        final AsnSchemaModule.Builder expectedPeopleProtocolSchemaModule
                 = MockAsnSchemaModule.createMockedAsnSchemaModuleForPeopleProtocol();
 
         // mock AsnSchemaModuleParser.parse() static method
@@ -237,17 +237,16 @@ public class AsnSchemaParserTest
 
         // parse the example schema
         final AsnSchema actualSchema = AsnSchemaParser.parse(MockAsnSchema.TEST_SCHEMA_TEXT);
-        assertNotNull(actualSchema);*/
+        assertNotNull(actualSchema);
     }
 
     @Test
     public void testParse_BlockComments() throws Exception
-    {/* TODO MJF
+    {
         // prepare objects for mocking of AsnSchemaModuleParser.parse static method
         // set up mock AsnSchemaModule to return
-        final AsnSchemaModule mockAsnSchemaModule = AsnSchemaModule.builder()
-                .setName("People-Protocol")
-                .build();
+        final AsnSchemaModule.Builder mockAsnSchemaModule = AsnSchemaModule.builder()
+                .setName("People-Protocol");
 
         // prepare expected input to the AsnSchemaModuleParser.parse static method for
         // valid block comments
@@ -262,6 +261,6 @@ public class AsnSchemaParserTest
 
         // test parse with a schema which has all regex combinations
         final AsnSchema actualSchema = AsnSchemaParser.parse(SCHEMA_FOR_REGEX_TEST);
-        assertNotNull(actualSchema);*/
+        assertNotNull(actualSchema);
     }
 }

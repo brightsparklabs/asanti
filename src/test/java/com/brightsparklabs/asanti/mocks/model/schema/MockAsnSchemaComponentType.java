@@ -104,13 +104,15 @@ public class MockAsnSchemaComponentType
         AsnSchemaComponentTypeGenerated componentTypeGenerated = createMockedInstanceForGenerated(
                 "version",
                 "5",
-                "generated.Document.version",
+                //"generated.Document.version",
+                "SEQUENCE",
                 "SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }",
                 false);
         listBuilder.add(componentTypeGenerated);
         componentTypeGenerated = createMockedInstanceForGenerated("description",
                 "6",
-                "generated.Document.description",
+                //"generated.Document.description",
+                "SET",
                 "SET { numberLines [0] INTEGER, summary [1] OCTET STRING }",
                 true);
         listBuilder.add(componentTypeGenerated);
@@ -159,7 +161,8 @@ public class MockAsnSchemaComponentType
         AsnSchemaComponentTypeGenerated componentTypeGenerated = createMockedInstanceForGenerated(
                 "sections",
                 "3",
-                "generated.Section-Main.sections",
+                //"generated.Section-Main.sections",
+                "SET",
                 "SET OF SET { number [1] INTEGER, text [2] OCTET STRING }",
                 false);
         listBuilder.add(componentTypeGenerated);
@@ -186,7 +189,8 @@ public class MockAsnSchemaComponentType
         AsnSchemaComponentTypeGenerated componentTypeGenerated = createMockedInstanceForGenerated(
                 "title",
                 "3",
-                "generated.Person.title",
+                //"generated.Person.title",
+                "ENUMERATED",
                 "ENUMERATED { mr, mrs, ms, dr, rev }",
                 true);
         listBuilder.add(componentTypeGenerated);
@@ -194,7 +198,8 @@ public class MockAsnSchemaComponentType
         listBuilder.add(componentType);
         componentTypeGenerated = createMockedInstanceForGenerated("maritalStatus",
                 "",
-                "generated.Person.maritalStatus",
+                //"generated.Person.maritalStatus",
+                "CHOICE",
                 "CHOICE { Married [0], Single [1] }",
                 false);
         listBuilder.add(componentTypeGenerated);

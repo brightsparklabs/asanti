@@ -170,7 +170,7 @@ public class AsnSchemaImpl implements AsnSchema
 
         while (rawTags.hasNext())
         {
-            if (result.type == AsnSchemaType.NULL)
+            if (type == AsnSchemaType.NULL)
             {
                 // no type to delve into
                 break;
@@ -182,6 +182,7 @@ public class AsnSchemaImpl implements AsnSchema
             // By definition the new tag is the child of its container.
             result.type = type.getChildType(tag);
             result.decodedTags.add(type.getChildName(tag));
+            type = result.type;
         }
 
         return result;

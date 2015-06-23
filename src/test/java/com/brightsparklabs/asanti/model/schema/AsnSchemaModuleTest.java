@@ -34,7 +34,7 @@ public class AsnSchemaModuleTest
     @BeforeClass
     public static void setUpBeforeClass()
     {
-        instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu();
+        instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu().build();
     }
 
     // -------------------------------------------------------------------------

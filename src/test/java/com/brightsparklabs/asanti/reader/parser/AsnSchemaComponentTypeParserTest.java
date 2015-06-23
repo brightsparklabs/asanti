@@ -6,23 +6,54 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentTypeGenerated;
 import com.google.common.collect.ImmutableList;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.ParseException;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link AsnSchemaComponentTypeParser}
  *
  * @author brightSPARK Labs
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(AsnSchemaTypeParser.class)
+
 public class AsnSchemaComponentTypeParserTest
 {
+
+    // -------------------------------------------------------------------------
+    // FIXTURES
+    // -------------------------------------------------------------------------
+    /** an argument capture helper for Constraints */
+    private static ArgumentCaptor<String> typeArgument;
+
+    // -------------------------------------------------------------------------
+    // SETUP/TEAR-DOWN
+    // -------------------------------------------------------------------------
+    @Before
+    public void setUpBeforeTest() throws Exception
+    {
+        // mock AsnSchemaTypeParser.parse static method
+        PowerMockito.mockStatic(AsnSchemaTypeParser.class);
+        // we want to capture the typeArgument that gets passed to the AsnSchemaTypeParser
+        typeArgument = ArgumentCaptor.forClass(String.class);
+        when(AsnSchemaTypeParser.parse(typeArgument.capture())).thenReturn(AsnSchemaType.NULL);
+    }
+
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
@@ -108,7 +139,6 @@ public class AsnSchemaComponentTypeParserTest
     @Test
     public void testParse_DocumentPdu() throws Exception
     {
-/* TODO MJF - broken as part of ASN-126
         // Document type
         ImmutableList<AsnSchemaComponentType> actualComponents = AsnSchemaComponentTypeParser.parse(
                 "header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL");
@@ -116,9 +146,26 @@ public class AsnSchemaComponentTypeParserTest
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForDocument(),
                 actualComponents);
 
+        // check that the AsnSchemaTypeParser got called the right number of times with the right inputs
+        List<String> callArguments = typeArgument.getAllValues();
+        assertEquals(6, callArguments.size());
+        assertEquals("Header", callArguments.get(0));
+        assertEquals("Body", callArguments.get(1));
+        assertEquals("Footer", callArguments.get(2));
+        assertEquals("Date-Due", callArguments.get(3));
+        assertEquals("SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }", callArguments.get(4));
+        assertEquals("SET { numberLines [0] INTEGER, summary [1] OCTET STRING }", callArguments.get(5));
+
+
         // Body type
         actualComponents = AsnSchemaComponentTypeParser.parse(
                 "lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL");
+        assertEquals(6+4, callArguments.size());
+        assertEquals("ModificationMetadata", callArguments.get(6));
+        assertEquals("Section-Note", callArguments.get(7));
+        assertEquals("Section-Main", callArguments.get(8));
+        assertEquals("Section-Note", callArguments.get(9));
+
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForBody(),
                 actualComponents);
@@ -129,21 +176,34 @@ public class AsnSchemaComponentTypeParserTest
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForSectionMain(),
                 actualComponents);
-*/
+
+        // check that the AsnSchemaTypeParser got called the right number of times with the right inputs
+        assertEquals(10+3, callArguments.size());
+        assertEquals("OCTET STRING", callArguments.get(10));
+        assertEquals("SEQUENCE OF Paragraph", callArguments.get(11));
+        assertEquals("SET OF SET { number [1] INTEGER, text [2] OCTET STRING }", callArguments.get(12));
+
     }
 
     @Test
     public void testParse_PeopleProtocol() throws Exception
     {
-/* TODO MJF - broken as part of ASN-126
         // Person
         ImmutableList<AsnSchemaComponentType> actualComponents = AsnSchemaComponentTypeParser.parse(
-                "Person",
                 "firstName [1] OCTET STRING, lastName [2] OCTET STRING, title [3] ENUMERATED { mr, mrs, ms, dr, rev } OPTIONAL, gender Gender OPTIONAL, maritalStatus CHOICE { Married [0], Single [1] }");
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForPerson(),
                 actualComponents);
-*/
+
+        // check that the AsnSchemaTypeParser got called the right number of times with the right inputs
+        List<String> callArguments = typeArgument.getAllValues();
+        assertEquals(5, callArguments.size());
+        assertEquals("OCTET STRING", callArguments.get(0));
+        assertEquals("OCTET STRING", callArguments.get(1));
+        assertEquals("ENUMERATED { mr, mrs, ms, dr, rev }", callArguments.get(2));
+        assertEquals("Gender", callArguments.get(3));
+        assertEquals("CHOICE { Married [0], Single [1] }", callArguments.get(4));
+
     }
 
     /**

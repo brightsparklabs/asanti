@@ -77,8 +77,7 @@ public class AsnSchemaConstraintParser
      */
     public static AsnSchemaConstraint parse(String constraintText) throws ParseException
     {
-        constraintText = Strings.nullToEmpty(constraintText)
-                .trim();
+        constraintText = Strings.nullToEmpty(constraintText).trim();
         if (constraintText.isEmpty()) { return AsnSchemaConstraint.NULL; }
 
         logger.debug("Found constraint: {}", constraintText);

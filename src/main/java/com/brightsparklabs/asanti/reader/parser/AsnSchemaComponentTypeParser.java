@@ -206,13 +206,13 @@ public class AsnSchemaComponentTypeParser
         else
         {
             // TODO MJF - getting here in the case of some cases we are not yet handling.  Try continue anyway...
-            AsnSchemaType tagType = AsnSchemaType.NULL;
-            return new AsnSchemaComponentType("junk", tag, "junk", true, tagType);
+//            AsnSchemaType tagType = AsnSchemaType.NULL;
+//            return new AsnSchemaComponentType("junk", tag, "junk", true, tagType);
 
 
-//            final String error =
-//                    "Could not match type within component type definition. Found: " + rawType;
-//            throw new ParseException(error, -1);
+            final String error =
+                    "Could not match type within component type definition. Found: " + rawType;
+            throw new ParseException(error, -1);
         }
     }
 }

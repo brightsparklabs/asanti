@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -94,8 +95,8 @@ public class MockAsnSchemaModule
     public static ImmutableMap<String, AsnSchemaModule> createMockedAsnSchemaModules()
     {
         final AsnSchemaModule documentPduModuleinstance
-                = createMockedAsnSchemaModuleForDocumentPdu();
-        final AsnSchemaModule peopleProtocolModule = createMockedAsnSchemaModuleForPeopleProtocol();
+                = createMockedAsnSchemaModuleForDocumentPdu().build();
+        final AsnSchemaModule peopleProtocolModule = createMockedAsnSchemaModuleForPeopleProtocol().build();
         final ImmutableMap<String, AsnSchemaModule> modules = ImmutableMap.of(
                 documentPduModuleinstance.getName(),
                 documentPduModuleinstance,
@@ -105,46 +106,42 @@ public class MockAsnSchemaModule
     }
 
     /**
-     * Creates a mock {@link AsnSchemaModule} instance conforming to the 'Document-PDU' module in
+     * Creates a mock {@link AsnSchemaModule.Builder} instance conforming to the 'Document-PDU' module in
      * the example schema
      *
      * @return mocked instance
      */
-    public static AsnSchemaModule createMockedAsnSchemaModuleForDocumentPdu()
+    public static AsnSchemaModule.Builder createMockedAsnSchemaModuleForDocumentPdu()
     {
         final Builder moduleBuilder = AsnSchemaModule.builder();
         moduleBuilder.setName("Document-PDU")
                 .addImport("People", "People-Protocol")
                 .addImport("Person", "People-Protocol");
-        final ImmutableList<AbstractOLDAsnSchemaTypeDefinition> typeDefinitions
+        final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions
                 = MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForDocumentPdu();
-        for (final AbstractOLDAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
+        for (final AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
         {
-            /* TODO MJF
             moduleBuilder.addType(typeDefinition);
-            */
         }
-        return moduleBuilder.build();
+        return moduleBuilder;
     }
 
     /**
-     * Creates a mock {@link AsnSchemaModule} instance conforming to the 'Document-PDU' module in
+     * Creates a mock {@link AsnSchemaModule.Builder} instance conforming to the 'Document-PDU' module in
      * the example schema
      *
      * @return mocked instance
      */
-    public static AsnSchemaModule createMockedAsnSchemaModuleForPeopleProtocol()
+    public static AsnSchemaModule.Builder createMockedAsnSchemaModuleForPeopleProtocol()
     {
         final Builder moduleBuilder = AsnSchemaModule.builder();
         moduleBuilder.setName("People-Protocol");
-        final ImmutableList<AbstractOLDAsnSchemaTypeDefinition> typeDefinitions
+        final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions
                 = MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForPeopleProtocol();
-        for (final AbstractOLDAsnSchemaTypeDefinition typeDefinition : typeDefinitions)
+        for (final AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
         {
-            /* TODO MJF
             moduleBuilder.addType(typeDefinition);
-            */
         }
-        return moduleBuilder.build();
+        return moduleBuilder;
     }
 }
