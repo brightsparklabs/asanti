@@ -6,11 +6,11 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -39,13 +39,13 @@ public class VisibleStringValidatorTest
 
     @Test
     public void testValidateTag() throws Exception
-    {/* TODO MJF
+    {
+        // TODO ASN-136 - use mock Constraints, not real.
+
         // setup mock
-        final OLDAsnSchemaTypeDefinition type = MockAsnSchemaTypeDefinition.builder(
-                "MockVisibleStringType",
-                AsnBuiltinType.VisibleString)
-                .setConstraint(new AsnSchemaSizeConstraint(1, 10))
-                .build();
+        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.VISIBLE_STRING,
+                new AsnSchemaSizeConstraint(1, 10));
+
         final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' })
                 .addBytes("/invalid/bytes", new byte[] { (byte) 0x7F, (byte) 0x00 })
@@ -100,7 +100,7 @@ public class VisibleStringValidatorTest
             }
         }
         assertTrue(byteErrorPresent);
-        assertTrue(constraintErrorPresent);*/
+        assertTrue(constraintErrorPresent);
     }
 
     @Test

@@ -6,11 +6,11 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -39,12 +39,12 @@ public class Ia5StringValidatorTest
 
     @Test
     public void testValidateTag() throws Exception
-    {/* TODO MJF
+    {
+        // TODO ASN-136 - use mock Constraints, not real.
+
         // setup mock
-        final OLDAsnSchemaTypeDefinition type
-                = MockAsnSchemaTypeDefinition.builder("MockIa5StringType", AsnBuiltinType.Ia5String)
-                .setConstraint(new AsnSchemaExactSizeConstraint(5))
-                .build();
+        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.IA5_STRING,
+                new AsnSchemaExactSizeConstraint(5));
         final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { '0', '1', '2', '3', '4' })
                 .addBytes("/invalid/bytes", new byte[] { '0', '1', '2', '3', (byte) 0xFF })
@@ -97,7 +97,7 @@ public class Ia5StringValidatorTest
             }
         }
         assertTrue(byteErrorPresent);
-        assertTrue(constraintErrorPresent);*/
+        assertTrue(constraintErrorPresent);
     }
 
     @Test

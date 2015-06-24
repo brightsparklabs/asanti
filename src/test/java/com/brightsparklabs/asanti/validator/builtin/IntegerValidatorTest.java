@@ -6,10 +6,14 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -41,13 +45,15 @@ public class IntegerValidatorTest
 
     @Test
     public void testValidateTag() throws Exception
-    {/* TODO MJF
+    {
+        // TODO ASN-136 - use mock Constraints, not real.
+
         // setup mock
-        final OLDAsnSchemaTypeDefinition type = MockAsnSchemaTypeDefinition.builder("MockIntegerType",
-                AsnBuiltinType.Integer)
-                .setConstraint(new AsnSchemaNumericValueConstraint(BigInteger.valueOf(1),
-                        BigInteger.valueOf(32639)))
-                .build();
+        final AsnSchemaType type = MockAsnSchemaType.createMockedInstanceWithNamedValues(
+                AsnPrimitiveType.INTEGER,
+                new AsnSchemaNumericValueConstraint(BigInteger.valueOf(1), BigInteger.valueOf(32639)),
+                null);
+
         final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
                 // 32639 within constraint
                 .addBytes("/valid", new byte[] { (byte) 0b01111111, (byte) 0b01111111 })
@@ -87,7 +93,7 @@ public class IntegerValidatorTest
             }
         }
         assertTrue(byteErrorPresent);
-        assertTrue(constraintErrorPresent);*/
+        assertTrue(constraintErrorPresent);
     }
 
     @Test

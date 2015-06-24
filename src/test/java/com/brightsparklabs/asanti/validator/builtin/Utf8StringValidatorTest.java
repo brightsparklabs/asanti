@@ -6,12 +6,11 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -41,11 +40,12 @@ public class Utf8StringValidatorTest
     @Test
     public void testValidateTag() throws Exception
     {
-/* TODO MJF
+        // TODO ASN-136 - use mock Constraints, not real.
+
         // setup mock
-        final AsnSchemaType type = MockAsnSchemaTypeDefinition.builder(
-                "MockUtf8StringType",
-                AsnBuiltinType.Utf8String).setConstraint(new AsnSchemaSizeConstraint(1, 3)).build();
+        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.UTF8_STRING,
+                new AsnSchemaSizeConstraint(1, 3));
+
         final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { (byte) 0b11000010, (byte) 0b10000000 })
                 .addBytes("/invalid/bytes", new byte[] { (byte) 0b11000010 })
@@ -98,7 +98,6 @@ public class Utf8StringValidatorTest
         }
         assertTrue(byteErrorPresent);
         assertTrue(constraintErrorPresent);
-*/
     }
 
     @Test
