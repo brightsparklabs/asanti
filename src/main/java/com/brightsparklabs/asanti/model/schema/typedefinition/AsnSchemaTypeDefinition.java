@@ -31,7 +31,7 @@ public interface AsnSchemaTypeDefinition
 
     /**
      * Returns the AsnSchemaType of this type definition
-     * @return
+     * @return the AsnSchemaType of this type definition
      */
     AsnSchemaType getType();
 

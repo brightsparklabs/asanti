@@ -7,6 +7,8 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.Iterator;
+
 /**
  * A base type used to model the types for objects within ASN.1 schema.
  * These objects can be either Type Definitions, eg Type ::= SomeType,
@@ -42,20 +44,27 @@ public interface AsnSchemaType
     /**
      * Returns the constraints of this type definition.  This will be all the constraints
      * the create this type (ie this and all the parent types)
-     * @return
+     * @return  the constraints of this type definition.
      */
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
-    /** TODO MJF - do these belong in this interface????
+    /**
+     * Returns the {@link AsnSchemaType} of any component type matching tag
+     * @param tag
+     *          a tag within this construct
      *
-     * @return
+     * @return the {@link AsnSchemaType} of any component type matching tag
      */
     AsnSchemaType getChildType(String tag);
 
-    /** TODO MJF
+    /**
+     * Returns the name of the component associated with the specified tag
      *
      * @param tag
-     * @return
+     *            a tag within this construct
+     *
+     * @return name of the specified tag; or an empty string if tag is not
+     *         recognised.
      */
     String getChildName(String tag);
 
@@ -64,7 +73,7 @@ public interface AsnSchemaType
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
+     * NULL instance of {@link AsnSchemaType}.
      * <p>
      * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
@@ -77,7 +86,7 @@ public interface AsnSchemaType
 
         /**
          * Default constructor. This is private. Use
-         * {@link AbstractOLDAsnSchemaTypeDefinition#NULL} to obtain an instance.
+         * {@link AsnSchemaType#NULL} to obtain an instance.
          */
         private Null()
         {
@@ -116,14 +125,6 @@ public interface AsnSchemaType
         {
             return "";
         }
-/*
-        @Override
-        public AsnSchemaType getType()
-        {
-            return this;
-        }
-*/
+
     }
-
-
 }

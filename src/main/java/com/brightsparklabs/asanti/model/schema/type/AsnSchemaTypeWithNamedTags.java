@@ -33,6 +33,9 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
     /**
      * Default constructor.
      *
+     * @param primitiveType
+     *            The {@link AsnPrimitiveType} for this type
+     *
      * @param constraint
      *            The constraint on the type. Use
      *            {@link AsnSchemaConstraint#NULL} if no constraint.
@@ -45,7 +48,7 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
      *            named values.
      *
      * @throws NullPointerException
-     *             if {@code namedValues} is {@code null}
+     *             if {@code namedValues} or {@code primitiveType} is {@code null}
      *
      */
     public AsnSchemaTypeWithNamedTags(AsnPrimitiveType primitiveType,

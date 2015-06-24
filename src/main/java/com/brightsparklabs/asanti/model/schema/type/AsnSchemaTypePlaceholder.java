@@ -1,5 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
@@ -35,6 +36,13 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
 
     /**
      * Default constructor.
+     *
+     * @param moduleName
+     *            The name of the {@link AsnSchemaModule} that the real type is contained\
+     *            May be null or empty if not needed.
+     *
+     * @param typeName
+     *            The name of the Type Definition that this placeholder is for
      *
      * @param constraint
      *            The constraint on the type. Use
@@ -87,10 +95,19 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     }
 
 
-    /** TODO MJF - this is pretty ugle because it means we are not final/immutable at construction
+    /**
+     * Changes the placeholder to an object that stores a link to the type.
+     * This is essentially an layer of indirection, and allows chaining of
+     * Type Definitions, eg {@code
+     *    someComponent [1] PersonAge
+     *    ...
      *
-     * Changes the placeholder to an indirect???
+     *  PersonAge ::= ShortInteger (0..200)
+     *  ShortInteger ::= INTEGER (0..32768)
+     * }
+     *
      * @param type
+     *          the {@link AsnSchemaType}
      */
     public void setIndirectType(AsnSchemaType type)
     {
@@ -102,15 +119,15 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     {
         if (indirectType != null)
         {
+            // return our own constraints, and those of the type we are delegating to.
+            // this allows constraint 'chaining'
             return new ImmutableSet.Builder<AsnSchemaConstraint>()
                         .addAll(super.getConstraints())
                         .addAll(indirectType.getConstraints())
                         .build();
         }
-        else
-        {
-            return super.getConstraints();
-        }
+
+        return super.getConstraints();
     }
 
     @Override

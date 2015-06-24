@@ -48,14 +48,11 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
 
         {
             // validate against the tag's constraint
-            //final OLDAsnSchemaTypeDefinition type = decodedAsnData.getType(tag);
             final AsnSchemaType type = decodedAsnData.getType(tag);
             final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
-            //final ImmutableSet<SchemaConstraintValidationFailure> constraintFailures;
-            Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
+            final Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
             for(AsnSchemaConstraint constraint : constraints)
             {
-                // TODO MJF - how to add the constrain failures?
                 constraintFailures.addAll(constraint.apply(bytes));
             }
             for (SchemaConstraintValidationFailure constraintFailure : constraintFailures)
@@ -66,10 +63,6 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
                 tagFailures.add(tagFailure);
             }
         }
-
-/*
-        // TODO MJF - validate against any Type Def chain that got to the end tag.
-*/
 
         return ImmutableSet.copyOf(tagFailures);
     }

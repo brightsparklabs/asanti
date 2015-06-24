@@ -155,7 +155,7 @@ public class AsnSchemaModule
         // CLASS VARIABLES
         // -------------------------------------------------------------------------
 
-        /** class logger */ // TODO MJF
+        /** class logger */
         private static final Logger logger = LoggerFactory.getLogger(Builder.class);
 
         // ---------------------------------------------------------------------
@@ -175,11 +175,6 @@ public class AsnSchemaModule
         // TODO ASN-132 - by storing in a Map we can't have the same typeName come from
         // multiple modules, which should be valid.
         private final Map<String, String> imports = Maps.newHashMap();
-
-        /**
-         * all of the other module builders, we use this to resolve imports.
-         */
-        private final Map<String, AsnSchemaModule.Builder> otherModules = Maps.newHashMap();
 
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -265,34 +260,23 @@ public class AsnSchemaModule
         }
 
         /**
-         * Adds the container holding all the other AsnSchemaModule.Builders
-         *
-         * @param otherModules
-         *          the Builders for the other modules (used so we can resolve inports across
-         *          the different modules
-         * @return this builder
-         */
-        public Builder addAllModules(Map<String, AsnSchemaModule.Builder> otherModules)
-        {
-            this.otherModules.putAll(otherModules);
-            return this;
-        }
-
-        /**
          * Creates an instance of {@link AsnSchemaModule} from the information
          * in this builder
          *
+         * @param otherModules
+         *          the other {@link AsnSchemaModule.Builder} within the schema.  They will
+         *          be used to resolve imports as part of the final build.
          * @return an instance of {@link AsnSchemaModule}
          */
-        public AsnSchemaModule build()
+        public AsnSchemaModule build(Map<String, AsnSchemaModule.Builder> otherModules)
         {
-            resolveTypes();
+            resolveTypes(otherModules);
             final AsnSchemaModule module = new AsnSchemaModule(name, types, imports);
             return module;
         }
 
 
-        // TODO MJF - with all this other functionality we are less like a traditional "builder"
+        // TODO ASN-126 review- with all this other functionality we are less like a traditional "builder"
         // We need the name so that we can put all the different modules in a map.
         // we need to be able to lookup which module a typedef comes from - we don't want to have
         // to iterate all the modules to find the typedef.
@@ -305,18 +289,22 @@ public class AsnSchemaModule
          * resolve all of the "placeholder" type definitions such that they point to actual types,
          * even across modules.
          */
-        private void resolveTypes()
+        private void resolveTypes(Map<String, AsnSchemaModule.Builder> otherModules)
         {
             for(AsnSchemaTypeDefinition typeDef : types.values())
             {
-                resolveType(typeDef.getType());
+                resolveType(typeDef.getType(), otherModules);
             }
         }
 
-        private void resolveType(AsnSchemaType type)
+        /**
+         * resolve the placeholder types definitions within this {@link AsnSchemaType}
+         * @param type
+         *            The type to resolve
+         */
+        private void resolveType(AsnSchemaType type, Map<String, AsnSchemaModule.Builder> otherModules)
         {
-
-            // TODO MJF - is it worth trying to avoid the instanceof's here?
+            // TODO ASN-126 review - is it worth trying to avoid the instanceof's here?
             // we could use a visitor, but the logic for looking up imports should stay here I think
             if (type instanceof AsnSchemaTypePlaceholder)
             {
@@ -387,110 +375,13 @@ public class AsnSchemaModule
 
                 for(AsnSchemaComponentType componentType: allComponents.values())
                 {
-                    resolveType(componentType.getType());
+                    resolveType(componentType.getType(), otherModules);
                 }
             }
             else if (type instanceof AsnSchemaTypeCollection)
             {
                 AsnSchemaTypeCollection collection = (AsnSchemaTypeCollection)type;
-                resolveType(collection.getElementType());
-            }
-        }
-
-
-        public void dumpComponents(int indent, AsnSchemaTypeConstructed components)
-        {
-            final ImmutableMap<String, AsnSchemaComponentType> allComponents
-                    = components.getAllComponents();
-
-            for(Map.Entry<String, AsnSchemaComponentType> entry : allComponents.entrySet())
-            {
-                String typeName = entry.getKey();
-                AsnSchemaComponentType componentType = entry.getValue();
-
-                String tagName = componentType.getTagName();
-                AsnSchemaType type = componentType.getType();
-                dumpType(indent+1, tagName + " ["+typeName+"]", type);
-            }
-        }
-
-        public void dumpType(int indent, String name, AsnSchemaType type)
-        {
-
-            String indentStr = "\t";
-            for (int i = 0; i < indent; ++i ) indentStr += "\t";
-
-            AsnBuiltinType builtInType = type.getBuiltinType();
-            if (type instanceof AsnSchemaTypeConstructed)
-            {
-                logger.debug("{}{} is constructed", indentStr, name);
-                dumpComponents(indent+1, (AsnSchemaTypeConstructed)type);
-
-
-            }
-            else if (type instanceof AsnSchemaTypeCollection)
-            {
-                AsnSchemaTypeCollection collection = (AsnSchemaTypeCollection)type;
-                logger.debug("{}{} is {} of ", indentStr, name, builtInType);
-
-                dumpType(indent + 1, "", collection.getElementType());
-
-            }
-            else if (type instanceof AsnSchemaTypePlaceholder)
-            {
-                AsnSchemaTypePlaceholder placeholder = (AsnSchemaTypePlaceholder)type;
-                String other = (!placeholder.getModuleName().isEmpty()) ? placeholder.getModuleName() + "." +  placeholder.getTypeName() :
-                        placeholder.getTypeName();
-
-                String typeName = placeholder.getTypeName();
-                AsnSchemaTypeDefinition ofType = types.get(typeName);
-                boolean isInThisModule = ofType != null;
-                String ofModule;
-                if (isInThisModule)
-                {
-                    ofModule = "this module";
-                }
-                else
-                {
-                    String fromModule = imports.get(typeName);
-                    if (fromModule != null)
-                    {
-                        ofModule = fromModule;
-                    }
-                    else
-                    {
-                        ofModule = "unknown module";
-                    }
-
-                }
-
-                logger.debug("{}**** Placeholder {} points to {} of {}", indentStr, name, other, ofModule);
-
-            }
-            else if ((type instanceof BaseAsnSchemaType) ||
-                (type instanceof AsnSchemaTypeWithNamedTags))
-            {
-                logger.debug("{}{} is {}", indentStr, name, builtInType);
-            }
-            else
-            {
-                logger.debug("{} Unknown type!!!", indentStr);
-            }
-        }
-
-        // TODO MJF
-        public void dump()
-        {
-            logger.debug("Module name: {}", name);
-
-            for(Map.Entry<String, AsnSchemaTypeDefinition> entry : types.entrySet())
-            {
-                String typeName = entry.getKey();
-                AsnSchemaTypeDefinition typeDef = entry.getValue();
-
-                dumpType(0, typeName, typeDef.getType());
-
-
+                resolveType(collection.getElementType(), otherModules);
             }
         }
     }

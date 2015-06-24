@@ -73,14 +73,9 @@ public class DecodedTag
         this.isFullyDecoded = isFullyDecoded;
 
         checkArgument(!this.tag.isEmpty(), "Decoded tag cannot be blank");
-        checkArgument(!this.rawTag.isEmpty(), "Raw tag cannot be blank");
 
-
-        if (this.type == null)
-        {
-        int breakpoint = 0;
-        }
-
+        // the rawTag can be blank because we also have to pass the topLevelType
+        // so we should be able to get something that is a typedef INTEGER for example at the root.
 
         checkNotNull(this.type);
     }

@@ -44,8 +44,9 @@ public class AsnSchemaTypeParser
     // Constructed types (SEQUENCE, SET, CHOICE)
     // -------------------------------------------------------------------------
 
-    // TODO MJF - should the EXPLICIT|IMPLICIT keyword be included in any of these?
-    // If so then what do we do?
+    /* TODO ASN-137 / ASN-80 - should the EXPLICIT|IMPLICIT keyword be included in any of these?
+     * If so then where and how do we change behaviour?
+     */
 
     /** pattern to match a Constructed type definition */
     private static final Pattern PATTERN_TYPE_CONSTRUCTED = Pattern.compile(
@@ -56,8 +57,6 @@ public class AsnSchemaTypeParser
             "SET", AsnPrimitiveType.SET,
             "CHOICE", AsnPrimitiveType.CHOICE);
 
-
-    // TODO MJF - how to handle Enumerated??
     /** pattern to match a ENUMERATED type definition */
     private static final Pattern PATTERN_TYPE_ENUMERATED = Pattern.compile(
             "^ENUMERATED ?\\{(.+)\\}$");
@@ -77,7 +76,7 @@ public class AsnSchemaTypeParser
 //    /** pattern to match a BIT STRING type definition */
 //    private static final Pattern PATTERN_TYPE_BIT_STRING = Pattern.compile(
 //            "^BIT STRING ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
-// TODO MJF - ^ these two are actually different.  Set up some tests and decide what to do
+// TODO ANS-135 - ^ these two are actually different.  Set up some tests and decide what to do
     /** pattern to match a type with distinguished values */
     private static final Pattern PATTERN_TYPE_WITH_NAMED_VALUES = Pattern.compile(
             "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");

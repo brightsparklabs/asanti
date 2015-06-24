@@ -111,25 +111,12 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         tagsToComponentTypes = tagsToComponentTypesBuilder.build();
     }
 
-
-    public String getTagName(String tag)
-    {
-        final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
-        if (schemaTag == AsnSchemaTag.NULL)
-        {
-            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}", tag);
-            return "";
-        }
-
-        final AsnSchemaComponentType componentType = tagsToComponentTypes.get(schemaTag.getTagNumber());
-        return (componentType == null) ? "" : componentType.getTagName() + schemaTag.getTagIndex();
-    }
-
-
     /**
      * Returns the {@code AsnSchemaComponentType} for the tag, or null if none found
      * @param tag
-     * @return
+     *          a tag within this construct
+     *
+     * @return the {@code AsnSchemaComponentType} for the tag, or null if none found
      */
     public AsnSchemaComponentType getComponent(String tag)
     {
@@ -159,10 +146,15 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     @Override
     public String getChildName(String tag)
     {
+        final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
+        if (schemaTag == AsnSchemaTag.NULL)
+        {
+            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}", tag);
+            return "";
+        }
 
-        // TODO MJF - if we keep this interface then maybe think about renaming to getChildTagName and getChildTagType
-        return getTagName(tag);
-
+        final AsnSchemaComponentType componentType = tagsToComponentTypes.get(schemaTag.getTagNumber());
+        return (componentType == null) ? "" : componentType.getTagName() + schemaTag.getTagIndex();
     }
 
     /**

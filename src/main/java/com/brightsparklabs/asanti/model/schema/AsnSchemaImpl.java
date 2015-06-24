@@ -170,7 +170,7 @@ public class AsnSchemaImpl implements AsnSchema
 
         while (rawTags.hasNext())
         {
-            if (type == AsnSchemaType.NULL)
+            if ((type == AsnSchemaType.NULL) || (type == null))
             {
                 // no type to delve into
                 break;
@@ -181,48 +181,16 @@ public class AsnSchemaImpl implements AsnSchema
 
             // By definition the new tag is the child of its container.
             result.type = type.getChildType(tag);
-            result.decodedTags.add(type.getChildName(tag));
+            String decodedTag = type.getChildName(tag);
+            // Only add the decoded string if it was found
+            if ((result.type != AsnSchemaType.NULL) && (!decodedTag.isEmpty()))
+            {
+                result.decodedTags.add(decodedTag);
+            }
             type = result.type;
         }
 
         return result;
-    }
-
-    /**
-     * Returns the imported module which contains the specified type module.
-     *
-     * @param typeName
-     *         the type in the <b>imported</b> module
-     * @param module
-     *         the module which imported the specified type
-     *
-     * @return the imported module which contains the specified type
-     */
-    private AsnSchemaModule getImportedModuleFor(String typeName, AsnSchemaModule module)
-    {
-        // not found locally, check if it is from an import
-        final String importedModuleName = module.getImportedModuleFor(typeName);
-        if (Strings.isNullOrEmpty(importedModuleName))
-        {
-            logger.warn(
-                    "Could not resolve type definition \"{}\". It is is not defined or imported in module \"{}\"",
-                    typeName,
-                    module.getName());
-            return AsnSchemaModule.NULL;
-        }
-
-        final AsnSchemaModule importedModule = modules.get(importedModuleName);
-        // ensure we do not recursively look into the current module
-        if (importedModule == null || importedModule.equals(module))
-        {
-            logger.warn(
-                    "Could not resolve type definition \"{}\". Type is imported from an unknown module \"{}\"",
-                    typeName,
-                    module.getName());
-            return AsnSchemaModule.NULL;
-        }
-
-        return importedModule;
     }
 
     // -------------------------------------------------------------------------

@@ -95,10 +95,7 @@ public class AsnSchemaParser
                 //final AsnSchemaModule module = AsnSchemaModuleParser.parse(moduleLines);
                 final AsnSchemaModule.Builder module = AsnSchemaModuleParser.parse(moduleLines);
 
-                // tell this builder about all the other module builders so that at the build
-                // step it can resolve the imports.
-                module.addAllModules(moduleBuilders);
-                // TODO MJF - I don't like that I had to add the getName to the builder.
+                // TODO ASN-126 review - I don't like that I had to add the getName to the builder.
                 // In theory I could use a List/Set but then have to "find" the right module rather
                 // than a simple name lookup.  Might still be preferable to this getName...
                 moduleBuilders.put(module.getName(), module);
@@ -116,7 +113,7 @@ public class AsnSchemaParser
         // do the final build, which will resolve all the placeholders and imports.
         for(AsnSchemaModule.Builder module: moduleBuilders.values())
         {
-            modules.put(module.getName(), module.build());
+            modules.put(module.getName(), module.build(moduleBuilders));
         }
 
         return new AsnSchemaImpl(primaryModule, modules);
