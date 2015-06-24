@@ -6,11 +6,13 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import java.util.Map;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchemaModule} which conform to the test
@@ -94,9 +96,10 @@ public class MockAsnSchemaModule
      */
     public static ImmutableMap<String, AsnSchemaModule> createMockedAsnSchemaModules()
     {
+        Map<String, Builder> others = Maps.newHashMap();
         final AsnSchemaModule documentPduModuleinstance
-                = createMockedAsnSchemaModuleForDocumentPdu().build();
-        final AsnSchemaModule peopleProtocolModule = createMockedAsnSchemaModuleForPeopleProtocol().build();
+                = createMockedAsnSchemaModuleForDocumentPdu().build(others);
+        final AsnSchemaModule peopleProtocolModule = createMockedAsnSchemaModuleForPeopleProtocol().build(others);
         final ImmutableMap<String, AsnSchemaModule> modules = ImmutableMap.of(
                 documentPduModuleinstance.getName(),
                 documentPduModuleinstance,
