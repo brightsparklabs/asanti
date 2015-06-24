@@ -4,7 +4,12 @@
  */
 package com.brightsparklabs.asanti.model.schema;
 
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
+import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.mocks.model.schema.*;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -99,7 +104,6 @@ public class AsnSchemaImplTest
     @Test
     public void testGetDecodedTag() throws Exception
     {
-        /* TODO MJF - broken as part of ASN-126
         // test known
         assertEquals("/Document/header/published",
                 instance.getDecodedTag("1/0", "Document").getOutput().getTag());
@@ -155,6 +159,6 @@ public class AsnSchemaImplTest
         // test unknown
         assertEquals("/Document/99/98",
                 instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
-*/
+
     }
 }

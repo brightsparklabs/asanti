@@ -6,12 +6,16 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
+import com.google.common.collect.Maps;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
+
+import java.util.Map;
 
 /**
  * Unit tests for {@link AsnSchemaModule}
@@ -34,7 +38,9 @@ public class AsnSchemaModuleTest
     @BeforeClass
     public static void setUpBeforeClass()
     {
-        instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu().build();
+        Map<String, Builder> others = Maps.newHashMap();
+        instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu().build(
+                others);
     }
 
     // -------------------------------------------------------------------------
@@ -44,16 +50,18 @@ public class AsnSchemaModuleTest
     @Test
     public void testBuilder() throws Exception
     {
+        Map<String, Builder> others = Maps.newHashMap();
+
         // test standard build works
         final Builder builder = AsnSchemaModule.builder();
         builder.setName("TEST")
-                .build();
+                .build(others);
 
         // test null name
         try
         {
             builder.setName(null)
-                    .build();
+                    .build(others);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -64,7 +72,7 @@ public class AsnSchemaModuleTest
         try
         {
             builder.setName("")
-                    .build();
+                    .build(others);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -73,7 +81,7 @@ public class AsnSchemaModuleTest
         try
         {
             builder.setName(" ")
-                    .build();
+                    .build(others);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -112,15 +120,15 @@ public class AsnSchemaModuleTest
         assertEquals("Paragraph", instance.getType("Paragraph")
                 .getName());
         // test imports
-        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType("People"));
-        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType("Person"));
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("People"));
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("Person"));
         // test unknown
-        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType("NON_EXISTING_TYPE"));
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType("NON_EXISTING_TYPE"));
         // test blank
-        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType(""));
-        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType(" "));
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(""));
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(" "));
         // test null
-        assertEquals(OLDAsnSchemaTypeDefinition.NULL, instance.getType(null));
+        assertEquals(AsnSchemaTypeDefinition.NULL, instance.getType(null));
     }
 
     @Test

@@ -5,11 +5,14 @@
 
 package com.brightsparklabs.asanti.integration;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.decoder.AsnDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
@@ -45,6 +48,82 @@ public class AsnDecoderTest {
 
     @After
     public void tearDown() throws Exception {
+
+    }
+
+    @Test
+    public void testAsantiSample() throws Exception
+    {
+        final File asnFile = new File(getClass().getResource("/AsantiSample.asn").getFile());
+        AsnSchema instance = AsnSchemaFileReader.read(asnFile);
+
+        String tag = "1/0/1";
+        logger.info("get tag " + tag);
+        OperationResult<DecodedTag> result = instance.getDecodedTag(tag, "Document");
+
+        assertTrue(result.wasSuccessful());
+
+        DecodedTag actualTag = result.getOutput();
+        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
+        assertEquals("/Document/header/published/date", actualTag.getTag());
+        assertEquals(AsnBuiltinType.GeneralizedTime, actualTag.getType().getBuiltinType());
+
+
+        assertEquals("/Document/header/published",
+                instance.getDecodedTag("1/0", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/date",
+                instance.getDecodedTag("2/0/0", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/modifiedBy/firstName",
+                instance.getDecodedTag("2/0/1/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/modifiedBy/lastName",
+                instance.getDecodedTag("2/0/1/2", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/modifiedBy/title",
+                instance.getDecodedTag("2/0/1/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/prefix/text",
+                instance.getDecodedTag("2/1/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/text",
+                instance.getDecodedTag("2/2/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs/title",
+                instance.getDecodedTag("2/2/2/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/title",
+                instance.getDecodedTag("2/2/2[0]/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[1]/title",
+                instance.getDecodedTag("2/2/2[1]/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
+                instance.getDecodedTag("2/2/2[0]/2/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
+                instance.getDecodedTag("2/2/2[0]/2/2", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
+                instance.getDecodedTag("2/2/2[0]/2/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/points",
+                instance.getDecodedTag("2/2/2[0]/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/points[0]",
+                instance.getDecodedTag("2/2/2[0]/3[0]", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/title",
+                instance.getDecodedTag("2/2/2[99]/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
+                instance.getDecodedTag("2/2/2[99]/2/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
+                instance.getDecodedTag("2/2/2[99]/2/2", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
+                instance.getDecodedTag("2/2/2[99]/2/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/points",
+                instance.getDecodedTag("2/2/2[99]/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/points[99]",
+                instance.getDecodedTag("2/2/2[99]/3[99]", "Document").getOutput().getTag());
+        assertEquals("/Document/body/suffix/text",
+                instance.getDecodedTag("2/3/1", "Document").getOutput().getTag());
+
+
+        // test partial
+        assertEquals("/Document/header/published/99/98",
+                instance.getDecodedTag("1/0/99/98", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/99/98",
+                instance.getDecodedTag("2/0/99/98", "Document").getOutput().getTag());
+
+        // test unknown
+        assertEquals("/Document/99/98",
+                instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
 
     }
 
@@ -145,10 +224,11 @@ public class AsnDecoderTest {
     @Test
     public void testDecodeAsnData2() throws Exception
     {
-/* TODO MJF.  Waiting for indirect typedef ASN-???
         logger.info("testing ber against schema");
-        final File asnFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\barTypeDef.asn");
-        final File berFile = new File("D:\\brightSPARK\\asanti\\src\\test\\resources\\bar.ber");
+
+        final File asnFile = new File(getClass().getResource("/barTypeDef.asn").getFile());
+        final File berFile = new File(getClass().getResource("/bar.ber").getFile());
+
         final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, asnFile, "Bar");
 
 
@@ -169,7 +249,6 @@ public class AsnDecoderTest {
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }
         }
-*/
     }
 
     @Test

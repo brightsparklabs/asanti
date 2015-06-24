@@ -197,7 +197,6 @@ public class AsnSchemaParserTest
             "   PersonAge ::= INTEGER (1..200)\n" +
             "END";
 
-    /** TODO MJF - This (component Typedef of a Typedef type) does NOT work yet... */
     private static final String HUMAN_USING_TYPEDEF_INDIRECT = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
@@ -263,7 +262,6 @@ public class AsnSchemaParserTest
             "   }\n" +
             "END";
 
-    /** TODO MJF - This (component being of a Typedef type) does NOT work yet... */
     private static final String HUMAN_SEQUENCEOF_SEQUENCE2 = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
@@ -302,6 +300,7 @@ public class AsnSchemaParserTest
             "       }\n" +
             "   }\n" +
             "END";
+
     private static final String HUMAN_SEQUENCEOF_SEQUENCE4 = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
@@ -355,6 +354,11 @@ public class AsnSchemaParserTest
             "       age [0] PersonAge (1..150) OPTIONAL\n" +
             "   }\n" +
             "END";
+
+
+    // TODO MJF - rationalise these.  Also, consolidate this and AsnDecoderTest in to one, as they
+    // are both doing end-to-end testing.
+
 
     // -------------------------------------------------------------------------
     // TESTS
@@ -912,6 +916,8 @@ public class AsnSchemaParserTest
         age = (BigInteger)pdu.getDecodedObject(tag);
         assertEquals(3, age.intValue());
     }
+
+
     @Test
     public void testParse_HumanSequenceOfSequence4() throws Exception
     {

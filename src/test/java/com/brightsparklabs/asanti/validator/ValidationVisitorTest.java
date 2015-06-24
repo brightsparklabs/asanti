@@ -73,9 +73,8 @@ public class ValidationVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionGeneralString()
     {
-        // TODO MJF
-//        final GeneralStringValidator result = instance.visit(AsnPrimitiveType.GENERAL_STRING);
-//        assertNotNull(result);
+        final GeneralStringValidator result = instance.visit(AsnPrimitiveType.GENERAL_STRING);
+        assertNotNull(result);
     }
 
     @Test

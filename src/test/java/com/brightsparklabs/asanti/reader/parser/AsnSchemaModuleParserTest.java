@@ -206,7 +206,7 @@ public class AsnSchemaModuleParserTest
         catch (final ParseException ex)
         {
         }
-//* TODO MJF
+/* TODO ASN-139 should do something like this, but more thorough.  May need different mocks.
         // test module with unknown content after top level type
         try
         {
@@ -226,7 +226,7 @@ public class AsnSchemaModuleParserTest
         catch (final ParseException ex)
         {
         }
-//*/
+*/
         // test module with invalid IMPORTS statement
         try
         {
@@ -251,7 +251,6 @@ public class AsnSchemaModuleParserTest
     @Test
     public void testParse_DocumentPdu() throws Exception
     {
-///* TODO MJF
         final String expectedImportsStatement
                 = "Person FROM People-Protocol { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) } ; ";
 
@@ -319,13 +318,12 @@ public class AsnSchemaModuleParserTest
         final AsnSchemaModule.Builder actualModule
                 = AsnSchemaModuleParser.parse(MockAsnSchemaModule.TEST_MODULE_DOCUMENT_PDU);
         assertNotNull(actualModule);
-//*/
     }
 
     @Test
     public void testParse_PeopleProtocol() throws Exception
     {
-/* TODO MJF
+/* TODO ASN-138
         // prepare mocked AsnSchemaTypeDefinitions for People Protocol module
         final ImmutableList<AbstractOLDAsnSchemaTypeDefinition> mockedAsnSchemaTypeDefinitions
                 = MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForPeopleProtocol();

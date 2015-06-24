@@ -70,8 +70,8 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionGeneralString()
     {
-        // TODO MJF final GeneralStringDecoder result = instance.visit(AsnPrimitiveType.GENERAL_STRING);
-        //assertNotNull(result);
+        final GeneralStringDecoder result = instance.visit(AsnPrimitiveType.GENERAL_STRING);
+        assertNotNull(result);
     }
 
     @Test
