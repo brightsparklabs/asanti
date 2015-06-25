@@ -11,7 +11,7 @@ import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFa
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Models a Constraint from within a {@link AsnSchemaType} or {@link
+ * Models a Constraint from within an {@link AsnSchemaType} or {@link
  * AsnSchemaComponentType}
  *
  * @author brightSPARK Labs
@@ -44,7 +44,7 @@ public interface AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link AsnSchemaConstraint}
+     * Null instance of {@link AsnSchemaConstraint}
      */
     public static class Null implements AsnSchemaConstraint
     {

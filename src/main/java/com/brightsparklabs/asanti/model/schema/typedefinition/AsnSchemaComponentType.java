@@ -33,7 +33,7 @@ public class AsnSchemaComponentType
     /** whether this component type is optional */
     private final boolean isOptional;
 
-    /**  */
+    /** the underlying AsnSchemaType that this component is holding */
     private final AsnSchemaType type;
 
 
@@ -57,24 +57,22 @@ public class AsnSchemaComponentType
      * @param isOptional
      *            whether this component type is optional
      *
+     * @param type
+     *            the underlying {@link AsnSchemaType} for this component
+     *
      * @throws NullPointerException
      *             if {@code tagName} or {@code typeName} are {@code null}
      *
      * @throws IllegalArgumentException
      *             if {@code tagName} or {@code typeName} are blank
      */
-
-    public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional)
-    {
-        this(tagName, tag, typeName, isOptional, null); // TODO - temporary
-    }
-
     public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional, AsnSchemaType type)
     {
         checkNotNull(tagName);
         checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
         checkNotNull(typeName);
         checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");
+        checkNotNull(type);
 
         this.tagName = tagName;
         this.tag = (tag == null) ? "" : tag;

@@ -4,12 +4,7 @@
  */
 package com.brightsparklabs.asanti.model.schema;
 
-import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.mocks.model.schema.*;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.google.common.collect.ImmutableMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -159,6 +154,5 @@ public class AsnSchemaImplTest
         // test unknown
         assertEquals("/Document/99/98",
                 instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
-
     }
 }

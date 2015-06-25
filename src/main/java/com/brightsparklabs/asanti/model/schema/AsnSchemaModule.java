@@ -391,11 +391,11 @@ public class AsnSchemaModule
     }
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: NULL
+    // INTERNAL CLASS: Null
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link AsnSchemaModule}
+     * Null instance of {@link AsnSchemaModule}
      *
      * @author brightSPARK Labs
      */

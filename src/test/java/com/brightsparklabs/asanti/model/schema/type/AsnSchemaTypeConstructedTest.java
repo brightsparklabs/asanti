@@ -177,6 +177,11 @@ public class AsnSchemaTypeConstructedTest
 
         assertEquals("name[0]", instance.getChildName("0[0]"));
 
+        // check with bad tags
+        assertEquals("", instance.getChildName(null));
+        assertEquals("", instance.getChildName("bad tag"));
+        assertEquals("", instance.getChildName("100"));
+
     }
 
     @Test

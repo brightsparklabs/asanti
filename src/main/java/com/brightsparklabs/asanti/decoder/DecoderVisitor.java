@@ -70,12 +70,6 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
-    public PrintableStringDecoder visit(final AsnPrimitiveTypePrintableString visitable)
-    {
-        return PrintableStringDecoder.getInstance();
-    }
-
-    @Override
     public Ia5StringDecoder visit(final AsnPrimitiveTypeIA5String visitable)
     {
         return Ia5StringDecoder.getInstance();
@@ -97,6 +91,24 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     public OctetStringDecoder visit(final AsnPrimitiveTypeOctetString visitable)
     {
         return OctetStringDecoder.getInstance();
+    }
+
+    @Override
+    public OidDecoder visit(final AsnPrimitiveTypeOid visitable)
+    {
+        return OidDecoder.getInstance();
+    }
+
+    @Override
+    public PrintableStringDecoder visit(final AsnPrimitiveTypePrintableString visitable)
+    {
+        return PrintableStringDecoder.getInstance();
+    }
+
+    @Override
+    public OidDecoder visit(final AsnPrimitiveTypeRelativeOid visitable)
+    {
+        return OidDecoder.getInstance();
     }
 
     @Override
@@ -133,17 +145,5 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     public VisibleStringDecoder visit(final AsnPrimitiveTypeVisibleString visitable)
     {
         return VisibleStringDecoder.getInstance();
-    }
-
-    @Override
-    public OidDecoder visit(final AsnPrimitiveTypeOid visitable)
-    {
-        return OidDecoder.getInstance();
-    }
-
-    @Override
-    public OidDecoder visit(final AsnPrimitiveTypeRelativeOid visitable)
-    {
-        return OidDecoder.getInstance();
     }
 }

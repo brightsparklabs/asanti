@@ -89,9 +89,8 @@ public class AsnSchemaImpl implements AsnSchema
     public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
-        final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(),
-                topLevelTypeName,
-                primaryModule);
+        final AsnSchemaTypeDefinition typeDefinition = primaryModule.getType(topLevelTypeName);
+        final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(), typeDefinition.getType());
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
 
         // check if decode was successful
@@ -137,50 +136,39 @@ public class AsnSchemaImpl implements AsnSchema
      * @param rawTags
      *         raw tags to decode. This should be an iterable in the order of the tags. E.g. The raw
      *         tag {code "/1/0/1"} should be provided as an iterator of {code ["1", "0", "1"]}
-     * @param containingTypeName
-     *         the type in this module from which to begin decoding the raw tag. E.g. {@code
-     *         "Document"} will start decoding the raw tags from the type definition named {@code
-     *         Document}
-     * @param module
-     *         module containing the type
+     * @param containingType
+     *         the {@link AsnSchemaType} that is the parent of the chain to be decoded
      *
      * @return a list of all decoded tags. If a raw tag could not be decoded then processing stops.
      * E.g. for the raw tags {code "1", "0" "1", "99", "98"}, if the {@code "99"} raw tag cannot be
      * decoded, then a list containing the decoded tags for only the first three raw tags is
      * returned (e.g. {@code ["Header", "Published", "Date"]})
      */
-    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
-            AsnSchemaModule module)
+    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType)
     {
+        // ASN-126 review.  does this functionality now belong here?
+        // all the logic is about AsnSchemaType object - should it have a decodeTags function?
+
         final DecodedTagsAndType result = new DecodedTagsAndType();
-
-        // The module stores all the TypeDefs defined within it.
-        // this is now the Type of the tag's container (ie we are assuming this is in a SEQUENCE/Set etc)
-        AsnSchemaTypeDefinition typeDefinition = module.getType(containingTypeName);
-        AsnSchemaType type = typeDefinition.getType();
-
-        // It is possible to decode "/", which essentially means the containingTypeName
+        AsnSchemaType type = containingType;
+        // It is possible to decode "/", which means return the containingType
         result.type = type;
 
         while (rawTags.hasNext())
         {
-            if ((type == AsnSchemaType.NULL) || (type == null))
-            {
-                // no type to delve into
-                break;
-            }
-
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
             // By definition the new tag is the child of its container.
+            final String decodedTag = type.getChildName(tag);
             result.type = type.getChildType(tag);
-            String decodedTag = type.getChildName(tag);
-            // Only add the decoded string if it was found
-            if ((result.type != AsnSchemaType.NULL) && (!decodedTag.isEmpty()))
+            // ensure it was found
+            if ((result.type == AsnSchemaType.NULL) || (result.type == null))
             {
-                result.decodedTags.add(decodedTag);
+                // no type to delve into
+                break;
             }
+            result.decodedTags.add(decodedTag);
             type = result.type;
         }
 

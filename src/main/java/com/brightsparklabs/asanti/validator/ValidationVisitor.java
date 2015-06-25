@@ -45,7 +45,6 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     {
         // TODO ASN-113
         return BuiltinTypeValidator.NULL;
-        //return null;
     }
 
     @Override
@@ -53,7 +52,6 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     {
         // TODO ASN-113
         return BuiltinTypeValidator.NULL;
-        //return null;
     }
 
     @Override
@@ -66,12 +64,6 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     public GeneralStringValidator visit(AsnPrimitiveTypeGeneralString visitable)
     {
         return GeneralStringValidator.getInstance();
-    }
-
-    @Override
-    public PrintableStringValidator visit(AsnPrimitiveTypePrintableString visitable)
-    {
-        return PrintableStringValidator.getInstance();
     }
 
     @Override
@@ -96,6 +88,24 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     public OctetStringValidator visit(AsnPrimitiveTypeOctetString visitable)
     {
         return OctetStringValidator.getInstance();
+    }
+
+    @Override
+    public OidValidator visit(AsnPrimitiveTypeOid visitable)
+    {
+        return OidValidator.getInstance();
+    }
+
+    @Override
+    public PrintableStringValidator visit(AsnPrimitiveTypePrintableString visitable)
+    {
+        return PrintableStringValidator.getInstance();
+    }
+
+    @Override
+    public OidValidator visit(AsnPrimitiveTypeRelativeOid visitable)
+    {
+        return OidValidator.getInstance();
     }
 
     @Override
@@ -138,15 +148,4 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
         return VisibleStringValidator.getInstance();
     }
 
-    @Override
-    public OidValidator visit(AsnPrimitiveTypeOid visitable)
-    {
-        return OidValidator.getInstance();
-    }
-
-    @Override
-    public OidValidator visit(AsnPrimitiveTypeRelativeOid visitable)
-    {
-        return OidValidator.getInstance();
-    }
 }

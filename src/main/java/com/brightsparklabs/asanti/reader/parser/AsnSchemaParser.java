@@ -90,7 +90,6 @@ public class AsnSchemaParser
             moduleLines.add(line);
             if ("END".equals(line))
             {
-                //final AsnSchemaModule module = AsnSchemaModuleParser.parse(moduleLines);
                 final AsnSchemaModule.Builder module = AsnSchemaModuleParser.parse(moduleLines);
 
                 // TODO ASN-126 review - I don't like that I had to add the getName to the builder.

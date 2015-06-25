@@ -160,7 +160,7 @@ public class AsnBerFileReader
     }
 
     /**
-     * Processes an ASN.1 'SEQUENCE' and stores the tags/data found in it
+     * Processes an ASN.1 'Sequence' and stores the tags/data found in it
      *
      * @param asnSequence
      *            sequence to process
@@ -200,7 +200,7 @@ public class AsnBerFileReader
     }
 
     /**
-     * Processes the elements found in an ASN.1 'SEQUENCE' or ASN.1 'Set' stores
+     * Processes the elements found in an ASN.1 'Sequence' or ASN.1 'Set' stores
      * the tags/data found in them
      *
      * @param elements

@@ -75,6 +75,7 @@ public class AsnSchemaNamedTagParser
                 // ignore extension markers
                 continue;
             }
+
             final AsnSchemaNamedTag option = parseOption(optionLine);
             builder.add(option);
         }

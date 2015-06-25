@@ -170,11 +170,11 @@ public interface DecodedAsnData
             throws DecodeException;
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: NULL
+    // INTERNAL CLASS: Null
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link DecodedAsnData}
+     * Null instance of {@link DecodedAsnData}
      *
      * @author brightSPARK Labs
      */
