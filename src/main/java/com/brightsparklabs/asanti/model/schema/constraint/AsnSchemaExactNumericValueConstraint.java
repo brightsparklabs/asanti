@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
@@ -16,7 +16,7 @@ import java.math.BigInteger;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * Models an 'exact' numeric value constraint from within a {@link AbstractOLDAsnSchemaTypeDefinition}
+ * Models an 'exact' numeric value constraint from within a {@link AsnSchemaType}
  * or {@link AsnSchemaComponentType}. E.g. {@code INTEGER (10)}.
  *
  * @author brightSPARK Labs

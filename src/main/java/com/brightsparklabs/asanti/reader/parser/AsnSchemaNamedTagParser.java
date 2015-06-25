@@ -68,7 +68,6 @@ public class AsnSchemaNamedTagParser
 
         final Iterable<String> lines = COMMA_SPLITTER.split(enumeratedOptionsText);
 
-        int i = 0;
         for (final String optionLine : lines)
         {
             if ("...".equals(optionLine))
@@ -76,12 +75,8 @@ public class AsnSchemaNamedTagParser
                 // ignore extension markers
                 continue;
             }
-            // TODO MJF - get rid of the optionalTag
-
-            final AsnSchemaNamedTag option = parseOption(optionLine, i);
+            final AsnSchemaNamedTag option = parseOption(optionLine);
             builder.add(option);
-
-            i++;
         }
         return builder.build();
     }
@@ -126,15 +121,12 @@ public class AsnSchemaNamedTagParser
      * @param optionLine
      *            the option text to parse
      *
-     * @param optionalTag
-     *          an optional tag to use if one is not parse out from the optionLine
-     *
      * @return an {@link AsnSchemaNamedTag} representing the parsed text
      *
      * @throws ParseException
      *             if any errors occur while parsing the data
      */
-    private static AsnSchemaNamedTag parseOption(String optionLine, Integer optionalTag) throws ParseException
+    private static AsnSchemaNamedTag parseOption(String optionLine) throws ParseException
     {
         final Matcher matcher = PATTERN_ENUMERATED_OPTION.matcher(optionLine);
 
@@ -147,15 +139,11 @@ public class AsnSchemaNamedTagParser
         }
 
         final String tagName = matcher.group(1);
-        String tag = matcher.group(3);
+        final String tag = matcher.group(3);
 
-        // TODO MJF - just here so I can parse the ETSI schema for testing.
-        if (tag == null)
-        {
-            //tag = optionalTag.toString();
-        }
+        // TODO ASN-133 - this will allow no tag, which causes issues with Enumerated types.
 
-            return new AsnSchemaNamedTag(tagName, tag);
+        return new AsnSchemaNamedTag(tagName, tag);
     }
 
     /**

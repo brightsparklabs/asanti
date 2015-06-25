@@ -5,8 +5,6 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Iterator;
-
 import static com.google.common.base.Preconditions.*;
 
 /**

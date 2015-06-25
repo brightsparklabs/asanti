@@ -6,11 +6,11 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -39,13 +39,11 @@ public class PrintableStringValidatorTest
 
     @Test
     public void testValidateTag() throws Exception
-    {/*
+    {
         // setup mock
-        final OLDAsnSchemaTypeDefinition type = MockAsnSchemaTypeDefinition.builder(
-                "MockPrintableStringType",
-                AsnBuiltinType.PrintableString)
-                .setConstraint(new AsnSchemaSizeConstraint(1, 4))
-                .build();
+        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(
+                AsnPrimitiveType.PRINTABLE_STRING,
+                new AsnSchemaSizeConstraint(1, 4));
         final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { '1', '2', '3', '4' })
                 .addBytes("/invalid/bytes", new byte[] { '%' })
@@ -98,7 +96,7 @@ public class PrintableStringValidatorTest
             }
         }
         assertTrue(byteErrorPresent);
-        assertTrue(constraintErrorPresent);*/
+        assertTrue(constraintErrorPresent);
     }
 
     @Test

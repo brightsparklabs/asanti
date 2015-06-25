@@ -8,7 +8,6 @@ package com.brightsparklabs.asanti.reader.parser;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentTypeGenerated;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +38,7 @@ public class AsnSchemaComponentTypeParserTest
     // FIXTURES
     // -------------------------------------------------------------------------
     /** an argument capture helper for Constraints */
-    private static ArgumentCaptor<String> typeArgument;
+    private ArgumentCaptor<String> typeArgument;
 
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN

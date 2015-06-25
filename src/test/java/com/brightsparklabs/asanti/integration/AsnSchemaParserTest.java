@@ -106,7 +106,7 @@ public class AsnSchemaParserTest
             "   Payload ::= CHOICE\n" +
             "   {\n" +
             "       optA [0] TypeA,\n" +
-            "       optB [1] TypeAB\n" +
+            "       optB [1] TypeB\n" +
             "   }\n" +
             "   TypeA ::= SEQUENCE\n" +
             "   {\n" +
@@ -356,13 +356,120 @@ public class AsnSchemaParserTest
             "END";
 
 
-    // TODO MJF - rationalise these.  Also, consolidate this and AsnDecoderTest in to one, as they
-    // are both doing end-to-end testing.
+    // TODO ASN-123 - rationalise these.  Determine if we want many small examples, or one more
+    // comprehensive example (using the AsantiSample schema).  The small examples were useful
+    // during the refactoring (ASN-126), not sure how useful they will be beyond that.
+    // Also, consolidate this and AsnDecoderTest in to one, as they are both
+    // doing end-to-end testing.
 
 
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
+    @Test
+    public void testAsantiSample() throws Exception
+    {
+        // loads the AsantiSample test schema and checks all the tag decoding.
+
+        final File asnFile = new File(getClass().getResource("/AsantiSample.asn").getFile());
+        AsnSchema instance = AsnSchemaFileReader.read(asnFile);
+
+        assertEquals("/Document",
+                instance.getDecodedTag("", "Document").getOutput().getTag());
+
+        assertEquals("/Document/header",
+                instance.getDecodedTag("1", "Document").getOutput().getTag());
+        assertEquals("/Document/header/published",
+                instance.getDecodedTag("1/0", "Document").getOutput().getTag());
+        assertEquals("/Document/header/published/date",
+                instance.getDecodedTag("1/0/1", "Document").getOutput().getTag());
+        assertEquals("/Document/header/published/country",
+                instance.getDecodedTag("1/0/2", "Document").getOutput().getTag());
+
+        assertEquals("/Document/body",
+                instance.getDecodedTag("2", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified",
+                instance.getDecodedTag("2/0", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/date",
+                instance.getDecodedTag("2/0/0", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/modifiedBy/firstName",
+                instance.getDecodedTag("2/0/1/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/modifiedBy/lastName",
+                instance.getDecodedTag("2/0/1/2", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/modifiedBy/title",
+                instance.getDecodedTag("2/0/1/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/prefix/text",
+                instance.getDecodedTag("2/1/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/text",
+                instance.getDecodedTag("2/2/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs/title",
+                instance.getDecodedTag("2/2/2/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/title",
+                instance.getDecodedTag("2/2/2[0]/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[1]/title",
+                instance.getDecodedTag("2/2/2[1]/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
+                instance.getDecodedTag("2/2/2[0]/2/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
+                instance.getDecodedTag("2/2/2[0]/2/2", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
+                instance.getDecodedTag("2/2/2[0]/2/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/points",
+                instance.getDecodedTag("2/2/2[0]/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[0]/points[0]",
+                instance.getDecodedTag("2/2/2[0]/3[0]", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/title",
+                instance.getDecodedTag("2/2/2[99]/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
+                instance.getDecodedTag("2/2/2[99]/2/1", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
+                instance.getDecodedTag("2/2/2[99]/2/2", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
+                instance.getDecodedTag("2/2/2[99]/2/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/points",
+                instance.getDecodedTag("2/2/2[99]/3", "Document").getOutput().getTag());
+        assertEquals("/Document/body/content/paragraphs[99]/points[99]",
+                instance.getDecodedTag("2/2/2[99]/3[99]", "Document").getOutput().getTag());
+        assertEquals("/Document/body/suffix/text",
+                instance.getDecodedTag("2/3/1", "Document").getOutput().getTag());
+
+        assertEquals("/Document/footer",
+                instance.getDecodedTag("3", "Document").getOutput().getTag());
+        assertEquals("/Document/footer/authors",
+                instance.getDecodedTag("3/0", "Document").getOutput().getTag());
+        assertEquals("/Document/footer/authors[0]/firstName",
+                instance.getDecodedTag("3/0[0]/1", "Document").getOutput().getTag());
+        assertEquals("/Document/footer/authors[0]/lastName",
+                instance.getDecodedTag("3/0[0]/2", "Document").getOutput().getTag());
+
+        assertEquals("/Document/dueDate",
+                instance.getDecodedTag("4", "Document").getOutput().getTag());
+
+        assertEquals("/Document/version",
+                instance.getDecodedTag("5", "Document").getOutput().getTag());
+        assertEquals("/Document/version/majorVersion",
+                instance.getDecodedTag("5/0", "Document").getOutput().getTag());
+        assertEquals("/Document/version/minorVersion",
+                instance.getDecodedTag("5/1", "Document").getOutput().getTag());
+
+        assertEquals("/Document/description",
+                instance.getDecodedTag("6", "Document").getOutput().getTag());
+        assertEquals("/Document/description/numberLines",
+                instance.getDecodedTag("6/0", "Document").getOutput().getTag());
+        assertEquals("/Document/description/summary",
+                instance.getDecodedTag("6/1", "Document").getOutput().getTag());
+
+        // test partial
+        assertEquals("/Document/header/published/99/98",
+                instance.getDecodedTag("1/0/99/98", "Document").getOutput().getTag());
+        assertEquals("/Document/body/lastModified/99/98",
+                instance.getDecodedTag("2/0/99/98", "Document").getOutput().getTag());
+
+        // test unknown
+        assertEquals("/Document/99/98",
+                instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
+
+    }
 
     @Test
     public void testParse_NoRoot() throws Exception
@@ -497,6 +604,7 @@ public class AsnSchemaParserTest
         assertEquals(AsnPrimitiveType.ENUMERATED, pdu.getType(tag).getPrimitiveType());
 
         byte [] bytes = pdu.getBytes(tag);
+        assertEquals(1,bytes[0] );
 
     }
 
@@ -505,49 +613,23 @@ public class AsnSchemaParserTest
     {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE_CHOICE);
 
-        String tag = "/0";
-        logger.info("get tag " + tag);
-        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-
-        assertTrue(result.wasSuccessful());
-
-        DecodedTag actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-
-
-        tag = "/1";
-        logger.info("get tag " + tag);
-        result = schema.getDecodedTag(tag, "Human");
-
-
-        actualTag = result.getOutput();
-        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-
-        //String berFilename = "d:\\tmp\\Human_Simple.ber";
         String berFilename = getClass().getResource("/Human_SimpleChoice.ber").getFile();
         final File berFile = new File(berFilename);
 
-
         String topLevelType = "Human";
-
         final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
-
-
-
-/*
         DecodedAsnData pdu = pdus.get(0);
-        tag = "/Human/age";
+        String tag = "/Human/payload/optA/age";
         BigInteger age = (BigInteger)pdu.getDecodedObject(tag);
-        logger.info(tag + " : " + age);
         assertEquals(new BigInteger("32"), age);
 
-        byte [] bytes = pdu.getBytes("/1");
-        logger.info("bytes: ", bytes.toString());
-*/
-    }
+        tag = "/Human/payload/optA/name";
+        String name = (String)pdu.getDecodedObject(tag);
+        assertEquals("Adam", name);
+}
 
     @Test
     public void testParse_HumanSimpleSet() throws Exception
@@ -976,7 +1058,7 @@ public class AsnSchemaParserTest
     @Test
     public void testParse_HumanSequenceOfSequence2() throws Exception
     {
-/*
+
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE2);
 
         String berFilename = getClass().getResource("/Human_SequenceOfSequence2.ber").getFile();
@@ -1001,7 +1083,7 @@ public class AsnSchemaParserTest
         {
             logger.info("\t{} => {}", tag, pdu.getHexString(tag));
         }
-*/
+
     }
 
     @Test
@@ -1009,7 +1091,7 @@ public class AsnSchemaParserTest
     {
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_SETOF);
-/*
+
         String berFilename = getClass().getResource("/Human_TypedefSetOf.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
@@ -1034,17 +1116,16 @@ public class AsnSchemaParserTest
         fave = (BigInteger)pdu.getDecodedObject(tag+"[1]");
         logger.info("fave[1]: {}", fave);
 
-        tag = "/Human/faveNumbers[2]";
+        tag = "/Human/faveNumbers";
         fave = (BigInteger)pdu.getDecodedObject(tag+"[2]");
         logger.info("fave[2]: {}", fave);
-*/
-    }
 
+    }
 
     @Test
     public void testParse_HumanUsingTypeEtsi() throws Exception
     {
-        // commented all out while fixing some of the other tests in the test package and needign to run all...
+        // TODO ASN-133, ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
 //        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
 //        File schemaFile = new File(schemaFilename);
 //        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
@@ -1053,15 +1134,11 @@ public class AsnSchemaParserTest
 //            String tag = "/2/1/2/2/1/0";
 //            logger.info("get tag " + tag);
 //            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
-//            int breakpoint = 0;
-//
 //        }
 //        {
 //            String tag = "1/1";
 //            logger.info("get tag " + tag);
 //            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
-//            int breakpoint = 0;
-//
 //        }
 //
 //
@@ -1190,33 +1267,18 @@ public class AsnSchemaParserTest
     @Test
     public void testParse_HumanUsingTypeDefBroken() throws Exception
     {
-        // TODO - In order for this to work we need to figure out how to handle TypeDefs as types,
-        // Eg age PersonAge in a sequence.  This will require some update to AsnSchemaComponentTypeParser.parse
-        // at least, but also some mechanism to store and sweep after the whole file is processed to
-        // attempt to re-align things that were not declared when they were first used.
-
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_BROKEN);
 
         String tag = "/";
-        logger.info("get tag " + tag);
         OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        if (result.wasSuccessful())
-        {
-            DecodedTag actualTag = result.getOutput();
-            logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-        }
+        assertTrue(result.wasSuccessful());
+        assertEquals("/Human", result.getOutput().getTag());
 
         tag = "/0";
-        logger.info("get tag " + tag);
         result = schema.getDecodedTag(tag, "Human");
+        assertTrue(result.wasSuccessful());
+        assertEquals("/Human/age", result.getOutput().getTag());
 
-        if (result.wasSuccessful())
-        {
-            DecodedTag actualTag = result.getOutput();
-            logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-        }
-
-        //String berFilename = "d:\\tmp\\Human_Typedef.ber";
         String berFilename = getClass().getResource("/Human_Typedef.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
@@ -1233,48 +1295,23 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         // However, we could not correctly determine the Type of "/0"
+        AsnPrimitiveType primitiveType = pdu.getType(tag).getPrimitiveType();
         AsnBuiltinType builtinType = pdu.getType(tag).getBuiltinType();
-        assertNotEquals(builtinType, AsnBuiltinType.Integer);
+        assertNotEquals(AsnBuiltinType.Integer, builtinType);
+        assertEquals(AsnPrimitiveType.NULL, primitiveType);
 
         try
         {
             // Because we should not have been able to determine the type of age we should not be
             // able to decode it.
             tag = "/Human/age";
-            BigInteger age = (BigInteger) pdu.getDecodedObject(tag);
+            pdu.getDecodedObject(tag);
             fail("Should have thrown");
         }
         catch (Exception e)
         {
             logger.error("e: " + e.getMessage());
         }
-
-/*
-        try
-        {
-            ValidatorImpl validator = new ValidatorImpl();
-            ValidationResult validationresult = validator.validate(pdu);
-            // TODO - we should get a validation failure where we can't determine the type of a tag
-            assertTrue(validationresult.hasFailures());
-
-            ImmutableSet<DecodedTagValidationFailure> failures = validationresult.getFailures();
-            assertEquals(1, failures.size());
-
-            for (DecodedTagValidationFailure fail : failures)
-            {
-                assertEquals("/Human/age", fail.getTag());
-
-                logger.info("Tag: " + fail.getTag() +
-                        " reason: " + fail.getFailureReason() +
-                        " type: " + fail.getFailureType());
-            }
-
-        }
-        catch (Exception e)
-        {
-
-        }
-*/
     }
 
     @Test
@@ -1293,11 +1330,7 @@ public class AsnSchemaParserTest
                 DecodedTag r = result.getOutput();
                 logger.info("decoded tag: {}", r.getTag());
             }
-            int breakpoint = 0;
-
         }
-
-
     }
 
 

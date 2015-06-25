@@ -24,7 +24,7 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
      * built-in types which are considered 'collection'. Currently: SET OF and
      * SEQUENCE OF
      */
-    public static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(AsnPrimitiveType.SET_OF,
+    private static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(AsnPrimitiveType.SET_OF,
             AsnPrimitiveType.SEQUENCE_OF);
 
     // -------------------------------------------------------------------------
@@ -79,6 +79,12 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
     // IMPLEMENTATION
     // -------------------------------------------------------------------------
+
+    @Override
+    public AsnPrimitiveType getPrimitiveType()
+    {
+        return elementType.getPrimitiveType();
+    }
 
     @Override
     public AsnSchemaType getChildType(String tag)

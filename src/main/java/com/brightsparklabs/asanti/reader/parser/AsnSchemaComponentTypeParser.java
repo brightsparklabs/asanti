@@ -190,22 +190,13 @@ public class AsnSchemaComponentTypeParser
             final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType);
 
             String typeName = matcher.group(7);
-            if (!typeName.equals(rawType))
-            {
-                int breakpoint = 0;
-            }
-            // TODO MJF - figure out the regex so we don't need to trim...
-            final String trimmed = typeName.trim();
-            if (!trimmed.equals(typeName))
-            {
-                int breakpoint = 0;
-            }
+            // The Regex that is used here is a little simple and will leave trailing spaces,
             typeName = typeName.trim();
             return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
         }
         else
         {
-            // TODO MJF - getting here in the case of some cases we are not yet handling.  Try continue anyway...
+            // TODO ASN-126 review - How fault tolerant should the parser be?
 //            AsnSchemaType tagType = AsnSchemaType.NULL;
 //            return new AsnSchemaComponentType("junk", tag, "junk", true, tagType);
 

@@ -36,7 +36,7 @@ public class AnSchemaTypeDefinitionParserTest
     // -------------------------------------------------------------------------
 
     /** an argument capture helper for AsnSchemaTypeParser */
-    private static ArgumentCaptor<String> parserArgument;
+    private ArgumentCaptor<String> parserArgument;
 
 
     // -------------------------------------------------------------------------

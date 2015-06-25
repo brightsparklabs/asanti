@@ -7,7 +7,6 @@ package com.brightsparklabs.asanti.model.schema;
 import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.google.common.collect.Maps;
 import org.junit.BeforeClass;
 import org.junit.Test;

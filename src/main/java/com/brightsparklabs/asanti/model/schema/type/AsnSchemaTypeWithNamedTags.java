@@ -66,5 +66,4 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
         }
         tagsToNamedValues = tagsToNamedValuesBuilder.build();
     }
-
 }

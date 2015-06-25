@@ -15,7 +15,7 @@ import com.brightsparklabs.asanti.model.schema.primitive.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 
 /**
- * Visitor that visits {@link OLDAsnSchemaTypeDefinition} objects and returns the most appropriate
+ * Visitor that visits {@link AsnPrimitiveType} objects and returns the most appropriate
  * {@link BuiltinTypeDecoder} pertaining to it.
  *
  * @author brightSPARK Labs

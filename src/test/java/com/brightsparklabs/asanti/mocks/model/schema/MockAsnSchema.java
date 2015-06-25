@@ -5,10 +5,11 @@
 package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 
 import static org.mockito.Mockito.*;
 
@@ -166,21 +167,25 @@ public class MockAsnSchema
                 "/1/0/1",
                 "Document",
                 "/Document/header/published/date",
-                true);
+                true,
+                AsnBuiltinType.Date);
         configureGetDecodedTag(instance,
                 "/2/0/0",
                 "Document",
                 "/Document/body/lastModified/date",
-                true);
-        configureGetDecodedTag(instance, "/2/1/1", "Document", "/Document/body/prefix/text", true);
-        configureGetDecodedTag(instance, "/2/2/1", "Document", "/Document/body/content/text", true);
+                true,
+                AsnBuiltinType.Date);
+        configureGetDecodedTag(instance, "/2/1/1", "Document", "/Document/body/prefix/text", true, AsnBuiltinType.OctetString);
+        configureGetDecodedTag(instance, "/2/2/1", "Document", "/Document/body/content/text", true, AsnBuiltinType.OctetString);
         configureGetDecodedTag(instance,
                 "/3/0/1",
                 "Document",
                 "/Document/footer/author/firstName",
-                true);
-        configureGetDecodedTag(instance, "/2/2/99", "Document", "/Document/body/content/99", false);
-        configureGetDecodedTag(instance, "/99/1/1", "Document", "/Document/99/1/1", false);
+                true,
+                AsnBuiltinType.OctetString);
+        configureGetDecodedTag(instance, "/2/2/99", "Document", "/Document/body/content/99", false,
+                AsnBuiltinType.Null);
+        configureGetDecodedTag(instance, "/99/1/1", "Document", "/Document/99/1/1", false, AsnBuiltinType.Null);
 
         return instance;
     }
@@ -205,12 +210,19 @@ public class MockAsnSchema
      *         the value to return for {@link OperationResult#wasSuccessful()}
      */
     private static void configureGetDecodedTag(AsnSchema instance, String rawTag,
-            String topLevelTypeName, String decodedTagPath, boolean isFullyDecoded)
+            String topLevelTypeName, String decodedTagPath, boolean isFullyDecoded,
+            AsnBuiltinType builtinType)
     {
         final DecodedTag decodedTag = mock(DecodedTag.class);
+
+        final AsnSchemaType type = mock(AsnSchemaType.class);
+
+        when(type.getBuiltinType()).thenReturn(builtinType);
+
         when(decodedTag.getTag()).thenReturn(decodedTagPath);
         when(decodedTag.getRawTag()).thenReturn(rawTag);
-        when(decodedTag.getType()).thenReturn(AsnSchemaType.NULL);
+        //when(decodedTag.getType()).thenReturn(AsnSchemaType.NULL);
+        when(decodedTag.getType()).thenReturn(type);
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
         when(instance.getDecodedTag(rawTag, topLevelTypeName)).thenReturn(isFullyDecoded ?
                 OperationResult.createSuccessfulInstance(decodedTag) :

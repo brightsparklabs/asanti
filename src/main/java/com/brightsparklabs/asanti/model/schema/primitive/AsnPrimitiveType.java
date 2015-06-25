@@ -2,7 +2,6 @@ package com.brightsparklabs.asanti.model.schema.primitive;
 
 import com.brightsparklabs.asanti.common.Visitable;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnPrimitiveTypeVisitor;
 
 /**
@@ -51,9 +50,9 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link AbstractOLDAsnSchemaTypeDefinition}.
+     * NULL instance of {@link AsnPrimitiveType}.
      * <p>
-     * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
+     * NOTE: This is not named {@code AsnSchemaTypeNull} because that
      * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
      */
 

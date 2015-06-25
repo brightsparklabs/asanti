@@ -271,7 +271,7 @@ public class AsnSchemaModuleParserTest
                 = MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForDocumentPdu();
 
         // mock AsnSchemaTypeDefinitionParser.parse static method
-        // return mocked OLDAsnSchemaTypeDefinition instances when expected inputs are received
+        // return mocked AsnSchemaTypeDefinition instances when expected inputs are received
         PowerMockito.mockStatic(AsnSchemaTypeDefinitionParser.class);
         when(AsnSchemaTypeDefinitionParser.parse("Document",
                 "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL }"))
@@ -325,22 +325,22 @@ public class AsnSchemaModuleParserTest
     {
 /* TODO ASN-138
         // prepare mocked AsnSchemaTypeDefinitions for People Protocol module
-        final ImmutableList<AbstractOLDAsnSchemaTypeDefinition> mockedAsnSchemaTypeDefinitions
+        final ImmutableList<AsnSchemaTypeDefinition> mockedAsnSchemaTypeDefinitions
                 = MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForPeopleProtocol();
 
         // mock AsnSchemaTypeDefinitionParser.parse static method
-        // return mocked OLDAsnSchemaTypeDefinition instances when expected inputs are received
+        // return mocked AsnSchemaTypeDefinition instances when expected inputs are received
         PowerMockito.mockStatic(AsnSchemaTypeDefinitionParser.class);
         when(AsnSchemaTypeDefinitionParser.parse("People", "SET OF Person")).thenReturn(
-                ImmutableList.<OLDAsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions.get(0)));
+                ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions.get(0)));
 
         when(AsnSchemaTypeDefinitionParser.parse("Person",
                 "SEQUENCE { firstName [1] OCTET STRING, lastName [2] OCTET STRING, title [3] ENUMERATED { mr, mrs, ms, dr, rev } OPTIONAL, gender Gender OPTIONAL, maritalStatus CHOICE { Married [0], Single [1] } }"))
-                .thenReturn(ImmutableList.<OLDAsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions
+                .thenReturn(ImmutableList.<AsnSchemaTypeDefinition>of(mockedAsnSchemaTypeDefinitions
                         .get(1)));
 
         when(AsnSchemaTypeDefinitionParser.parse("Gender",
-                "ENUMERATED { male(0), female(1) }")).thenReturn(ImmutableList.<OLDAsnSchemaTypeDefinition>of(
+                "ENUMERATED { male(0), female(1) }")).thenReturn(ImmutableList.<AsnSchemaTypeDefinition>of(
                 mockedAsnSchemaTypeDefinitions.get(2)));
 
         final AsnSchemaModule actualModule

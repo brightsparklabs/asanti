@@ -7,6 +7,8 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import java.math.BigInteger;
 import java.text.ParseException;
+
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,12 +20,11 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactNumericV
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.base.Strings;
 
 /**
- * Logic for parsing Constraints from an {@link AbstractOLDAsnSchemaTypeDefinition} or
+ * Logic for parsing Constraints from an {@link AsnSchemaType} or
  * {@link AsnSchemaComponentType}
  *
  * @author brightSPARK Labs
@@ -64,7 +65,7 @@ public class AsnSchemaConstraintParser
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the constraint from an {@link AbstractOLDAsnSchemaTypeDefinition} or
+     * Parses the constraint from an {@link AsnSchemaType} or
      * {@link AsnSchemaComponentType}
      *
      * @param constraintText

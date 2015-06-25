@@ -1,15 +1,11 @@
 package com.brightsparklabs.asanti.mocks.model.schema;
 
-import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.*;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.mockito.ArgumentMatcher;
@@ -96,6 +92,9 @@ public class MockAsnSchemaType
         when(mockedInstance.getBuiltinType()).thenReturn(indirectType.getBuiltinType());
         when(mockedInstance.getChildType(anyString())).thenReturn(indirectType.getChildType(anyString()));
         when(mockedInstance.getChildName(anyString())).thenReturn(indirectType.getChildName(anyString()));
+
+        when(mockedInstance.getModuleName()).thenReturn(moduleName);
+        when(mockedInstance.getTypeName()).thenReturn(typeName);
 
         return mockedInstance;
     }
@@ -490,11 +489,7 @@ public class MockAsnSchemaType
                 public boolean matches(final Object argument)
                 {
                     String arg = Strings.nullToEmpty((String)argument);
-                    if (arg.equals(theTag) || arg.startsWith(theTag+"["))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return (arg.equals(theTag) || arg.startsWith(theTag+"["));
                 }
             }
 
@@ -505,11 +500,10 @@ public class MockAsnSchemaType
                 @Override
                 public AsnSchemaType answer(InvocationOnMock invocation) throws Throwable
                 {
-                    Object[] args = invocation.getArguments();
                     return component.getType();
                 }
             });
-            //when(mockedInstance.getChildName(theTag)).thenAnswer(new Answer<String>()
+
             when(mockedInstance.getChildName(argThat(new TagMatcher()))).thenAnswer(new Answer<String>()
             {
                 @Override

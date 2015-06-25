@@ -5,9 +5,7 @@
 package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 
@@ -91,7 +89,7 @@ public class MockAsnSchemaTypeDefinition
     }
 
     /**
-     * Creates mock {@link AbstractOLDAsnSchemaTypeDefinition} instances conforming to the
+     * Creates mock {@link AsnSchemaTypeDefinition} instances conforming to the
      * 'People-Protocol' module in the test ASN.1 schema defined in the {@code README.md} file
      *
      * @return mock instances for use within the 'PeopleProtocol' module
@@ -265,7 +263,7 @@ public class MockAsnSchemaTypeDefinition
 //        /**
 //         * Creates a mocked instance from the data in this builder
 //         *
-//         * @return a mocked instance of {@link AbstractOLDAsnSchemaTypeDefinition}
+//         * @return a mocked instance of {@link AsnSchemaTypeDefinition}
 //         */
 //        public AsnSchemaTypeDefinition build()
 //        {

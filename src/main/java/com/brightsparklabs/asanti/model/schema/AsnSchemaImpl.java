@@ -88,10 +88,6 @@ public class AsnSchemaImpl implements AsnSchema
     @Override
     public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
     {
-        if (rawTag.startsWith("/2/1/2/2"))
-        {
-            int breakpoint = 0;
-        }
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(),
                 topLevelTypeName,
@@ -114,13 +110,11 @@ public class AsnSchemaImpl implements AsnSchema
             }
         }
 
-
         decodedTags.add(0, topLevelTypeName);
         decodedTags.add(0, ""); // empty string prefixes just the root separator
         final String decodedTagPath = tagJoiner.join(decodedTags);
 
-        logger.debug("getDecodedTag {} => {} ({})", rawTag, decodedTagPath, decodeSuccessful);
-
+        logger.debug("getDecodedTag {} => {}", rawTag, decodedTagPath);
 
         final DecodedTag decodedTag = new DecodedTag(decodedTagPath,
                 rawTag,

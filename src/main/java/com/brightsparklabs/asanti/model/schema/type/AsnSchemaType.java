@@ -1,13 +1,9 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractOLDAsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableSet;
-
-import java.util.Iterator;
 
 /**
  * A base type used to model the types for objects within ASN.1 schema.
@@ -111,7 +107,7 @@ public interface AsnSchemaType
         @Override
         public ImmutableSet<AsnSchemaConstraint> getConstraints()
         {
-            return ImmutableSet.<AsnSchemaConstraint>of();
+            return ImmutableSet.of();
         }
 
         @Override

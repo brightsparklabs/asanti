@@ -14,8 +14,6 @@ import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.*;
-
 /**
  * Logic for parsing a type (either a Type Definition, or Component Type)
  *
@@ -27,6 +25,13 @@ public class AsnSchemaTypeParser
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
+
+    /* TODO ASN-105, ASN-107 - the list of AsnPrimitiveTypes is not complete, as
+     * we want to build support for more types (through Decoders and Validators)
+     * then we also need to create the supporting primitive type and add it to
+     * the parsing logic in the appropriate place.
+     */
+
 
 
     // -------------------------------------------------------------------------
@@ -45,7 +50,7 @@ public class AsnSchemaTypeParser
     // -------------------------------------------------------------------------
 
     /* TODO ASN-137 / ASN-80 - should the EXPLICIT|IMPLICIT keyword be included in any of these?
-     * If so then where and how do we change behaviour?
+     * If so then where and how do we change behaviour as a result of extracting them?
      */
 
     /** pattern to match a Constructed type definition */
@@ -76,12 +81,12 @@ public class AsnSchemaTypeParser
 //    /** pattern to match a BIT STRING type definition */
 //    private static final Pattern PATTERN_TYPE_BIT_STRING = Pattern.compile(
 //            "^BIT STRING ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
-// TODO ANS-135 - ^ these two are actually different.  Set up some tests and decide what to do
+// TODO ASN-135 - ^ these two are actually different.  Set up some tests and decide what to do
     /** pattern to match a type with distinguished values */
     private static final Pattern PATTERN_TYPE_WITH_NAMED_VALUES = Pattern.compile(
             "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
 
-    private static final ImmutableMap<String, AsnPrimitiveType> distiguishedValuesTypes = ImmutableMap.of(
+    private static final ImmutableMap<String, AsnPrimitiveType> distinguishedValuesTypes = ImmutableMap.of(
             "BIT STRING", AsnPrimitiveType.BIT_STRING,
             "INTEGER", AsnPrimitiveType.INTEGER
     );
@@ -93,7 +98,6 @@ public class AsnSchemaTypeParser
     private static final Pattern PATTERN_TYPE_WITH_CONSTRAINTS = Pattern.compile(
             "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String|RELATIVE-OID|BOOLEAN|NULL) ?(\\((.+)\\))?$");
 
-    // TODO MJF - add a Jira ticket to add more AsnPrimitiveType s and add the number here.
     private static final ImmutableMap<String, AsnPrimitiveType> constrainedTypes = ImmutableMap.<String, AsnPrimitiveType>builder()
             .put("BOOLEAN", AsnPrimitiveType.BOOLEAN)
             .put("IA5String", AsnPrimitiveType.IA5_STRING)
@@ -170,8 +174,7 @@ public class AsnSchemaTypeParser
      *         the string to parse.  This should be either the Type of the defined type (i.e. the text on the right hand side of the {@code
      *         ::=}), or the Type of a Component Type
      *
-     * @return an ImmutableList of {@link OLDAsnSchemaTypeDefinition} objects representing the parsed
-     * type definitions
+     * @return an {@link AsnSchemaType} object representing the parsed type
      *
      * @throws ParseException
      *         if either of the parameters are {@code null}/empty or any errors occur while parsing
@@ -184,9 +187,6 @@ public class AsnSchemaTypeParser
             throw new ParseException("A value must be supplied for a Type", -1);
         }
 
-        // TODO MJF - give that this is regex'ing each of these in order, from a performance
-        // perspective we should put the checks in order of frequency of the expected data?!
-
         // -------------------------------------------------------------------------
         // Constructed types (SEQUENCE, Set etc)
         // -------------------------------------------------------------------------
@@ -195,6 +195,7 @@ public class AsnSchemaTypeParser
         {
             return parseConstructed(matcher);
         }
+
         matcher = PATTERN_TYPE_ENUMERATED.matcher(value);
         if (matcher.matches())
         {
@@ -230,7 +231,7 @@ public class AsnSchemaTypeParser
         }
 
         // -------------------------------------------------------------------------
-        // types without Constraints (TODO MJF - is this right??? - what others don't have constraints?)
+        // types without Constraints
         // -------------------------------------------------------------------------
         // check if defining a GeneralizedTime
         matcher = PATTERN_TYPE_WITH_NO_CONSTRAINTS.matcher(value);
@@ -266,10 +267,10 @@ public class AsnSchemaTypeParser
         }
 
 
-        // TODO MJF.  Should we really throw or should we try such a placeholder to do our best to keep going?!
+        // TODO ASN-126 review - How fault tolerant should we be?
 //        final String constraintText = "";
 //        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-//        logger.warn("Creating last ditch tag type placeholder of type: " + value);
+//        logger.warn("Creating last ditch placeholder of type: " + value);
 //        return new AsnSchemaTypePlaceholder("", value, constraint);
 
 
@@ -419,7 +420,7 @@ public class AsnSchemaTypeParser
     private static AsnSchemaTypeWithNamedTags parseWithNamedValues(Matcher matcher)
             throws ParseException
     {
-        final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, distiguishedValuesTypes);
+        final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, distinguishedValuesTypes);
 
         final String distinguishedValuesText = Strings.nullToEmpty(matcher.group(3));
         final ImmutableList<AsnSchemaNamedTag> distinguishedValues
@@ -456,7 +457,7 @@ public class AsnSchemaTypeParser
         final String constraintText = Strings.nullToEmpty(matcher.group(10));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        logger.debug("creating placeholder - moduleName:" + moduleName + " typeName: " + typeName + " contraints: " + constraintText);
+        logger.debug("creating placeholder - moduleName:" + moduleName + " typeName: " + typeName + " constraints: " + constraintText);
         return new AsnSchemaTypePlaceholder(moduleName, typeName, constraint);
     }
 

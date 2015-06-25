@@ -26,7 +26,7 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     /** the name of the type we are placeholder for */
     private final String typeName;
 
-    /** The actual type.  This is filled in once the parser has parsed all modules. */
+    /** The actual type.  This is set once the parser has parsed all modules. */
     private AsnSchemaType indirectType;
 
 

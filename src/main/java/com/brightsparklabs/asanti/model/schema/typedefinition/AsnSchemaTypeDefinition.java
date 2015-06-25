@@ -61,7 +61,7 @@ public interface AsnSchemaTypeDefinition
         }
 
         // ---------------------------------------------------------------------
-        // IMPLEMENTATION: OLDAsnSchemaTypeDefinition
+        // IMPLEMENTATION: AsnSchemaTypeDefinitionImpl
         // ---------------------------------------------------------------------
         @Override
         public String getName()

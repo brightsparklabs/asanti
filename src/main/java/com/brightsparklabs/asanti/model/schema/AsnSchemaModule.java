@@ -12,7 +12,6 @@ import java.util.Map;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.typedefinition.OLDAsnSchemaTypeDefinition;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -116,7 +115,7 @@ public class AsnSchemaModule
      *            name of the type. E.g. {@code "Document"}
      *
      * @return the type definition associated with the specified type name or
-     *         {@link OLDAsnSchemaTypeDefinition#NULL} if no type definition is
+     *         {@link AsnSchemaTypeDefinition#NULL} if no type definition is
      *         found
      */
     public AsnSchemaTypeDefinition getType(String typeName)
@@ -331,7 +330,8 @@ public class AsnSchemaModule
                     {
                         logger.warn("Unable to resolve import of {}, it is not specified as an import",
                                     typeName);
-                        // TODO MJF - what to do???
+                        // TODO ASN-126 review - what to do, should we throw or accept it and
+                        // 'delay' the issues until an attempt at decoding???
                         return;
                     }
 
@@ -339,7 +339,9 @@ public class AsnSchemaModule
                     if (otherModule == null)
                     {
                         logger.warn("Unable to resolve import of {} from module {}", typeName, moduleName);
-                        // TODO MJF - what to do???
+                        // TODO ASN-126 review - what to do, should we throw or accept it and
+                        // 'delay' the issues until an attempt at decoding???
+                        // Throwing seems most logic, but it is not very fault tolerant
                         return;
                     }
 
@@ -348,7 +350,8 @@ public class AsnSchemaModule
                         (newTypeDefinition == null))
                     {
                         logger.warn("Unable to resolve import of {} from module {}", typeName, moduleName);
-                        // TODO MJF - what to do???
+                        // TODO ASN-126 review - what to do, should we throw or accept it and
+                        // 'delay' the issues until an attempt at decoding???
                         return;
                     }
 
@@ -360,7 +363,8 @@ public class AsnSchemaModule
                     (newType == null))
                 {
                     logger.warn("Unable to resolve placeholder {} {}", moduleName, typeName);
-                    // TODO MJF - what to do???
+                    // TODO ASN-126 review - what to do, should we throw or accept it and
+                    // 'delay' the issues until an attempt at decoding???
                     return;
                 }
 

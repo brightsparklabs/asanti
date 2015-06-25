@@ -38,7 +38,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      * and CHOICE.
      * ENUMERATED is treated differently.
      */
-    public static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(AsnPrimitiveType.SET,
+    private static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(AsnPrimitiveType.SET,
             AsnPrimitiveType.SEQUENCE, AsnPrimitiveType.CHOICE);
 
     // -------------------------------------------------------------------------
@@ -161,7 +161,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      * This function allows the 'tree' to be walked, by being able to get to child types.
      *
      * @return the Map of components - names to types.
-     */ // TODO MJF - do we need this or do we want some other design?
+     */
     public ImmutableMap<String, AsnSchemaComponentType> getAllComponents()
     {
         return tagsToComponentTypes;

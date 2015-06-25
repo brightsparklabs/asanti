@@ -42,7 +42,7 @@ public class AsnBerFileReader
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static Logger logger = LoggerFactory.getLogger(AsnBerFileReader.class);
+    private static final Logger logger = LoggerFactory.getLogger(AsnBerFileReader.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
