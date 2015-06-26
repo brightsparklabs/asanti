@@ -57,7 +57,7 @@ BEGIN
 
     ModificationMetadata ::= SEQUENCE
     {
-        date       [0] DATE,
+        date       [0] GeneralizedTime,
         modifiedBy [1] Person
     }
 

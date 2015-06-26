@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -267,8 +268,12 @@ public class AsnSchemaModule
          *          the other {@link AsnSchemaModule.Builder} within the schema.  They will
          *          be used to resolve imports as part of the final build.
          * @return an instance of {@link AsnSchemaModule}
+         *
+         * @throws
+         *        ParseException if there are imports that cannot be resolved
+
          */
-        public AsnSchemaModule build(Iterator<Builder> otherModules)
+        public AsnSchemaModule build(Iterator<Builder> otherModules)throws ParseException
         {
             // convert to a Map so we can easily key off the name when doing
             // import resolution
@@ -287,8 +292,12 @@ public class AsnSchemaModule
         /**
          * resolve all of the "placeholder" type definitions such that they point to actual types,
          * even across modules.
+         *
+         * @throws
+         *        ParseException if there are imports that cannot be resolved
          */
         private void resolveTypes(ImmutableMap<String, AsnSchemaModule.Builder> otherModules)
+                throws ParseException
         {
             for(AsnSchemaTypeDefinition typeDef : types.values())
             {
@@ -300,92 +309,155 @@ public class AsnSchemaModule
          * resolve the placeholder types definitions within this {@link AsnSchemaType}
          * @param type
          *            The type to resolve
+         * @param otherModules
+         *            the other Module builders within the schema - these should contain the
+         *            AsnSchemaTypeDefinitions for the types that need to be imported.
+         * @throws
+         *        ParseException if there are imports that cannot be resolved
          */
         private void resolveType(AsnSchemaType type, ImmutableMap<String, AsnSchemaModule.Builder> otherModules)
+                throws ParseException
         {
-            // TODO ASN-126 review - is it worth trying to avoid the instanceof's here?
-            // we could use a visitor, but the logic for looking up imports should stay here I think
+            // At some future time when we need to perform different behaviour depending on
+            // the derived type then we will make a Visitor.  For now this will suffice
             if (type instanceof AsnSchemaTypePlaceholder)
             {
-                final AsnSchemaTypePlaceholder placeholder = (AsnSchemaTypePlaceholder)type;
-                String moduleName = placeholder.getModuleName();
-                final String typeName = placeholder.getTypeName();
-
-                // Assume that the type is in this module.
-                AsnSchemaTypeDefinition newTypeDefinition = types.get(typeName);
-
-                if ((newTypeDefinition == AsnSchemaTypeDefinition.NULL) ||
-                    (newTypeDefinition == null))
-                {
-                    // then it will come from an import.
-
-                    // figure out which module
-                    // the place holder may have specified it, if not then we need to look it up
-                    if (Strings.isNullOrEmpty(moduleName))
-                    {
-                        moduleName = imports.get(typeName);
-                    }
-
-                    if (Strings.isNullOrEmpty(moduleName))
-                    {
-                        logger.warn("Unable to resolve import of {}, it is not specified as an import",
-                                    typeName);
-                        // TODO ASN-126 review - what to do, should we throw or accept it and
-                        // 'delay' the issues until an attempt at decoding???
-                        return;
-                    }
-
-                    final AsnSchemaModule.Builder otherModule = otherModules.get(moduleName);
-                    if (otherModule == null)
-                    {
-                        logger.warn("Unable to resolve import of {} from module {}", typeName, moduleName);
-                        // TODO ASN-126 review - what to do, should we throw or accept it and
-                        // 'delay' the issues until an attempt at decoding???
-                        // Throwing seems most logic, but it is not very fault tolerant
-                        return;
-                    }
-
-                    newTypeDefinition = otherModule.types.get(typeName);
-                    if ((newTypeDefinition == AsnSchemaTypeDefinition.NULL) ||
-                        (newTypeDefinition == null))
-                    {
-                        logger.warn("Unable to resolve import of {} from module {}", typeName, moduleName);
-                        // TODO ASN-126 review - what to do, should we throw or accept it and
-                        // 'delay' the issues until an attempt at decoding???
-                        return;
-                    }
-
-                }
-
-                final AsnSchemaType newType = newTypeDefinition.getType();
-
-                if ((newType == AsnSchemaType.NULL) ||
-                    (newType == null))
-                {
-                    logger.warn("Unable to resolve placeholder {} {}", moduleName, typeName);
-                    // TODO ASN-126 review - what to do, should we throw or accept it and
-                    // 'delay' the issues until an attempt at decoding???
-                    return;
-                }
-
-                //We now have the actual type this placeholder was holding out for, so add it.
-                placeholder.setIndirectType(newType);
+                resolveType((AsnSchemaTypePlaceholder)type, otherModules);
             }
             else if (type instanceof AsnSchemaTypeConstructed)
             {
-                AsnSchemaTypeConstructed constructed = (AsnSchemaTypeConstructed)type;
-                final ImmutableMap<String, AsnSchemaComponentType> allComponents
-                        = constructed.getAllComponents();
-
-                for(AsnSchemaComponentType componentType: allComponents.values())
-                {
-                    resolveType(componentType.getType(), otherModules);
-                }
+                resolveType((AsnSchemaTypeConstructed)type, otherModules);
             }
             else if (type instanceof AsnSchemaTypeCollection)
             {
-                AsnSchemaTypeCollection collection = (AsnSchemaTypeCollection)type;
-                resolveType(collection.getElementType(), otherModules);
+                resolveType(((AsnSchemaTypeCollection)type).getElementType(), otherModules);
+            }
+        }
+
+        /**
+         * helper for the resolveType to resolve this placeholder type
+         *
+         * @param type
+         *            The type to resolve
+         * @param otherModules
+         *            the other Module builders within the schema - these should contain the
+         *            AsnSchemaTypeDefinitions for the types that need to be imported.
+         * @throws
+         *        ParseException if there are imports that cannot be resolved
+         */
+        private void resolveType(final AsnSchemaTypePlaceholder type,
+                final ImmutableMap<String, Builder> otherModules) throws ParseException
+        {
+            final String moduleName = type.getModuleName();
+            final String typeName = type.getTypeName();
+
+            // Assume that the type is in this module.
+            AsnSchemaTypeDefinition newTypeDefinition = types.get(typeName);
+
+            if ((newTypeDefinition == AsnSchemaTypeDefinition.NULL) ||
+                (newTypeDefinition == null))
+            {
+                // then it will come from an import.
+                newTypeDefinition = getImportedTypeDefinition(moduleName, typeName, otherModules);
+            }
+
+            final AsnSchemaType newType = newTypeDefinition.getType();
+
+            if ((newType == AsnSchemaType.NULL) ||
+                (newType == null))
+            {
+                logger.warn("Unable to resolve placeholder {} {}", moduleName, typeName);
+                // TODO ASN-126 review - what to do, should we throw or accept it and
+                // 'delay' the issues until an attempt at decoding???
+                return;
+            }
+
+            //We now have the actual type this placeholder was holding out for, so add it.
+            type.setIndirectType(newType);
+        }
+
+        /**
+         * Returns an AsnSchemaTypeDefinition from either the specified module, or by
+         * looking up the appropriate module from the Imports.
+         *
+         * @param moduleName
+         *             The name of the other Module to import from.  May be null/empty.
+         * @param typeName
+         *            The name of the TypeDefinition to import
+         * @param modules
+         *            The other modules - ie the source of the imports
+         * @return
+         *            The AsnSchemaTypeDefinition for the imported type.
+         *
+         * @throws ParseException
+         *        ParseException if there are imports that cannot be resolved
+         */
+        private AsnSchemaTypeDefinition getImportedTypeDefinition(String moduleName,
+                String typeName,
+                ImmutableMap<String, AsnSchemaModule.Builder> modules) throws ParseException
+        {
+
+            // figure out which module
+            // the place holder may have specified it, if not then we need to look it up
+            if (Strings.isNullOrEmpty(moduleName))
+            {
+                moduleName = imports.get(typeName);
+            }
+
+            if (Strings.isNullOrEmpty(moduleName))
+            {
+                String errorString = String.format(
+                        "Unable to resolve import of {%s}, it is not specified as an import",
+                        typeName);
+                logger.warn(errorString);
+                throw new ParseException(errorString, -1);
+            }
+
+            final Builder otherModule = modules.get(moduleName);
+            if (otherModule == null)
+            {
+                String errorString = String.format(
+                        "Unable to resolve import of {%s}, was not found in module {%s}",
+                        typeName,
+                        moduleName);
+                logger.warn(errorString);
+                throw new ParseException(errorString, -1);
+            }
+
+            AsnSchemaTypeDefinition newTypeDefinition = otherModule.types.get(typeName);
+            if ((newTypeDefinition == AsnSchemaTypeDefinition.NULL) ||
+                    (newTypeDefinition == null))
+            {
+                String errorString = String.format(
+                        "Unable to resolve import of {%s}, was not badly formed in module {%s}",
+                        typeName,
+                        moduleName);
+                logger.warn(errorString);
+                throw new ParseException(errorString, -1);
+            }
+
+            return newTypeDefinition;
+        }
+
+        /**
+         * helper for the resolveType to any placeholder types within a Constructed type
+         * @param type
+         *            The type to resolve
+         * @param otherModules
+         *            the other Module builders within the schema - these should contain the
+         *            AsnSchemaTypeDefinitions for the types that need to be imported.
+         * @throws ParseException
+         *        ParseException if there are imports that cannot be resolved
+         */
+        private void resolveType(AsnSchemaTypeConstructed type,
+                ImmutableMap<String, AsnSchemaModule.Builder> otherModules) throws ParseException
+        {
+            final ImmutableMap<String, AsnSchemaComponentType> allComponents
+                    = type.getAllComponents();
+
+            for(AsnSchemaComponentType componentType: allComponents.values())
+            {
+                resolveType(componentType.getType(), otherModules);
             }
         }
     }

@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,8 @@ public class MockAsnSchemaModule
      *
      * @return mocked instance
      */
-    public static ImmutableMap<String, AsnSchemaModule> createMockedAsnSchemaModules()
+    public static ImmutableMap<String, AsnSchemaModule> createMockedAsnSchemaModules() throws
+            ParseException
     {
         List<Builder> othersList = Lists.newArrayList();
         Iterator<Builder> others = othersList.iterator();

@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.text.ParseException;
 
 import static org.junit.Assert.*;
 
@@ -1267,50 +1268,14 @@ public class AsnSchemaParserTest
     @Test
     public void testParse_HumanUsingTypeDefBroken() throws Exception
     {
-        AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_BROKEN);
-
-        String tag = "/";
-        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        assertTrue(result.wasSuccessful());
-        assertEquals("/Human", result.getOutput().getTag());
-
-        tag = "/0";
-        result = schema.getDecodedTag(tag, "Human");
-        assertTrue(result.wasSuccessful());
-        assertEquals("/Human/age", result.getOutput().getTag());
-
-        String berFilename = getClass().getResource("/Human_Typedef.ber").getFile();
-        final File berFile = new File(berFilename);
-        String topLevelType = "Human";
-
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                schema,
-                topLevelType);
-
-        assertEquals(1, pdus.size());
-
-        final DecodedAsnData pdu = pdus.get(0);
-
-        // We COULD map the tags
-        assertEquals(0, pdu.getUnmappedTags().size());
-
-        // However, we could not correctly determine the Type of "/0"
-        AsnPrimitiveType primitiveType = pdu.getType(tag).getPrimitiveType();
-        AsnBuiltinType builtinType = pdu.getType(tag).getBuiltinType();
-        assertNotEquals(AsnBuiltinType.Integer, builtinType);
-        assertEquals(AsnPrimitiveType.NULL, primitiveType);
-
         try
         {
-            // Because we should not have been able to determine the type of age we should not be
-            // able to decode it.
-            tag = "/Human/age";
-            pdu.getDecodedObject(tag);
-            fail("Should have thrown");
+            AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_BROKEN);
+            fail("Should have thrown parse exception");
         }
-        catch (Exception e)
+        catch (ParseException e)
         {
-            logger.error("e: " + e.getMessage());
+
         }
     }
 

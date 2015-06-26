@@ -15,6 +15,7 @@ import org.junit.Test;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
 
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class AsnSchemaModuleTest
     // -------------------------------------------------------------------------
 
     @BeforeClass
-    public static void setUpBeforeClass()
+    public static void setUpBeforeClass() throws ParseException
     {
         List<Builder> othersList = Lists.newArrayList();
         others = othersList.iterator();
