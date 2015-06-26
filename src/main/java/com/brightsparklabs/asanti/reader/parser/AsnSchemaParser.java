@@ -77,7 +77,7 @@ public class AsnSchemaParser
         if (Strings.isNullOrEmpty(asnSchema)) { throw new ParseException(ERROR_EMPTY_FILE, -1); }
 
         final Map<String, AsnSchemaModule> modules = Maps.newHashMap();
-        final Map<String, AsnSchemaModule.Builder> moduleBuilders = Maps.newHashMap();
+        final List<AsnSchemaModule.Builder> moduleBuilders = Lists.newArrayList();
         final Iterator<String> lineIterator = getLines(asnSchema);
 
         String primaryModule = null;
@@ -90,27 +90,25 @@ public class AsnSchemaParser
             moduleLines.add(line);
             if ("END".equals(line))
             {
-                final AsnSchemaModule.Builder module = AsnSchemaModuleParser.parse(moduleLines);
-
-                // TODO ASN-126 review - I don't like that I had to add the getName to the builder.
-                // In theory I could use a List/Set but then have to "find" the right module rather
-                // than a simple name lookup.  Might still be preferable to this getName...
-                moduleBuilders.put(module.getName(), module);
+                // keep track of all the ModuleBuilders so that we can resolve all the
+                // imports and placeholders at the end.
+                moduleBuilders.add(AsnSchemaModuleParser.parse(moduleLines));
                 moduleLines.clear();
-
-                if (primaryModule == null)
-                {
-                    primaryModule = module.getName();
-                }
             }
         }
 
         if (!moduleLines.isEmpty()) { throw new ParseException(ERROR_MISSING_END_KEYWORD, -1); }
 
         // do the final build, which will resolve all the placeholders and imports.
-        for(AsnSchemaModule.Builder module: moduleBuilders.values())
+        for(AsnSchemaModule.Builder builder: moduleBuilders)
         {
-            modules.put(module.getName(), module.build(moduleBuilders));
+            AsnSchemaModule module = builder.build(moduleBuilders.iterator());
+
+            if (primaryModule == null)
+            {
+                primaryModule = module.getName();
+            }
+            modules.put(module.getName(), module);
         }
 
         return new AsnSchemaImpl(primaryModule, modules);

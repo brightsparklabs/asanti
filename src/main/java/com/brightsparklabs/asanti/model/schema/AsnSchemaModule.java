@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import com.brightsparklabs.asanti.model.schema.type.*;
@@ -267,28 +268,27 @@ public class AsnSchemaModule
          *          be used to resolve imports as part of the final build.
          * @return an instance of {@link AsnSchemaModule}
          */
-        public AsnSchemaModule build(Map<String, AsnSchemaModule.Builder> otherModules)
+        public AsnSchemaModule build(Iterator<Builder> otherModules)
         {
-            resolveTypes(otherModules);
+            // convert to a Map so we can easily key off the name when doing
+            // import resolution
+            final ImmutableMap.Builder<String, AsnSchemaModule.Builder> builder = ImmutableMap.builder();
+            while(otherModules.hasNext())
+            {
+                AsnSchemaModule.Builder moduleBuilder = otherModules.next();
+                builder.put(moduleBuilder.name, moduleBuilder);
+            }
+
+            resolveTypes(builder.build());
             final AsnSchemaModule module = new AsnSchemaModule(name, types, imports);
             return module;
-        }
-
-
-        // TODO ASN-126 review- with all this other functionality we are less like a traditional "builder"
-        // We need the name so that we can put all the different modules in a map.
-        // we need to be able to lookup which module a typedef comes from - we don't want to have
-        // to iterate all the modules to find the typedef.
-        public String getName()
-        {
-            return name;
         }
 
         /**
          * resolve all of the "placeholder" type definitions such that they point to actual types,
          * even across modules.
          */
-        private void resolveTypes(Map<String, AsnSchemaModule.Builder> otherModules)
+        private void resolveTypes(ImmutableMap<String, AsnSchemaModule.Builder> otherModules)
         {
             for(AsnSchemaTypeDefinition typeDef : types.values())
             {
@@ -301,7 +301,7 @@ public class AsnSchemaModule
          * @param type
          *            The type to resolve
          */
-        private void resolveType(AsnSchemaType type, Map<String, AsnSchemaModule.Builder> otherModules)
+        private void resolveType(AsnSchemaType type, ImmutableMap<String, AsnSchemaModule.Builder> otherModules)
         {
             // TODO ASN-126 review - is it worth trying to avoid the instanceof's here?
             // we could use a visitor, but the logic for looking up imports should stay here I think

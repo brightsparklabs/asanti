@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.schema;
 import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,6 +15,8 @@ import org.junit.Test;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +33,9 @@ public class AsnSchemaModuleTest
     /** instance under test */
     private static AsnSchemaModule instance;
 
+    /** instance of the iterator for the 'other' builders */
+    private static Iterator<Builder> others;
+
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
@@ -37,7 +43,8 @@ public class AsnSchemaModuleTest
     @BeforeClass
     public static void setUpBeforeClass()
     {
-        Map<String, Builder> others = Maps.newHashMap();
+        List<Builder> othersList = Lists.newArrayList();
+        others = othersList.iterator();
         instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu().build(
                 others);
     }
@@ -49,7 +56,6 @@ public class AsnSchemaModuleTest
     @Test
     public void testBuilder() throws Exception
     {
-        Map<String, Builder> others = Maps.newHashMap();
 
         // test standard build works
         final Builder builder = AsnSchemaModule.builder();
