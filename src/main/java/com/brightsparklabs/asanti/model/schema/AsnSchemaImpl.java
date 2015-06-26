@@ -146,7 +146,7 @@ public class AsnSchemaImpl implements AsnSchema
      */
     private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType)
     {
-        // ASN-126 review.  does this functionality now belong here?
+        // ASN-143.  does this functionality now belong here?
         // all the logic is about AsnSchemaType object - should it have a decodeTags function?
 
         final DecodedTagsAndType result = new DecodedTagsAndType();

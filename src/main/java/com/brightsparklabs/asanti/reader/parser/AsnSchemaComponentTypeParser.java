@@ -181,29 +181,20 @@ public class AsnSchemaComponentTypeParser
         final String rawType = matcher.group(4);
         final boolean isOptional = matcher.group(6) != null;
 
-
-
         matcher = PATTERN_RAW_TYPE.matcher(rawType);
-
-        if (matcher.matches())
+        if (!matcher.matches())
         {
-            final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType);
-
-            String typeName = matcher.group(7);
-            // The Regex that is used here is a little simple and will leave trailing spaces,
-            typeName = typeName.trim();
-            return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
-        }
-        else
-        {
-            // TODO ASN-126 review - How fault tolerant should the parser be?
-//            AsnSchemaType tagType = AsnSchemaType.NULL;
-//            return new AsnSchemaComponentType("junk", tag, "junk", true, tagType);
-
-
             final String error =
                     "Could not match type within component type definition. Found: " + rawType;
             throw new ParseException(error, -1);
         }
+
+        final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType);
+
+        String typeName = matcher.group(7);
+        // The Regex that is used here is a little simple and will leave trailing spaces,
+        typeName = typeName.trim();
+        return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
+
     }
 }

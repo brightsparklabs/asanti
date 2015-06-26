@@ -266,19 +266,9 @@ public class AsnSchemaTypeParser
             return AsnSchemaType.NULL;
         }
 
-
-        // TODO ASN-126 review - How fault tolerant should we be?
-//        final String constraintText = "";
-//        final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
-//        logger.warn("Creating last ditch placeholder of type: " + value);
-//        return new AsnSchemaTypePlaceholder("", value, constraint);
-
-
         // unknown definition
         final String error = ERROR_UNKNOWN_BUILT_IN_TYPE +  value;
         throw new ParseException(error, -1);
-
-
     }
 
 
