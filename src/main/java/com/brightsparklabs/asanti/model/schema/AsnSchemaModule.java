@@ -366,10 +366,11 @@ public class AsnSchemaModule
             if ((newType == AsnSchemaType.NULL) ||
                 (newType == null))
             {
-                logger.warn("Unable to resolve placeholder {} {}", moduleName, typeName);
-                // TODO ASN-126 review - what to do, should we throw or accept it and
-                // 'delay' the issues until an attempt at decoding???
-                return;
+                String errorString = String.format(
+                        "Unable to resolve placeholder.  TypeDefinition {%s} is badly formed",
+                        typeName);
+                logger.warn(errorString);
+                throw new ParseException(errorString, -1);
             }
 
             //We now have the actual type this placeholder was holding out for, so add it.
@@ -429,7 +430,7 @@ public class AsnSchemaModule
                     (newTypeDefinition == null))
             {
                 String errorString = String.format(
-                        "Unable to resolve import of {%s}, was not badly formed in module {%s}",
+                        "Unable to resolve import of {%s}, was badly formed in module {%s}",
                         typeName,
                         moduleName);
                 logger.warn(errorString);
