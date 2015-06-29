@@ -62,7 +62,7 @@ public class IntegerValidator extends PrimitiveBuiltinTypeValidator
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
         if (bytes.length == 0)
         {
-            final String error = "ASN.1 INTEGER type must contain at least one byte. Supplied array contains 0 bytes";
+            final String error = String.format(EMPTY_BYTE_ARRAY_VALIDATION_ERROR, "INTEGER");
             final ByteValidationFailure failure = new ByteValidationFailure(bytes.length,
                     FailureType.DataIncorrectlyFormatted,
                     error);
