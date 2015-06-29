@@ -42,7 +42,6 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      */
     public T visit(AsnPrimitiveTypeBitString visitable);
 
-
     /**
      * Processes the supplied object with this visitor
      *
@@ -52,7 +51,6 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnPrimitiveTypeBoolean visitable);
-
 
     /**
      * Processes the supplied object with this visitor
@@ -73,7 +71,6 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnPrimitiveTypeEnumerated visitable);
-
 
     /**
      * Processes the supplied object with this visitor
@@ -115,7 +112,6 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      */
     public T visit(AsnPrimitiveTypeIA5String visitable);
 
-
     /**
      * Processes the supplied object with this visitor
      *
@@ -125,7 +121,6 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnPrimitiveTypeInteger visitable);
-
 
     /**
      * Processes the supplied object with this visitor
@@ -166,7 +161,6 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnPrimitiveTypeSequenceOf visitable);
-
 
     /**
      * Processes the supplied object with this visitor
@@ -227,6 +221,4 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      * @return the results from processing the supplied object
      */
     public T visit(AsnPrimitiveTypeRelativeOid visitable);
-
-
 }

@@ -6,10 +6,9 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * A base type used to model the types for objects within ASN.1 schema.
- * These objects can be either Type Definitions, eg Type ::= SomeType,
- * or components within a constructed type (SEQUENCE etc), eg component SomeType
- *
+ * A base type used to model the types for objects within ASN.1 schema. These objects can be either
+ * Type Definitions, e.g. Type ::= SomeType, or components within a constructed type (SEQUENCE etc),
+ * e.g. component SomeType
  *
  * @author brightSPARK Labs
  */
@@ -22,32 +21,34 @@ public interface AsnSchemaType
     /** null instance */
     public static final AsnSchemaType.Null NULL = new AsnSchemaType.Null();
 
-
     /**
      * Returns the AsnPrimitiveType of this type definition
+     *
      * @return the AsnPrimitiveType of this type definition
      */
     AsnPrimitiveType getPrimitiveType();
 
     /**
-     * Returns the {@code AsnBuiltinType} enum for this type.
-     * This is simply a shortcut for getPrimitiveType().getBuiltinType()
+     * Returns the {@code AsnBuiltinType} enum for this type. This is simply a shortcut for
+     * getPrimitiveType().getBuiltinType()
      *
      * @return the {@code AsnBuiltinType} enum for this type.
      */
     AsnBuiltinType getBuiltinType();
 
     /**
-     * Returns the constraints of this type definition.  This will be all the constraints
-     * the create this type (ie this and all the parent types)
-     * @return  the constraints of this type definition.
+     * Returns the constraints of this type definition.  This will be all the constraints the create
+     * this type (i.e. this and all the parent types)
+     *
+     * @return the constraints of this type definition.
      */
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
     /**
      * Returns the {@link AsnSchemaType} of any component type matching tag
+     *
      * @param tag
-     *          a tag within this construct
+     *         a tag within this construct
      *
      * @return the {@link AsnSchemaType} of any component type matching tag
      */
@@ -57,22 +58,20 @@ public interface AsnSchemaType
      * Returns the name of the component associated with the specified tag
      *
      * @param tag
-     *            a tag within this construct
+     *         a tag within this construct
      *
-     * @return name of the specified tag; or an empty string if tag is not
-     *         recognised.
+     * @return name of the specified tag; or an empty string if tag is not recognised.
      */
     String getChildName(String tag);
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaType.NULL
+    // INTERNAL CLASS: Null
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link AsnSchemaType}.
-     * <p>
-     * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
-     * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
+     * Null instance of {@link AsnSchemaType}. <p> NOTE: This is not named {@code
+     * AsnSchemaTypeDefinitionNull} because that is the name used to model an actual ASN.1 {@code
+     * NULL} Type Definition.
      */
     public static class Null implements AsnSchemaType
     {
@@ -81,16 +80,17 @@ public interface AsnSchemaType
         // ---------------------------------------------------------------------
 
         /**
-         * Default constructor. This is private. Use
-         * {@link AsnSchemaType#NULL} to obtain an instance.
+         * Default constructor. This is private. Use {@link AsnSchemaType#NULL} to obtain an
+         * instance.
          */
         private Null()
         {
         }
 
         // ---------------------------------------------------------------------
-        // IMPLEMENTATION:
+        // IMPLEMENTATION: AsnSchemaType
         // ---------------------------------------------------------------------
+
         @Override
         public AsnPrimitiveType getPrimitiveType()
         {
@@ -102,7 +102,6 @@ public interface AsnSchemaType
         {
             return getPrimitiveType().getBuiltinType();
         }
-
 
         @Override
         public ImmutableSet<AsnSchemaConstraint> getConstraints()
@@ -121,6 +120,5 @@ public interface AsnSchemaType
         {
             return "";
         }
-
     }
 }

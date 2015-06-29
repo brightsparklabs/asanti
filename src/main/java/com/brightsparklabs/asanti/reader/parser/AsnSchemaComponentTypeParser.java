@@ -42,7 +42,6 @@ public class AsnSchemaComponentTypeParser
     private static final Pattern PATTERN_RAW_TYPE = Pattern.compile(
             "(((SET)|(SEQUENCE))(( SIZE)? \\(.+?\\)?)? OF )?([a-zA-Z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
 
-
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -64,13 +63,14 @@ public class AsnSchemaComponentTypeParser
      * @return each component type found in the construct
      *
      * @throws NullPointerException
-     *         if {@code containingTypeName} or {@code componentTypesText} are {@code null}
+     *         if {@code componentTypesText} is {@code null}
      * @throws IllegalArgumentException
-     *         if {@code containingTypeName} or {@code componentTypesText} are blank
+     *         if {@code componentTypesText} is blank
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
-    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText) throws ParseException
+    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText)
+            throws ParseException
     {
         checkNotNull(componentTypesText);
         checkArgument(!componentTypesText.trim().isEmpty(),
@@ -166,7 +166,8 @@ public class AsnSchemaComponentTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
-    private static AsnSchemaComponentType parseComponentType(String componentTypeLine) throws ParseException
+    private static AsnSchemaComponentType parseComponentType(String componentTypeLine)
+            throws ParseException
     {
         Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
         if (!matcher.matches())
@@ -184,8 +185,8 @@ public class AsnSchemaComponentTypeParser
         matcher = PATTERN_RAW_TYPE.matcher(rawType);
         if (!matcher.matches())
         {
-            final String error =
-                    "Could not match type within component type definition. Found: " + rawType;
+            final String error = "Could not match type within component type definition. Found: "
+                    + rawType;
             throw new ParseException(error, -1);
         }
 
@@ -195,6 +196,5 @@ public class AsnSchemaComponentTypeParser
         // The Regex that is used here is a little simple and will leave trailing spaces,
         typeName = typeName.trim();
         return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
-
     }
 }

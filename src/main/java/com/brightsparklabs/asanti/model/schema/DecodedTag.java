@@ -5,10 +5,10 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
-import static com.google.common.base.Preconditions.*;
-
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Strings;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Represent a decoded ASN.1 tag created by decoding a raw tag path
@@ -33,7 +33,6 @@ public class DecodedTag
     /** whether the raw tag was completely decoded */
     private final boolean isFullyDecoded;
 
-
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -42,33 +41,23 @@ public class DecodedTag
      * Default constructor
      *
      * @param decodedTag
-     *            the full path of the decoded tag (e.g.
-     *            {@code "/Document/header/published/date"})
-     *
+     *         the full path of the decoded tag (e.g. {@code "/Document/header/published/date"})
      * @param rawTag
-     *            the full path of the raw tag (e.g. {@code "/1/0/1"})
-     *
+     *         the full path of the raw tag (e.g. {@code "/1/0/1"})
      * @param type
-     *            the type of construct represented by the tag
-     *
+     *         the type of construct represented by the tag
      * @param isFullyDecoded
-     *            whether the raw tag was completely decoded
+     *         whether the raw tag was completely decoded
      *
      * @throws NullPointerException
-     *             if parameters are {@code null}
-     *
+     *         if parameters are {@code null}
      * @throws IllegalArgumentException
-     *             if {@code decodedTag} or {@code rawTag} are blank
+     *         if {@code decodedTag} is blank
      */
-    public DecodedTag(String decodedTag,
-                      String rawTag,
-                      AsnSchemaType type,
-                      boolean isFullyDecoded)
+    public DecodedTag(String decodedTag, String rawTag, AsnSchemaType type, boolean isFullyDecoded)
     {
-        this.tag = Strings.nullToEmpty(decodedTag)
-                .trim();
-        this.rawTag = Strings.nullToEmpty(rawTag)
-                .trim();
+        this.tag = Strings.nullToEmpty(decodedTag).trim();
+        this.rawTag = Strings.nullToEmpty(rawTag).trim();
         this.type = type;
         this.isFullyDecoded = isFullyDecoded;
 

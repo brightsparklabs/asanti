@@ -10,8 +10,8 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * An item within a 'constructed' (SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or
- * ENUMERATED) type definition
+ * An item within a 'constructed' (SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED) type
+ * definition
  *
  * @author brightSPARK Labs
  */
@@ -36,7 +36,6 @@ public class AsnSchemaComponentType
     /** the underlying AsnSchemaType that this component is holding */
     private final AsnSchemaType type;
 
-
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -45,28 +44,23 @@ public class AsnSchemaComponentType
      * Default constructor.
      *
      * @param tagName
-     *            name of this component type (i.e. tag name)
-     *
+     *         name of this component type (i.e. tag name)
      * @param tag
-     *            tag of this component type. Will default to an empty string if
-     *            {@code null}
-     *
+     *         tag of this component type. Will default to an empty string if {@code null}
      * @param typeName
-     *            type of this component type
-     *
+     *         type of this component type
      * @param isOptional
-     *            whether this component type is optional
-     *
+     *         whether this component type is optional
      * @param type
-     *            the underlying {@link AsnSchemaType} for this component
+     *         the underlying {@link AsnSchemaType} for this component
      *
      * @throws NullPointerException
-     *             if {@code tagName} or {@code typeName} are {@code null}
-     *
+     *         if {@code tagName}, {@code typeName} or {@code type} are {@code null}
      * @throws IllegalArgumentException
-     *             if {@code tagName} or {@code typeName} are blank
+     *         if {@code tagName} or {@code typeName} are blank
      */
-    public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional, AsnSchemaType type)
+    public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional,
+            AsnSchemaType type)
     {
         checkNotNull(tagName);
         checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
@@ -118,7 +112,6 @@ public class AsnSchemaComponentType
     }
 
     /**
-     *
      * @return the type for this component type
      */
     public AsnSchemaType getType() { return type; }

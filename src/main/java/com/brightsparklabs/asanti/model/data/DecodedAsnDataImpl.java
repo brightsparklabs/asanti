@@ -6,8 +6,8 @@ package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
+import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
@@ -37,9 +37,6 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
     /** ASN data to decode */
     private final AsnData asnData;
-
-    /** ASN schema used to decode data */
-    private final AsnSchema asnSchema;
 
     /**
      * all tags which could be decoded. Map is of form: { decodedTagString => decodedTag }
@@ -88,7 +85,6 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         checkArgument(!topLevelTypeName.trim().isEmpty(), "Top level type name must be specified");
 
         this.asnData = asnData;
-        this.asnSchema = asnSchema;
 
         // decode the tags in the data
         final Map<String, DecodedTag> decodedToRawTags = Maps.newHashMap();
@@ -193,8 +189,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final byte[] bytes = getBytes(tag);
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
-        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(
-                decoderVisitor);
+        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(decoderVisitor);
         return decoder.decodeAsString(bytes);
     }
 
@@ -233,11 +228,9 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
 
-        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(
-                decoderVisitor);
+        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(decoderVisitor);
         return decoder.decode(bytes);
     }
-
 
     @Override
     public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex)

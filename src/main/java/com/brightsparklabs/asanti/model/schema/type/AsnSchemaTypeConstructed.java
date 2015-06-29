@@ -16,10 +16,8 @@ import static com.google.common.base.Preconditions.*;
 
 /**
  * A type used to model the types for objects within ASN.1 schema that are Constructed, meaning that
- * they have Components.
- * These objects can be either Type Definitions, eg Type ::= SomeType,
- * or components within a constructed type (SEQUENCE etc), eg component SomeType
- *
+ * they have Components. These objects can be either Type Definitions, e.g. Type ::= SomeType, or
+ * components within a constructed type (SEQUENCE etc), e.g. component SomeType
  *
  * @author brightSPARK Labs
  */
@@ -30,16 +28,16 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(
-            AsnSchemaTypeConstructed.class);
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaTypeConstructed.class);
 
     /**
-     * built-in types which are considered 'constructed'. Currently: SEQUENCE, SET
-     * and CHOICE.
+     * built-in types which are considered 'constructed'. Currently: SEQUENCE, SET and CHOICE.
      * ENUMERATED is treated differently.
      */
-    private static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(AsnPrimitiveType.SET,
-            AsnPrimitiveType.SEQUENCE, AsnPrimitiveType.CHOICE);
+    private static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(
+            AsnPrimitiveType.SET,
+            AsnPrimitiveType.SEQUENCE,
+            AsnPrimitiveType.CHOICE);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -56,38 +54,39 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      * Default constructor.
      *
      * @param primitiveType
-     *            the underlying primitiveType of the defined primitiveType
-     *
+     *         the underlying primitiveType of the defined primitiveType
      * @param constraint
-     *            The constraint on the type. Use
-     *            {@link AsnSchemaConstraint#NULL} if no constraint.
-     *            <p>
-     *            Example 1<br>
-     *            For {@code SET (SIZE (1..100) OF OCTET STRING (SIZE (10))}
-     *            this would be {@code (SIZE (10)}.
-     *            <p>
-     *            Example 2<br>
-     *            For {@code INTEGER (1..256)} this would be {@code (1..256)}.
+     *         The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no constraint.
      *
+     *         <p> Example 1
+     *
+     *         <br> For {@code SET (SIZE (1..100) OF OCTET STRING (SIZE (10))} this would be {@code
+     *         (SIZE (10)}.
+     *
+     *         <p> Example 2
+     *
+     *         <br> For {@code INTEGER (1..256)} this would be {@code (1..256)}.
      * @param componentTypes
-     *            the component types within this defined type
+     *         the component types within this defined type
      *
      * @throws NullPointerException
-     *             if {@code name} or {@code builtinType} are {@code null}
-     *
+     *         if {@code name} or {@code builtinType} are {@code null}
      * @throws IllegalArgumentException
-     *             if {@code name} is blank
+     *         if {@code primitiveType} is not a constructed type (Currently: SEQUENCE, SET and
+     *         CHOICE)
      */
     public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
             Iterable<AsnSchemaComponentType> componentTypes)
     {
         super(primitiveType, constraint);
 
-        checkArgument(validTypes.contains(primitiveType), "Type must be either SET, SEQUENCE or CHOICE");
+        checkArgument(validTypes.contains(primitiveType),
+                "Type must be either SET, SEQUENCE or CHOICE");
 
         checkNotNull(componentTypes);
 
-        final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder
+                = ImmutableMap.builder();
 
         // next expected tag is used to generate tags for automatic tagging
         // TODO ASN-80 - ensure that generating for all missing tags is correct
@@ -99,7 +98,9 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
             if (Strings.isNullOrEmpty(tag))
             {
                 tag = String.valueOf(nextExpectedTag);
-                logger.debug("Generated automatic tag [{}] for {}", tag, componentType.getTagName());
+                logger.debug("Generated automatic tag [{}] for {}",
+                        tag,
+                        componentType.getTagName());
                 nextExpectedTag++;
             }
             else
@@ -113,8 +114,9 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
 
     /**
      * Returns the {@code AsnSchemaComponentType} for the tag, or null if none found
+     *
      * @param tag
-     *          a tag within this construct
+     *         a tag within this construct
      *
      * @return the {@code AsnSchemaComponentType} for the tag, or null if none found
      */
@@ -123,24 +125,20 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
         if (schemaTag == AsnSchemaTag.NULL)
         {
-            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}", tag);
+            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}",
+                    tag);
             return null;
         }
-        final AsnSchemaComponentType componentType = tagsToComponentTypes.get(schemaTag.getTagNumber());
+        final AsnSchemaComponentType componentType
+                = tagsToComponentTypes.get(schemaTag.getTagNumber());
         return componentType;
     }
-
 
     @Override
     public AsnSchemaType getChildType(String tag)
     {
         final AsnSchemaComponentType component = getComponent(tag);
-        if (component ==  null)
-        {
-            return AsnSchemaType.NULL;
-        }
-
-        return component.getType();
+        return component == null ? AsnSchemaType.NULL : component.getType();
     }
 
     @Override
@@ -149,11 +147,13 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
         if (schemaTag == AsnSchemaTag.NULL)
         {
-            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}", tag);
+            logger.warn("Invalid tag supplied. Expected format: 'tag' or 'tag[index]', received: {}",
+                    tag);
             return "";
         }
 
-        final AsnSchemaComponentType componentType = tagsToComponentTypes.get(schemaTag.getTagNumber());
+        final AsnSchemaComponentType componentType
+                = tagsToComponentTypes.get(schemaTag.getTagNumber());
         return (componentType == null) ? "" : componentType.getTagName() + schemaTag.getTagIndex();
     }
 
@@ -172,12 +172,9 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     /**
-     * Models a tag in a 'constructed' type definition. A tag conforms to one of
-     * the following formats:
-     * <ul>
-     * <li>tagNumber (e.g. {@code 1}</li>
-     * <li>tagNumber[tagIndex] (e.g. {@code 1[0]}</li>
-     * </ul>
+     * Models a tag in a 'constructed' type definition. A tag conforms to one of the following
+     * formats: <ul> <li>tagNumber (e.g. {@code 1}</li> <li>tagNumber[tagIndex] (e.g. {@code
+     * 1[0]}</li> </ul>
      */
     private static class AsnSchemaTag
     {
@@ -209,11 +206,9 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
          * Default constructor. Private, use {@link #create(String)} instead.
          *
          * @param tagNumber
-         *            tag number component of the raw tag
-         *
+         *         tag number component of the raw tag
          * @param tagIndex
-         *            tag index component of the raw tag. Set to {@code null} if
-         *            no index component.
+         *         tag index component of the raw tag. Set to {@code null} if no index component.
          */
         private AsnSchemaTag(String tagNumber, String tagIndex)
         {
@@ -225,14 +220,16 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
          * Creates an instance from the supplied raw tag
          *
          * @param rawTag
-         *            raw tag to create instance from
+         *         raw tag to create instance from
          *
-         * @return instance which models the raw tag, or {@link #NULL} if the
-         *         raw tag is invalid
+         * @return instance which models the raw tag, or {@link #NULL} if the raw tag is invalid
          */
         public static AsnSchemaTag create(String rawTag)
         {
-            if (rawTag == null) { return NULL; }
+            if (rawTag == null)
+            {
+                return NULL;
+            }
 
             final Matcher matcher = PATTERN_TAG.matcher(rawTag);
             if (matcher.matches())
@@ -250,8 +247,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         // ---------------------------------------------------------------------
 
         /**
-         * Returns the tag number component of the raw tag. For a raw tag
-         * {@code "1[0]"} this is {@code "1"}.
+         * Returns the tag number component of the raw tag. For a raw tag {@code "1[0]"} this is
+         * {@code "1"}.
          *
          * @return the tag number
          */
@@ -261,8 +258,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         }
 
         /**
-         * Returns the tag index component of the raw tag. For a raw tag
-         * {@code "1[0]"} this is {@code "[0]"}.
+         * Returns the tag index component of the raw tag. For a raw tag {@code "1[0]"} this is
+         * {@code "[0]"}.
          *
          * @return the tag index or a blank string if no index component
          */
@@ -271,5 +268,4 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
             return tagIndex;
         }
     }
-
 }

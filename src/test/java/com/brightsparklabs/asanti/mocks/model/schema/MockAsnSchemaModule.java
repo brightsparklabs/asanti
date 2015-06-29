@@ -10,16 +10,13 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import java.text.ParseException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchemaModule} which conform to the test
- * ASN.1 schema defined in the {@linkplain README.md} file
+ * ASN.1 schema defined in the {@code README.md} file
  *
  * @author brightSPARK Labs
  */
@@ -29,7 +26,7 @@ public class MockAsnSchemaModule
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** the example Document-PDU module defined in the {@linkplain README.md} file */
+    /** the example Document-PDU module defined in the {@code README.md} file */
     public static final Iterable<String> TEST_MODULE_DOCUMENT_PDU = Lists.newArrayList(
             "Document-PDU",
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }",
@@ -63,7 +60,7 @@ public class MockAsnSchemaModule
             "Date-Due ::= INTEGER { tomorrow(0), three-day(1), week(2) } DEFAULT week",
             "END");
 
-    /** the example People-Protocol module defined in the {@linkplain README.md} file */
+    /** the example People-Protocol module defined in the {@code README.md} file */
     public static final Iterable<String> TEST_MODULE_PEOPLE_PROTOCOL = Lists.newArrayList(
             "People-Protocol",
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }",
@@ -97,14 +94,14 @@ public class MockAsnSchemaModule
      *
      * @return mocked instance
      */
-    public static ImmutableMap<String, AsnSchemaModule> createMockedAsnSchemaModules() throws
-            ParseException
+    public static ImmutableMap<String, AsnSchemaModule> createMockedAsnSchemaModules()
+            throws ParseException
     {
-        List<Builder> othersList = Lists.newArrayList();
-        Iterator<Builder> others = othersList.iterator();
+        final List<Builder> otherModules = Lists.newArrayList();
         final AsnSchemaModule documentPduModuleinstance
-                = createMockedAsnSchemaModuleForDocumentPdu().build(others);
-        final AsnSchemaModule peopleProtocolModule = createMockedAsnSchemaModuleForPeopleProtocol().build(others);
+                = createMockedAsnSchemaModuleForDocumentPdu().build(otherModules);
+        final AsnSchemaModule peopleProtocolModule
+                = createMockedAsnSchemaModuleForPeopleProtocol().build(otherModules);
         final ImmutableMap<String, AsnSchemaModule> modules = ImmutableMap.of(
                 documentPduModuleinstance.getName(),
                 documentPduModuleinstance,
@@ -114,8 +111,8 @@ public class MockAsnSchemaModule
     }
 
     /**
-     * Creates a mock {@link AsnSchemaModule.Builder} instance conforming to the 'Document-PDU' module in
-     * the example schema
+     * Creates a mock {@link AsnSchemaModule.Builder} instance conforming to the 'Document-PDU'
+     * module in the example schema
      *
      * @return mocked instance
      */
@@ -135,8 +132,8 @@ public class MockAsnSchemaModule
     }
 
     /**
-     * Creates a mock {@link AsnSchemaModule.Builder} instance conforming to the 'Document-PDU' module in
-     * the example schema
+     * Creates a mock {@link AsnSchemaModule.Builder} instance conforming to the 'Document-PDU'
+     * module in the example schema
      *
      * @return mocked instance
      */

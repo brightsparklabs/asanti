@@ -29,23 +29,19 @@ public class AsnSchemaTypeDefinitionImpl implements AsnSchemaTypeDefinition
      * Default constructor.
      *
      * @param name
-     *            name of the defined type
-     *
+     *         name of the defined type
      * @param type
-     *            the underlying ASN.1 type of the defined type
-     *
+     *         the underlying ASN.1 type of the defined type
      *
      * @throws NullPointerException
-     *             if {@code name} or {@code builtinType} are {@code null}
-     *
+     *         if {@code name} or {@code type} are {@code null}
      * @throws IllegalArgumentException
-     *             if {@code name} is blank
+     *         if {@code name} is blank
      */
     public AsnSchemaTypeDefinitionImpl(String name, AsnSchemaType type)
     {
         checkNotNull(name);
-        checkArgument(!name.trim()
-                .isEmpty(), "Tag name must be specified");
+        checkArgument(!name.trim().isEmpty(), "Tag name must be specified");
         checkNotNull(type);
 
         this.name = name.trim();

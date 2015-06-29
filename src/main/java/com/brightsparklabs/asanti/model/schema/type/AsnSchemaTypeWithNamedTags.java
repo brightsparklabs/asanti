@@ -5,14 +5,12 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.collect.ImmutableMap;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 /**
- * A type used to model the types for objects within ASN.1 schema that may contain Named Values,
- * for example Enumerated and Integer.
- * These objects can be either Type Definitions, eg Type ::= SomeType,
- * or components within a constructed type (SEQUENCE etc), eg component SomeType
- *
+ * A type used to model the types for objects within ASN.1 schema that may contain Named Values, for
+ * example Enumerated and Integer. These objects can be either Type Definitions, e.g. Type ::=
+ * SomeType, or components within a constructed type (SEQUENCE etc), e.g. component SomeType
  *
  * @author brightSPARK Labs
  */
@@ -25,7 +23,6 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
     /** mapping from raw tag to named value */
     private final ImmutableMap<String, AsnSchemaNamedTag> tagsToNamedValues;
 
-
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -34,22 +31,17 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
      * Default constructor.
      *
      * @param primitiveType
-     *            The {@link AsnPrimitiveType} for this type
-     *
+     *         The {@link AsnPrimitiveType} for this type
      * @param constraint
-     *            The constraint on the type. Use
-     *            {@link AsnSchemaConstraint#NULL} if no constraint.
-     *            <p>
-     *            E.g. For {@code Integer (1..56)} this would be {@code (1..56)}
+     *         The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no constraint.
      *
+     *         <p> E.g. For {@code Integer (1..56)} this would be {@code (1..56)}
      * @param namedValues
-     *            the optional list of named values in this type.
-     *            Use an empty iterable if there are no
-     *            named values.
+     *         the optional list of named values in this type. Use an empty iterable if there are no
+     *         named values.
      *
      * @throws NullPointerException
-     *             if {@code namedValues} or {@code primitiveType} is {@code null}
-     *
+     *         if {@code namedValues} or {@code primitiveType} is {@code null}
      */
     public AsnSchemaTypeWithNamedTags(AsnPrimitiveType primitiveType,
             AsnSchemaConstraint constraint, Iterable<AsnSchemaNamedTag> namedValues)
@@ -57,7 +49,8 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
         super(primitiveType, constraint);
         checkNotNull(namedValues);
 
-        final ImmutableMap.Builder<String, AsnSchemaNamedTag> tagsToNamedValuesBuilder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, AsnSchemaNamedTag> tagsToNamedValuesBuilder
+                = ImmutableMap.builder();
 
         for (final AsnSchemaNamedTag namedValue : namedValues)
         {

@@ -6,19 +6,18 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.model.schema.type.*;
-import com.brightsparklabs.asanti.model.schema.typedefinition.*;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -49,9 +48,6 @@ public class AsnSchemaImpl implements AsnSchema
     /** the primary module defined in this schema (defaults to the first module) */
     private final AsnSchemaModule primaryModule;
 
-    /** all modules defined in this schema. Mapped as: {moduleName => module} */
-    private final ImmutableMap<String, AsnSchemaModule> modules;
-
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -78,7 +74,6 @@ public class AsnSchemaImpl implements AsnSchema
                 "The primary module must be contained in the schema's modules");
 
         this.primaryModule = modules.get(primaryModule);
-        this.modules = ImmutableMap.copyOf(modules);
     }
 
     // -------------------------------------------------------------------------
@@ -90,7 +85,8 @@ public class AsnSchemaImpl implements AsnSchema
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final AsnSchemaTypeDefinition typeDefinition = primaryModule.getType(topLevelTypeName);
-        final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(), typeDefinition.getType());
+        final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(),
+                typeDefinition.getType());
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
 
         // check if decode was successful
@@ -146,8 +142,9 @@ public class AsnSchemaImpl implements AsnSchema
      */
     private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType)
     {
-        // ASN-143.  does this functionality now belong here?
-        // all the logic is about AsnSchemaType object - should it have a decodeTags function?
+        /* TODO: ASN-143.  does this functionality now belong here?
+         * all the logic is about AsnSchemaType object - should it have a decodeTags function?
+         */
 
         final DecodedTagsAndType result = new DecodedTagsAndType();
         AsnSchemaType type = containingType;

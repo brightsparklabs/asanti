@@ -4,12 +4,17 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnPrimitiveTypeVisitor;
 
 /**
- * A type used to represent the primitive builtin type OBJECT IDENTIFIER within ASN.1
- * This class is used as a 'key' for the Visitor.
+ * A type used to represent the primitive builtin type OBJECT IDENTIFIER within ASN.1 This class is
+ * used as a 'key' for the Visitor.
+ *
  * @author brightSPARK Labs
  */
 public class AsnPrimitiveTypeOid implements AsnPrimitiveType
 {
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnPrimitiveType
+    // -------------------------------------------------------------------------
+
     @Override
     public AsnBuiltinType getBuiltinType()
     {
@@ -21,5 +26,4 @@ public class AsnPrimitiveTypeOid implements AsnPrimitiveType
     {
         return visitor.visit(this);
     }
-
 }
