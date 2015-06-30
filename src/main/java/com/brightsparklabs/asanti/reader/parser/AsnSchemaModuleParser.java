@@ -215,11 +215,12 @@ public class AsnSchemaModuleParser
             else if (line.startsWith("IMPORTS"))
             {
                 final StringBuilder builder = new StringBuilder();
+                line = lineIterator.next();
                 while (!(";".equals(line) || line.startsWith("EXPORTS")))
                 {
-                    line = lineIterator.next();
                     builder.append(line)
                             .append(" ");
+                    line = lineIterator.next();
                 }
                 final ImmutableMap<String, String> imports = AsnSchemaImportsParser.parse(builder.toString());
                 moduleBuilder.addImports(imports);

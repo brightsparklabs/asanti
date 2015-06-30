@@ -252,9 +252,8 @@ public class AsnSchemaModuleParserTest
     public void testParse_DocumentPdu() throws Exception
     {
         final String expectedImportsStatement
-                = "Person FROM People-Protocol { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) } ; ";
+                = "Person FROM People-Protocol { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) } ";
 
-        // prepare mocked imports map for mocked AsnSchemaImportsParser.parse method
         final Map<String, String> mockedImportsMap = Maps.<String, String>newHashMap();
         mockedImportsMap.put("Person", "People-Protocol");
         final ImmutableMap<String, String> mockedImportsImmutableMap = ImmutableMap.copyOf(

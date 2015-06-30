@@ -42,7 +42,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "    MyInt ::= INTEGER\n" +
             "END";
@@ -52,7 +51,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -66,7 +64,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -81,7 +78,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -98,7 +94,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -127,7 +122,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -142,7 +136,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -156,7 +149,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SET\n" +
             "   {\n" +
@@ -170,7 +162,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -189,7 +180,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -203,7 +193,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -219,7 +208,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -240,7 +228,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -254,7 +241,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE OF SEQUENCE\n" +
             "   {\n" +
@@ -268,7 +254,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -288,7 +273,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -307,7 +291,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -326,7 +309,6 @@ public class AsnSchemaParserTest
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
@@ -343,19 +325,63 @@ public class AsnSchemaParserTest
             "   NameType ::= UTF8String\n" +
             "END";
 
-    private static final String HUMAN_USING_TYPEDEF_BROKEN = "Test-Protocol\n" +
+    private static final String HUMAN_BROKEN_MISSING_TYPEDEF = "Test-Protocol\n" +
             "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
             +
             "DEFINITIONS\n" +
             "AUTOMATIC TAGS ::=\n" +
-            "IMPORTS\n" +
             "BEGIN\n" +
+            "IMPORTS\n" +
+            ";\n" +
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
             "       age [0] PersonAge (1..150) OPTIONAL\n" +
             "   }\n" +
             "END";
 
+    private static final String HUMAN_BROKEN_MISSING_IMPORT = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "BEGIN\n" +
+            "IMPORTS\n" +
+            "    PersonAge\n" +
+            "    FROM MissingModule { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) missing(5) }\n" +
+            ";\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       age [0] PersonAge (1..150) OPTIONAL\n" +
+            "   }\n" +
+            "END";
+
+    private static final String HUMAN_BROKEN_MISSING_IMPORTED_TYPEDEF = "Test-Protocol\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "BEGIN\n" +
+            "IMPORTS\n" +
+            "    PersonAge\n" +
+            "    FROM OtherModule { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) missing(5) }\n" +
+            ";\n" +
+            "   Human ::= SEQUENCE\n" +
+            "   {\n" +
+            "       age [0] PersonAge (1..150) OPTIONAL\n" +
+            "   }\n" +
+            "END\n" +
+            "OtherModule\n" +
+            "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) missing(5) }\n"
+            +
+            "DEFINITIONS\n" +
+            "AUTOMATIC TAGS ::=\n" +
+            "BEGIN\n" +
+            ";\n" +
+            "   Foo ::= SEQUENCE\n" +
+            "   {\n" +
+            "       bar UTF8String\n" +
+            "   }\n" +
+            "END";
 
     // TODO ASN-123 - rationalise these.  Determine if we want many small examples, or one more
     // comprehensive example (using the AsantiSample schema).  The small examples were useful
@@ -1270,12 +1296,27 @@ public class AsnSchemaParserTest
     {
         try
         {
-            AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_BROKEN);
+            AsnSchemaParser.parse(HUMAN_BROKEN_MISSING_TYPEDEF);
             fail("Should have thrown parse exception");
         }
         catch (ParseException e)
         {
-
+        }
+        try
+        {
+            AsnSchemaParser.parse(HUMAN_BROKEN_MISSING_IMPORT);
+            fail("Should have thrown parse exception");
+        }
+        catch (ParseException e)
+        {
+        }
+        try
+        {
+            AsnSchemaParser.parse(HUMAN_BROKEN_MISSING_IMPORTED_TYPEDEF);
+            fail("Should have thrown parse exception");
+        }
+        catch (ParseException e)
+        {
         }
     }
 

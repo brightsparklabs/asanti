@@ -399,6 +399,7 @@ public class AsnSchemaModule
                 moduleName = imports.get(typeName);
             }
 
+            //if (moduleName == null)
             if (Strings.isNullOrEmpty(moduleName))
             {
                 final String errorString = String.format(
@@ -412,7 +413,7 @@ public class AsnSchemaModule
             if (otherModule == null)
             {
                 final String errorString = String.format(
-                        "Unable to resolve import of {%s}, was not found in module {%s}",
+                        "Unable to resolve import of {%s}, could not find module {%s}",
                         typeName,
                         moduleName);
                 logger.warn(errorString);
@@ -420,10 +421,10 @@ public class AsnSchemaModule
             }
 
             final AsnSchemaTypeDefinition newTypeDefinition = otherModule.types.get(typeName);
-            if ((newTypeDefinition == AsnSchemaTypeDefinition.NULL) || (newTypeDefinition == null))
+            if (newTypeDefinition == null)
             {
                 final String errorString = String.format(
-                        "Unable to resolve import of {%s}, was badly formed in module {%s}",
+                        "Unable to resolve import - could not find type {%s} in module {%s}",
                         typeName,
                         moduleName);
                 logger.warn(errorString);
