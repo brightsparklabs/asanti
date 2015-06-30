@@ -35,21 +35,24 @@ public class AsnSchemaNamedTag
      * @param tagName
      *         name of this component type (i.e. tag name)
      * @param tag
-     *         tag of this component type. Will default to an empty string if {@code null}
+     *         tag of this component type.
      *
      * @throws NullPointerException
-     *         if {@code tagName} is {@code null}
+     *         if {@code tagName} or {@code tag} are {@code null}
      * @throws IllegalArgumentException
-     *         if {@code tagName} is blank
+     *         if {@code tagName} or {@code tag} are blank
      */
     public AsnSchemaNamedTag(String tagName, String tag)
     {
         checkNotNull(tagName);
         checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
 
+
+        checkNotNull(tag);
+        checkArgument(!tag.trim().isEmpty(), "Tag must be specified");
+
         this.tagName = tagName.trim();
-        // TODO ASN-133 - is this the correct behavior
-        this.tag = (tag == null) ? "" : tag.trim();
+        this.tag = tag.trim();
     }
 
     // -------------------------------------------------------------------------

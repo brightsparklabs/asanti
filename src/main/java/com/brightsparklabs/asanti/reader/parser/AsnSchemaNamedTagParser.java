@@ -6,13 +6,18 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import java.text.ParseException;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Logic for parsing ENUMERATED options and INTEGER distinguished values
@@ -21,6 +26,13 @@ import com.google.common.collect.ImmutableList;
  */
 public class AsnSchemaNamedTagParser
 {
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+
+    /** class logger */
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaModule.class);
+
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
@@ -41,6 +53,10 @@ public class AsnSchemaNamedTagParser
     private static final Splitter COMMA_SPLITTER = Splitter.on(",")
             .omitEmptyStrings()
             .trimResults();
+
+    /** error message if enumerated tag numbering fails */
+    private static final String ERROR_ENUMERATED_TAG_REUSE =
+            "Parser encountered multiple Enumerated values using the same tag number: ";
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -68,6 +84,9 @@ public class AsnSchemaNamedTagParser
 
         final Iterable<String> lines = COMMA_SPLITTER.split(enumeratedOptionsText);
 
+        // In order to keep track of the tag (numbers) that have been used, to ensure uniqueness
+        final Set<Integer> usedTags = Sets.newHashSet();
+
         for (final String optionLine : lines)
         {
             if ("...".equals(optionLine))
@@ -76,7 +95,7 @@ public class AsnSchemaNamedTagParser
                 continue;
             }
 
-            final AsnSchemaNamedTag option = parseOption(optionLine);
+            final AsnSchemaNamedTag option = parseOption(optionLine, usedTags);
             builder.add(option);
         }
         return builder.build();
@@ -122,12 +141,16 @@ public class AsnSchemaNamedTagParser
      * @param optionLine
      *            the option text to parse
      *
+     * @param usedTags
+     *            the tags (numbers) that are already in use for this type
+     *
      * @return an {@link AsnSchemaNamedTag} representing the parsed text
      *
      * @throws ParseException
      *             if any errors occur while parsing the data
      */
-    private static AsnSchemaNamedTag parseOption(String optionLine) throws ParseException
+    private static AsnSchemaNamedTag parseOption(String optionLine, Set<Integer> usedTags)
+            throws ParseException
     {
         final Matcher matcher = PATTERN_ENUMERATED_OPTION.matcher(optionLine);
 
@@ -140,9 +163,19 @@ public class AsnSchemaNamedTagParser
         }
 
         final String tagName = matcher.group(1);
-        final String tag = matcher.group(3);
+        String tag = matcher.group(3);
 
-        // TODO ASN-133 - this will allow no tag, which causes issues with Enumerated types.
+        // We need to ensure that we store a unique, non-null tag.
+        if (tag == null)
+        {
+            tag = generateUniqueTagNumber(usedTags, tagName);
+        }
+        else
+        {
+            ensureTagUnique(tag, usedTags, tagName);
+        }
+
+        usedTags.add(Integer.parseInt(tag));
 
         return new AsnSchemaNamedTag(tagName, tag);
     }
@@ -174,5 +207,60 @@ public class AsnSchemaNamedTagParser
         final String tagName = matcher.group(1);
         final String tag = matcher.group(3);
         return new AsnSchemaNamedTag(tagName, tag);
+    }
+
+    /**
+     * Provides a tag that is unique (not in the Set of tags provided,
+     *
+     * @param usedTags
+     *            The set of tags that are already in use
+     *
+     * @param tagName
+     *            The name of the tag, used for logging useful messages.
+     *
+     * @return
+     *            The tag that we should use, which may be what we were provided
+     *            or will be a newly generated tag if needed
+     *
+     * @throws ParseException
+     *            If the provided tag is already in use
+     */
+    private static String generateUniqueTagNumber(Set<Integer> usedTags, String tagName)
+            throws ParseException
+    {
+        // Generate a new, unused tag
+        Integer newTag = 0;
+        while(usedTags.contains(newTag))
+        {
+            newTag++;
+        }
+
+        logger.debug("Generated automatic tag ({}) for {}", newTag, tagName);
+        return newTag.toString();
+    }
+
+    /**
+     * Ensures that the provided tag is not already in use, throws if it is
+     *
+     * @param tag
+     *            The new tag to test the uniqueness of
+     * @param usedTags
+     *            The set of tags that are already in use
+     * @param tagName
+     *            The name of the tag, used for logging useful errors.
+     * @throws ParseException
+     *            If the provided tag is already in use
+     */
+    private static void ensureTagUnique(String tag, Set<Integer> usedTags, String tagName)
+            throws ParseException
+    {
+        // Ensure this tag is not already in use.
+        Integer tagNumber = Integer.parseInt(tag);
+        if (usedTags.contains(tagNumber))
+        {
+            final String error = ERROR_ENUMERATED_TAG_REUSE + tagName +" (" +tag + ")";
+            logger.warn(error);
+            throw new ParseException(error, -1);
+        }
     }
 }

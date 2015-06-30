@@ -79,24 +79,6 @@ public class AsnSchemaEnumeratedParserTest
         testNamedTag(options.get(3), "3", "dr");
         testNamedTag(options.get(4), "4", "rev");
 
-        // test no tags
-        options = AsnSchemaNamedTagParser.parseEnumeratedOptions("mr\t, mrs, ms  ,\n\t dr \t\r\n,rev");
-        assertEquals(5, options.size());
-        testNamedTag(options.get(0), "", "mr");
-        testNamedTag(options.get(1), "", "mrs");
-        testNamedTag(options.get(2), "", "ms");
-        testNamedTag(options.get(3), "", "dr");
-        testNamedTag(options.get(4), "", "rev");
-
-        // test missing tags
-        options = AsnSchemaNamedTagParser.parseEnumeratedOptions("mr(0)\t, mrs, ms (2) ,\n\t dr \t\r\n,rev(4)");
-        assertEquals(5, options.size());
-        testNamedTag(options.get(0), "0", "mr");
-        testNamedTag(options.get(1), "", "mrs");
-        testNamedTag(options.get(2), "2", "ms");
-        testNamedTag(options.get(3), "", "dr");
-        testNamedTag(options.get(4), "4", "rev");
-
         // test unordered tags
         options = AsnSchemaNamedTagParser.parseEnumeratedOptions("mrs(1),rev(4), ms (2) ,mr(0)\t, \n\t dr \t\r\n(3)");
         assertEquals(5, options.size());
@@ -105,6 +87,61 @@ public class AsnSchemaEnumeratedParserTest
         testNamedTag(options.get(2), "2", "ms");
         testNamedTag(options.get(3), "0", "mr");
         testNamedTag(options.get(4), "3", "dr");
+
+        // test no tags
+        options = AsnSchemaNamedTagParser.parseEnumeratedOptions("mr\t, mrs, ms  ,\n\t dr \t\r\n,rev");
+        assertEquals(5, options.size());
+        testNamedTag(options.get(0), "0", "mr");
+        testNamedTag(options.get(1), "1", "mrs");
+        testNamedTag(options.get(2), "2", "ms");
+        testNamedTag(options.get(3), "3", "dr");
+        testNamedTag(options.get(4), "4", "rev");
+
+        // test tag gaps
+        options = AsnSchemaNamedTagParser.parseEnumeratedOptions("mr(0), mrs(3), ms, dr, rev");
+        assertEquals(5, options.size());
+        testNamedTag(options.get(0), "0", "mr");
+        testNamedTag(options.get(1), "3", "mrs");
+        testNamedTag(options.get(2), "1", "ms");
+        testNamedTag(options.get(3), "2", "dr");
+        testNamedTag(options.get(4), "4", "rev");
+
+        options = AsnSchemaNamedTagParser.parseEnumeratedOptions("mr(4), mrs(3), ms, dr(2), rev");
+        assertEquals(5, options.size());
+        testNamedTag(options.get(0), "4", "mr");
+        testNamedTag(options.get(1), "3", "mrs");
+        testNamedTag(options.get(2), "0", "ms");
+        testNamedTag(options.get(3), "2", "dr");
+        testNamedTag(options.get(4), "1", "rev");
+
+        // test missing tags
+        options = AsnSchemaNamedTagParser.parseEnumeratedOptions("mr(0)\t, mrs, ms (2) ,\n\t dr \t\r\n,rev(4)");
+        assertEquals(5, options.size());
+        testNamedTag(options.get(0), "0", "mr");
+        testNamedTag(options.get(1), "1", "mrs");
+        testNamedTag(options.get(2), "2", "ms");
+        testNamedTag(options.get(3), "3", "dr");
+        testNamedTag(options.get(4), "4", "rev");
+
+        // test duplicates
+        try
+        {
+            AsnSchemaNamedTagParser.parseEnumeratedOptions("mr(0), mrs, ms(1), dr, rev");
+            fail("ParseException should have been thrown");
+        }
+        catch (ParseException e)
+        {
+        }
+
+        try
+        {
+            AsnSchemaNamedTagParser.parseEnumeratedOptions("mr(0), mrs(1), ms(2), dr(3), rev(1)");
+            fail("ParseException should have been thrown");
+        }
+        catch (ParseException e)
+        {
+        }
+
     }
 
     @Test
