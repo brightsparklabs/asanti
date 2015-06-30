@@ -23,7 +23,7 @@ public class AsnSchemaNamedTagTest
     @Test
     public void testAsnSchemaNamedTag_Name() throws Exception
     {
-        // test null
+        // test null tagName
         try
         {
             new AsnSchemaNamedTag(null, null);
@@ -50,6 +50,35 @@ public class AsnSchemaNamedTagTest
         catch (final IllegalArgumentException ex)
         {
         }
+
+        // test null tag
+        try
+        {
+            new AsnSchemaNamedTag("TAG_NAME", null);
+            fail("NullPointerException not thrown");
+        }
+        catch (final NullPointerException ex)
+        {
+        }
+
+        // test blank
+        try
+        {
+            new AsnSchemaNamedTag("TAG_NAME", "");
+            fail("IllegalArgumentException not thrown");
+        }
+        catch (final IllegalArgumentException ex)
+        {
+        }
+        try
+        {
+            new AsnSchemaNamedTag("TAG_NAME", " ");
+            fail("IllegalArgumentException not thrown");
+        }
+        catch (final IllegalArgumentException ex)
+        {
+        }
+
     }
 
     @Test
@@ -64,15 +93,5 @@ public class AsnSchemaNamedTagTest
     {
         AsnSchemaNamedTag instance = new AsnSchemaNamedTag("TAG_NAME", "0");
         assertEquals("0", instance.getTag());
-
-        // test null
-        instance = new AsnSchemaNamedTag("TAG_NAME", null);
-        assertEquals("", instance.getTag());
-
-        // test blank
-        instance = new AsnSchemaNamedTag("TAG_NAME", "");
-        assertEquals("", instance.getTag());
-        instance = new AsnSchemaNamedTag("TAG_NAME", " ");
-        assertEquals("", instance.getTag());
     }
 }

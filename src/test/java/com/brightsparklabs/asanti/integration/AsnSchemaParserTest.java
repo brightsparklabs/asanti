@@ -83,7 +83,7 @@ public class AsnSchemaParserTest
             "   {\n" +
             "       pickOne ENUMERATED\n" +
             "       {\n" +
-            "           optA(0)\n" +
+            "           optA(0),\n" +
             "           optB(1)\n" +
             "       }\n" +
             "   }\n" +
@@ -1152,7 +1152,7 @@ public class AsnSchemaParserTest
     @Test
     public void testParse_HumanUsingTypeEtsi() throws Exception
     {
-        // TODO ASN-133, ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
+        // TODO ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
 //        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
 //        File schemaFile = new File(schemaFilename);
 //        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
