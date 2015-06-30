@@ -27,13 +27,20 @@ public interface BuiltinTypeValidator
     // CONSTANTS
     // -------------------------------------------------------------------------
 
+    /** validation error string for Bit String failures */
+    public static final String BIT_STRING_VALIDATION_ERROR
+            = "Supplied bytes do not conform to the BIT STRING format. The first byte must be within the range 0x00 - 0x07. Supplied bytes contain a byte with invalid value: ";
+
+    /** validation error string for Bit String failures */
+    public static final String EMPTY_BYTE_ARRAY_VALIDATION_ERROR
+            = "ASN.1 %s type must contain at least one byte. Supplied array contains 0 bytes";
+
     /** validation error string for IA5String failures */
     public static final String IA5STRING_VALIDATION_ERROR
             = "Supplied bytes do not conform to the IA5String format. All bytes must be within the range 0x00 - 0x7f. Supplied bytes contain a byte with invalid value: ";
 
-    /** validation error string for NULL failures */
-    public static final String NULL_VALIDATION_ERROR
-            = "NULL type must be zero length.";
+    /** validation error string for Null failures */
+    public static final String NULL_VALIDATION_ERROR = "Null type must be zero length.";
 
     /** validation error string for NumericString failures */
     public static final String NUMERICSTRING_VALIDATION_ERROR
@@ -91,11 +98,11 @@ public interface BuiltinTypeValidator
     public ImmutableSet<ByteValidationFailure> validate(byte[] bytes);
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: NULL
+    // INTERNAL CLASS: Null
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link BuiltinTypeDecoder}.
+     * Null instance of {@link BuiltinTypeDecoder}.
      *
      * <p>The {@code validate} methods will return an empty set.</p>
      *

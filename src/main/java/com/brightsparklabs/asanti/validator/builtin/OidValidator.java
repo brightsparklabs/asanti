@@ -92,7 +92,7 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
         else
         {
             // Empty bytes array
-            final String error = OID_VALIDATION_ERROR_INCOMPLETE;
+            final String error = String.format(EMPTY_BYTE_ARRAY_VALIDATION_ERROR, "OID");
             final ByteValidationFailure failure = new ByteValidationFailure(0,
                     FailureType.DataMissing,
                     error);

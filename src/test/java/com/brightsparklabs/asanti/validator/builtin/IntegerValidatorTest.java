@@ -127,9 +127,9 @@ public class IntegerValidatorTest
 
         // test valid 17 byte number
         bytes = new byte[] { (byte) 0x00, (byte) 0x8f, (byte) 0xe2, (byte) 0x41, (byte) 0x2a,
-                (byte) 0x08, (byte) 0xe8, (byte) 0x51, (byte) 0xa8, (byte) 0x8c,
-                (byte) 0xb3, (byte) 0xe8, (byte) 0x53, (byte) 0xe7, (byte) 0xd5,
-                (byte) 0x49, (byte) 0x00 };
+                             (byte) 0x08, (byte) 0xe8, (byte) 0x51, (byte) 0xa8, (byte) 0x8c,
+                             (byte) 0xb3, (byte) 0xe8, (byte) 0x53, (byte) 0xe7, (byte) 0xd5,
+                             (byte) 0x49, (byte) 0x00 };
         assertEquals(0, instance.validate(bytes).size());
 
         {
@@ -139,7 +139,6 @@ public class IntegerValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            //assertEquals("No bytes present to validate", failure.getFailureReason());
         }
 
         {
