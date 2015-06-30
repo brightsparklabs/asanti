@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.text.ParseException;
+
 import static org.junit.Assert.*;
 
 public class AsnSchemaImplTest
@@ -28,7 +30,7 @@ public class AsnSchemaImplTest
     // -------------------------------------------------------------------------
 
     @BeforeClass
-    public static void setUpBeforeClass()
+    public static void setUpBeforeClass() throws ParseException
     {
         modules = MockAsnSchemaModule.createMockedAsnSchemaModules();
         instance = new AsnSchemaImpl("Document-PDU", modules);

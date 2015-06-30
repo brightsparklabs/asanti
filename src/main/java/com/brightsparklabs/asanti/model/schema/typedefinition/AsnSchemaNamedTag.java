@@ -8,8 +8,8 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * A named tag in the ENUMERATED or INTEGER type definitions e.g. an ENUMERATED option or an INTEGER distinguished
- * value.
+ * A named tag in the ENUMERATED or INTEGER type definitions e.g. an ENUMERATED option or an INTEGER
+ * distinguished value.
  *
  * @author brightSPARK Labs
  */
@@ -33,25 +33,22 @@ public class AsnSchemaNamedTag
      * Default constructor.
      *
      * @param tagName
-     *            name of this component type (i.e. tag name)
-     *
+     *         name of this component type (i.e. tag name)
      * @param tag
-     *            tag of this component type. Will default to an empty string if
-     *            {@code null}
+     *         tag of this component type. Will default to an empty string if {@code null}
      *
      * @throws NullPointerException
-     *             if {@code tagName} is {@code null}
-     *
+     *         if {@code tagName} is {@code null}
      * @throws IllegalArgumentException
-     *             if {@code tagName} is blank
+     *         if {@code tagName} is blank
      */
     public AsnSchemaNamedTag(String tagName, String tag)
     {
         checkNotNull(tagName);
-        checkArgument(!tagName.trim()
-                .isEmpty(), "Tag name must be specified");
+        checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
 
         this.tagName = tagName.trim();
+        // TODO ASN-133 - is this the correct behavior
         this.tag = (tag == null) ? "" : tag.trim();
     }
 

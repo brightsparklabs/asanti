@@ -13,8 +13,10 @@ There are two main categories of models:
    these are:
     - `AsnSchema` representing the entire schema.
     - `AsnSchemaModule` representing a single module from a schema.
-    - `AsnSchemaTypeDefinition` representing a single Type Definition from a
+    - `AsnSchemaTypeDefinition` representing a named Type Definition from a
       module.
+    - `AsnSchemaType` representing a single Type from a module.
+    - `AsnPrimitiveType` represents an ASN.1 Type.
 
 ## Data Models
 
@@ -41,11 +43,12 @@ contain the information required to do so. The purpose of this is to keep the
 models simple, i.e. solely responsible for modeling an ASN.1 schema.
 
 Decoding and validation requires knowledge of the underlying ASN.1 built-in
-type behind a Type Definition. The model which contains this information is the
-`AsnSchemaTypeDefinition` interface. This interface supports the Visitor
-pattern, specifically for the purpose of double dispatch. This allows
-[Decoders][] and [Validators][] to provide orthogonal functionality without
-cluttering the code within `AsnSchemaTypeDefinition`.
+type behind a Type. The model which contains this information is the
+`AsnPrimitiveType` interface, which is retrieved from an `AsnSchemaType`. 
+This interface supports the Visitor pattern, specifically for the purpose 
+of double dispatch. This allows [Decoders][] and [Validators][] to provide
+orthogonal functionality without cluttering the code within `AsnSchemaType`
+or `AsnPrimitiveType`.
 
 
 [decoders]:   decoders.md

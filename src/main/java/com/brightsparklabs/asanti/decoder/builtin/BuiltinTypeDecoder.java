@@ -55,11 +55,11 @@ public interface BuiltinTypeDecoder<T>
     public String decodeAsString(byte[] bytes) throws DecodeException;
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: Null
+    // INTERNAL CLASS: NULL
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link BuiltinTypeDecoder}.
+     * NULL instance of {@link BuiltinTypeDecoder}.
      *
      * <p>The decode methods will throw a {@link DecodeException} when called. The error message in
      * the exception will be as supplied to the constructor.</p>

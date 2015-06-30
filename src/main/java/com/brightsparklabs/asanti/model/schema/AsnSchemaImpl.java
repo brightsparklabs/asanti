@@ -6,11 +6,10 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +48,6 @@ public class AsnSchemaImpl implements AsnSchema
     /** the primary module defined in this schema (defaults to the first module) */
     private final AsnSchemaModule primaryModule;
 
-    /** all modules defined in this schema. Mapped as: {moduleName => module} */
-    private final ImmutableMap<String, AsnSchemaModule> modules;
-
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -78,7 +74,6 @@ public class AsnSchemaImpl implements AsnSchema
                 "The primary module must be contained in the schema's modules");
 
         this.primaryModule = modules.get(primaryModule);
-        this.modules = ImmutableMap.copyOf(modules);
     }
 
     // -------------------------------------------------------------------------
@@ -89,9 +84,9 @@ public class AsnSchemaImpl implements AsnSchema
     public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
+        final AsnSchemaTypeDefinition typeDefinition = primaryModule.getType(topLevelTypeName);
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(),
-                topLevelTypeName,
-                primaryModule);
+                typeDefinition.getType());
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
 
         // check if decode was successful
@@ -106,13 +101,15 @@ public class AsnSchemaImpl implements AsnSchema
             {
                 final String unknownTag = tags.get(i);
                 decodedTags.add(unknownTag);
+                logger.debug("Unable to parse " + rawTag + " : " + unknownTag);
             }
         }
 
-        // prefix result with top level type
         decodedTags.add(0, topLevelTypeName);
-        decodedTags.add(0, ""); // empty string prefixes just the separator
+        decodedTags.add(0, ""); // empty string prefixes just the root separator
         final String decodedTagPath = tagJoiner.join(decodedTags);
+
+        logger.debug("getDecodedTag {} => {}", rawTag, decodedTagPath);
 
         final DecodedTag decodedTag = new DecodedTag(decodedTagPath,
                 rawTag,
@@ -135,101 +132,44 @@ public class AsnSchemaImpl implements AsnSchema
      * @param rawTags
      *         raw tags to decode. This should be an iterable in the order of the tags. E.g. The raw
      *         tag {code "/1/0/1"} should be provided as an iterator of {code ["1", "0", "1"]}
-     * @param containingTypeName
-     *         the type in this module from which to begin decoding the raw tag. E.g. {@code
-     *         "Document"} will start decoding the raw tags from the type definition named {@code
-     *         Document}
-     * @param module
-     *         module containing the type
+     * @param containingType
+     *         the {@link AsnSchemaType} that is the parent of the chain to be decoded
      *
      * @return a list of all decoded tags. If a raw tag could not be decoded then processing stops.
      * E.g. for the raw tags {code "1", "0" "1", "99", "98"}, if the {@code "99"} raw tag cannot be
      * decoded, then a list containing the decoded tags for only the first three raw tags is
      * returned (e.g. {@code ["Header", "Published", "Date"]})
      */
-    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, String containingTypeName,
-            AsnSchemaModule module)
+    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType)
     {
-        String typeName = containingTypeName;
-        AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
+        /* TODO: ASN-143.  does this functionality now belong here?
+         * all the logic is about AsnSchemaType object - should it have a decodeTags function?
+         */
+
         final DecodedTagsAndType result = new DecodedTagsAndType();
+        AsnSchemaType type = containingType;
+        // It is possible to decode "/", which means return the containingType
+        result.type = type;
 
         while (rawTags.hasNext())
         {
-            if (Strings.isNullOrEmpty(typeName))
+            // Get the tag that we are decoding
+            final String tag = rawTags.next();
+
+            // By definition the new tag is the child of its container.
+            final String decodedTag = type.getChildName(tag);
+            result.type = type.getChildType(tag);
+            // ensure it was found
+            if (result.type == AsnSchemaType.NULL)
             {
                 // no type to delve into
                 break;
             }
-
-            type = module.getType(typeName);
-            if (type == AsnSchemaTypeDefinition.NULL)
-            {
-                // type is not defined in module, test if it is imported
-                final AsnSchemaModule importedModule = getImportedModuleFor(typeName, module);
-                if (!AsnSchemaModule.NULL.equals(importedModule))
-                {
-                    // found the module the type is defined in
-                    final DecodedTagsAndType tagsAndType = decodeTags(rawTags,
-                            typeName,
-                            importedModule);
-                    result.type = tagsAndType.type;
-                    result.decodedTags.addAll(tagsAndType.decodedTags);
-                }
-                break;
-            }
-
-            final String tag = rawTags.next();
-            final String tagName = type.getTagName(tag);
-            if (Strings.isNullOrEmpty(tagName))
-            {
-                // unknown tag
-                result.type = AsnSchemaTypeDefinition.NULL;
-                break;
-            }
-            result.type = type;
-            result.decodedTags.add(tagName);
-            typeName = type.getTypeName(tag);
+            result.decodedTags.add(decodedTag);
+            type = result.type;
         }
 
         return result;
-    }
-
-    /**
-     * Returns the imported module which contains the specified type module.
-     *
-     * @param typeName
-     *         the type in the <b>imported</b> module
-     * @param module
-     *         the module which imported the specified type
-     *
-     * @return the imported module which contains the specified type
-     */
-    private AsnSchemaModule getImportedModuleFor(String typeName, AsnSchemaModule module)
-    {
-        // not found locally, check if it is from an import
-        final String importedModuleName = module.getImportedModuleFor(typeName);
-        if (Strings.isNullOrEmpty(importedModuleName))
-        {
-            logger.warn(
-                    "Could not resolve type definition \"{}\". It is is not defined or imported in module \"{}\"",
-                    typeName,
-                    module.getName());
-            return AsnSchemaModule.NULL;
-        }
-
-        final AsnSchemaModule importedModule = modules.get(importedModuleName);
-        // ensure we do not recursively look into the current module
-        if (importedModule == null || importedModule.equals(module))
-        {
-            logger.warn(
-                    "Could not resolve type definition \"{}\". Type is imported from an unknown module \"{}\"",
-                    typeName,
-                    module.getName());
-            return AsnSchemaModule.NULL;
-        }
-
-        return importedModule;
     }
 
     // -------------------------------------------------------------------------
@@ -247,6 +187,6 @@ public class AsnSchemaImpl implements AsnSchema
         private final List<String> decodedTags = Lists.newArrayList();
 
         /** the type of the final tag */
-        private AsnSchemaTypeDefinition type = AsnSchemaTypeDefinition.NULL;
+        private AsnSchemaType type = null;
     }
 }

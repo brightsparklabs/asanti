@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableSet;
 
 /**
  * Models a minimum/maximum value 'bounded' SIZE constraint from within a {@link
- * AbstractAsnSchemaTypeDefinition} or {@link AsnSchemaComponentType}. E.g. {@code SIZE (0 ..
+ * AsnSchemaType} or {@link AsnSchemaComponentType}. E.g. {@code SIZE (0 ..
  * 256)}.
  *
  * @author brightSPARK Labs

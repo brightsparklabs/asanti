@@ -1,0 +1,133 @@
+Document-PDU
+    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }
+
+DEFINITIONS
+    AUTOMATIC TAGS ::=
+
+BEGIN
+    EXPORTS Header, Body;
+
+    IMPORTS
+      People,
+      Person
+        FROM People-Protocol
+        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) };
+
+    Document ::= SEQUENCE
+    {
+        header  [1] Header,
+        body    [2] Body,
+        footer  [3] Footer,
+        dueDate [4] Date-Due DEFAULT week,
+        version [5] SEQUENCE
+        {
+            majorVersion [0] INTEGER,
+            minorVersion [1] INTEGER
+        },
+        description [6] SET
+        {
+            numberLines [0] INTEGER,
+            summary     [1] OCTET STRING
+        } OPTIONAL
+    }
+
+    Header ::= SEQUENCE
+    {
+        published [0] PublishedMetadata
+    }
+
+    Body ::= SEQUENCE
+    {
+        lastModified [0] ModificationMetadata,
+        prefix       [1] Section-Note OPTIONAL,
+        content      [2] Section-Main,
+        suffix       [3] Section-Note OPTIONAL
+    }
+
+    Footer ::= SET
+    {
+        authors [0] People
+    }
+
+    PublishedMetadata ::= SEQUENCE
+    {
+        date    [1] GeneralizedTime,
+        country [2] OCTET STRING OPTIONAL
+    }
+
+    ModificationMetadata ::= SEQUENCE
+    {
+        date       [0] GeneralizedTime,
+        modifiedBy [1] Person
+    }
+
+    Section-Note ::= SEQUENCE
+    {
+        text [1] OCTET STRING
+    }
+
+    Section-Main ::= SEQUENCE
+    {
+        text       [1] OCTET STRING OPTIONAL,
+        paragraphs [2] SEQUENCE OF Paragraph,
+        sections   [3] SET OF
+                       SET
+                       {
+                            number [1] INTEGER,
+                            text   [2] OCTET STRING
+                       }
+    }
+
+    Paragraph ::=  SEQUENCE
+    {
+        title        [1] OCTET STRING,
+        contributor  [2] Person OPTIONAL,
+        points       [3] SEQUENCE OF OCTET STRING
+    }
+
+    References ::= SEQUENCE (SIZE (1..50)) OF
+    SEQUENCE
+    {
+        title [1] OCTET STRING,
+        url   [2] OCTET STRING
+    }
+
+    Date-Due ::= INTEGER
+    {
+      tomorrow(0),
+      three-day(1),
+      week (2)
+    }
+
+END
+
+People-Protocol
+    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS
+    AUTOMATIC TAGS ::=
+
+BEGIN
+
+    defaultAge INTEGER ::= 45
+
+    People ::= SET OF Person
+
+    Person ::= SEQUENCE
+    {
+        firstName [1] OCTET STRING,
+        lastName  [2] OCTET STRING,
+        title     [3] ENUMERATED
+            { mr(0), mrs(1), ms(2), dr(3), rev(4) } OPTIONAL,
+        gender        Gender OPTIONAL,
+        maritalStatus CHOICE
+            { married [0] NULL, single [1] NULL }
+    }
+
+    Gender ::= ENUMERATED
+    {
+        male(0),
+        female(1)
+    }
+
+END

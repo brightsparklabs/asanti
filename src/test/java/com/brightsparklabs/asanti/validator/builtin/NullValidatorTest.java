@@ -6,10 +6,11 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -39,9 +40,12 @@ public class NullValidatorTest
     @Test
     public void testValidateTag() throws Exception
     {
+        // TODO ASN-136 - use mock Constraints, not real.
+
         // setup mock
-        final AsnSchemaTypeDefinition type = MockAsnSchemaTypeDefinition.builder("MockOidType",
-                AsnBuiltinType.Oid).build();
+        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.NULL,
+                AsnSchemaConstraint.NULL);
+
         final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/invalid/bytes", new byte[] { (byte) 0x00, (byte) 0xFF })
                 .build();

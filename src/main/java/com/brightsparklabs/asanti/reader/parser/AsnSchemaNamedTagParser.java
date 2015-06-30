@@ -141,6 +141,9 @@ public class AsnSchemaNamedTagParser
 
         final String tagName = matcher.group(1);
         final String tag = matcher.group(3);
+
+        // TODO ASN-133 - this will allow no tag, which causes issues with Enumerated types.
+
         return new AsnSchemaNamedTag(tagName, tag);
     }
 

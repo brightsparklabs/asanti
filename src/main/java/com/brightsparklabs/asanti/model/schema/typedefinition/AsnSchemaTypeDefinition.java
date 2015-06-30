@@ -1,21 +1,17 @@
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import com.brightsparklabs.asanti.common.Visitable;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 
 /**
- * A type definition from a within a module specification within an ASN.1
- * schema.
+ * A Type Definition is a named type that can be used to replace a primitive type when declaring
+ * other objects within an ASN.1 Schema, where those objects can be either other Type Definitions or
+ * component types. It is essentially a Name and a (@code AsnSchemaType)
  *
  * @author brightSPARK Labs
  */
-public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefinitionVisitor<?>>
+public interface AsnSchemaTypeDefinition
 {
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -32,90 +28,54 @@ public interface AsnSchemaTypeDefinition extends Visitable<AsnSchemaTypeDefiniti
      *
      * @return the name of this type definition
      */
-    public String getName();
+    String getName();
 
     /**
-     * Returns the ASN.1 built-in type for this type definition
+     * Returns the {@link AsnSchemaType} of this type definition
      *
-     * @return the ASN.1 built-in type for this type definition
+     * @return the {@link AsnSchemaType} of this type definition
      */
-    public AsnBuiltinType getBuiltinType();
-
-    /**
-     * Returns the constraint associated with this type definition
-     *
-     * @return the constraint associated with this type definition or
-     *         {@link AsnSchemaConstraint#NULL} if there is no constraint.
-     */
-    public AsnSchemaConstraint getConstraint();
-
-    /**
-     * Returns the name of the specified tag
-     *
-     * @param tag
-     *            a tag within this construct
-     *
-     * @return name of the specified tag; or an empty string if tag is not
-     *         recognised.
-     */
-    public String getTagName(String tag);
-
-    /**
-     * Returns the name of the type definition associated with the specified tag
-     *
-     * @param tag
-     *            a tag within this construct
-     *
-     * @return name of the type definition associated with the specified tag; or
-     *         an empty string if tag is not recognised.
-     */
-    public String getTypeName(String tag);
+    AsnSchemaType getType();
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: AsnSchemaConstructTypeDefinitionNull
+    // INTERNAL CLASS: AsnSchemaTypeDefinition.Null
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AbstractAsnSchemaTypeDefinition}.
-     * <p>
-     * NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that
-     * is the name used to model an actual ASN.1 {@code NULL} Type Definition.
+     * Null instance of {@link AsnSchemaTypeDefinitionImpl}.
+     *
+     * <p> NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that is the name used
+     * to model an actual ASN.1 {@code NULL} Type Definition.
      */
-    public static class Null extends AbstractAsnSchemaTypeDefinition
+    public static class Null extends AsnSchemaTypeDefinitionImpl
     {
         // ---------------------------------------------------------------------
         // CONSTRUCTION
         // ---------------------------------------------------------------------
 
         /**
-         * Default constructor. This is private. Use
-         * {@link AbstractAsnSchemaTypeDefinition#NULL} to obtain an instance.
+         * Default constructor. This is private. Use {@link AsnSchemaTypeDefinition#NULL} to obtain
+         * an instance.
          */
         private Null()
         {
-            super("NULL", AsnBuiltinType.Null, AsnSchemaConstraint.NULL);
+            super("NULL", AsnSchemaType.NULL);
         }
 
         // ---------------------------------------------------------------------
-        // IMPLEMENTATION: AsnSchemaTypeDefinition
+        // IMPLEMENTATION: AsnSchemaTypeDefinitionImpl
         // ---------------------------------------------------------------------
 
         @Override
-        public Object visit(AsnSchemaTypeDefinitionVisitor<?> visitor)
-        {
-            return visitor.visit(this);
-        }
-
-        @Override
-        public String getTagName(String tag)
+        public String getName()
         {
             return "";
         }
 
         @Override
-        public String getTypeName(String tag)
+        public AsnSchemaType getType()
         {
-            return "";
+            return null;
         }
     }
 }

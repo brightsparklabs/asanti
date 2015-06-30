@@ -1,0 +1,6 @@
+World-Schema DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN
+  Bar ::= MyAge
+  
+  MyAge ::= INTEGER
+END

@@ -40,11 +40,11 @@ public interface ValidationRule
     public ImmutableSet<ValidationFailure> validate(String tag, DecodedAsnData decodedAsnData);
 
     // -------------------------------------------------------------------------
-    // INTERNAL CLASS: Null
+    // INTERNAL CLASS: NULL
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link ValidationRule}
+     * NULL instance of {@link ValidationRule}
      *
      * @author brightSPARK Labs
      */

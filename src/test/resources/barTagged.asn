@@ -1,0 +1,4 @@
+World-Schema DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN
+  Bar ::= [0] INTEGER
+END

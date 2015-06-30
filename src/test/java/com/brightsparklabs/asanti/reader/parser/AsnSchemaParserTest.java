@@ -217,9 +217,9 @@ public class AsnSchemaParserTest
     public void testParse() throws Exception
     {
         // prepare expected output to AsnSchemaModuleParser.parse()
-        final AsnSchemaModule expectedDocumentPduSchemaModule
+        final AsnSchemaModule.Builder expectedDocumentPduSchemaModule
                 = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu();
-        final AsnSchemaModule expectedPeopleProtocolSchemaModule
+        final AsnSchemaModule.Builder expectedPeopleProtocolSchemaModule
                 = MockAsnSchemaModule.createMockedAsnSchemaModuleForPeopleProtocol();
 
         // mock AsnSchemaModuleParser.parse() static method
@@ -245,9 +245,8 @@ public class AsnSchemaParserTest
     {
         // prepare objects for mocking of AsnSchemaModuleParser.parse static method
         // set up mock AsnSchemaModule to return
-        final AsnSchemaModule mockAsnSchemaModule = AsnSchemaModule.builder()
-                .setName("People-Protocol")
-                .build();
+        final AsnSchemaModule.Builder mockAsnSchemaModule = AsnSchemaModule.builder()
+                .setName("People-Protocol");
 
         // prepare expected input to the AsnSchemaModuleParser.parse static method for
         // valid block comments

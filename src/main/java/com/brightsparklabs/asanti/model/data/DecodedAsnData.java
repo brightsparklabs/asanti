@@ -6,7 +6,8 @@
 package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -128,15 +129,15 @@ public interface DecodedAsnData
             throws DecodeException;
 
     /**
-     * Gets the ASN.1 Type Definition of the specified tag
+     * Gets the ASN.1 Type of the specified tag
      *
      * @param tag
      *         tag to retrieve the type of
      *
-     * @return the ASN.1 Type Definition of the specified tag or {@link AsnSchemaTypeDefinition#NULL}
+     * @return the ASN.1 Type Definition of the specified tag or {@link AsnPrimitiveType#NULL}
      * if the tag does not exist
      */
-    public AsnSchemaTypeDefinition getType(String tag);
+    public AsnSchemaType getType(String tag);
 
     /**
      * Gets the data (bytes) associated with the specified tag as the decoded Java object most
@@ -239,9 +240,9 @@ public interface DecodedAsnData
         }
 
         @Override
-        public AsnSchemaTypeDefinition getType(String tag)
+        public AsnSchemaType getType(String tag)
         {
-            return AsnSchemaTypeDefinition.NULL;
+            return AsnSchemaType.NULL;
         }
 
         @Override

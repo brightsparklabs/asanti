@@ -1,0 +1,5 @@
+first-man Human ::= 
+{  
+    name "Adam", 
+    age 32
+}

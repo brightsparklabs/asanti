@@ -6,8 +6,6 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +65,7 @@ public class AsnSchemaModuleParser
      * @param moduleText
      *            all text from module within the ASN.1 schema
      *
-     * @return an {@link AsnSchemaModule} representing the parsed data
+     * @return an {@link AsnSchemaModule.Builder} representing the parsed data
      *
      * @throws NullPointerException
      *             if {@code moduleText} is {@code null}
@@ -76,7 +74,7 @@ public class AsnSchemaModuleParser
      *             if any errors occur while parsing the module
      *
      */
-    public static AsnSchemaModule parse(Iterable<String> moduleText) throws ParseException
+    public static AsnSchemaModule.Builder parse(Iterable<String> moduleText) throws ParseException
     {
         checkNotNull(moduleText);
 
@@ -84,9 +82,10 @@ public class AsnSchemaModuleParser
         final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
         parseHeader(iterator, moduleBuilder);
         parseBody(iterator, moduleBuilder);
-        final AsnSchemaModule module = moduleBuilder.build();
-        return module;
+
+        return moduleBuilder;
     }
+
 
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
@@ -216,11 +215,12 @@ public class AsnSchemaModuleParser
             else if (line.startsWith("IMPORTS"))
             {
                 final StringBuilder builder = new StringBuilder();
+                line = lineIterator.next();
                 while (!(";".equals(line) || line.startsWith("EXPORTS")))
                 {
-                    line = lineIterator.next();
                     builder.append(line)
                             .append(" ");
+                    line = lineIterator.next();
                 }
                 final ImmutableMap<String, String> imports = AsnSchemaImportsParser.parse(builder.toString());
                 moduleBuilder.addImports(imports);
@@ -298,12 +298,8 @@ public class AsnSchemaModuleParser
             {
                 final String name = matcher.group(1);
                 final String value = matcher.group(4);
-                final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
-                        AsnSchemaTypeDefinitionParser.parse(name, value);
-                for (AsnSchemaTypeDefinition typeDefinition : typeDefinitions)
-                {
-                    moduleBuilder.addType(typeDefinition);
-                }
+
+                moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name, value));
                 continue;
             }
 

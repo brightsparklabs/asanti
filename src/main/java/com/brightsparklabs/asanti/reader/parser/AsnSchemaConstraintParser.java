@@ -7,6 +7,8 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import java.math.BigInteger;
 import java.text.ParseException;
+
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,12 +20,11 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactNumericV
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AbstractAsnSchemaTypeDefinition;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.base.Strings;
 
 /**
- * Logic for parsing Constraints from an {@link AbstractAsnSchemaTypeDefinition} or
+ * Logic for parsing Constraints from an {@link AsnSchemaType} or
  * {@link AsnSchemaComponentType}
  *
  * @author brightSPARK Labs
@@ -64,7 +65,7 @@ public class AsnSchemaConstraintParser
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the constraint from an {@link AbstractAsnSchemaTypeDefinition} or
+     * Parses the constraint from an {@link AsnSchemaType} or
      * {@link AsnSchemaComponentType}
      *
      * @param constraintText
@@ -77,8 +78,7 @@ public class AsnSchemaConstraintParser
      */
     public static AsnSchemaConstraint parse(String constraintText) throws ParseException
     {
-        constraintText = Strings.nullToEmpty(constraintText)
-                .trim();
+        constraintText = Strings.nullToEmpty(constraintText).trim();
         if (constraintText.isEmpty()) { return AsnSchemaConstraint.NULL; }
 
         logger.debug("Found constraint: {}", constraintText);

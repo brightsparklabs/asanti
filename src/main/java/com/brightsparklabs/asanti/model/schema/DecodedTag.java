@@ -5,10 +5,10 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
-import static com.google.common.base.Preconditions.*;
-
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Strings;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Represent a decoded ASN.1 tag created by decoding a raw tag path
@@ -28,7 +28,7 @@ public class DecodedTag
     private final String rawTag;
 
     /** the type of construct represented by the tag */
-    private final AsnSchemaTypeDefinition type;
+    private final AsnSchemaType type;
 
     /** whether the raw tag was completely decoded */
     private final boolean isFullyDecoded;
@@ -41,35 +41,31 @@ public class DecodedTag
      * Default constructor
      *
      * @param decodedTag
-     *            the full path of the decoded tag (e.g.
-     *            {@code "/Document/header/published/date"})
-     *
+     *         the full path of the decoded tag (e.g. {@code "/Document/header/published/date"})
      * @param rawTag
-     *            the full path of the raw tag (e.g. {@code "/1/0/1"})
-     *
+     *         the full path of the raw tag (e.g. {@code "/1/0/1"})
      * @param type
-     *            the type of construct represented by the tag
-     *
+     *         the type of construct represented by the tag
      * @param isFullyDecoded
-     *            whether the raw tag was completely decoded
+     *         whether the raw tag was completely decoded
      *
      * @throws NullPointerException
-     *             if parameters are {@code null}
-     *
+     *         if parameters are {@code null}
      * @throws IllegalArgumentException
-     *             if {@code decodedTag} or {@code rawTag} are blank
+     *         if {@code decodedTag} is blank
      */
-    public DecodedTag(String decodedTag, String rawTag, AsnSchemaTypeDefinition type, boolean isFullyDecoded)
+    public DecodedTag(String decodedTag, String rawTag, AsnSchemaType type, boolean isFullyDecoded)
     {
-        this.tag = Strings.nullToEmpty(decodedTag)
-                .trim();
-        this.rawTag = Strings.nullToEmpty(rawTag)
-                .trim();
+        this.tag = Strings.nullToEmpty(decodedTag).trim();
+        this.rawTag = Strings.nullToEmpty(rawTag).trim();
         this.type = type;
         this.isFullyDecoded = isFullyDecoded;
 
         checkArgument(!this.tag.isEmpty(), "Decoded tag cannot be blank");
-        checkArgument(!this.rawTag.isEmpty(), "Raw tag cannot be blank");
+
+        // the rawTag can be blank because we also have to pass the topLevelType
+        // so we should be able to get something that is a typedef INTEGER for example at the root.
+
         checkNotNull(this.type);
     }
 
@@ -102,8 +98,7 @@ public class DecodedTag
      *
      * @return the type of construct represented by the tag
      */
-
-    public AsnSchemaTypeDefinition getType()
+    public AsnSchemaType getType()
     {
         return type;
     }

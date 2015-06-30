@@ -379,23 +379,17 @@ public class DecodedAsnDataImplTest
     @Test
     public void testGetType() throws Exception
     {
-        /*
-         * TODO ASN-89 - until implemented the below always return
-         * AsnSchemaTypeDefinition.NULL
-         *
-         * assertEquals(AsnBuiltinType.GeneralizedTime,
-         * instance.getType("/Document/header/published/date"
-         * ).getBuiltinType()); assertEquals(AsnBuiltinType.Date,
-         * instance.getType
-         * ("/Document/body/lastModified/date").getBuiltinType());
-         * assertEquals(AsnBuiltinType.OctetString,
-         * instance.getType("/Document/body/prefix/text").getBuiltinType());
-         * assertEquals(AsnBuiltinType.OctetString,
-         * instance.getType("/Document/body/content/text").getBuiltinType());
-         * assertEquals(AsnBuiltinType.OctetString,
-         * instance.getType("/Document/footer/author/firstName"
-         * ).getBuiltinType());
-         */
+        assertEquals(AsnBuiltinType.Date,
+                instance.getType("/Document/header/published/date").getBuiltinType());
+        assertEquals(AsnBuiltinType.Date,
+                instance.getType("/Document/body/lastModified/date").getBuiltinType());
+        assertEquals(AsnBuiltinType.OctetString,
+                instance.getType("/Document/body/prefix/text").getBuiltinType());
+        assertEquals(AsnBuiltinType.OctetString,
+                instance.getType("/Document/body/content/text").getBuiltinType());
+        assertEquals(AsnBuiltinType.OctetString,
+                instance.getType("/Document/footer/author/firstName").getBuiltinType());
+
 
         // test unmapped tags
         assertEquals(AsnBuiltinType.Null,

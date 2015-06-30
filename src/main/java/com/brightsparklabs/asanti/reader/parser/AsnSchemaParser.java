@@ -5,12 +5,6 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import java.text.ParseException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaImpl;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
@@ -18,6 +12,12 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import java.text.ParseException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Logic for parsing an ASN.1 schema
@@ -46,7 +46,8 @@ public class AsnSchemaParser
     private static final Pattern PATTERN_TABS_SPACES = Pattern.compile("[\\t ]+");
 
     /** pattern to match module header keywords */
-    private static final Pattern PATTERN_SCHEMA_KEYWORDS = Pattern.compile("(DEFINITIONS|BEGIN|EXPORTS|IMPORTS|END)");
+    private static final Pattern PATTERN_SCHEMA_KEYWORDS = Pattern.compile(
+            "(DEFINITIONS|BEGIN|EXPORTS|IMPORTS|END)");
 
     /** pattern to match semicolons */
     private static final Pattern PATTERN_SEMICOLONS = Pattern.compile(";");
@@ -65,18 +66,22 @@ public class AsnSchemaParser
      * Parses the supplied ASN.1 schema text
      *
      * @param asnSchema
-     *            all text from the ASN.1 schema
-     *
-     * @throws ParseException
-     *             if any errors occur while parsing the schema
+     *         all text from the ASN.1 schema
      *
      * @return the parsed schema
+     *
+     * @throws ParseException
+     *         if any errors occur while parsing the schema
      */
     public static AsnSchema parse(String asnSchema) throws ParseException
     {
-        if (Strings.isNullOrEmpty(asnSchema)) { throw new ParseException(ERROR_EMPTY_FILE, -1); }
+        if (Strings.isNullOrEmpty(asnSchema))
+        {
+            throw new ParseException(ERROR_EMPTY_FILE, -1);
+        }
 
         final Map<String, AsnSchemaModule> modules = Maps.newHashMap();
+        final List<AsnSchemaModule.Builder> moduleBuilders = Lists.newArrayList();
         final Iterator<String> lineIterator = getLines(asnSchema);
 
         String primaryModule = null;
@@ -89,18 +94,29 @@ public class AsnSchemaParser
             moduleLines.add(line);
             if ("END".equals(line))
             {
-                final AsnSchemaModule module = AsnSchemaModuleParser.parse(moduleLines);
-                modules.put(module.getName(), module);
+                // keep track of all the ModuleBuilders so that we can resolve all the
+                // imports and placeholders at the end.
+                moduleBuilders.add(AsnSchemaModuleParser.parse(moduleLines));
                 moduleLines.clear();
-
-                if (primaryModule == null)
-                {
-                    primaryModule = module.getName();
-                }
             }
         }
 
-        if (!moduleLines.isEmpty()) { throw new ParseException(ERROR_MISSING_END_KEYWORD, -1); }
+        if (!moduleLines.isEmpty())
+        {
+            throw new ParseException(ERROR_MISSING_END_KEYWORD, -1);
+        }
+
+        // do the final build, which will resolve all the placeholders and imports.
+        for (AsnSchemaModule.Builder builder : moduleBuilders)
+        {
+            final AsnSchemaModule module = builder.build(moduleBuilders);
+            modules.put(module.getName(), module);
+
+            if (primaryModule == null)
+            {
+                primaryModule = module.getName();
+            }
+        }
 
         return new AsnSchemaImpl(primaryModule, modules);
     }
@@ -110,34 +126,59 @@ public class AsnSchemaParser
     // -------------------------------------------------------------------------
 
     /**
-     * Strips out comments and redundant whitespace from the supplied ASN.1
-     * schema and returns the resulting lines. The schema keywords (DEFINITIONS,
-     * BEGIN, EXPORTS, IMPORTS and END) will all be presented on their own line.
-     * Semicolons which mark the end of IMPORTS/EXPORTS will also be on their
-     * own line. Lines generally appear in the following order:
+     * Strips out comments and redundant whitespace from the supplied ASN.1 schema and returns the
+     * resulting lines. The schema keywords (DEFINITIONS, BEGIN, EXPORTS, IMPORTS and END) will all
+     * be presented on their own line. Semicolons which mark the end of IMPORTS/EXPORTS will also be
+     * on their own line. Lines generally appear in the following order:
+     *
      * <ul>
+     *
      * <li>module name and identification</li>
+     *
      * <li>'DEFINITIONS' keyword</li>
+     *
      * <ul>
+     *
      * <li>tagging environment definition</li>
+     *
      * <li>extensibility environment definition</li>
+     *
      * </ul>
+     *
      * <li>'BEGIN' keyword</li>
+     *
      * <ul>
+     *
      * <li>'EXPORTS' keyword</li>
+     *
      * <ul>
+     *
      * <li>export statements</li>
+     *
      * <li>semicolon</li>
+     *
      * </ul>
+     *
      * <li>'IMPORTS' keyword</li>
+     *
      * <ul>
+     *
      * <li>import statements</li>
+     *
      * <li>semicolon</li>
+     *
      * </ul>
-     * <li>value/type definitions</li> </ul> <li>'END' keyword</li> </ul>
+     *
+     * <li>value/type definitions</li>
+     *
+     * </ul>
+     *
+     * <li>'END' keyword</li>
+     *
+     * </ul>
      *
      * @param asnSchema
-     *            schema to parse
+     *         schema to parse
      *
      * @return the lines from the schema
      */
@@ -153,7 +194,10 @@ public class AsnSchemaParser
         asnSchema = PATTERN_SCHEMA_KEYWORDS.matcher(asnSchema).replaceAll("\n$1\n");
         asnSchema = PATTERN_SEMICOLONS.matcher(asnSchema).replaceAll("\n;\n");
 
-        final Iterable<String> lines = Splitter.on("\n").trimResults().omitEmptyStrings().split(asnSchema);
+        final Iterable<String> lines = Splitter.on("\n")
+                .trimResults()
+                .omitEmptyStrings()
+                .split(asnSchema);
         return lines.iterator();
     }
 }
