@@ -126,6 +126,12 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnPrimitiveTypeVisit
     }
 
     @Override
+    public String visit(AsnPrimitiveTypeUtcTime visitable)
+    {
+        return visitable.getClass().getCanonicalName();
+    }
+
+    @Override
     public String visit(AsnPrimitiveTypeUtf8String visitable)
     {
         return visitable.getClass().getCanonicalName();

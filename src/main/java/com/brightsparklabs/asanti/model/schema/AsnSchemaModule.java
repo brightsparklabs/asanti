@@ -402,7 +402,7 @@ public class AsnSchemaModule
             if (Strings.isNullOrEmpty(moduleName))
             {
                 final String errorString = String.format(
-                        "Unable to resolve import of {%s}, it is not specified as an import",
+                        "Unable to resolve import of %s, it is not specified as an import",
                         typeName);
                 logger.warn(errorString);
                 throw new ParseException(errorString, -1);
@@ -412,7 +412,7 @@ public class AsnSchemaModule
             if (otherModule == null)
             {
                 final String errorString = String.format(
-                        "Unable to resolve import of {%s}, could not find module {%s}",
+                        "Unable to resolve import of %s, could not find module {%s}",
                         typeName,
                         moduleName);
                 logger.warn(errorString);
@@ -423,7 +423,7 @@ public class AsnSchemaModule
             if (newTypeDefinition == null)
             {
                 final String errorString = String.format(
-                        "Unable to resolve import - could not find type {%s} in module {%s}",
+                        "Unable to resolve import - could not find type %s in module %s",
                         typeName,
                         moduleName);
                 logger.warn(errorString);

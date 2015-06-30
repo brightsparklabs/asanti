@@ -136,6 +136,13 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeUtcTime visitable)
+    {
+        // TODO ASN-107
+        return new BuiltinTypeDecoder.Null("Not yet implemented");
+    }
+
+    @Override
     public Utf8StringDecoder visit(final AsnPrimitiveTypeUtf8String visitable)
     {
         return Utf8StringDecoder.getInstance();

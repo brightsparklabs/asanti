@@ -29,8 +29,12 @@ public class AsnSchemaModuleParser
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** pattern to match a type definition */
-    private static final Pattern PATTERN_TYPE_DEFINITION =
+    /** pattern to match a simple type definition (one with no parameterization) */
+    private static final Pattern PATTERN_TYPE_DEFINITION_SIMPLE =
+            Pattern.compile("^([A-Za-z0-9\\-]+) ?::= ?(.+)");
+
+    /** pattern to match a parameterized type definition */
+    private static final Pattern PATTERN_TYPE_DEFINITION_PARAMETERIZED =
             Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+) ?::= ?(.+)");
 
     /** pattern to match a value assignment */
@@ -293,11 +297,11 @@ public class AsnSchemaModuleParser
             logger.debug("Found content: {}", content);
 
             // check if content is a type definition
-            Matcher matcher = PATTERN_TYPE_DEFINITION.matcher(content);
+            Matcher matcher = PATTERN_TYPE_DEFINITION_SIMPLE.matcher(content);
             if (matcher.matches())
             {
                 final String name = matcher.group(1);
-                final String value = matcher.group(4);
+                final String value = matcher.group(2);
 
                 moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name, value));
                 continue;
@@ -308,6 +312,20 @@ public class AsnSchemaModuleParser
             if (matcher.matches())
             {
                 parseValueAssignment(matcher, moduleBuilder);
+                continue;
+            }
+
+            // check if content is a parameterized type definition.
+            // This is last as it can be a VERY poor performing check to fail (not match).
+            matcher = PATTERN_TYPE_DEFINITION_PARAMETERIZED.matcher(content);
+            if (matcher.matches())
+            {
+                // TODO ASN-148
+                logger.warn("Parameterized Type Definitions not yet supported: {}", content);
+
+                //final String name = matcher.group(1);
+                //final String value = matcher.group(4);
+                //moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name, value));
                 continue;
             }
 

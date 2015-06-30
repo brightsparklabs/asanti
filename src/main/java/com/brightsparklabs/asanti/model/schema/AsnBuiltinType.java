@@ -57,6 +57,7 @@ public enum AsnBuiltinType
     Time,
     TimeOfDay,
     UniversalString,
+    UtcTime,
     Utf8String,
     VideotexString,
     VisibleString

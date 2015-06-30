@@ -12,6 +12,7 @@ import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
 import com.brightsparklabs.asanti.validator.ValidatorImpl;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResult;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
@@ -1150,12 +1151,12 @@ public class AsnSchemaParserTest
     }
 
     @Test
-    public void testParse_HumanUsingTypeEtsi() throws Exception
+    public void testParse_Etsi() throws Exception
     {
         // TODO ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
-//        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
-//        File schemaFile = new File(schemaFilename);
-//        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 //
 //        {
 //            String tag = "/2/1/2/2/1/0";
@@ -1169,20 +1170,48 @@ public class AsnSchemaParserTest
 //        }
 //
 //
-//        {
-//            String berFilename = getClass().getResource("/test5.ber").getFile();
-//            final File berFile = new File(berFilename);
-//            String topLevelType = "PS-PDU";
-//
-//            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-//                    schema,
-//                    topLevelType);
-//
-//            logger.debug("Results of /test5.ber");
-//
-//            debugPdus(pdus);
-//
-//        }
+        {
+            String berFilename = getClass().getResource("/test5.ber").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "PS-PDU";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            logger.debug("Results of /test5.ber");
+
+            debugPdus(pdus);
+
+            String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
+
+            BigInteger number = (BigInteger)pdus.get(0).getDecodedObject(tag);
+            assertEquals(new BigInteger("622697903"), number);
+
+            tag = "/PS-PDU/pSHeader/sequenceNumber";
+            number = (BigInteger)pdus.get(0).getDecodedObject(tag);
+            assertEquals(new BigInteger("0"), number);
+
+            tag = "/PS-PDU/pSHeader/authorizationCountryCode";
+            String str = (String)pdus.get(0).getDecodedObject(tag);
+            assertEquals("AU", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode";
+            str = (String)pdus.get(1).getDecodedObject(tag);
+            assertEquals("AU", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier";
+            byte [] bytes = (byte [])pdus.get(1).getDecodedObject(tag);
+            str = new String(bytes, Charsets.UTF_8);
+            assertEquals("BAEProd2", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/cINExtension/iri-to-CC/cc";
+            bytes = (byte [])pdus.get(1).getDecodedObject(tag);
+            str = new String(bytes, Charsets.UTF_8);
+            assertEquals("3030", str);
+
+
+        }
 
 
 

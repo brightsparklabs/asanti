@@ -79,6 +79,9 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
     /** static instance {@link AsnPrimitiveTypeUtf8String} */
     public static final AsnPrimitiveTypeUtf8String UTF8_STRING = new AsnPrimitiveTypeUtf8String();
 
+    /** static instance {@link AsnPrimitiveTypeUtcTime} */
+    public static final AsnPrimitiveTypeUtcTime UTC_TIME = new AsnPrimitiveTypeUtcTime();
+
     /** static instance {@link AsnPrimitiveTypeVisibleString} */
     public static final AsnPrimitiveTypeVisibleString VISIBLE_STRING
             = new AsnPrimitiveTypeVisibleString();
