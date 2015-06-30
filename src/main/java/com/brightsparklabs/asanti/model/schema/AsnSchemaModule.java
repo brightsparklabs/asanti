@@ -352,14 +352,14 @@ public class AsnSchemaModule
 
             // Assume that the type is in this module.
             AsnSchemaTypeDefinition newTypeDefinition = types.get(typeName);
-            if ((newTypeDefinition == AsnSchemaTypeDefinition.NULL) || (newTypeDefinition == null))
+            if (newTypeDefinition == null)
             {
                 // then it will come from an import.
                 newTypeDefinition = getImportedTypeDefinition(moduleName, typeName, otherModules);
             }
 
             final AsnSchemaType newType = newTypeDefinition.getType();
-            if ((newType == AsnSchemaType.NULL) || (newType == null))
+            if (newType == AsnSchemaType.NULL)
             {
                 final String errorString = String.format(
                         "Unable to resolve placeholder.  TypeDefinition {%s} is badly formed",
@@ -399,7 +399,6 @@ public class AsnSchemaModule
                 moduleName = imports.get(typeName);
             }
 
-            //if (moduleName == null)
             if (Strings.isNullOrEmpty(moduleName))
             {
                 final String errorString = String.format(

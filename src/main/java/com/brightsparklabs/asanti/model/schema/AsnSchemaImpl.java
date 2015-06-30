@@ -160,7 +160,7 @@ public class AsnSchemaImpl implements AsnSchema
             final String decodedTag = type.getChildName(tag);
             result.type = type.getChildType(tag);
             // ensure it was found
-            if ((result.type == AsnSchemaType.NULL) || (result.type == null))
+            if (result.type == AsnSchemaType.NULL)
             {
                 // no type to delve into
                 break;
