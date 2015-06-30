@@ -104,7 +104,7 @@ public class AsnSchemaTypeParser
 
     /** pattern to match a type with constraints */
     private static final Pattern PATTERN_TYPE_WITH_CONSTRAINTS = Pattern.compile(
-            "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String|RELATIVE-OID|BOOLEAN|NULL) ?(\\((.+)\\))?$");
+            "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String|RELATIVE-OID|BOOLEAN|UTCTime|NULL) ?(\\((.+)\\))?$");
 
     /** all valid 'constrained' types */
     private static final ImmutableMap<String, AsnPrimitiveType> constrainedTypes
@@ -118,6 +118,7 @@ public class AsnSchemaTypeParser
             .put("OCTET STRING", AsnPrimitiveType.OCTET_STRING)
             .put("PrintableString", AsnPrimitiveType.PRINTABLE_STRING)
             .put("RELATIVE-OID", AsnPrimitiveType.RELATIVE_OID)
+            .put("UTCTime", AsnPrimitiveType.UTC_TIME)
             .put("UTF8String", AsnPrimitiveType.UTF8_STRING)
             .put("VisibleString", AsnPrimitiveType.VISIBLE_STRING)
             .build();
@@ -255,15 +256,6 @@ public class AsnSchemaTypeParser
             logger.warn("Did not parse as Primitive: " + value);
         }
 
-        // -------------------------------------------------------------------------
-        // TYPES THAT ARE NOT PRIMITIVES, I.E. THEY MUST BE TYPE DEFINITIONS
-        // -------------------------------------------------------------------------
-        matcher = PATTERN_DEFINED_TYPE.matcher(value);
-        if (matcher.matches())
-        {
-            return parsePlaceHolder(matcher);
-        }
-
         // check if defining a CLASS
         matcher = PATTERN_TYPE_CLASS.matcher(value);
         if (matcher.matches())
@@ -271,6 +263,15 @@ public class AsnSchemaTypeParser
             // TODO ASN-39 - handle CLASS
             logger.warn("Type Definitions for CLASS not yet supported");
             return AsnSchemaType.NULL;
+        }
+
+        // -------------------------------------------------------------------------
+        // TYPES THAT ARE NOT PRIMITIVES, I.E. THEY MUST BE TYPE DEFINITIONS
+        // -------------------------------------------------------------------------
+        matcher = PATTERN_DEFINED_TYPE.matcher(value);
+        if (matcher.matches())
+        {
+            return parsePlaceHolder(matcher);
         }
 
         // unknown definition
