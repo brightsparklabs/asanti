@@ -12,6 +12,7 @@ import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
 import com.brightsparklabs.asanti.validator.ValidatorImpl;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResult;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
@@ -1181,6 +1182,34 @@ public class AsnSchemaParserTest
             logger.debug("Results of /test5.ber");
 
             debugPdus(pdus);
+
+            String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
+
+            BigInteger number = (BigInteger)pdus.get(0).getDecodedObject(tag);
+            assertEquals(new BigInteger("622697903"), number);
+
+            tag = "/PS-PDU/pSHeader/sequenceNumber";
+            number = (BigInteger)pdus.get(0).getDecodedObject(tag);
+            assertEquals(new BigInteger("0"), number);
+
+            tag = "/PS-PDU/pSHeader/authorizationCountryCode";
+            String str = (String)pdus.get(0).getDecodedObject(tag);
+            assertEquals("AU", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode";
+            str = (String)pdus.get(1).getDecodedObject(tag);
+            assertEquals("AU", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier";
+            byte [] bytes = (byte [])pdus.get(1).getDecodedObject(tag);
+            str = new String(bytes, Charsets.UTF_8);
+            assertEquals("BAEProd2", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/cINExtension/iri-to-CC/cc";
+            bytes = (byte [])pdus.get(1).getDecodedObject(tag);
+            str = new String(bytes, Charsets.UTF_8);
+            assertEquals("3030", str);
+
 
         }
 
