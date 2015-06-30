@@ -1150,12 +1150,12 @@ public class AsnSchemaParserTest
     }
 
     @Test
-    public void testParse_HumanUsingTypeEtsi() throws Exception
+    public void testParse_Etsi() throws Exception
     {
         // TODO ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
-//        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
-//        File schemaFile = new File(schemaFilename);
-//        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 //
 //        {
 //            String tag = "/2/1/2/2/1/0";
@@ -1169,20 +1169,20 @@ public class AsnSchemaParserTest
 //        }
 //
 //
-//        {
-//            String berFilename = getClass().getResource("/test5.ber").getFile();
-//            final File berFile = new File(berFilename);
-//            String topLevelType = "PS-PDU";
-//
-//            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-//                    schema,
-//                    topLevelType);
-//
-//            logger.debug("Results of /test5.ber");
-//
-//            debugPdus(pdus);
-//
-//        }
+        {
+            String berFilename = getClass().getResource("/test5.ber").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "PS-PDU";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            logger.debug("Results of /test5.ber");
+
+            debugPdus(pdus);
+
+        }
 
 
 
