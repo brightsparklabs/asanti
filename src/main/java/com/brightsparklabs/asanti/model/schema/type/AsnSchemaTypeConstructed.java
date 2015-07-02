@@ -154,10 +154,28 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     public AsnSchemaType getChildType(String tag)
     {
 
-        Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
+        Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG2.matcher(tag);
         if (matcher.matches())
         {
-            if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+            // If here then we have the tag group 1, and following
+            // that we have a Universal.
+            String tagPart = matcher.group(1);
+            String universalType = matcher.group(2);
+            //AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(universalType);
+
+            final AsnSchemaComponentType component = getComponent(tagPart);
+
+            // Now from the component, we need to get the Universal type.
+            AsnSchemaType type = component.getType();
+            return type.getChildType(universalType);
+
+        }
+
+        matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
+        if (matcher.matches())
+        {
+            //if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+            if (tagLess == true)
             {
                 String aa = matcher.group(1);
                 AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
@@ -179,7 +197,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 logger.debug("did NOT find a match for {}", typeToMatch);
             }
         }
-        if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        //if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        if (tagLess == true)
         {
             // not going to a "raw" type, so return the first tag match from our children
             for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
@@ -218,20 +237,34 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         return component == null ? AsnSchemaType.NULL : component.getType();
     }
 
-    /** pattern to match a ENUMERATED type definition */
-    //private static final Pattern PATTERN_UNIVERSAL_TYPE_TAG = Pattern.compile(
-    //        "^u\\((.+)\\)$");
-
-    private static final Pattern PATTERN_UNIVERSAL_TYPE_TAG2 = Pattern.compile(
-            "^([0-9]+)(\\((u\\.(.+))\\))$");
-
     @Override
     public String getChildName(String tag)
     {
-        Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
+        Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG2.matcher(tag);
         if (matcher.matches())
         {
-            if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+            // If here then we have the tag group 1, and following
+            // that we have a Universal.
+            String tagPart = matcher.group(1);
+            String universalType = matcher.group(2);
+            String tagIndex = matcher.group(5);
+            //AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(universalType);
+
+            final AsnSchemaComponentType component = getComponent(tagPart);
+
+            // Now from the component, we need to get the Universal type.
+            AsnBuiltinType cT = component.getType().getBuiltinType();
+            AsnSchemaType type = component.getType();
+
+            return component.getTagName() + component.getType().getChildName(universalType);
+
+        }
+
+        matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
+        if (matcher.matches())
+        {
+            //if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+            if (tagLess == true)
             {
                 String aa = matcher.group(1);
                 String tagIndex = Strings.nullToEmpty(matcher.group(3));
@@ -254,14 +287,16 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                             append = "[" + tagIndex + "]";
                         }
 
-                        return component.getTagName() + append;
+                        return "/" + component.getTagName() + append;
                     }
                     logger.debug("component {} of type {} is NOT a match for type {}", component.getTagName(), cT, typeToMatch);
                 }
                 logger.debug("did NOT find a match for {}", typeToMatch);
             }
         }
-        if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+
+        //if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        if (tagLess == true)
         {
             // not going to a "raw" type, so return the first tag match from our children
             for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())

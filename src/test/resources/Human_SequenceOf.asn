@@ -4,7 +4,7 @@ DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
     Human ::= SEQUENCE
     {
-        selection Selection
+        selection [0] Selection
     }
    
     Selection ::= CHOICE 

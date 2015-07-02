@@ -283,9 +283,12 @@ public class AsnBerFileReader
             //final String elementPrefix = (!explicit && isTagged) ? prefix
             //        : String.format("%s[%d]", prefix, index);
             //String elementPrefix;
-            if (!isTagged) elementPrefix = String.format("%s[%d]", prefix, index);
+            //if (!isTagged) elementPrefix = String.format("%s[%d]", prefix, index);
+            //if (!isTagged) elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
+            if (!isTagged) { elementPrefix = prefix; explicit = true; }
             //else if (explicit) elementPrefix = String.format("%s/u.Sequence[%d]", prefix, index);
-            else if (explicit) elementPrefix = String.format("%s/u.Sequence.%d", prefix, index);
+            //else if (explicit) elementPrefix = String.format("%s/u.Sequence.%d", prefix, index);
+            else if (explicit) elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
             else elementPrefix = prefix;
 
             logger.debug("elementPrefix {}, isExplicit {} isTagged {} explicit {}", elementPrefix, isExplicit, isTagged, explicit);
@@ -397,8 +400,8 @@ public class AsnBerFileReader
         {
             String sss = derObject.toString();
             // add a faux tag.
-            //tag += "(u." + universalTagToAsnBuiltinType(t) + ")";
-            tag += "/u." + universalTagToAsnBuiltinType(t);
+            tag += "(u." + universalTagToAsnBuiltinType(t) + ")";
+            //tag += "/u." + universalTagToAsnBuiltinType(t);
             // to get back to the AsnBuiltinType
             AsnBuiltinType type = AsnBuiltinType.valueOf(universalTagToAsnBuiltinType(t).toString());
             int breakpoint = 0;

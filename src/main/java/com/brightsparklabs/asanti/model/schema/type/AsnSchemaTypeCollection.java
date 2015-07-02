@@ -3,7 +3,10 @@ package com.brightsparklabs.asanti.model.schema.type;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 
@@ -22,6 +25,9 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
+
+    /** class logger */
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaTypeConstructed.class);
 
     /**
      * built-in types which are considered 'collection'. Currently: SET OF and SEQUENCE OF
@@ -106,13 +112,19 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
         if (matcher.matches())
         {
             AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
+            if (!AsnSchemaTypeConstructed.match(primitiveType.getBuiltinType(), typeToMatch))
+            {
+                int breakpoint = 0;
+            }
+
+            return elementType;
 
             //if (typeToMatch == ((BaseAsnSchemaType)elementType).primitiveType.getBuiltinType())
-            AsnBuiltinType cT = elementType.getBuiltinTypeAA();
-            if (AsnSchemaTypeConstructed.match(typeToMatch, cT))
-            {
-                return elementType;
-            }
+//            AsnBuiltinType cT = elementType.getBuiltinTypeAA();
+//            if (AsnSchemaTypeConstructed.match(typeToMatch, cT))
+//            {
+//                return elementType;
+//            }
         }
         return elementType.getChildType(tag);
     }
@@ -124,13 +136,39 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
         if (matcher.matches())
         {
             AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
-
             //if (typeToMatch == ((BaseAsnSchemaType)elementType).primitiveType.getBuiltinType())
             AsnBuiltinType cT = elementType.getBuiltinTypeAA();
-            if (AsnSchemaTypeConstructed.match(typeToMatch, cT))
+            if (!AsnSchemaTypeConstructed.match(primitiveType.getBuiltinType(), typeToMatch))
             {
-                return "[99999]";
+                int breakpoint = 0;
+                if (!AsnSchemaTypeConstructed.match(cT, typeToMatch))
+                {
+                    logger.debug(
+                            "collection getChildName for unmatching type, elementType is {}, passed in {}",
+                            cT,
+                            typeToMatch);
+                }
             }
+
+
+            String tagIndex = Strings.nullToEmpty(matcher.group(3));
+            if (tagIndex.isEmpty())
+            {
+                tagIndex = "0";
+            }
+
+
+            return "[" + tagIndex + "]";
+
+
+//            AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
+//
+//            //if (typeToMatch == ((BaseAsnSchemaType)elementType).primitiveType.getBuiltinType())
+//            AsnBuiltinType cT = elementType.getBuiltinTypeAA();
+//            if (AsnSchemaTypeConstructed.match(typeToMatch, cT))
+//            {
+//                return "[99999]";
+//            }
         }
 
         return elementType.getChildName(tag);

@@ -1,0 +1,4 @@
+first Human ::= 
+{
+    payload { firstName "Adam", lastName "Smith" }
+}
