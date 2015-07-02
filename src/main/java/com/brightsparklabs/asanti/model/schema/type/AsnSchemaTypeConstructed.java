@@ -279,7 +279,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
         //if (tagLess == true)
         {
-            // not going to a "raw" type, so return the first tag match from our children
+            // not going to a "universal" type, so return the first tag match from our children
             for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
             {
                 logger.debug("tagless Choice, iterating children");
@@ -291,7 +291,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 }
                 logger.debug("tagless Choice, NO MATCH found");
             }
-
         }
 
         final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
@@ -349,6 +348,12 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTag
     // -------------------------------------------------------------------------
+
+    private static class ZZZ
+    {
+
+    }
+
 
     /**
      * Models a tag in a 'constructed' type definition. A tag conforms to one of the following

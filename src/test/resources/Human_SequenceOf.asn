@@ -16,24 +16,24 @@ BEGIN
     
     OptA ::= SEQUENCE
     {
-        ints SEQUENCE OF INTEGER
+        ints [0] SEQUENCE OF INTEGER
     }
     OptB ::= SEQUENCE
     {
-        namesInline SEQUENCE OF SEQUENCE 
+        namesInline [0] SEQUENCE OF SEQUENCE 
         {
-            first UTF8String,
-            last UTF8String
+            first [0] UTF8String,
+            last [1] UTF8String
         }
     }
     OptC ::= SEQUENCE
     {
-        names SEQUENCE OF Name
+        names [0] SEQUENCE OF Name
     }
     Name ::= SEQUENCE
     {
-        first UTF8String,
-        last  UTF8String
+        first [0] UTF8String,
+        last  [1] UTF8String
     }
     
 END

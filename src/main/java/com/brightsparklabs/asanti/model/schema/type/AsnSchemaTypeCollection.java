@@ -135,6 +135,13 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
         Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
         if (matcher.matches())
         {
+
+            String tagIndex = Strings.nullToEmpty(matcher.group(3));
+            if (tagIndex.isEmpty())
+            {
+                tagIndex = "0";
+            }
+
             AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
             //if (typeToMatch == ((BaseAsnSchemaType)elementType).primitiveType.getBuiltinType())
             AsnBuiltinType cT = elementType.getBuiltinTypeAA();
@@ -151,11 +158,6 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
             }
 
 
-            String tagIndex = Strings.nullToEmpty(matcher.group(3));
-            if (tagIndex.isEmpty())
-            {
-                tagIndex = "0";
-            }
 
 
             return "[" + tagIndex + "]";

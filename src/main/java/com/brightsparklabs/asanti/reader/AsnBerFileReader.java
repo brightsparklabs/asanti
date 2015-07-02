@@ -14,16 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import org.bouncycastle.asn1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.ASN1TaggedObject;
-import org.bouncycastle.asn1.DERApplicationSpecific;
-import org.bouncycastle.asn1.DEREncodable;
-import org.bouncycastle.asn1.DERObject;
 import org.bouncycastle.asn1.util.ASN1Dump;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
@@ -143,10 +137,10 @@ public class AsnBerFileReader
      */
     private static void processDerObject(DERObject derObject, String prefix, Map<String, byte[]> tagsToData) throws IOException
     {
-        processDerObject(derObject, prefix, tagsToData, false);
+        processDerObject(derObject, prefix, tagsToData, false, 0, false);
     }
 
-    private static void processDerObject(DERObject derObject, String prefix, Map<String, byte[]> tagsToData, boolean explicit) throws IOException
+    private static void processDerObject(DERObject derObject, String prefix, Map<String, byte[]> tagsToData, boolean explicit, int index, boolean isTagged) throws IOException
     {
         // TODO MJF
         logger.debug("{}DerObject entry,  prefix {}, tagsToData.size() {} => {} : {}", indent(), prefix, tagsToData.size(), toHexString(derObject.getDEREncoded()), derObject);
@@ -169,7 +163,7 @@ public class AsnBerFileReader
         }
         else
         {
-            processPrimitiveDerObject(derObject, prefix, tagsToData, explicit);
+            processPrimitiveDerObject(derObject, prefix, tagsToData, index, isTagged);
         }
     }
 
@@ -283,16 +277,37 @@ public class AsnBerFileReader
             //final String elementPrefix = (!explicit && isTagged) ? prefix
             //        : String.format("%s[%d]", prefix, index);
             //String elementPrefix;
-            if (!isTagged) elementPrefix = String.format("%s[%d]", prefix, index);
-            //if (!isTagged) elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
-            //if (!isTagged) { elementPrefix = prefix; explicit = true; }
-            //else if (explicit) elementPrefix = String.format("%s/u.Sequence[%d]", prefix, index);
+            //if (!isTagged) elementPrefix = String.format("%s[%d]", prefix, index);
+            if (!isTagged)
+            {
+                //elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
+                if (derObject instanceof ASN1Sequence)
+                {
+                    elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
+                }
+                else
+                {
+                    elementPrefix = prefix;
+                }
+            }
+//            if (!isTagged)
+//            {
+//                elementPrefix = prefix; explicit = true;
+//            }
             //else if (explicit) elementPrefix = String.format("%s/u.Sequence.%d", prefix, index);
-            else if (explicit) elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
-            else elementPrefix = prefix;
+            else if (explicit)
+            {
+                elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
+                //elementPrefix = String.format("%s/%d", prefix, index);
+                //elementPrefix = prefix;
+            }
+            else
+            {
+                elementPrefix = prefix;
+            }
 
-            logger.debug("elementPrefix {}, isExplicit {} isTagged {} explicit {}", elementPrefix, isExplicit, isTagged, explicit);
-            processDerObject(derObject, elementPrefix, tagsToData, explicit);
+            logger.debug("elementPrefix {}, isExplicit {} isTagged {} explicit {}, index {}", elementPrefix, isExplicit, isTagged, explicit, index);
+            processDerObject(derObject, elementPrefix, tagsToData, explicit, index, isTagged);
             index++;
         }
         globalIndent--;
@@ -314,7 +329,6 @@ public class AsnBerFileReader
      *             if any errors occur reading from the file
      */
 
-    private static boolean inTagged = false;
     private static void processTaggedObject(ASN1TaggedObject asnTaggedObject, String prefix, Map<String, byte[]> tagsToData)
             throws IOException
     {
@@ -324,11 +338,10 @@ public class AsnBerFileReader
         DERObject obj = asnTaggedObject.getObject();
 
 
-        inTagged = true;
         logger.debug("{}TaggedObject entry - prefix {}, adding {}, explicit {} ", indent(), prefix, asnTaggedObject.getTagNo(), asnTaggedObject.isExplicit());
         prefix = prefix + "/" + asnTaggedObject.getTagNo();
-        processDerObject(asnTaggedObject.getObject(), prefix, tagsToData, isExplicit);
-        inTagged = false;
+        //processDerObject(asnTaggedObject.getObject(), prefix, tagsToData, isExplicit, 0, true);
+        processDerObject(asnTaggedObject.getObject(), prefix, tagsToData, isExplicit, 0, !isExplicit);
     }
 
     /**
@@ -370,7 +383,7 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]> tagsToData, boolean explicit) throws IOException
+    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]> tagsToData, int index, boolean isTagged) throws IOException
     {
         // get the bytes representing Tag-Length-Value
         final byte[] tlvData = derObject.getEncoded();
@@ -396,11 +409,13 @@ public class AsnBerFileReader
         }
 
         // TODO MJF
-        if (explicit)
+        //if (explicit)
+        //if (!isTagged || explicit)
+        if (!isTagged)
         {
             String sss = derObject.toString();
             // add a faux tag.
-            tag += "(u." + universalTagToAsnBuiltinType(t) + ")";
+            tag += "(u." + universalTagToAsnBuiltinType(t) + "." + index + ")";
             //tag += "/u." + universalTagToAsnBuiltinType(t);
             // to get back to the AsnBuiltinType
             AsnBuiltinType type = AsnBuiltinType.valueOf(universalTagToAsnBuiltinType(t).toString());
@@ -409,7 +424,7 @@ public class AsnBerFileReader
         }
         logger.debug("{}PrimitiveDerObject.  T: {} {},  tagsToData.put {} : {} - object => {}",
                 indent(),
-                (explicit ? " UNIVERSAL" : "context-specific"),
+                (!isTagged ? " UNIVERSAL" : "context-specific"),
                 t,
                 tag,
                 toHexString(value),
