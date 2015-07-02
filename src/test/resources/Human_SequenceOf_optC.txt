@@ -1,0 +1,5 @@
+human Human ::=
+{
+    selection optC: { names { { first "Adam", last "Smith "},  { first "Michael" last "Smith" } } }
+}
+

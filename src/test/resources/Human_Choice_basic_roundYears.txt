@@ -1,0 +1,7 @@
+choice-test Human ::= 
+{
+    payload {
+        name "Fred"
+        age roundYears: 42
+    }    
+} 

@@ -1,0 +1,53 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+IMPORTS
+;
+
+Human ::= SEQUENCE
+{
+    payload [0] Payload
+}
+
+Payload ::= SEQUENCE
+{
+    name [0] UTF8String,
+    age  [1] IRIsContent,   
+    cin  [2] CorrelationValues
+}
+
+IRIsContent ::= CHOICE
+{
+    ymd    YearsMonthsDays,
+    roundYears   INTEGER,
+    dob OCTET STRING
+}
+
+YearsMonthsDays ::= SEQUENCE
+{
+  years [0] INTEGER,
+  months[1] INTEGER,
+  days  [2] INTEGER
+}
+
+CorrelationValues ::= CHOICE {
+
+    iri-to-CC   [0]   IRI-to-CC-Correlation, -- correlates IRI to Content(s)
+    iri-to-iri  [1]   IRI-to-IRI-Correlation, -- correlates IRI to IRI
+    both-IRI-CC [2]   SEQUENCE { -- correlates IRI to IRI and IRI to Content(s)
+                iri-CC  [0] IRI-to-CC-Correlation,
+                iri-IRI [1] IRI-to-IRI-Correlation}
+}
+
+
+IRI-to-CC-Correlation ::= SEQUENCE { -- correlates IRI to Content
+      cc    [0] SET OF  OCTET STRING,-- correlates IRI to multiple CCs
+      iri   [1]     OCTET STRING OPTIONAL
+                  -- correlates IRI to CC with signaling
+}
+IRI-to-IRI-Correlation ::= OCTET STRING -- correlates IRI to IRI
+END
+
+

@@ -1,0 +1,35 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+IMPORTS
+;
+
+Human ::= SEQUENCE
+{
+    payload [0] Payload
+}
+
+Payload ::= SEQUENCE
+{
+    name [0] UTF8String,
+    age  [1] IRIsContent   
+}
+
+IRIsContent ::= CHOICE
+{
+    ymd    YearsMonthsDays,
+    roundYears   INTEGER,
+    dob OCTET STRING
+}
+
+YearsMonthsDays ::= SEQUENCE
+{
+  years [0] INTEGER,
+  months[1] INTEGER,
+  days  [2] INTEGER
+}
+
+
+END

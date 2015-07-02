@@ -1,0 +1,5 @@
+human Human ::=
+{
+    selection optA: { ints { 1, 2 } }
+}
+

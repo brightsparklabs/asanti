@@ -1,0 +1,8 @@
+choice-test Human ::= 
+{
+    payload {
+        name "Fred"
+        age dob: '31393733'H,
+        cin iri-to-CC: { cc { '313233'H, '343536'H } }
+    }    
+} 

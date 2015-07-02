@@ -36,6 +36,9 @@ public interface AsnSchemaType
      */
     AsnBuiltinType getBuiltinType();
 
+    AsnBuiltinType getBuiltinTypeAA();
+
+
     /**
      * Returns the constraints of this type definition.  This will be all the constraints the create
      * this type (i.e. this and all the parent types)
@@ -99,6 +102,12 @@ public interface AsnSchemaType
 
         @Override
         public AsnBuiltinType getBuiltinType()
+        {
+            return getPrimitiveType().getBuiltinType();
+        }
+
+        @Override
+        public AsnBuiltinType getBuiltinTypeAA()
         {
             return getPrimitiveType().getBuiltinType();
         }

@@ -1,5 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
@@ -136,6 +137,12 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     public AsnPrimitiveType getPrimitiveType()
     {
         return indirectType == null ? AsnPrimitiveType.NULL : indirectType.getPrimitiveType();
+    }
+
+    @Override
+    public AsnBuiltinType getBuiltinTypeAA()
+    {
+        return indirectType == null ? AsnBuiltinType.Null : indirectType.getBuiltinTypeAA();
     }
 
     @Override

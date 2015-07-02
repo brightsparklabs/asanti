@@ -5,6 +5,8 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.regex.Pattern;
+
 import static com.google.common.base.Preconditions.*;
 
 /**
@@ -16,12 +18,20 @@ import static com.google.common.base.Preconditions.*;
  */
 public class BaseAsnSchemaType implements AsnSchemaType
 {
+
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+    /** pattern to match a Universal type tag coming out of the BER decoder */
+    protected static final Pattern PATTERN_UNIVERSAL_TYPE_TAG = Pattern.compile(
+            "^u\\.([a-zA-Z]+)(\\.([0-9]+))?");
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the primitiveType of this definition */
-    private final AsnPrimitiveType primitiveType;
+    /** the primitiveType of this definition */ // TODO MJF
+    protected final AsnPrimitiveType primitiveType;
 
     /** the constraint on the primitiveType */
     private final ImmutableSet<AsnSchemaConstraint> constraints;
@@ -80,6 +90,13 @@ public class BaseAsnSchemaType implements AsnSchemaType
         // by calling it here it means we are less likely to need to override this function too.
         return getPrimitiveType().getBuiltinType();
     }
+
+    @Override
+    public AsnBuiltinType getBuiltinTypeAA()
+    {
+        return primitiveType.getBuiltinType();
+    }
+
 
     @Override
     public ImmutableSet<AsnSchemaConstraint> getConstraints()

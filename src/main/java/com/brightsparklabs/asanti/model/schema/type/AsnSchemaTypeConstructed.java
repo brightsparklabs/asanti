@@ -1,14 +1,18 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +50,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     /** mapping from raw tag to component type */
     private final ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
 
+    private final boolean tagLess;
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -92,6 +97,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         // TODO ASN-80 - ensure that generating for all missing tags is correct
         int nextExpectedTag = 0;
 
+        boolean anyTagSet = false;
+
         for (final AsnSchemaComponentType componentType : componentTypes)
         {
             String tag = componentType.getTag();
@@ -106,10 +113,19 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
             else
             {
                 nextExpectedTag = Integer.parseInt(tag) + 1;
+                anyTagSet = true;
             }
             tagsToComponentTypesBuilder.put(tag, componentType);
         }
         tagsToComponentTypes = tagsToComponentTypesBuilder.build();
+
+        tagLess = !anyTagSet;
+
+        if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        {
+            int breakpoint = 0;
+        }
+
     }
 
     /**
@@ -137,13 +153,131 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     @Override
     public AsnSchemaType getChildType(String tag)
     {
+
+        Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
+        if (matcher.matches())
+        {
+            if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+            {
+                String aa = matcher.group(1);
+                AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
+
+                // This is a universal tag, so we should iterate the components
+                // and see which one matches...
+                for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
+                {
+                    // TODO MJF - this does not work for Sequence Of, because we deliberately made that
+                    // a transparent type
+                    AsnSchemaComponentType component = entry.getValue();
+                    AsnBuiltinType cT = component.getType().getBuiltinTypeAA();
+                    if (match(typeToMatch, cT))
+                    {
+                        logger.debug("component {} matches type {}", component.getTagName(), cT);
+                        return component.getType();
+                    }
+                }
+                logger.debug("did NOT find a match for {}", typeToMatch);
+            }
+        }
+        if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        {
+            // not going to a "raw" type, so return the first tag match from our children
+            for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
+            {
+
+                AsnSchemaComponentType component = entry.getValue();
+                if (AsnSchemaType.NULL != component.getType().getChildType(tag))
+                {
+                    return component.getType().getChildType(tag);
+                }
+            }
+
+        }
+        final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
+        if (!schemaTag.getTagIndex().isEmpty())
+        {
+            final AsnSchemaComponentType component = getComponent(schemaTag.getTagNumber());
+            // Now from the component, we need to get the Universal type.
+            AsnSchemaType type = component.getType();
+            if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+            {
+
+                String universalType = "u." + AsnBuiltinType.Sequence;
+
+                logger.debug(
+                        "AsnSchemaTypeConstructed.getChildType has {} - match component {}",
+                        schemaTag.getTagIndex(),
+                        component.getTagName());
+
+                return type.getChildType(universalType);
+            }
+        }
+
+
         final AsnSchemaComponentType component = getComponent(tag);
         return component == null ? AsnSchemaType.NULL : component.getType();
     }
 
+    /** pattern to match a ENUMERATED type definition */
+    //private static final Pattern PATTERN_UNIVERSAL_TYPE_TAG = Pattern.compile(
+    //        "^u\\((.+)\\)$");
+
+    private static final Pattern PATTERN_UNIVERSAL_TYPE_TAG2 = Pattern.compile(
+            "^([0-9]+)(\\((u\\.(.+))\\))$");
+
     @Override
     public String getChildName(String tag)
     {
+        Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
+        if (matcher.matches())
+        {
+            if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+            {
+                String aa = matcher.group(1);
+                String tagIndex = Strings.nullToEmpty(matcher.group(3));
+                AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
+
+                // This is a universal tag, so we should iterate the components
+                // and see which one matches...
+                for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
+                {
+                    AsnSchemaComponentType component = entry.getValue();
+                    AsnBuiltinType cT = component.getType().getBuiltinTypeAA();
+                    if (match(typeToMatch, cT))
+                    {
+                        logger.debug("component {} matches type {}", component.getTagName(), cT);
+                        //return component.getType().getChildName(tag);
+
+                        String append = "";
+                        if (component.getType().getBuiltinTypeAA() == AsnBuiltinType.SequenceOf)
+                        {
+                            append = "[" + tagIndex + "]";
+                        }
+
+                        return component.getTagName() + append;
+                    }
+                    logger.debug("component {} of type {} is NOT a match for type {}", component.getTagName(), cT, typeToMatch);
+                }
+                logger.debug("did NOT find a match for {}", typeToMatch);
+            }
+        }
+        if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        {
+            // not going to a "raw" type, so return the first tag match from our children
+            for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
+            {
+                logger.debug("tagless Choice, iterating children");
+                AsnSchemaComponentType component = entry.getValue();
+                if (AsnSchemaType.NULL != component.getType().getChildType(tag))
+                {
+                    logger.debug("component {} matches tag {}", component.getTagName(), tag);
+                    return component.getTagName() + "/" + component.getType().getChildName(tag);
+                }
+                logger.debug("tagless Choice, NO MATCH found");
+            }
+
+        }
+
         final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
         if (schemaTag == AsnSchemaTag.NULL)
         {
@@ -151,6 +285,26 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                     tag);
             return "";
         }
+
+
+        if (!schemaTag.getTagIndex().isEmpty())
+        {
+            final AsnSchemaComponentType component = getComponent(schemaTag.getTagNumber());
+            // Now from the component, we need to get the Universal type.
+            AsnSchemaType type = component.getType();
+
+            if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+            {
+                String universalType = "u." + AsnBuiltinType.Sequence;
+
+                logger.debug("AsnSchemaTypeConstructed.getChildName has {} - match component {}",
+                        schemaTag.getTagIndex(),
+                        component.getTagName());
+
+                return component.getTagName() + type.getChildName(universalType) + schemaTag.getTagIndex();
+            }
+        }
+
 
         final AsnSchemaComponentType componentType
                 = tagsToComponentTypes.get(schemaTag.getTagNumber());
@@ -165,6 +319,35 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     public ImmutableMap<String, AsnSchemaComponentType> getAllComponents()
     {
         return tagsToComponentTypes;
+    }
+
+
+    public static boolean match(AsnBuiltinType a, AsnBuiltinType b)
+    {
+        if (a == b)
+        {
+            return true;
+        }
+
+        if (a == AsnBuiltinType.Sequence)
+        {
+            return b == AsnBuiltinType.SequenceOf;
+        }
+        if (b == AsnBuiltinType.Sequence)
+        {
+            return a == AsnBuiltinType.SequenceOf;
+        }
+
+        if (a == AsnBuiltinType.Set)
+        {
+            return b == AsnBuiltinType.SetOf;
+        }
+        if (b == AsnBuiltinType.Set)
+        {
+            return a == AsnBuiltinType.SetOf;
+        }
+
+        return false;
     }
 
     // -------------------------------------------------------------------------

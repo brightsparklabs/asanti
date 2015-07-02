@@ -1,8 +1,11 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
+
+import java.util.regex.Matcher;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -99,12 +102,37 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     @Override
     public AsnSchemaType getChildType(String tag)
     {
+        Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
+        if (matcher.matches())
+        {
+            AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
+
+            //if (typeToMatch == ((BaseAsnSchemaType)elementType).primitiveType.getBuiltinType())
+            AsnBuiltinType cT = elementType.getBuiltinTypeAA();
+            if (AsnSchemaTypeConstructed.match(typeToMatch, cT))
+            {
+                return elementType;
+            }
+        }
         return elementType.getChildType(tag);
     }
 
     @Override
     public String getChildName(String tag)
     {
+        Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
+        if (matcher.matches())
+        {
+            AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
+
+            //if (typeToMatch == ((BaseAsnSchemaType)elementType).primitiveType.getBuiltinType())
+            AsnBuiltinType cT = elementType.getBuiltinTypeAA();
+            if (AsnSchemaTypeConstructed.match(typeToMatch, cT))
+            {
+                return "[99999]";
+            }
+        }
+
         return elementType.getChildName(tag);
     }
 }

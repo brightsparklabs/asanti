@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,8 @@ import com.brightsparklabs.asanti.model.data.AsnDataImpl;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import static com.brightsparklabs.asanti.common.ByteArrays.toHexString;
 
 /**
  * Reads data from ASN.1 BER/DER binary files
@@ -94,6 +98,8 @@ public class AsnBerFileReader
             logger.debug(ASN1Dump.dumpAsString(asnObject));
 
             final Map<String, byte[]> tagsToData = Maps.newHashMap();
+            logger.debug("processDerObject: {}", asnObject.toString());
+
             processDerObject(asnObject, "", tagsToData);
             final AsnData asnData = new AsnDataImpl(tagsToData);
             result.add(asnData);
@@ -137,13 +143,21 @@ public class AsnBerFileReader
      */
     private static void processDerObject(DERObject derObject, String prefix, Map<String, byte[]> tagsToData) throws IOException
     {
+        processDerObject(derObject, prefix, tagsToData, false);
+    }
+
+    private static void processDerObject(DERObject derObject, String prefix, Map<String, byte[]> tagsToData, boolean explicit) throws IOException
+    {
+        // TODO MJF
+        logger.debug("{}DerObject entry,  prefix {}, tagsToData.size() {} => {} : {}", indent(), prefix, tagsToData.size(), toHexString(derObject.getDEREncoded()), derObject);
+
         if (derObject instanceof ASN1Sequence)
         {
-            processSequence((ASN1Sequence) derObject, prefix, tagsToData);
+            processSequence((ASN1Sequence) derObject, prefix, tagsToData, explicit);
         }
         else if (derObject instanceof ASN1Set)
         {
-            processSet((ASN1Set) derObject, prefix, tagsToData);
+            processSet((ASN1Set) derObject, prefix, tagsToData, explicit);
         }
         else if (derObject instanceof ASN1TaggedObject)
         {
@@ -155,7 +169,7 @@ public class AsnBerFileReader
         }
         else
         {
-            processPrimitiveDerObject(derObject, prefix, tagsToData);
+            processPrimitiveDerObject(derObject, prefix, tagsToData, explicit);
         }
     }
 
@@ -174,9 +188,9 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processSequence(ASN1Sequence asnSequence, String prefix, Map<String, byte[]> tagsToData) throws IOException
+    private static void processSequence(ASN1Sequence asnSequence, String prefix, Map<String, byte[]> tagsToData, boolean explicit) throws IOException
     {
-        processElementsFromSequenceOrSet(asnSequence.getObjects(), prefix, tagsToData);
+        processElementsFromSequenceOrSet(asnSequence.getObjects(), prefix, tagsToData, explicit);
     }
 
     /**
@@ -194,9 +208,9 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processSet(ASN1Set asnSet, String prefix, Map<String, byte[]> tagsToData) throws IOException
+    private static void processSet(ASN1Set asnSet, String prefix, Map<String, byte[]> tagsToData, boolean explicit) throws IOException
     {
-        processElementsFromSequenceOrSet(asnSet.getObjects(), prefix, tagsToData);
+        processElementsFromSequenceOrSet(asnSet.getObjects(), prefix, tagsToData, explicit);
     }
 
     /**
@@ -215,21 +229,70 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix, Map<String, byte[]> tagsToData)
+    private static int globalIndent = 0;
+    private static String indent()
+    {
+        String indent = "";
+        for(int i=0; i < globalIndent;i++) indent+= "    ";
+        return indent;
+    }
+    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix, Map<String, byte[]> tagsToData, boolean explicit)
             throws IOException
     {
+        // TODO MJF
+        logger.debug("{}ElementsFromSequenceOrSet prefix {}, tagsToData.size() {}", indent(), prefix, tagsToData.size());
+        globalIndent++;
         int index = 0;
         while (elements.hasMoreElements())
         {
             final Object obj = elements.nextElement();
-            final DERObject derObject = (obj instanceof DERObject) ? (DERObject) obj
-                    : ((DEREncodable) obj).getDERObject();
+
+            //final DERObject derObject = (obj instanceof DERObject) ? (DERObject) obj
+            //        : ((DEREncodable) obj).getDERObject();
+            DERObject derObject;
+            if (obj instanceof DERObject)
+            {
+                derObject = (DERObject) obj;
+            }
+            else
+            {
+                derObject = ((DEREncodable) obj).getDERObject();
+            }
             // if object is not tagged, then include index in prefix
-            final String elementPrefix = (derObject instanceof ASN1TaggedObject) ? prefix
+            String isExplicit = "not set";
+            //boolean explicit = false;
+            if (derObject instanceof ASN1TaggedObject)
+            {
+                isExplicit = ((ASN1TaggedObject) derObject).isExplicit() ? "true" : "false";
+                //explicit = ((ASN1TaggedObject) derObject).isExplicit() ? true : false;
+            }
+
+
+            boolean isTagged = (derObject instanceof ASN1TaggedObject);
+            if (!isTagged)
+            {
+                logger.debug("not tagged is type: {}", derObject.getClass().getName() );
+            }
+            if (explicit)
+            {
+                logger.debug("Explicit Sequence");
+                logger.debug("Explicit Sequence is {} {}", derObject.getClass().getName(), (derObject instanceof ASN1Sequence) ? "ASN1Sequence" : "");
+            }
+            String elementPrefix = isTagged ? prefix
                     : String.format("%s[%d]", prefix, index);
-            processDerObject(derObject, elementPrefix, tagsToData);
+            //final String elementPrefix = (!explicit && isTagged) ? prefix
+            //        : String.format("%s[%d]", prefix, index);
+            //String elementPrefix;
+            if (!isTagged) elementPrefix = String.format("%s[%d]", prefix, index);
+            //else if (explicit) elementPrefix = String.format("%s/u.Sequence[%d]", prefix, index);
+            else if (explicit) elementPrefix = String.format("%s/u.Sequence.%d", prefix, index);
+            else elementPrefix = prefix;
+
+            logger.debug("elementPrefix {}, isExplicit {} isTagged {} explicit {}", elementPrefix, isExplicit, isTagged, explicit);
+            processDerObject(derObject, elementPrefix, tagsToData, explicit);
             index++;
         }
+        globalIndent--;
     }
 
     /**
@@ -247,11 +310,22 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
+
+    private static boolean inTagged = false;
     private static void processTaggedObject(ASN1TaggedObject asnTaggedObject, String prefix, Map<String, byte[]> tagsToData)
             throws IOException
     {
+        // TODO MJF
+        boolean isExplicit = asnTaggedObject.isExplicit();
+
+        DERObject obj = asnTaggedObject.getObject();
+
+
+        inTagged = true;
+        logger.debug("{}TaggedObject entry - prefix {}, adding {}, explicit {} ", indent(), prefix, asnTaggedObject.getTagNo(), asnTaggedObject.isExplicit());
         prefix = prefix + "/" + asnTaggedObject.getTagNo();
-        processDerObject(asnTaggedObject.getObject(), prefix, tagsToData);
+        processDerObject(asnTaggedObject.getObject(), prefix, tagsToData, isExplicit);
+        inTagged = false;
     }
 
     /**
@@ -293,11 +367,12 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]> tagsToData) throws IOException
+    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]> tagsToData, boolean explicit) throws IOException
     {
         // get the bytes representing Tag-Length-Value
         final byte[] tlvData = derObject.getEncoded();
 
+        int t = tlvData[0] & 0xff;
         // extract the value
         byte[] value = new byte[0];
         // must be at least three octets to contain a value
@@ -316,6 +391,41 @@ public class AsnBerFileReader
             final int firstDataByteIndex = 2 + numberOfAdditionalLengthBytes;
             value = Arrays.copyOfRange(tlvData, firstDataByteIndex, tlvData.length);
         }
+
+        // TODO MJF
+        if (explicit)
+        {
+            String sss = derObject.toString();
+            // add a faux tag.
+            //tag += "(u." + universalTagToAsnBuiltinType(t) + ")";
+            tag += "/u." + universalTagToAsnBuiltinType(t);
+            // to get back to the AsnBuiltinType
+            AsnBuiltinType type = AsnBuiltinType.valueOf(universalTagToAsnBuiltinType(t).toString());
+            int breakpoint = 0;
+
+        }
+        logger.debug("{}PrimitiveDerObject.  T: {} {},  tagsToData.put {} : {} - object => {}",
+                indent(),
+                (explicit ? " UNIVERSAL" : "context-specific"),
+                t,
+                tag,
+                toHexString(value),
+                toHexString(derObject.getDEREncoded()));
         tagsToData.put(tag, value);
+    }
+
+
+    private static AsnBuiltinType universalTagToAsnBuiltinType(int universalTag)
+    {
+        switch (universalTag)
+        {
+            case 1: return AsnBuiltinType.Boolean;
+            case 2: return AsnBuiltinType.Integer;
+            case 3: return AsnBuiltinType.BitString;
+            case 4: return AsnBuiltinType.OctetString;
+            // ...
+            case 12: return AsnBuiltinType.Utf8String;
+            default: return AsnBuiltinType.Null;
+        }
     }
 }

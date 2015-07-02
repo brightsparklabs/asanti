@@ -1,0 +1,43 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+IMPORTS
+;
+
+Human ::= SEQUENCE
+{
+    payload [0] Payload
+}
+
+Payload ::= SEQUENCE
+{
+    name [0] UTF8String
+    --iRIsContent   [1] IRIsContent   
+}
+
+IRIsContent ::= CHOICE
+{
+    iRIContent    IRIContent,
+    iRISequence   IRISequence
+}
+
+IRISequence ::= SEQUENCE OF IRIContent
+
+IRIContent ::= CHOICE
+{
+    iRI-Begin-record    [1] IRI-Parameters,
+    iRI-End-record      [2] IRI-Parameters,
+    iRI-Continue-record   [3] IRI-Parameters,
+    iRI-Report-record   [4] IRI-Parameters,
+    ...
+}
+
+IRI-Parameters ::= SEQUENCE
+{
+  stuff [0] UTF8String,
+  other [1] INTEGER
+}
+
+END
