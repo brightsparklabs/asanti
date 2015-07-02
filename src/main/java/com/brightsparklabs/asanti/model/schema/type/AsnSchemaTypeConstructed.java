@@ -197,8 +197,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 logger.debug("did NOT find a match for {}", typeToMatch);
             }
         }
-        //if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
-        if (tagLess == true)
+        if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        //if (tagLess == true)
         {
             // not going to a "raw" type, so return the first tag match from our children
             for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
@@ -211,25 +211,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 }
             }
 
-        }
-        final AsnSchemaTag schemaTag = AsnSchemaTag.create(tag);
-        if (!schemaTag.getTagIndex().isEmpty())
-        {
-            final AsnSchemaComponentType component = getComponent(schemaTag.getTagNumber());
-            // Now from the component, we need to get the Universal type.
-            AsnSchemaType type = component.getType();
-            if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
-            {
-
-                String universalType = "u." + AsnBuiltinType.Sequence;
-
-                logger.debug(
-                        "AsnSchemaTypeConstructed.getChildType has {} - match component {}",
-                        schemaTag.getTagIndex(),
-                        component.getTagName());
-
-                return type.getChildType(universalType);
-            }
         }
 
 
@@ -295,8 +276,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
             }
         }
 
-        //if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
-        if (tagLess == true)
+        if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        //if (tagLess == true)
         {
             // not going to a "raw" type, so return the first tag match from our children
             for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
@@ -320,26 +301,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                     tag);
             return "";
         }
-
-
-        if (!schemaTag.getTagIndex().isEmpty())
-        {
-            final AsnSchemaComponentType component = getComponent(schemaTag.getTagNumber());
-            // Now from the component, we need to get the Universal type.
-            AsnSchemaType type = component.getType();
-
-            if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
-            {
-                String universalType = "u." + AsnBuiltinType.Sequence;
-
-                logger.debug("AsnSchemaTypeConstructed.getChildName has {} - match component {}",
-                        schemaTag.getTagIndex(),
-                        component.getTagName());
-
-                return component.getTagName() + type.getChildName(universalType) + schemaTag.getTagIndex();
-            }
-        }
-
 
         final AsnSchemaComponentType componentType
                 = tagsToComponentTypes.get(schemaTag.getTagNumber());

@@ -164,6 +164,9 @@ public class AsnSchemaModule
         /** name of the top level type defined in this module */
         private final Map<String, AsnSchemaTypeDefinition> types = Maps.newHashMap();
 
+
+        private String tagMode = "";
+
         /**
          * all types imported by this module. Map is of form {typeName =&gt; importedModuleName}
          */
@@ -198,6 +201,12 @@ public class AsnSchemaModule
         public Builder setName(String name)
         {
             this.name = name;
+            return this;
+        }
+
+        public Builder setTagMode(String tagMode)
+        {
+            this.tagMode = tagMode;
             return this;
         }
 

@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,10 @@ public class AsnSchemaModuleParser
     /** pattern to match a value assignment */
     private static final Pattern PATTERN_VALUE_ASSIGNMENT =
             Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+( [A-Za-z0-9\\-]+)+) ?::= ?(.+)");
+
+
+    private static final Pattern PATTERN_DEFINITIONS = Pattern.compile(
+            "[A-Z]+");
 
     /** error message if schema is missing header keywords */
     private static final String ERROR_MISSING_HEADERS = "Schema does not contain all expected module headers";
@@ -128,10 +133,35 @@ public class AsnSchemaModuleParser
             logger.info("Found module: {}", moduleName);
             moduleBuilder.setName(moduleName);
 
-            // skip through to the BEGIN keyword
-            for (String line = lineIterator.next(); !"BEGIN".equals(line); line = lineIterator.next())
+            StringBuilder lines = new StringBuilder();
+            String line = lineIterator.next();
+
+            while (!"BEGIN".equals(line))
             {
+                lines.append(line).append(" ");
+                line = lineIterator.next();
             }
+
+            //"(([A-Z]+) TAGS)? ::=");
+            //"DEFINITIONS ((AUTOMATIC|IMPLICIT|EXPLICIT) TAGS)? ::=");
+            String s = lines.toString();
+            Matcher matcher = PATTERN_DEFINITIONS.matcher(s);
+            if (matcher.matches())
+            {
+                String tagMode = matcher.group(2);
+                if (!Strings.isNullOrEmpty(tagMode))
+                {
+                    moduleBuilder.setTagMode(tagMode);
+                }
+            }
+
+            int breakpoint = 0;
+
+
+            // skip through to the BEGIN keyword
+//            for (String line = lineIterator.next(); !"BEGIN".equals(line); line = lineIterator.next())
+//            {
+//            }
         }
         catch (final NoSuchElementException ex)
         {

@@ -283,9 +283,9 @@ public class AsnBerFileReader
             //final String elementPrefix = (!explicit && isTagged) ? prefix
             //        : String.format("%s[%d]", prefix, index);
             //String elementPrefix;
-            //if (!isTagged) elementPrefix = String.format("%s[%d]", prefix, index);
+            if (!isTagged) elementPrefix = String.format("%s[%d]", prefix, index);
             //if (!isTagged) elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
-            if (!isTagged) { elementPrefix = prefix; explicit = true; }
+            //if (!isTagged) { elementPrefix = prefix; explicit = true; }
             //else if (explicit) elementPrefix = String.format("%s/u.Sequence[%d]", prefix, index);
             //else if (explicit) elementPrefix = String.format("%s/u.Sequence.%d", prefix, index);
             else if (explicit) elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
