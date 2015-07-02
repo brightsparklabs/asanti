@@ -1185,6 +1185,10 @@ public class AsnSchemaParserTest
                     schema,
                     topLevelType);
             debugPdus((pdus));
+            String tag = "/Human/payload/lastName";
+            assertEquals("Smith", pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/payload/firstName";
+            assertEquals("Adam", pdus.get(0).getDecodedObject(tag));
         }
     }
 
@@ -1732,8 +1736,16 @@ public class AsnSchemaParserTest
             final DecodedAsnData pdu = pdus.get(i);
             for (String t : pdu.getTags())
             {
-                logger.info("\t{} => {} as {}",
-                        t, pdu.getHexString(t), pdu.getType(t).getBuiltinType() );
+                try
+                {
+                    logger.info("\t{} => {} as {}",
+                            //t, pdu.getHexString(t), pdu.getType(t).getBuiltinType() );
+                            t, pdu.getDecodedObject(t), pdu.getType(t).getBuiltinType());
+                }
+                catch (Exception e)
+                {
+
+                }
             }
             for (String t : pdu.getUnmappedTags())
             {

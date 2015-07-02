@@ -251,28 +251,49 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 String tagIndex = Strings.nullToEmpty(matcher.group(3));
                 AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
 
-                // This is a universal tag, so we should iterate the components
-                // and see which one matches...
-                for(Map.Entry<String, AsnSchemaComponentType>  entry : tagsToComponentTypes.entrySet())
+                if (primitiveType == AsnPrimitiveType.CHOICE)
                 {
-                    AsnSchemaComponentType component = entry.getValue();
-                    AsnBuiltinType cT = component.getType().getBuiltinTypeAA();
-                    if (match(typeToMatch, cT))
+                    // If we have a tagless Choice, and we don't explicitly know the type
+                    // then we find the first match.
+                    // NOTE that there should only bne one match, but we treat the Sequence and
+                    // Sequence Of the same, so it will find both.
+                    // In that case one of the options will have universal tags.
+                    for (Map.Entry<String, AsnSchemaComponentType> entry : tagsToComponentTypes.entrySet())
                     {
-                        logger.debug("component {} matches type {}", component.getTagName(), cT);
-                        //return component.getType().getChildName(tag);
-
-                        String append = "";
-                        if (component.getType().getBuiltinTypeAA() == AsnBuiltinType.SequenceOf)
+                        AsnSchemaComponentType component = entry.getValue();
+                        AsnBuiltinType cT = component.getType().getBuiltinTypeAA();
+                        if (match(typeToMatch, cT))
                         {
-                            append = "[" + tagIndex + "]";
-                        }
+                            logger.debug("component {} matches type {}", component.getTagName(), cT);
+                            //return component.getType().getChildName(tag);
 
-                        return "/" + component.getTagName() + append;
+                            String append = "";
+                            if (component.getType().getBuiltinTypeAA() == AsnBuiltinType.SequenceOf)
+                            {
+                                append = "[" + tagIndex + "]";
+                            }
+
+                            return "/" + component.getTagName() + append;
+                        }
+                        logger.debug("component {} of type {} is NOT a match for type {}",
+                                component.getTagName(),
+                                cT,
+                                typeToMatch);
                     }
-                    logger.debug("component {} of type {} is NOT a match for type {}", component.getTagName(), cT, typeToMatch);
+                    logger.debug("did NOT find a match for {}", typeToMatch);
                 }
-                logger.debug("did NOT find a match for {}", typeToMatch);
+                else
+                {
+                    // TODO MJF - this is relying on the fact that we ignore the global tagging
+                    // directive and automatically tag anyway.
+                    // however, if we are going to have the option of not tagging then we will have
+                    // to consider different storage, as we are keying off the tag at the moment.
+                    // In addition this code won't work for a SET as it is not order defined,
+                    // so we just nee dto check for...
+                    final AsnSchemaComponentType componentType
+                            = tagsToComponentTypes.get(tagIndex);
+                    return (componentType == null) ? "" : "/" + componentType.getTagName();
+                }
             }
         }
 
