@@ -36,7 +36,7 @@ cd asanti
 
 ```java
 // parse an ASN BER/DER binary file
-final ImmutableList<AsnData> allAsnData = AsnDecoder.readAsnBerFile(berFile);
+final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerFile(berFile);
 final AsnData asnData = allAsnData.first();
 
 // print raw tags
@@ -205,7 +205,7 @@ END
 Decoding data against the schema can be achieved via:
 
 ```java
-final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, schemaFile, "Document");
+final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile, schemaFile, "Document");
 final DecodedAsnData allDecodedData = allDecodedData.first();
 
 // all decoded tags
@@ -303,7 +303,7 @@ decodedData.getBytesMatching("/Document/header/published/.+");
 
 ```java
 // parse an ASN BER/DER binary file
-final ImmutableList<AsnData> allAsnData = AsnDecoder.readAsnBerFile(berFile);
+final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerFile(berFile);
 final AsnData asnData = allAsnData.first();
 
 // print raw tags
@@ -324,7 +324,7 @@ asnData.getRawTags();
 final AsnSchema schema = AsnSchema.builder()
     .fromXsd(xsdFile)
     .build();
-final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema);
+final DecodedAsnData decodedData = Asanti.decodeAsnData(asnData, schema);
 
 // all decoded tags
 decodedData.getTags();
@@ -373,7 +373,7 @@ final DataGenerators generators = DataGenerators.builder()
     .withDataGenerator(offsetGenerator, "/Document/body/lastModified/date")
     .build();
 
-final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema, generators);
+final DecodedAsnData decodedData = Asanti.decodeAsnData(asnData, schema, generators);
 
 decodedData.getPrintableString("/Document/header/published/date");
 // returns "About 5 months ago"
