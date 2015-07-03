@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
@@ -72,6 +73,13 @@ public class AsnSchemaComponentTypeParser
     public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText)
             throws ParseException
     {
+        // TODO MJF - this is only here to not have to update the tests while I am playing.
+        return parse(componentTypesText, AsnModuleTaggingMode.DEFAULT);
+    }
+
+    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText,
+            AsnModuleTaggingMode tagMode) throws ParseException
+    {
         checkNotNull(componentTypesText);
         checkArgument(!componentTypesText.trim().isEmpty(),
                 "Component Types Text must be specified");
@@ -80,7 +88,7 @@ public class AsnSchemaComponentTypeParser
         final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
         for (final String componentTypeLine : componentTypeLines)
         {
-            final AsnSchemaComponentType componentType = parseComponentType(componentTypeLine);
+            final AsnSchemaComponentType componentType = parseComponentType(componentTypeLine, tagMode);
             builder.add(componentType);
         }
         return builder.build();
@@ -166,8 +174,8 @@ public class AsnSchemaComponentTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
-    private static AsnSchemaComponentType parseComponentType(String componentTypeLine)
-            throws ParseException
+    private static AsnSchemaComponentType parseComponentType(String componentTypeLine,
+            AsnModuleTaggingMode tagMode) throws ParseException
     {
         Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
         if (!matcher.matches())
@@ -190,7 +198,7 @@ public class AsnSchemaComponentTypeParser
             throw new ParseException(error, -1);
         }
 
-        final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType);
+        final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType, tagMode);
 
         String typeName = matcher.group(7);
         // The Regex that is used here is a little simple and will leave trailing spaces,

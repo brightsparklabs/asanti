@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import org.slf4j.Logger;
@@ -63,6 +64,12 @@ public final class AsnSchemaTypeDefinitionParser
     public static AsnSchemaTypeDefinition parse(String name, String value)
             throws ParseException
     {
+        // TODO MJF - this is only here to not have to update the tests while I am playing.
+        return parse(name, value, AsnModuleTaggingMode.DEFAULT);
+    }
+    public static AsnSchemaTypeDefinition parse(String name, String value, AsnModuleTaggingMode tagMode)
+            throws ParseException
+    {
         logger.debug("Found type definition: {} = {}", name, value);
         if (name == null || name.trim().isEmpty())
         {
@@ -74,7 +81,7 @@ public final class AsnSchemaTypeDefinitionParser
         }
 
         // Get the underlying type
-        AsnSchemaType type = AsnSchemaTypeParser.parse(value);
+        AsnSchemaType type = AsnSchemaTypeParser.parse(value, tagMode);
         logger.debug("\t{} is type {}", name, type.getBuiltinType());
         // wrap it with the typedefinition name.
         return new AsnSchemaTypeDefinitionImpl(name, type);

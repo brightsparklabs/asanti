@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -44,7 +45,8 @@ public class AsnSchemaModuleParser
 
 
     private static final Pattern PATTERN_DEFINITIONS = Pattern.compile(
-            "[A-Z]+");
+            "(([A-Z]+)( TAGS) ?::= ?)");
+
 
     /** error message if schema is missing header keywords */
     private static final String ERROR_MISSING_HEADERS = "Schema does not contain all expected module headers";
@@ -89,8 +91,8 @@ public class AsnSchemaModuleParser
 
         final Iterator<String> iterator = moduleText.iterator();
         final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
-        parseHeader(iterator, moduleBuilder);
-        parseBody(iterator, moduleBuilder);
+        AsnModuleTaggingMode tagMode = parseHeader(iterator, moduleBuilder);
+        parseBody(iterator, moduleBuilder, tagMode);
 
         return moduleBuilder;
     }
@@ -123,7 +125,8 @@ public class AsnSchemaModuleParser
      * @throws ParseException
      *             if any errors occur while parsing the schema
      */
-    private static void parseHeader(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
+    // TODO MJF
+    private static AsnModuleTaggingMode parseHeader(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
             throws ParseException
     {
         try
@@ -145,17 +148,31 @@ public class AsnSchemaModuleParser
             //"(([A-Z]+) TAGS)? ::=");
             //"DEFINITIONS ((AUTOMATIC|IMPLICIT|EXPLICIT) TAGS)? ::=");
             String s = lines.toString();
-            Matcher matcher = PATTERN_DEFINITIONS.matcher(s);
-            if (matcher.matches())
+
+            String [] a = s.split("DEFINITIONS ");
+            if (a.length == 2)
             {
-                String tagMode = matcher.group(2);
-                if (!Strings.isNullOrEmpty(tagMode))
+                Matcher matcher = PATTERN_DEFINITIONS.matcher(a[1]);
+                if (matcher.matches())
                 {
-                    moduleBuilder.setTagMode(tagMode);
+                    String mode = matcher.group(2);
+                    if (!Strings.isNullOrEmpty(mode))
+                    {
+                        try
+                        {
+                            AsnModuleTaggingMode tagMode = AsnModuleTaggingMode.valueOf(mode);
+                            logger.debug("Module tagging mode is {}", tagMode);
+                            return tagMode;
+                            //moduleBuilder.setTagMode(tagMode);
+                        }
+                        catch (Exception e)
+                        {
+                            throw new ParseException("Unrecognised module tagging mode " + mode, -1);
+                        }
+                    }
                 }
             }
-
-            int breakpoint = 0;
+            return AsnModuleTaggingMode.DEFAULT;
 
 
             // skip through to the BEGIN keyword
@@ -190,13 +207,14 @@ public class AsnSchemaModuleParser
      * @throws ParseException
      *             if any errors occur while parsing the schema
      */
-    private static void parseBody(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
+    private static void parseBody(Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder,
+            AsnModuleTaggingMode tagMode)
             throws ParseException
     {
         try
         {
             final String lastLineRead = parseImportsAndExports(lineIterator, moduleBuilder);
-            parseTypeDefinitionsAndValueAssignments(lastLineRead, lineIterator, moduleBuilder);
+            parseTypeDefinitionsAndValueAssignments(lastLineRead, lineIterator, moduleBuilder, tagMode);
         }
         catch (final NoSuchElementException ex)
         {
@@ -302,7 +320,7 @@ public class AsnSchemaModuleParser
      * @throws ParseException
      */
     private static void parseTypeDefinitionsAndValueAssignments(String firstLine, Iterator<String> lineIterator,
-            AsnSchemaModule.Builder moduleBuilder) throws ParseException
+            AsnSchemaModule.Builder moduleBuilder, AsnModuleTaggingMode tagMode) throws ParseException
     {
         String line = firstLine;
         while (!"END".equals(line))
@@ -333,7 +351,7 @@ public class AsnSchemaModuleParser
                 final String name = matcher.group(1);
                 final String value = matcher.group(2);
 
-                moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name, value));
+                moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name, value, tagMode));
                 continue;
             }
 

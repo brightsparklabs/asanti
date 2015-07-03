@@ -1,0 +1,8 @@
+m Human ::=
+{
+    payload {
+        a 10,
+        b i: 1,
+        c "U"
+    }
+}

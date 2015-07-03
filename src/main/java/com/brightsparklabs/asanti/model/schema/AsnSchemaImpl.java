@@ -165,6 +165,7 @@ public class AsnSchemaImpl implements AsnSchema
                 // no type to delve into
                 break;
             }
+
             result.decodedTags.add(decodedTag);
             type = result.type;
         }

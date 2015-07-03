@@ -283,7 +283,7 @@ public class AsnBerFileReader
                 //elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
                 if (derObject instanceof ASN1Sequence)
                 {
-                    elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
+                    elementPrefix = String.format("%s/(u.Sequence.%d)", prefix, index);
                 }
                 else
                 {
@@ -297,7 +297,7 @@ public class AsnBerFileReader
             //else if (explicit) elementPrefix = String.format("%s/u.Sequence.%d", prefix, index);
             else if (explicit)
             {
-                elementPrefix = String.format("%s(u.Sequence.%d)", prefix, index);
+                elementPrefix = String.format("%s/(u.Sequence.%d)", prefix, index);
                 //elementPrefix = String.format("%s/%d", prefix, index);
                 //elementPrefix = prefix;
             }
@@ -383,7 +383,7 @@ public class AsnBerFileReader
      * @throws IOException
      *             if any errors occur reading from the file
      */
-    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]> tagsToData, int index, boolean isTagged) throws IOException
+    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]>  tagsToData, int index, boolean isTagged) throws IOException
     {
         // get the bytes representing Tag-Length-Value
         final byte[] tlvData = derObject.getEncoded();
@@ -415,7 +415,7 @@ public class AsnBerFileReader
         {
             String sss = derObject.toString();
             // add a faux tag.
-            tag += "(u." + universalTagToAsnBuiltinType(t) + "." + index + ")";
+            tag += "/(u." + universalTagToAsnBuiltinType(t) + "." + index + ")";
             //tag += "/u." + universalTagToAsnBuiltinType(t);
             // to get back to the AsnBuiltinType
             AsnBuiltinType type = AsnBuiltinType.valueOf(universalTagToAsnBuiltinType(t).toString());

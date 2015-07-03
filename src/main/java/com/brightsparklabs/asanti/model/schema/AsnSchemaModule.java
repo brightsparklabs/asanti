@@ -46,6 +46,8 @@ public class AsnSchemaModule
     /** all types defined in this module */
     private final ImmutableMap<String, AsnSchemaTypeDefinition> types;
 
+    /** the mode that this module uses for tagging */
+    private final AsnModuleTaggingMode tagMode;
     /**
      * all types imported by this module. Map is of form {typeName =&gt; importedModuleName}
      */
@@ -71,7 +73,9 @@ public class AsnSchemaModule
      * @throws IllegalArgumentException
      *         if the name is blank
      */
-    private AsnSchemaModule(String name, Map<String, AsnSchemaTypeDefinition> types,
+    private AsnSchemaModule(String name,
+            AsnModuleTaggingMode tagMode,
+            Map<String, AsnSchemaTypeDefinition> types,
             Map<String, String> imports)
     {
         checkNotNull(name);
@@ -79,7 +83,10 @@ public class AsnSchemaModule
         checkNotNull(types);
         checkNotNull(imports);
 
+        checkNotNull(tagMode);
+
         this.name = name;
+        this.tagMode = tagMode;
         this.types = ImmutableMap.copyOf(types);
         this.imports = ImmutableMap.copyOf(imports);
     }
@@ -165,7 +172,7 @@ public class AsnSchemaModule
         private final Map<String, AsnSchemaTypeDefinition> types = Maps.newHashMap();
 
 
-        private String tagMode = "";
+        private AsnModuleTaggingMode tagMode = AsnModuleTaggingMode.DEFAULT;
 
         /**
          * all types imported by this module. Map is of form {typeName =&gt; importedModuleName}
@@ -204,7 +211,7 @@ public class AsnSchemaModule
             return this;
         }
 
-        public Builder setTagMode(String tagMode)
+        public Builder setTagMode(AsnModuleTaggingMode tagMode)
         {
             this.tagMode = tagMode;
             return this;
@@ -283,7 +290,7 @@ public class AsnSchemaModule
             }
 
             resolveTypes(builder.build());
-            final AsnSchemaModule module = new AsnSchemaModule(name, types, imports);
+            final AsnSchemaModule module = new AsnSchemaModule(name, tagMode, types, imports);
             return module;
         }
 
@@ -465,6 +472,8 @@ public class AsnSchemaModule
             {
                 resolveType(componentType.getType(), otherModules);
             }
+
+            type.performTagging();
         }
     }
 
@@ -485,7 +494,7 @@ public class AsnSchemaModule
          */
         private Null()
         {
-            super("NULL",
+            super("NULL", AsnModuleTaggingMode.DEFAULT,
                     Maps.<String, AsnSchemaTypeDefinition>newHashMap(),
                     Maps.<String, String>newHashMap());
         }

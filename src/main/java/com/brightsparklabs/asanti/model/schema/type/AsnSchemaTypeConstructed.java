@@ -1,6 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
@@ -48,9 +49,13 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     /** mapping from raw tag to component type */
-    private final ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
+    private ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
 
-    private final boolean tagLess;
+    private final Iterable<AsnSchemaComponentType> componentTypes;
+    /** the mode to use for tagging */
+    private final AsnModuleTaggingMode tagMode;
+
+    private boolean tagLess;
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -80,8 +85,17 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      *         if {@code primitiveType} is not a constructed type (Currently: SEQUENCE, SET and
      *         CHOICE)
      */
+
+
     public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
             Iterable<AsnSchemaComponentType> componentTypes)
+    {
+        // TODO MJF - this is only here to not have to update the tests while I am playing.
+        this(primitiveType, constraint, componentTypes, AsnModuleTaggingMode.DEFAULT);
+    }
+
+    public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
+            Iterable<AsnSchemaComponentType> componentTypes, AsnModuleTaggingMode tagMode)
     {
         super(primitiveType, constraint);
 
@@ -89,43 +103,86 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 "Type must be either SET, SEQUENCE or CHOICE");
 
         checkNotNull(componentTypes);
+        // TODO MJF - update all call tree (ie all the functions that I added tagMode as a parameter)
+        // to include it in javadoc.  Also update javadoc for throw reasons.
 
+        checkNotNull(tagMode);
+        this.tagMode = tagMode;
+        this.componentTypes = componentTypes;
+
+        // TODO MJF - Yuk!!!  Better design please!!!
+        // Do this now so that all the components can be visited later,
+        // then once the Placeholders are resolved it should be done again!
+        performTagging();
+    }
+
+    public void performTagging()
+    {
         final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder
                 = ImmutableMap.builder();
 
-        // next expected tag is used to generate tags for automatic tagging
-        // TODO ASN-80 - ensure that generating for all missing tags is correct
-        int nextExpectedTag = 0;
-
+        // The first pass is to see if any components have specified tags
         boolean anyTagSet = false;
-
         for (final AsnSchemaComponentType componentType : componentTypes)
         {
             String tag = componentType.getTag();
-            if (Strings.isNullOrEmpty(tag))
+            if (!Strings.isNullOrEmpty(tag))
             {
-                tag = String.valueOf(nextExpectedTag);
-                logger.debug("Generated automatic tag [{}] for {}",
-                        tag,
-                        componentType.getTagName());
-                nextExpectedTag++;
-            }
-            else
-            {
-                nextExpectedTag = Integer.parseInt(tag) + 1;
                 anyTagSet = true;
             }
-            tagsToComponentTypesBuilder.put(tag, componentType);
         }
-        tagsToComponentTypes = tagsToComponentTypesBuilder.build();
 
-        tagLess = !anyTagSet;
-
-        if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
+        boolean appliedAutomaticTags = false;
+        // Only add tags if we are in AUTOMATIC tagging mode.
+        if (tagMode == AsnModuleTaggingMode.AUTOMATIC)
         {
-            int breakpoint = 0;
+            // If ANY of the components have a specified tag then do NOT automatically
+            // tag any other component.
+
+            if (!anyTagSet)
+            {
+                // If here then there are no tags already set, and we are in AUTOMATIC mode,
+                // so add context-specific tags to all components, starting at 0
+                int index = 0;
+                for (final AsnSchemaComponentType componentType : componentTypes)
+                {
+                    String tag = String.valueOf(index);
+                    logger.debug("Generated automatic tag [{}] for {}",
+                            tag,
+                            componentType.getTagName());
+                    index++;
+                    tagsToComponentTypesBuilder.put(tag, componentType);
+                }
+
+                appliedAutomaticTags = true;
+            }
         }
 
+        if (!appliedAutomaticTags)
+        {
+            // TODO MJF
+            // Should we store any non specifier set tags as the universal?
+            // ie anywhere that does not have [] should we add something
+            // we need to do something otherwise we can't store them all as they will
+            // all have the same key...
+            int index = 0;
+            for (final AsnSchemaComponentType componentType : componentTypes)
+            {
+                String tag = componentType.getTag();
+                if (Strings.isNullOrEmpty(tag))
+                {
+                    tag = String.format("(u.%s.%d)", componentType.getType().getBuiltinType(), index);
+                    logger.debug("Generated universal tag {} for {}",
+                            tag,
+                            componentType.getTagName());
+                }
+                index++;
+                tagsToComponentTypesBuilder.put(tag, componentType);
+            }
+        }
+
+        tagsToComponentTypes = tagsToComponentTypesBuilder.build();
+        tagLess = !anyTagSet;
     }
 
     /**
@@ -175,7 +232,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         if (matcher.matches())
         {
             //if ((primitiveType == AsnPrimitiveType.CHOICE) && (tagLess == true))
-            if (tagLess == true)
+            if (tagLess)
             {
                 String aa = matcher.group(1);
                 AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(1));
@@ -241,6 +298,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
 
         }
 
+
         matcher = PATTERN_UNIVERSAL_TYPE_TAG.matcher(tag);
         if (matcher.matches())
         {
@@ -273,7 +331,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                                 append = "[" + tagIndex + "]";
                             }
 
-                            return "/" + component.getTagName() + append;
+                            //return "/" + component.getTagName() + append;
+                            return component.getTagName() + append;
                         }
                         logger.debug("component {} of type {} is NOT a match for type {}",
                                 component.getTagName(),
@@ -284,15 +343,21 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 }
                 else
                 {
-                    // TODO MJF - this is relying on the fact that we ignore the global tagging
-                    // directive and automatically tag anyway.
-                    // however, if we are going to have the option of not tagging then we will have
-                    // to consider different storage, as we are keying off the tag at the moment.
-                    // In addition this code won't work for a SET as it is not order defined,
-                    // so we just nee dto check for...
+                    // we store components that don't have context-specific tags ([] style) as
+                    // u.XX.index, which should be a direct lookup in our map.
                     final AsnSchemaComponentType componentType
-                            = tagsToComponentTypes.get(tagIndex);
-                    return (componentType == null) ? "" : "/" + componentType.getTagName();
+                            = tagsToComponentTypes.get(tag);
+
+                    if (componentType != null)
+                    {
+                        int breakpoint = 0;
+                        //return "/" + componentType.getTagName();
+                        return componentType.getTagName();
+                    }
+
+//                    final AsnSchemaComponentType componentType
+//                            = tagsToComponentTypes.get(tagIndex);
+//                    return (componentType == null) ? "" : "/" + componentType.getTagName();
                 }
             }
         }
@@ -321,7 +386,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                     tag);
             return "";
         }
-
         final AsnSchemaComponentType componentType
                 = tagsToComponentTypes.get(schemaTag.getTagNumber());
         return (componentType == null) ? "" : componentType.getTagName() + schemaTag.getTagIndex();

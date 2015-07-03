@@ -1,0 +1,17 @@
+M DEFINITIONS ::= 
+BEGIN 
+Human ::= SEQUENCE 
+{
+    payload Foo
+}
+Foo ::= SEQUENCE    
+{
+    a INTEGER,
+    b CHOICE 
+    { 
+        i INTEGER,
+        n UTF8String
+    },
+    c UTF8String
+} 
+END
