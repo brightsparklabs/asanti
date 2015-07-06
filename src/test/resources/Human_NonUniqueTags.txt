@@ -1,0 +1,6 @@
+first Human ::= 
+{
+    c "A",
+    b 10,
+    a "U"
+}

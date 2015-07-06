@@ -14,21 +14,11 @@ Human ::= SEQUENCE
 Payload ::= SEQUENCE
 {
     name [0] UTF8String,
-    age  [1] INTEGER,
-    b    [2] TypeB,
     open     CHOICE 
             {
-                milliSeconds [3] INTEGER,
-                str          [4] UTF8String
-            },
-    close [5] INTEGER
+                milliSeconds [1] INTEGER,
+                str          [2] UTF8String
+            }
 }
-
-TypeB ::= SEQUENCE
-{
-  stuff [0] UTF8String,
-  other [1] INTEGER
-}
-
 
 END

@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 
 import static com.google.common.base.Preconditions.*;
@@ -15,7 +16,7 @@ import static com.google.common.base.Preconditions.*;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaComponentType
+public class AsnSchemaComponentType implements AsnSchemaNamedType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -114,5 +115,13 @@ public class AsnSchemaComponentType
     /**
      * @return the type for this component type
      */
+
+    @Override
     public AsnSchemaType getType() { return type; }
+
+    @Override
+    public String getName() // TODO MJF - get rid of getTagName and use this everywhere instead.
+    {
+        return tagName;
+    }
 }

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -104,6 +105,32 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     {
         return elementType.getPrimitiveType();
     }
+
+    /** pattern to match a tag coming out of the BER decoder */
+    protected static final Pattern PATTERN__TAG = Pattern.compile(
+            "^([0-9]+)(\\.(([0-9]+)|(u\\.([a-zA-Z0-9]+))))$");
+
+    @Override
+    public AsnSchemaNamedType getMatchingChild(String tag)
+    {
+        // TODO MJF - need to handle the ability to return the "[]" stuff from below.
+        Matcher matcher = PATTERN__TAG.matcher(tag);
+        if (matcher.matches())
+        {
+            String indexPart = matcher.group(1);
+            int index = Integer.parseInt(indexPart);
+            String universal = matcher.group(5);
+
+            if (universal != null)
+            {
+                return new AsnSchemaNamedTypeImpl("[" + indexPart + "]", elementType);
+            }
+
+        }
+
+        return elementType.getMatchingChild(tag);
+    }
+
 
     @Override
     public AsnSchemaType getChildType(String tag)

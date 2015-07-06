@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.*;
@@ -466,11 +467,13 @@ public class AsnSchemaModule
         private void resolveConstructedType(AsnSchemaTypeConstructed type,
                 Map<String, AsnSchemaModule.Builder> otherModules) throws ParseException
         {
-            final ImmutableMap<String, AsnSchemaComponentType> allComponents
-                    = type.getAllComponents();
-            for (AsnSchemaComponentType componentType : allComponents.values())
+            //final ImmutableMap<String, AsnSchemaComponentType> allComponents
+            //        = type.getAllComponents();
+            //for (AsnSchemaComponentType componentType : allComponents.values())
+            Iterator<AsnSchemaComponentType> components = type.getAllComponents().iterator();
+            while(components.hasNext())
             {
-                resolveType(componentType.getType(), otherModules);
+                resolveType(components.next().getType(), otherModules);
             }
 
             type.performTagging();

@@ -3,9 +3,6 @@ first Human ::=
     payload 
     {
         name "Adam", 
-        age 42,
-        b { stuff "U", other 1 },
-        open milliSeconds: 100,
-        close 15        
+        open milliSeconds: 100        
     }
 }

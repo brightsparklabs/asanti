@@ -110,6 +110,12 @@ public class BaseAsnSchemaType implements AsnSchemaType
     }
 
     @Override
+    public AsnSchemaNamedType getMatchingChild(String tag)
+    {
+        return new AsnSchemaNamedTypeImpl("", AsnSchemaType.NULL);
+    }
+
+    @Override
     public AsnSchemaType getChildType(String tag)
     {
         return AsnSchemaType.NULL;

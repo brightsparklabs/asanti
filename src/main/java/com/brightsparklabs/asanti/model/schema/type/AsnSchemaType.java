@@ -47,6 +47,10 @@ public interface AsnSchemaType
      */
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
+
+    // TODO MJF
+    AsnSchemaNamedType getMatchingChild(String tag);
+
     /**
      * Returns the {@link AsnSchemaType} of any component type matching tag
      *
@@ -116,6 +120,12 @@ public interface AsnSchemaType
         public ImmutableSet<AsnSchemaConstraint> getConstraints()
         {
             return ImmutableSet.of();
+        }
+
+        @Override
+        public AsnSchemaNamedType getMatchingChild(String tag)
+        {
+            return new AsnSchemaNamedTypeImpl("", AsnSchemaType.NULL);
         }
 
         @Override

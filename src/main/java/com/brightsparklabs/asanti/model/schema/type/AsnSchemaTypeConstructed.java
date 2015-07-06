@@ -1,7 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
+import com.brightsparklabs.asanti.model.schema.*;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
@@ -9,11 +8,14 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +58,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     private final AsnModuleTaggingMode tagMode;
 
     private boolean tagLess;
+
+    private TaggingStrategy taggingStrategy;
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -88,14 +92,15 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
 
 
     public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
-            Iterable<AsnSchemaComponentType> componentTypes)
+            Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
     {
         // TODO MJF - this is only here to not have to update the tests while I am playing.
         this(primitiveType, constraint, componentTypes, AsnModuleTaggingMode.DEFAULT);
     }
 
     public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
-            Iterable<AsnSchemaComponentType> componentTypes, AsnModuleTaggingMode tagMode)
+            Iterable<AsnSchemaComponentType> componentTypes, AsnModuleTaggingMode tagMode) throws
+            ParseException
     {
         super(primitiveType, constraint);
 
@@ -110,14 +115,30 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         this.tagMode = tagMode;
         this.componentTypes = componentTypes;
 
+
+        // TODO MJF - might Factory this...
+        if (primitiveType == AsnPrimitiveType.CHOICE)
+        {
+            this.taggingStrategy = new ChoiceTaggingStrategy();
+        }
+        else
+        {
+            this.taggingStrategy = new SequenceTaggingStrategy();
+        }
+
+
         // TODO MJF - Yuk!!!  Better design please!!!
         // Do this now so that all the components can be visited later,
         // then once the Placeholders are resolved it should be done again!
-        performTagging();
+        //tagsToComponentTypes = taggingStrategy.getTagsForComponents(componentTypes, tagMode, false);
     }
 
-    public void performTagging()
+    public void performTagging() throws ParseException
     {
+        tagsToComponentTypes = taggingStrategy.getTagsForComponents(componentTypes, tagMode);
+        //tagLess = !anyTagSet;
+
+/*
         final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder
                 = ImmutableMap.builder();
 
@@ -180,9 +201,14 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 tagsToComponentTypesBuilder.put(tag, componentType);
             }
         }
+*/
+    }
 
-        tagsToComponentTypes = tagsToComponentTypesBuilder.build();
-        tagLess = !anyTagSet;
+
+    @Override
+    public AsnSchemaNamedType getMatchingChild(String tag)
+    {
+        return taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes);
     }
 
     /**
@@ -207,6 +233,23 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         return componentType;
     }
 
+
+    @Override
+    public AsnSchemaType getChildType(String tag)
+    {
+        final AsnSchemaNamedType component = taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes);
+        return component == null ? AsnSchemaType.NULL : component.getType();
+
+
+    }
+
+    @Override
+    public String getChildName(String tag)
+    {
+        final AsnSchemaNamedType component = taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes);
+        return (component == null) ? "" : component.getName();
+    }
+/*
     @Override
     public AsnSchemaType getChildType(String tag)
     {
@@ -278,6 +321,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     @Override
     public String getChildName(String tag)
     {
+
         Matcher matcher = PATTERN_UNIVERSAL_TYPE_TAG2.matcher(tag);
         if (matcher.matches())
         {
@@ -390,15 +434,17 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 = tagsToComponentTypes.get(schemaTag.getTagNumber());
         return (componentType == null) ? "" : componentType.getTagName() + schemaTag.getTagIndex();
     }
-
+*/
     /**
      * This function allows the 'tree' to be walked, by being able to get to child types.
      *
      * @return the Map of components - names to types.
      */
-    public ImmutableMap<String, AsnSchemaComponentType> getAllComponents()
+    //public ImmutableMap<String, AsnSchemaComponentType> getAllComponents()
+    public Iterable<AsnSchemaComponentType> getAllComponents()
     {
-        return tagsToComponentTypes;
+        //return tagsToComponentTypes;
+        return componentTypes;
     }
 
 
@@ -433,12 +479,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTag
     // -------------------------------------------------------------------------
-
-    private static class ZZZ
-    {
-
-    }
-
 
     /**
      * Models a tag in a 'constructed' type definition. A tag conforms to one of the following

@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
@@ -157,8 +158,12 @@ public class AsnSchemaImpl implements AsnSchema
             final String tag = rawTags.next();
 
             // By definition the new tag is the child of its container.
-            final String decodedTag = type.getChildName(tag);
-            result.type = type.getChildType(tag);
+            //final String decodedTag = type.getChildName(tag);
+            //result.type = type.getChildType(tag);
+            AsnSchemaNamedType namedType = type.getMatchingChild(tag);
+            final String decodedTag = namedType.getName();
+            result.type = namedType.getType();
+
             // ensure it was found
             if (result.type == AsnSchemaType.NULL)
             {

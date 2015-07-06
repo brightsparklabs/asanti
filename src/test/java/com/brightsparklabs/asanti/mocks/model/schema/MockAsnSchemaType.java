@@ -8,10 +8,12 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -411,7 +413,9 @@ public class MockAsnSchemaType
             when(mockedInstance.getPrimitiveType()).thenReturn(primitiveType);
             when(mockedInstance.getConstraints()).thenReturn(constraints);
             when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
-            when(mockedInstance.getAllComponents()).thenReturn(ImmutableMap.<String, AsnSchemaComponentType>of());
+            //when(mockedInstance.getAllComponents()).thenReturn(ImmutableMap.<String, AsnSchemaComponentType>of());
+            List<AsnSchemaComponentType> l = Lists.newArrayList();
+            when(mockedInstance.getAllComponents()).thenReturn(l);
 
             // setup default matchers, when new components are added they will add specific returns for those tags.
             when(mockedInstance.getChildName(anyString())).thenReturn("");
