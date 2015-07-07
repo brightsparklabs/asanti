@@ -2,6 +2,6 @@ choice-test Human ::=
 {
     payload {
         name "payload"
-        iRIsContent sofA: { mid: { stuff "U", other 10 }, mid { stuff "V", other 11 } }
+        iRIsContent sequenceOfA: { mid: { stuff "U", other 10 }, mid { stuff "V", other 11 } }
     }    
 }

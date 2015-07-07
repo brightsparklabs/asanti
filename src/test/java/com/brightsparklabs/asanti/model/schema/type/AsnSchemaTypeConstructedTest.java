@@ -46,8 +46,9 @@ public class AsnSchemaTypeConstructedTest
         // For the sake of testing that the Collection is delegating to the element type make it
         // return testable values
         when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
-        when(wrappedSequence.getChildType("0")).thenReturn(sequenceComponent);
-        when(wrappedSequence.getChildName("0")).thenReturn("foo");
+        // TODO MJF getMatchingChild
+        //when(wrappedSequence.getChildType("0")).thenReturn(sequenceComponent);
+        //when(wrappedSequence.getChildName("0")).thenReturn("foo");
 
         component = mock(AsnSchemaComponentType.class);
         when(component.getType()).thenReturn(wrappedSequence);
@@ -105,16 +106,7 @@ public class AsnSchemaTypeConstructedTest
 
     }
 
-    @Test
-    public void testGetComponent() throws Exception
-    {
-        assertEquals(null, instance.getComponent(null));
-        assertEquals(null, instance.getComponent("bad tag"));
-        assertEquals(null, instance.getComponent("1"));
-
-        assertEquals(component, instance.getComponent("0"));
-        assertEquals(component, instance.getComponent("0[99]"));
-    }
+    // TODO MJF - add a test for getMatchingChild (which essentially replaced getComponent)
 
     @Test
     public void testAutomaticTagGeneration() throws ParseException
@@ -148,43 +140,14 @@ public class AsnSchemaTypeConstructedTest
         AsnSchemaTypeConstructed testInstance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE, AsnSchemaConstraint.NULL,
                 ImmutableSet.of(testComponent1, testComponent2, testComponent3, testComponent4));
 
-        assertEquals(testComponent1, testInstance.getComponent("0"));
-        assertEquals(testComponent2, testInstance.getComponent("1"));
-        assertEquals(testComponent3, testInstance.getComponent("9"));
-        assertEquals(testComponent4, testInstance.getComponent("10"));
+        // TODO MJF - auto tag creation tests can move to the strategy, and getComponent has been deleted
+//        assertEquals(testComponent1, testInstance.getComponent("0"));
+//        assertEquals(testComponent2, testInstance.getComponent("1"));
+//        assertEquals(testComponent3, testInstance.getComponent("9"));
+//        assertEquals(testComponent4, testInstance.getComponent("10"));
     }
 
-    @Test
-    public void testGetChildType() throws Exception
-    {
-        assertEquals(AsnSchemaType.NULL, instance.getChildType("1"));
-        // ie for a tag that is not there it did not go to the component
-        verify(component, never()).getType();
-
-        assertEquals(wrappedSequence, instance.getChildType("0"));
-        verify(component).getType();
-
-        assertEquals(wrappedSequence, instance.getChildType("0[0]"));
-    }
-
-    @Test
-    public void testGetChildName() throws Exception
-    {
-        assertEquals("", instance.getChildName("1"));
-        // ie for a tag that is not there it did not go to the component
-        verify(component, never()).getTagName();
-
-        assertEquals("name", instance.getChildName("0"));
-        verify(component).getTagName();
-
-        assertEquals("name[0]", instance.getChildName("0[0]"));
-
-        // check with bad tags
-        assertEquals("", instance.getChildName(null));
-        assertEquals("", instance.getChildName("bad tag"));
-        assertEquals("", instance.getChildName("100"));
-
-    }
+    // TODO MJF getMatchingChild
 
     @Test
     public void testGetAllComponents() throws Exception

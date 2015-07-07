@@ -1,7 +1,6 @@
 package com.brightsparklabs.asanti.model.schema;
 
-import com.brightsparklabs.asanti.decoder.builtin.IntegerDecoder;
-import com.brightsparklabs.asanti.decoder.builtin.ObjectClassFieldDecoder;
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 

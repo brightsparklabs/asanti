@@ -47,8 +47,9 @@ public class AsnSchemaTypePlaceholderTest
         AsnSchemaConstraint constraint2 = mock(AsnSchemaConstraint.class);
 
         when(indirectType.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
-        when(indirectType.getChildType("0")).thenReturn(sequenceComponent);
-        when(indirectType.getChildName("0")).thenReturn("foo");
+        // TODO MJF getMatchingChild
+        //when(indirectType.getChildType("0")).thenReturn(sequenceComponent);
+        //when(indirectType.getChildName("0")).thenReturn("foo");
         when(indirectType.getConstraints()).thenReturn(ImmutableSet.of(
                 constraint1, constraint2));
 
@@ -158,29 +159,5 @@ public class AsnSchemaTypePlaceholderTest
         verify(indirectType).getConstraints();
     }
 
-    @Test
-    public void testGetChildType() throws Exception
-    {
-        // test that if the placeholder is not resolved it does not delegate
-        assertEquals(AsnSchemaType.NULL, instance.getChildType("0"));
-        verify(indirectType, never()).getChildType("0");
-        instance.setIndirectType(indirectType);
-
-        // and that it does delegate after it is resolved
-        assertEquals(sequenceComponent, instance.getChildType("0"));
-        verify(indirectType).getChildType("0");
-    }
-
-    @Test
-    public void testGetChildName() throws Exception
-    {
-        // test that if the placeholder is not resolved it does not delegate
-        assertEquals("", instance.getChildName("0"));
-        verify(indirectType, never()).getChildName("0");
-
-        instance.setIndirectType(indirectType);
-        // and that it does delegate after it is resolved
-        assertEquals("foo", instance.getChildName("0"));
-        verify(indirectType).getChildName("0");
-    }
+    // TODO MJF getMatchingChild
 }

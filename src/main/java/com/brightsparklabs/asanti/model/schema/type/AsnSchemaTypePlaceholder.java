@@ -149,19 +149,8 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     @Override
     public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
     {
-        return indirectType == null ? AsnSchemaNamedType.NULL : indirectType.getMatchingChild(tag, session);
-    }
-
-
-    @Override
-    public AsnSchemaType getChildType(String tag)
-    {
-        return indirectType == null ? AsnSchemaType.NULL : indirectType.getChildType(tag);
-    }
-
-    @Override
-    public String getChildName(String tag)
-    {
-        return indirectType == null ? "" : indirectType.getChildName(tag);
+        return indirectType == null ?
+                AsnSchemaNamedType.NULL :
+                indirectType.getMatchingChild(tag, session);
     }
 }

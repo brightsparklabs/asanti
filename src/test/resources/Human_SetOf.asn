@@ -1,0 +1,39 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+    Human ::= SEQUENCE
+    {
+        selection [0] Selection
+    }
+   
+    Selection ::= CHOICE 
+    {
+        optA [0] OptA,
+        optB [1] OptB,
+        optC [2] OptC
+    }
+    
+    OptA ::= SEQUENCE
+    {
+        ints [0] SET OF INTEGER
+    }
+    OptB ::= SEQUENCE
+    {
+        namesInline [0] SET OF SET
+        {
+            first [0] UTF8String,
+            last [1] UTF8String
+        }
+    }
+    OptC ::= SET
+    {
+        names [0] SET OF Name
+    }
+    Name ::= SET
+    {
+        first [0] UTF8String,
+        last  [1] UTF8String
+    }
+    
+END

@@ -1,0 +1,12 @@
+
+human Human ::= 
+{
+    payload 
+    { 
+        name "Adam",
+        supplementary-Services-Information
+        {
+            non-Standard-Supplementary-Services { simpleIndication: call-Waiting-Indication, simpleIndication: add-conf-Indication }
+        }
+    }
+}

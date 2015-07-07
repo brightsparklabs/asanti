@@ -51,11 +51,15 @@ public class MockAsnSchemaType
         final ImmutableSet<AsnSchemaConstraint> constraints = ImmutableSet.of((constraint == null) ? AsnSchemaConstraint.NULL :
                 constraint);
 
+        final AsnSchemaNamedType namedType = mock(AsnSchemaNamedType.class);
+        when(namedType.getType()).thenReturn(AsnSchemaType.NULL);
+        when(namedType.getName()).thenReturn("");
+
         when(mockedInstance.getPrimitiveType()).thenReturn(primitiveType);
         when(mockedInstance.getConstraints()).thenReturn(constraints);
         when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
-        when(mockedInstance.getChildType(anyString())).thenReturn(AsnSchemaType.NULL);
-        when(mockedInstance.getChildName(anyString())).thenReturn("");
+        // TODO MJF - how better to manage the Session!!!
+        //when(mockedInstance.getMatchingChild(anyString())).thenReturn(namedType);
 
         return mockedInstance;
     }
@@ -70,8 +74,8 @@ public class MockAsnSchemaType
         when(mockedInstance.getPrimitiveType()).thenReturn(primitiveType);
         when(mockedInstance.getConstraints()).thenReturn(constraints);
         when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
-        when(mockedInstance.getChildType(anyString())).thenReturn(AsnSchemaType.NULL);
-        when(mockedInstance.getChildName(anyString())).thenReturn("");
+        // TODO MJF - how better to manage the Session!!!
+        //when(mockedInstance.getMatchingChild(anyString())).thenReturn(namedType);
 
         return mockedInstance;
     }
@@ -92,8 +96,8 @@ public class MockAsnSchemaType
         when(mockedInstance.getPrimitiveType()).thenReturn(indirectType.getPrimitiveType());
         when(mockedInstance.getConstraints()).thenReturn(constraints);
         when(mockedInstance.getBuiltinType()).thenReturn(indirectType.getBuiltinType());
-        when(mockedInstance.getChildType(anyString())).thenReturn(indirectType.getChildType(anyString()));
-        when(mockedInstance.getChildName(anyString())).thenReturn(indirectType.getChildName(anyString()));
+        // TODO MJF - how better to manage the Session!!!
+        //when(mockedInstance.getMatchingChild(anyString())).thenReturn(namedType);
 
         when(mockedInstance.getModuleName()).thenReturn(moduleName);
         when(mockedInstance.getTypeName()).thenReturn(typeName);
@@ -418,8 +422,8 @@ public class MockAsnSchemaType
             when(mockedInstance.getAllComponents()).thenReturn(l);
 
             // setup default matchers, when new components are added they will add specific returns for those tags.
-            when(mockedInstance.getChildName(anyString())).thenReturn("");
-            when(mockedInstance.getChildType(anyString())).thenReturn(AsnSchemaType.NULL);
+            // TODO MJF - how better to manage the Session!!!
+            //when(mockedInstance.getMatchingChild(anyString())).thenReturn(namedType);
         }
 
         // ---------------------------------------------------------------------
@@ -499,35 +503,37 @@ public class MockAsnSchemaType
 
             // Setup the mocks to match using the specific matcher, and then delegate to the appropriate
             // component type.
-            when(mockedInstance.getChildType(argThat(new TagMatcher()))).thenAnswer(new Answer<AsnSchemaType>()
-            {
-                @Override
-                public AsnSchemaType answer(InvocationOnMock invocation) throws Throwable
-                {
-                    return component.getType();
-                }
-            });
+            // TODO MJF - when(mockedInstance.getMatchingChild ...
 
-            when(mockedInstance.getChildName(argThat(new TagMatcher()))).thenAnswer(new Answer<String>()
-            {
-                @Override
-                public String answer(InvocationOnMock invocation) throws Throwable
-                {
-                    Object[] args = invocation.getArguments();
-                    String tag = (String) args[0];
-
-                    Pattern p = Pattern.compile("([0-9])+(\\[.+\\])?");
-                    Matcher m = p.matcher(tag);
-
-                    String endWith = "";
-                    if (m.matches())
-                    {
-                        endWith = Strings.nullToEmpty(m.group(2));
-                    }
-
-                    return component.getTagName() + endWith;
-                }
-            });
+            //            when(mockedInstance.getChildType(argThat(new TagMatcher()))).thenAnswer(new Answer<AsnSchemaType>()
+//            {
+//                @Override
+//                public AsnSchemaType answer(InvocationOnMock invocation) throws Throwable
+//                {
+//                    return component.getType();
+//                }
+//            });
+//
+//            when(mockedInstance.getChildName(argThat(new TagMatcher()))).thenAnswer(new Answer<String>()
+//            {
+//                @Override
+//                public String answer(InvocationOnMock invocation) throws Throwable
+//                {
+//                    Object[] args = invocation.getArguments();
+//                    String tag = (String) args[0];
+//
+//                    Pattern p = Pattern.compile("([0-9])+(\\[.+\\])?");
+//                    Matcher m = p.matcher(tag);
+//
+//                    String endWith = "";
+//                    if (m.matches())
+//                    {
+//                        endWith = Strings.nullToEmpty(m.group(2));
+//                    }
+//
+//                    return component.getTagName() + endWith;
+//                }
+//            });
 
             return this;
         }
@@ -540,23 +546,24 @@ public class MockAsnSchemaType
          */
         public MockAsnSchemaTypeBuilder setCollectionType(final AsnSchemaType element)
         {
-            when(mockedInstance.getChildType(anyString())).thenAnswer(new Answer<AsnSchemaType>()
-                {
-                    @Override
-                    public AsnSchemaType answer(InvocationOnMock invocation) throws Throwable {
-                        Object[] args = invocation.getArguments();
-                        return element.getChildType((String)args[0]);
-                    }
-                });
-
-            when(mockedInstance.getChildName(anyString())).thenAnswer(new Answer<String>()
-            {
-                @Override
-                public String answer(InvocationOnMock invocation) throws Throwable {
-                    Object[] args = invocation.getArguments();
-                    return element.getChildName((String)args[0]);
-                }
-            });
+            // TODO MJF
+//            when(mockedInstance.getChildType(anyString())).thenAnswer(new Answer<AsnSchemaType>()
+//                {
+//                    @Override
+//                    public AsnSchemaType answer(InvocationOnMock invocation) throws Throwable {
+//                        Object[] args = invocation.getArguments();
+//                        return element.getChildType((String)args[0]);
+//                    }
+//                });
+//
+//            when(mockedInstance.getChildName(anyString())).thenAnswer(new Answer<String>()
+//            {
+//                @Override
+//                public String answer(InvocationOnMock invocation) throws Throwable {
+//                    Object[] args = invocation.getArguments();
+//                    return element.getChildName((String)args[0]);
+//                }
+//            });
 
             return this;
         }

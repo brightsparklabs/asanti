@@ -1,24 +1,25 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.tag.TagCreationStrategy;
+import com.brightsparklabs.asanti.model.schema.tag.TagCreationStrategyImpl;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
  * Created by Michael on 6/07/2015.
  */
-public class SequenceTaggingStrategyTest
+public class TagCreationStrategyImplTest
 {
 
+    // TODO MJF - make real tests, javadoc class above.
 
     @Test
     public void testGetTagsForComponents() throws Exception
@@ -30,27 +31,24 @@ public class SequenceTaggingStrategyTest
                 getComponent("3", "c", false));
 
 
-        SequenceTaggingStrategy taggingStrategy = new SequenceTaggingStrategy();
+        TagCreationStrategy taggingStrategy = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE, AsnModuleTaggingMode.DEFAULT);
 
         ImmutableMap<String, AsnSchemaComponentType> result =
-        taggingStrategy.getTagsForComponents(components, AsnModuleTaggingMode.DEFAULT);
+        taggingStrategy.getTagsForComponents(components);
     }
 
     @Test
     public void testGetTagsForComponentsAuto() throws Exception
     {
-
-
-
         List<AsnSchemaComponentType> components = Lists.newArrayList(
                 getComponent("", "a", false),
                 getComponent("", "b", false),
                 getComponent("", "c", false));
 
-        SequenceTaggingStrategy taggingStrategy = new SequenceTaggingStrategy();
+        TagCreationStrategy taggingStrategy = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE, AsnModuleTaggingMode.DEFAULT);
 
         ImmutableMap<String, AsnSchemaComponentType> result =
-                taggingStrategy.getTagsForComponents(components, AsnModuleTaggingMode.AUTOMATIC);
+                taggingStrategy.getTagsForComponents(components);
     }
 
 
@@ -64,10 +62,10 @@ public class SequenceTaggingStrategyTest
                 getComponent("1", "b", false),
                 getComponent("1", "c", false));
 
-        SequenceTaggingStrategy taggingStrategy = new SequenceTaggingStrategy();
+        TagCreationStrategy taggingStrategy = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE, AsnModuleTaggingMode.DEFAULT);
 
         ImmutableMap<String, AsnSchemaComponentType> result =
-                taggingStrategy.getTagsForComponents(components, AsnModuleTaggingMode.DEFAULT);
+                taggingStrategy.getTagsForComponents(components);
     }
 
 
@@ -81,10 +79,10 @@ public class SequenceTaggingStrategyTest
                 getComponent("", "b", true, AsnBuiltinType.Utf8String),
                 getComponent("", "c", false, AsnBuiltinType.Integer));
 
-        SequenceTaggingStrategy taggingStrategy = new SequenceTaggingStrategy();
+        TagCreationStrategy taggingStrategy = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE, AsnModuleTaggingMode.DEFAULT);
 
         ImmutableMap<String, AsnSchemaComponentType> result =
-                taggingStrategy.getTagsForComponents(components, AsnModuleTaggingMode.DEFAULT);
+                taggingStrategy.getTagsForComponents(components);
     }
 
 

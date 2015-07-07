@@ -41,8 +41,9 @@ public class AsnSchemaTypeCollectionTest
         // For the sake of testing that the Collection is delegating to the element type make it
         // return testable values
         when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
-        when(wrappedSequence.getChildType("0")).thenReturn(sequenceComponent);
-        when(wrappedSequence.getChildName("0")).thenReturn("foo");
+        // TODO MJF getMatchingChild
+        //when(wrappedSequence.getChildType("0")).thenReturn(sequenceComponent);
+        //when(wrappedSequence.getChildName("0")).thenReturn("foo");
 
         instance = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF, AsnSchemaConstraint.NULL,
                 wrappedSequence);
@@ -110,19 +111,7 @@ public class AsnSchemaTypeCollectionTest
         verify(wrappedSequence).getPrimitiveType();
     }
 
-    @Test
-    public void testGetChildType() throws Exception
-    {
-        assertFalse(null == instance.getChildType("0"));
-        verify(wrappedSequence).getChildType("0");
-    }
-
-    @Test
-    public void testGetChildName() throws Exception
-    {
-        assertEquals("foo", instance.getChildName("0"));
-        verify(wrappedSequence).getChildName("0");
-    }
+    // TODO MJF getMatchingChild
 
     @Test
     public void testGetElementType() throws Exception

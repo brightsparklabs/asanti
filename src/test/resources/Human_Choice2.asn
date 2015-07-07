@@ -20,11 +20,13 @@ Payload ::= SEQUENCE
 IRIsContent ::= CHOICE
 {
     typeA    TypeA,
-    sofA   SofA,
+    sequenceOfA   SequenceOfA,
+    setOfA   SetOfA,
     int    INTEGER
 }
 
-SofA ::= SEQUENCE OF TypeA
+SequenceOfA ::= SEQUENCE OF TypeA
+SetOfA ::= SET OF TypeA
 
 TypeA ::= CHOICE
 {

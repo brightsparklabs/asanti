@@ -10,8 +10,6 @@ import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.model.schema.DecodingSession;
-import com.brightsparklabs.asanti.model.schema.DecodingSessionImpl;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.collect.ImmutableMap;
@@ -88,15 +86,14 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
         this.asnData = asnData;
 
-        DecodingSession session = new DecodingSessionImpl();
-
         // decode the tags in the data
         final Map<String, DecodedTag> decodedToRawTags = Maps.newHashMap();
         final Map<String, DecodedTag> unmappedTags = Maps.newHashMap();
-        for (final String rawTag : asnData.getRawTags())
+
+        ImmutableSet<OperationResult<DecodedTag>> results
+                = asnSchema.getDecodedTags(asnData.getRawTags(), topLevelTypeName);
+        for (OperationResult<DecodedTag> decodeResult : results)
         {
-            final OperationResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag,
-                    topLevelTypeName, session);
             final DecodedTag decodedTag = decodeResult.getOutput();
             if (decodeResult.wasSuccessful())
             {
@@ -108,6 +105,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
                 unmappedTags.put(decodedTag.getTag(), decodedTag);
             }
         }
+
         this.decodedTags = ImmutableMap.copyOf(decodedToRawTags);
         this.unmappedTags = ImmutableMap.copyOf(unmappedTags);
         this.allTags = ImmutableMap.<String, DecodedTag>builder()

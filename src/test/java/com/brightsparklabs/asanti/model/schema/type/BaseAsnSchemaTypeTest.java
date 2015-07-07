@@ -43,18 +43,6 @@ public class BaseAsnSchemaTypeTest
         assertEquals(AsnBuiltinType.Integer, type.getBuiltinType());
     }
 
-    @Test
-    public void testGetChildType()
-    {
-        BaseAsnSchemaType type = new BaseAsnSchemaType(AsnPrimitiveType.INTEGER, AsnSchemaConstraint.NULL);
-        assertEquals(AsnSchemaType.NULL, type.getChildType("0"));
-    }
-
-    @Test
-    public void testGetChildName()
-    {
-        BaseAsnSchemaType type = new BaseAsnSchemaType(AsnPrimitiveType.INTEGER, AsnSchemaConstraint.NULL);
-        assertEquals("", type.getChildName("0"));
-    }
+    // TODO MJF getMatchingChild
 
 }

@@ -1,5 +1,7 @@
 package com.brightsparklabs.asanti.model.schema;
 
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
+
 /**
  * Created by Michael on 7/07/2015.
  */

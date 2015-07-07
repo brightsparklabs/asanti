@@ -44,9 +44,14 @@ public class AsnSchemaTypeParser
     /** all valid 'collection' types */
     private static final ImmutableMap<String, AsnPrimitiveType> collectionTypes = ImmutableMap.of(
             "SEQUENCE",
-            AsnPrimitiveType.SEQUENCE_OF,
+            AsnPrimitiveType.SEQUENCE,
             "SET",
-            AsnPrimitiveType.SET_OF);
+            AsnPrimitiveType.SET);
+// TODO MJF explain!
+//            "SEQUENCE",
+//            AsnPrimitiveType.SEQUENCE_OF,
+//                "SET",
+//            AsnPrimitiveType.SET_OF);
 
     // -------------------------------------------------------------------------
     // CONSTRUCTED TYPES (SEQUENCE, SET, CHOICE)

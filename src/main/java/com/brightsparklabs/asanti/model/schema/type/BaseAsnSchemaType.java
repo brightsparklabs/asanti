@@ -23,6 +23,7 @@ public class BaseAsnSchemaType implements AsnSchemaType
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
+
     /** pattern to match a Universal type tag coming out of the BER decoder */
     protected static final Pattern PATTERN_UNIVERSAL_TYPE_TAG = Pattern.compile(
             "^\\(u\\.([a-zA-Z0-9]+)(\\.([0-9]+))?\\)");
@@ -30,7 +31,6 @@ public class BaseAsnSchemaType implements AsnSchemaType
     /** pattern to match a Universal type tag coming out of the BER decoder */
     protected static final Pattern PATTERN_UNIVERSAL_TYPE_TAG2 = Pattern.compile(
             "^([0-9]+)(\\((u\\.([a-zA-Z0-9]+)(\\.([0-9]+))?)\\))$");
-
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -103,7 +103,6 @@ public class BaseAsnSchemaType implements AsnSchemaType
         return primitiveType.getBuiltinType();
     }
 
-
     @Override
     public ImmutableSet<AsnSchemaConstraint> getConstraints()
     {
@@ -114,17 +113,5 @@ public class BaseAsnSchemaType implements AsnSchemaType
     public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
     {
         return new AsnSchemaNamedTypeImpl("", AsnSchemaType.NULL);
-    }
-
-    @Override
-    public AsnSchemaType getChildType(String tag)
-    {
-        return AsnSchemaType.NULL;
-    }
-
-    @Override
-    public String getChildName(String tag)
-    {
-        return "";
     }
 }

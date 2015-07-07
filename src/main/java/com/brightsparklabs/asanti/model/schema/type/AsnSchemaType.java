@@ -37,6 +37,7 @@ public interface AsnSchemaType
      */
     AsnBuiltinType getBuiltinType();
 
+    // TODO MJF - do we still need this?  Is so then rename and document
     AsnBuiltinType getBuiltinTypeAA();
 
 
@@ -48,30 +49,18 @@ public interface AsnSchemaType
      */
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
-
-    // TODO MJF - add javadoc here and delete the getChildType and getChildName
+    /**
+     * Returns the {@code AsnSchemaNamedType} for the tag, or AsnSchemaNamedType#NULL if none found
+     *
+     * @param tag
+     *          a tag within this construct
+     * @param session
+     *          TODO MJF
+     *
+     * @return the {@code AsnSchemaNamedType} for the AsnSchemaNamedType#NULL, or null if none found
+     */
     AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session);
 
-    /**
-     * Returns the {@link AsnSchemaType} of any component type matching tag
-     *
-     * @param tag
-     *         a tag within this construct
-     *
-     * @return the {@link AsnSchemaType} of any component type matching tag
-     */
-
-    AsnSchemaType getChildType(String tag);
-
-    /**
-     * Returns the name of the component associated with the specified tag
-     *
-     * @param tag
-     *         a tag within this construct
-     *
-     * @return name of the specified tag; or an empty string if tag is not recognised.
-     */
-    String getChildName(String tag);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null
@@ -127,19 +116,7 @@ public interface AsnSchemaType
         @Override
         public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
         {
-            return new AsnSchemaNamedTypeImpl("", AsnSchemaType.NULL);
-        }
-
-        @Override
-        public AsnSchemaType getChildType(String tag)
-        {
-            return AsnSchemaType.NULL;
-        }
-
-        @Override
-        public String getChildName(String tag)
-        {
-            return "";
+            return AsnSchemaNamedType.NULL;
         }
     }
 }
