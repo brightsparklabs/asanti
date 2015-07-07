@@ -224,8 +224,11 @@ public class MockAsnSchema
         //when(decodedTag.getType()).thenReturn(AsnSchemaType.NULL);
         when(decodedTag.getType()).thenReturn(type);
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
-        when(instance.getDecodedTag(rawTag, topLevelTypeName)).thenReturn(isFullyDecoded ?
-                OperationResult.createSuccessfulInstance(decodedTag) :
-                OperationResult.createUnsuccessfulInstance(decodedTag, "Mock Failure"));
+
+        // TODO MJF - figure out how to deal with the session stuff here.  We also want unit tests
+        // to test the new method of tagging etc...
+//        when(instance.getDecodedTag(rawTag, topLevelTypeName)).thenReturn(isFullyDecoded ?
+//                OperationResult.createSuccessfulInstance(decodedTag) :
+//                OperationResult.createUnsuccessfulInstance(decodedTag, "Mock Failure"));
     }
 }

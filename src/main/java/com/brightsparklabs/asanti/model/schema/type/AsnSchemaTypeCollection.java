@@ -1,6 +1,8 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaTag;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.base.Strings;
@@ -107,28 +109,20 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     }
 
     /** pattern to match a tag coming out of the BER decoder */
-    protected static final Pattern PATTERN__TAG = Pattern.compile(
-            "^([0-9]+)(\\.(([0-9]+)|(u\\.([a-zA-Z0-9]+))))$");
+//    protected static final Pattern PATTERN__TAG = Pattern.compile(
+//            "^([0-9]+)(\\.(([0-9]+)|(u\\.([a-zA-Z0-9]+))))$");
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag)
+    public AsnSchemaNamedType getMatchingChild(String rawTag, DecodingSession session)
     {
-        // TODO MJF - need to handle the ability to return the "[]" stuff from below.
-        Matcher matcher = PATTERN__TAG.matcher(tag);
-        if (matcher.matches())
+        AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
+
+        if (!tag.getTagUniversal().isEmpty())
         {
-            String indexPart = matcher.group(1);
-            int index = Integer.parseInt(indexPart);
-            String universal = matcher.group(5);
-
-            if (universal != null)
-            {
-                return new AsnSchemaNamedTypeImpl("[" + indexPart + "]", elementType);
-            }
-
+            return new AsnSchemaNamedTypeImpl("[" + tag.getTagIndex() + "]", elementType);
         }
 
-        return elementType.getMatchingChild(tag);
+        return elementType.getMatchingChild(rawTag, session);
     }
 
 

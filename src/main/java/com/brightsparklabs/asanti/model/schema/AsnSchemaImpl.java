@@ -82,12 +82,12 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     @Override
-    public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
+    public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName, DecodingSession session)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final AsnSchemaTypeDefinition typeDefinition = primaryModule.getType(topLevelTypeName);
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(),
-                typeDefinition.getType());
+                typeDefinition.getType(), session);
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
 
         // check if decode was successful
@@ -141,7 +141,7 @@ public class AsnSchemaImpl implements AsnSchema
      * decoded, then a list containing the decoded tags for only the first three raw tags is
      * returned (e.g. {@code ["Header", "Published", "Date"]})
      */
-    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType)
+    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType, DecodingSession session)
     {
         /* TODO: ASN-143.  does this functionality now belong here?
          * all the logic is about AsnSchemaType object - should it have a decodeTags function?
@@ -158,9 +158,7 @@ public class AsnSchemaImpl implements AsnSchema
             final String tag = rawTags.next();
 
             // By definition the new tag is the child of its container.
-            //final String decodedTag = type.getChildName(tag);
-            //result.type = type.getChildType(tag);
-            AsnSchemaNamedType namedType = type.getMatchingChild(tag);
+            AsnSchemaNamedType namedType = type.getMatchingChild(tag, session);
             final String decodedTag = namedType.getName();
             result.type = namedType.getType();
 

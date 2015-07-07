@@ -32,58 +32,50 @@ public class SequenceTaggingStrategy implements TaggingStrategy
     /** TODO MJF */
     int lastIndex = 0;
     boolean lastOptional = false;
-    int offset = 0;
+    //int offset = 0;
 
 
     @Override
-    public AsnSchemaNamedType getMatchingComponent(String tag, ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes)
+    public AsnSchemaNamedType getMatchingComponent(String rawTag, ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes, DecodingSession session)
     {
+        AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
+        int index = Integer.parseInt(tag.getTagIndex());
+        // Adjust for offsets to indexes caused by optional components.
+//        int offset = session.getOffset(this);
+//        if (offset != 0)
+//        {
+//            tag = AsnSchemaTag.create((index - offset) + "." + tag.getTagPortion());
+//        }
 
-        Matcher matcher = PATTERN_TAG.matcher(tag);
-        if (!matcher.matches())
-        {
-            return null; // TODO MJF
-        }
+        tag = session.getTag(this, tag);
 
-        String indexPart = matcher.group(1);
-        int index = Integer.parseInt(indexPart);
-        String rest = matcher.group(2);
-
-
-        tag = (index - offset) + rest;
-
-        AsnSchemaComponentType result = tagsToComponentTypes.get(tag);
+        AsnSchemaComponentType result = tagsToComponentTypes.get(tag.getRawTag());
 
         if (result != null)
         {
-            if (result.isOptional())
-            {
-                offset += 1;
-            }
+            session.setTag(this, tag, result.isOptional());
+//            if (result.isOptional())
+//            {
+//                session.setOffset(this, offset+1);
+//            }
 
             return result;
         }
 
-
-        // Was one of the components a choice that was transparently replaced by the option?
-        String choiceTag = indexPart + ".u.Choice";
+        // Was one of the components a choice (with no tag) that was transparently replaced by the option?
+        String choiceTag = tag.getTagIndex() + ".u.Choice";
         result = tagsToComponentTypes.get(choiceTag);
         if (result != null)
         {
-            AsnSchemaNamedType namedType = result.getType().getMatchingChild(tag);
+            AsnSchemaNamedType namedType = result.getType().getMatchingChild(rawTag, session);
 
             String newTag = result.getName() + "/" + namedType.getName();
 
             logger.debug("Sequence passing through choice {}", newTag);
             return new AsnSchemaNamedTypeImpl(newTag, namedType.getType());
-
         }
 
-
-        return (result == null) ?
-                AsnSchemaNamedType.NULL :
-                result;
-
+        return AsnSchemaNamedType.NULL;
     }
 
     @Override
@@ -138,7 +130,8 @@ public class SequenceTaggingStrategy implements TaggingStrategy
 
             if (usedTags.containsKey(decoratedTag))
             {
-                logger.warn("Duplicate Tag {} for {}", decoratedTag, componentType.getTagName());
+                logger.warn("Duplicate Tag {} for {}, already have {}", decoratedTag, componentType.getTagName(), usedTags.get(
+                        decoratedTag));
                 throw new ParseException("Duplicate Tag", -1);
             }
 

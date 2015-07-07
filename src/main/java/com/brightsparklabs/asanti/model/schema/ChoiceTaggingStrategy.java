@@ -2,7 +2,6 @@ package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedTypeImpl;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -12,10 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 /**
- * Created by Michael on 6/07/2015.
+ * TODO MJF
  */
 public class ChoiceTaggingStrategy implements TaggingStrategy
 {
@@ -26,29 +24,26 @@ public class ChoiceTaggingStrategy implements TaggingStrategy
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(SequenceTaggingStrategy.class);
 
+
     @Override
-    public AsnSchemaNamedType getMatchingComponent(String tag, ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes)
+    public AsnSchemaNamedType getMatchingComponent(String rawTag, ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes, DecodingSession session)
     {
-        Matcher matcher = PATTERN_TAG.matcher(tag);
-        if (!matcher.matches())
+        AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
+
+        AsnSchemaComponentType result = tagsToComponentTypes.get(tag.getTagPortion());
+
+        if (result != null)
         {
-            logger.warn("unexpected tag format {}", tag);
-            return null; // TODO MJF
+            return result;
         }
 
-        String indexPart = matcher.group(1);
-        int index = Integer.parseInt(indexPart);
-        String rest = matcher.group(3);
 
-        AsnSchemaComponentType result = tagsToComponentTypes.get(rest);
-
-        if (result != null) return result;
-
-        if (rest.startsWith("u"))
+        if (!tag.getTagUniversal().isEmpty())
         {
             // TODO MJF
             // What makes us come in here?
-            AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(matcher.group(6));
+            String universal = tag.getTagUniversal().substring(2);
+            AsnBuiltinType typeToMatch = AsnBuiltinType.valueOf(universal);
             for (Map.Entry<String, AsnSchemaComponentType> entry : tagsToComponentTypes.entrySet())
             {
                 AsnSchemaComponentType component = entry.getValue();
@@ -56,9 +51,8 @@ public class ChoiceTaggingStrategy implements TaggingStrategy
                 if (match(typeToMatch, cT))
                 {
                     logger.debug("component {} matches type {}", component.getName(), cT);
-                    //return component.getType().getChildName(tag);
 
-                    AsnSchemaNamedType namedType = component.getType().getMatchingChild(tag);
+                    AsnSchemaNamedType namedType = component.getType().getMatchingChild(rawTag, session);
 
                     String newTag = component.getName() + "/" + namedType.getName();
                     return new AsnSchemaNamedTypeImpl(newTag, namedType.getType());
@@ -77,7 +71,7 @@ public class ChoiceTaggingStrategy implements TaggingStrategy
             {
                 AsnSchemaComponentType component = entry.getValue();
                 //if (AsnSchemaType.NULL != component.getType().getChildType(tag))
-                AsnSchemaNamedType namedType = component.getType().getMatchingChild(tag);
+                AsnSchemaNamedType namedType = component.getType().getMatchingChild(rawTag, session);
                 if (AsnSchemaNamedType.NULL != namedType)
                 {
                     logger.debug("component {} matches tag {}", component.getTagName(), tag);
@@ -88,12 +82,7 @@ public class ChoiceTaggingStrategy implements TaggingStrategy
             }
         }
 
-
-
-        return (result == null) ?
-                AsnSchemaNamedType.NULL :
-                result;
-
+        return AsnSchemaNamedType.NULL;
     }
 
     @Override
@@ -152,7 +141,7 @@ public class ChoiceTaggingStrategy implements TaggingStrategy
 
             if (usedTags.containsKey(decoratedTag))
             {
-                logger.warn("Duplicate Tag {} for {}, already have {}", decoratedTag, componentType.getTagName(), usedTags.get(decoratedTag));
+                logger.warn("Choice: Duplicate Tag {} for {}, already have {}", decoratedTag, componentType.getTagName(), usedTags.get(decoratedTag));
                 throw new ParseException("Duplicate Tag", -1);
             }
 

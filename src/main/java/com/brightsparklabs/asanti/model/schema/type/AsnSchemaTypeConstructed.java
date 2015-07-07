@@ -206,9 +206,9 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
 
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag)
+    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
     {
-        return taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes);
+        return taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes, session);
     }
 
     /**
@@ -237,7 +237,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     @Override
     public AsnSchemaType getChildType(String tag)
     {
-        final AsnSchemaNamedType component = taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes);
+        final AsnSchemaNamedType component = taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes, null);
         return component == null ? AsnSchemaType.NULL : component.getType();
 
 
@@ -246,7 +246,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     @Override
     public String getChildName(String tag)
     {
-        final AsnSchemaNamedType component = taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes);
+        final AsnSchemaNamedType component = taggingStrategy.getMatchingComponent(tag, tagsToComponentTypes, null);
         return (component == null) ? "" : component.getName();
     }
 /*

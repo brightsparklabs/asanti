@@ -1,6 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
@@ -48,8 +49,8 @@ public interface AsnSchemaType
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
 
-    // TODO MJF
-    AsnSchemaNamedType getMatchingChild(String tag);
+    // TODO MJF - add javadoc here and delete the getChildType and getChildName
+    AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session);
 
     /**
      * Returns the {@link AsnSchemaType} of any component type matching tag
@@ -59,6 +60,7 @@ public interface AsnSchemaType
      *
      * @return the {@link AsnSchemaType} of any component type matching tag
      */
+
     AsnSchemaType getChildType(String tag);
 
     /**
@@ -123,7 +125,7 @@ public interface AsnSchemaType
         }
 
         @Override
-        public AsnSchemaNamedType getMatchingChild(String tag)
+        public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
         {
             return new AsnSchemaNamedTypeImpl("", AsnSchemaType.NULL);
         }

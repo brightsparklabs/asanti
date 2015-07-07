@@ -2,6 +2,7 @@ package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
@@ -146,9 +147,9 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag)
+    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
     {
-        return indirectType == null ? AsnSchemaNamedType.NULL : indirectType.getMatchingChild(tag);
+        return indirectType == null ? AsnSchemaNamedType.NULL : indirectType.getMatchingChild(tag, session);
     }
 
 

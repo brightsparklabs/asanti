@@ -76,6 +76,7 @@ public class AsnDecoder
         final List<DecodedAsnData> allDecodedAsnData = Lists.newArrayList();
         for (final AsnData asnData : allAsnData)
         {
+            System.out.println("*********");
             final DecodedAsnData decodedAsnData = decodeAsnData(asnData, asnSchema, topLevelType);
             allDecodedAsnData.add(decodedAsnData);
         }

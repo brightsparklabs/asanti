@@ -1,6 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
@@ -110,7 +111,7 @@ public class BaseAsnSchemaType implements AsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag)
+    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
     {
         return new AsnSchemaNamedTypeImpl("", AsnSchemaType.NULL);
     }

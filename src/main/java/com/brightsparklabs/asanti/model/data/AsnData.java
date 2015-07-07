@@ -42,6 +42,7 @@ public interface AsnData
      */
     public boolean contains(Pattern regex);
 
+    // TODO MJF - all this javadoc needs to be updated for the new raw tag format
     /**
      * Returns all tags found in the ASN data as a set of XPath like strings.
      * <p>

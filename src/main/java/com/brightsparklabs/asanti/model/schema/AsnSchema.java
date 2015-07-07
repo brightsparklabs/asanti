@@ -31,5 +31,6 @@ public interface AsnSchema
      *
      * @return the result of the decode attempt containing the decoded tag
      */
-    public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName);
+    public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName, DecodingSession session);
+
 }

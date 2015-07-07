@@ -206,49 +206,50 @@ public class Asanti
     {
         final AsnSchema asnSchema = AsnSchemaFileReader.read(asnFile);
 
-        logger.info("Expecting PASS");
-        ImmutableList<String> rawTags = ImmutableList.of("/1/1",
-                "/2/3/2/3/0/1",
-                "/2/0/2/2/1/18/0",
-                "/2/0/2/2/1/18/0",
-                "/1/3/0/0");
-        for (final String rawTag : rawTags)
-        {
-            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
-            logger.info("\t{}:\t decode {} => {}",
-                    result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag,
-                    result.getOutput().getTag());
-        }
-
-        logger.info("Expecting FAIL");
-        rawTags = ImmutableList.of("/1/14",
-                "/1/1/5",
-                "/2/3/2/3/0/100",
-                "/2/0/2/2/1/18/90",
-                "/1/3/0/80");
-        for (final String rawTag : rawTags)
-        {
-            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
-            logger.info("\t{}:\t decode {} => {}",
-                    result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag,
-                    result.getOutput().getTag());
-        }
-
-        logger.info("User testing:");
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in,
-                Charsets.UTF_8));
-        while (true)
-        {
-            System.out.print("\tEnter raw tag: ");
-            final String rawTag = reader.readLine();
-            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
-            logger.info("\t{}:\t decode {} => {}",
-                    result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag,
-                    result.getOutput().getTag());
-        }
+        // TODO MJF - what is all this here for???
+//        logger.info("Expecting PASS");
+//        ImmutableList<String> rawTags = ImmutableList.of("/1/1",
+//                "/2/3/2/3/0/1",
+//                "/2/0/2/2/1/18/0",
+//                "/2/0/2/2/1/18/0",
+//                "/1/3/0/0");
+//        for (final String rawTag : rawTags)
+//        {
+//            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
+//            logger.info("\t{}:\t decode {} => {}",
+//                    result.wasSuccessful() ? "PASS" : "FAIL",
+//                    rawTag,
+//                    result.getOutput().getTag());
+//        }
+//
+//        logger.info("Expecting FAIL");
+//        rawTags = ImmutableList.of("/1/14",
+//                "/1/1/5",
+//                "/2/3/2/3/0/100",
+//                "/2/0/2/2/1/18/90",
+//                "/1/3/0/80");
+//        for (final String rawTag : rawTags)
+//        {
+//            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
+//            logger.info("\t{}:\t decode {} => {}",
+//                    result.wasSuccessful() ? "PASS" : "FAIL",
+//                    rawTag,
+//                    result.getOutput().getTag());
+//        }
+//
+//        logger.info("User testing:");
+//        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in,
+//                Charsets.UTF_8));
+//        while (true)
+//        {
+//            System.out.print("\tEnter raw tag: ");
+//            final String rawTag = reader.readLine();
+//            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
+//            logger.info("\t{}:\t decode {} => {}",
+//                    result.wasSuccessful() ? "PASS" : "FAIL",
+//                    rawTag,
+//                    result.getOutput().getTag());
+//        }
     }
 
     /**
