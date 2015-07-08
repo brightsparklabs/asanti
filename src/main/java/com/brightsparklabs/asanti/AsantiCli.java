@@ -10,7 +10,7 @@ import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
+import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
@@ -43,7 +43,7 @@ public class AsantiCli
     // -------------------------------------------------------------------------
 
     /**
-     * Main method. Used for testing.
+     * Entry point to the application.
      *
      * @param args
      *         command line arguments
@@ -71,17 +71,18 @@ public class AsantiCli
                 case 2:
                     throw new Exception("Top level type name not supplied");
 
-                case 3: {
+                case 3:
+                {
                     final String asnFilename = args[0].endsWith(".asn") ? args[0] : args[1];
                     final String berFilename = args[0].endsWith(".asn") ? args[1] : args[0];
                     final String topLevelType = args[2];
                     final File asnFile = new File(asnFilename);
                     final File berFile = new File(berFilename);
                     // Load the schema once, and use it for all data files.
-                    final AsnSchema asnSchema = AsnSchemaFileReader.read(asnFile);
+                    final AsnSchema asnSchema = AsnSchemaReader.read(asnFile);
                     handleDataFile(berFile, asnSchema, topLevelType);
                 }
-                    break;
+                break;
 
                 default:
                     throw new Exception("No ASN Schema (.asn) or ASN Data (.ber) file supplied");
@@ -94,17 +95,20 @@ public class AsantiCli
         }
     }
 
-
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * Handle the loading of a single data (ber) file against the provided schema
-     * This will not propagate exceptions, will only log them.
-     * @param berFile ASN.1 BER binary file to decode
-     * @param asnSchema schema to decode against
-     * @param topLevelType top level type in the schema to decode objects as
+     * Handle the loading of a single data (ber) file against the provided schema This will not
+     * propagate exceptions, will only log them.
+     *
+     * @param berFile
+     *         ASN.1 BER binary file to decode
+     * @param asnSchema
+     *         schema to decode against
+     * @param topLevelType
+     *         top level type in the schema to decode objects as
      */
     private static void loadDataFile(File berFile, AsnSchema asnSchema, String topLevelType)
     {
@@ -123,7 +127,10 @@ public class AsantiCli
                 final DecodedAsnData pdu = pdus.get(i);
                 for (String tag : pdu.getTags())
                 {
-                    logger.info("\t{} => {} as {}", tag, pdu.getHexString(tag), pdu.getType(tag).getPrimitiveType());
+                    logger.info("\t{} => {} as {}",
+                            tag,
+                            pdu.getHexString(tag),
+                            pdu.getType(tag).getPrimitiveType());
                 }
                 for (String tag : pdu.getUnmappedTags())
                 {
@@ -131,7 +138,7 @@ public class AsantiCli
                 }
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             logger.error("Exception loading data file: " + e.getMessage());
         }
@@ -139,13 +146,17 @@ public class AsantiCli
     }
 
     /**
-     * This function will take a schema file and run it against the data file(s) passed.  If dataFile is a directory
-     * then it will load all files in the directory (against the schema), and recurse directories.
-     * This will attempt to ignore/skip files that are not ASN.1 BER files.
+     * This function will take a schema file and run it against the data file(s) passed.  If
+     * dataFile is a directory then it will load all files in the directory (against the schema),
+     * and recurse directories. This will attempt to ignore/skip files that are not ASN.1 BER files.
      * This will not propagate exceptions, will only log them.
-     * @param dataFile either a directory or ASN.1 BER binary file to decode
-     * @param asnSchema schema to decode against
-     * @param topLevelType the name of the top level
+     *
+     * @param dataFile
+     *         either a directory or ASN.1 BER binary file to decode
+     * @param asnSchema
+     *         schema to decode against
+     * @param topLevelType
+     *         the name of the top level
      */
     private static void handleDataFile(File dataFile, AsnSchema asnSchema, String topLevelType)
     {
@@ -154,15 +165,14 @@ public class AsantiCli
         {
             if (dataFile.isDirectory())
             {
-                File[] files = dataFile.listFiles();
-                for (File f : files)
+                for (File file : dataFile.listFiles())
                 {
-                    handleDataFile(f, asnSchema, topLevelType);
+                    handleDataFile(file, asnSchema, topLevelType);
                 }
             }
             else
             {
-                String name = dataFile.getCanonicalPath();
+                final String name = dataFile.getCanonicalPath();
 
                 // I don't really know what the 'right' file extensions are, so let's just rule out
                 // some of the ones that we have come across!
@@ -191,7 +201,6 @@ public class AsantiCli
 
     }
 
-
     /**
      * Test parsing an ASN.1 schema file
      *
@@ -203,7 +212,7 @@ public class AsantiCli
      */
     private static void testReadingAsnFile(File asnFile) throws IOException
     {
-        final AsnSchema asnSchema = AsnSchemaFileReader.read(asnFile);
+        final AsnSchema asnSchema = AsnSchemaReader.read(asnFile);
 
         logger.info("Expecting PASS");
         ImmutableList<String> rawTags = ImmutableList.of("/1/1",

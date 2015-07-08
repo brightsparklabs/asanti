@@ -7,7 +7,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
+import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
 import com.brightsparklabs.asanti.validator.ValidatorImpl;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -400,7 +400,7 @@ public class AsnSchemaParserTest
         // loads the AsantiSample test schema and checks all the tag decoding.
 
         final File asnFile = new File(getClass().getResource("/AsantiSample.asn").getFile());
-        AsnSchema instance = AsnSchemaFileReader.read(asnFile);
+        AsnSchema instance = AsnSchemaReader.read(asnFile);
 
         assertEquals("/Document",
                 instance.getDecodedTag("", "Document").getOutput().getTag());
@@ -1156,7 +1156,7 @@ public class AsnSchemaParserTest
         // TODO ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
         String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
         File schemaFile = new File(schemaFilename);
-        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+        final AsnSchema schema = AsnSchemaReader.read(schemaFile);
 //
 //        {
 //            String tag = "/2/1/2/2/1/0";
@@ -1354,7 +1354,7 @@ public class AsnSchemaParserTest
     {
         String schemaFilename = getClass().getResource("/TestImports.asn").getFile();
         File schemaFile = new File(schemaFilename);
-        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+        final AsnSchema schema = AsnSchemaReader.read(schemaFile);
 
         {
             String tag = "/0/1/1/0/4/7";
