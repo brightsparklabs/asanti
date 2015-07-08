@@ -75,7 +75,7 @@ public class DecodingSessionImpl implements DecodingSession
 
             if (subtract != 0)
             {
-                tag = AsnSchemaTag.create((index - subtract) + "." + tag.getTagPortion());
+                tag = AsnSchemaTag.create((index - subtract), tag);
             }
 
             lastOffset = subtract;

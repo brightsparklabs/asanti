@@ -60,35 +60,30 @@ public class AsnSchemaComponentTypeParser
      *
      * @param componentTypesText
      *         all component types contained in the construct as a string
-     *
+     * @param taggingMode
+     *          dictates the mode in which to handle/generate tags
      * @return each component type found in the construct
      *
      * @throws NullPointerException
-     *         if {@code componentTypesText} is {@code null}
+     *         if {@code componentTypesText} or {@code taggingMode} is {@code null}
      * @throws IllegalArgumentException
      *         if {@code componentTypesText} is blank
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
-    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText)
-            throws ParseException
-    {
-        // TODO MJF - this is only here to not have to update the tests while I am playing.
-        return parse(componentTypesText, AsnModuleTaggingMode.DEFAULT);
-    }
-
     public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText,
-            AsnModuleTaggingMode tagMode) throws ParseException
+            AsnModuleTaggingMode taggingMode) throws ParseException
     {
         checkNotNull(componentTypesText);
         checkArgument(!componentTypesText.trim().isEmpty(),
                 "Component Types Text must be specified");
+        checkNotNull(taggingMode);
 
         final List<String> componentTypeLines = splitComponentTypesText(componentTypesText);
         final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
         for (final String componentTypeLine : componentTypeLines)
         {
-            final AsnSchemaComponentType componentType = parseComponentType(componentTypeLine, tagMode);
+            final AsnSchemaComponentType componentType = parseComponentType(componentTypeLine, taggingMode);
             builder.add(componentType);
         }
         return builder.build();

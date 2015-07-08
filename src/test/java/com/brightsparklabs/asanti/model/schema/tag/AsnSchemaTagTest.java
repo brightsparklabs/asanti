@@ -25,11 +25,11 @@ public class AsnSchemaTagTest
     @Test
     public void testToStringAndGetRawTag() throws Exception
     {
-        AsnSchemaTag tag = AsnSchemaTag.create("1.0");
-        assertEquals("1.0", tag.toString());
+        AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
+        assertEquals("1[0]", tag.toString());
 
-        tag = AsnSchemaTag.create("0.u.Integer");
-        assertEquals("0.u.Integer", tag.toString());
+        tag = AsnSchemaTag.create("0[UNIVERSAL 2]");
+        assertEquals("0[UNIVERSAL 2]", tag.toString());
 
         // Test invalid tags
         tag = AsnSchemaTag.create("0");
@@ -48,7 +48,7 @@ public class AsnSchemaTagTest
         assertEquals("", tag.toString());
         assertEquals("", tag.getRawTag());
 
-        tag = AsnSchemaTag.create("u.Integer");
+        tag = AsnSchemaTag.create("[UNIVERSAL 2]");
         assertEquals("", tag.toString());
         assertEquals("", tag.getRawTag());
     }
@@ -56,10 +56,10 @@ public class AsnSchemaTagTest
     @Test
     public void testGetTagIndex() throws Exception
     {
-        AsnSchemaTag tag = AsnSchemaTag.create("1.0");
+        AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("1", tag.getTagIndex());
 
-        tag = AsnSchemaTag.create("0.u.Integer");
+        tag = AsnSchemaTag.create("0[UNIVERSAL 2]");
         assertEquals("0", tag.getTagIndex());
 
         // Test invalid tags
@@ -71,17 +71,17 @@ public class AsnSchemaTagTest
         assertEquals("", tag.getTagIndex());
         tag = AsnSchemaTag.create("0.");
         assertEquals("", tag.getTagIndex());
-        tag = AsnSchemaTag.create("u.Integer");
+        tag = AsnSchemaTag.create("[UNIVERSAL 2]");
         assertEquals("", tag.getTagIndex());
     }
 
     @Test
     public void testGetTagContextSpecific() throws Exception
     {
-        AsnSchemaTag tag = AsnSchemaTag.create("1.0");
+        AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("0", tag.getTagContextSpecific());
 
-        tag = AsnSchemaTag.create("0.u.Integer");
+        tag = AsnSchemaTag.create("0[UNIVERSAL 2]");
         assertEquals("", tag.getTagContextSpecific());
 
         // Test invalid tags
@@ -93,18 +93,18 @@ public class AsnSchemaTagTest
         assertEquals("", tag.getTagIndex());
         tag = AsnSchemaTag.create("0.");
         assertEquals("", tag.getTagIndex());
-        tag = AsnSchemaTag.create("u.Integer");
+        tag = AsnSchemaTag.create("[UNIVERSAL 2]");
         assertEquals("", tag.getTagIndex());
     }
 
     @Test
     public void testGetTagUniversal() throws Exception
     {
-        AsnSchemaTag tag = AsnSchemaTag.create("1.0");
+        AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("", tag.getTagUniversal());
 
-        tag = AsnSchemaTag.create("0.u.Integer");
-        assertEquals("u.Integer", tag.getTagUniversal());
+        tag = AsnSchemaTag.create("0[UNIVERSAL 2]");
+        assertEquals("UNIVERSAL 2", tag.getTagUniversal());
 
         // Test invalid tags
         tag = AsnSchemaTag.create("0");
@@ -115,18 +115,18 @@ public class AsnSchemaTagTest
         assertEquals("", tag.getTagIndex());
         tag = AsnSchemaTag.create("0.");
         assertEquals("", tag.getTagIndex());
-        tag = AsnSchemaTag.create("u.Integer");
+        tag = AsnSchemaTag.create("[UNIVERSAL 2]");
         assertEquals("", tag.getTagIndex());
     }
 
     @Test
     public void testGetTagPortion() throws Exception
     {
-        AsnSchemaTag tag = AsnSchemaTag.create("1.0");
+        AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("0", tag.getTagPortion());
 
-        tag = AsnSchemaTag.create("0.u.Integer");
-        assertEquals("u.Integer", tag.getTagPortion());
+        tag = AsnSchemaTag.create("0[UNIVERSAL 2]");
+        assertEquals("UNIVERSAL 2", tag.getTagPortion());
 
         // Test invalid tags
         tag = AsnSchemaTag.create("0");
@@ -137,7 +137,7 @@ public class AsnSchemaTagTest
         assertEquals("", tag.getTagIndex());
         tag = AsnSchemaTag.create("0.");
         assertEquals("", tag.getTagIndex());
-        tag = AsnSchemaTag.create("u.Integer");
+        tag = AsnSchemaTag.create("[UNIVERSAL 2]");
         assertEquals("", tag.getTagIndex());
     }
 }

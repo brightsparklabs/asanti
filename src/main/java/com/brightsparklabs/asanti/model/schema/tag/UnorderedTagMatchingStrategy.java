@@ -1,5 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedTypeImpl;
@@ -8,14 +9,16 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponent
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Created by Michael on 7/07/2015.
+ * This provides a mechanism to match raw tags from the AsnData with the way tags are stored in a
+ * Constructed type for Set and Choice types - which do not rely on the order of the components.  It
+ * assumes that the tags were created with the matching creation strategy.
  */
-public class ChoiceTagMatchingStrategy implements TagMatchingStrategy
+public class UnorderedTagMatchingStrategy implements TagMatchingStrategy
 {
-    public static final ChoiceTagMatchingStrategy CHOICE_TAG_MATCHING_STRATEGY
-            = new ChoiceTagMatchingStrategy();
+    public static final UnorderedTagMatchingStrategy UNORDERED_TAG_MATCHING_STRATEGY
+            = new UnorderedTagMatchingStrategy();
 
-    private ChoiceTagMatchingStrategy()
+    private UnorderedTagMatchingStrategy()
     {
     }
 
@@ -34,7 +37,7 @@ public class ChoiceTagMatchingStrategy implements TagMatchingStrategy
         }
 
         // Was one of the components a choice (with no tag) that was transparently replaced by the option?
-        String choiceTag = "u.Choice";
+        String choiceTag = AsnSchemaTag.createUniversalPortion(AsnBuiltinType.Choice);
         result = tagsToComponentTypes.get(choiceTag);
         if (result != null)
         {

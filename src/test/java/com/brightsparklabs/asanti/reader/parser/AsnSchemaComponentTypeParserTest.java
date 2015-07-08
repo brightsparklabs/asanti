@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
@@ -50,7 +51,8 @@ public class AsnSchemaComponentTypeParserTest
         PowerMockito.mockStatic(AsnSchemaTypeParser.class);
         // we want to capture the typeArgument that gets passed to the AsnSchemaTypeParser
         typeArgument = ArgumentCaptor.forClass(String.class);
-        when(AsnSchemaTypeParser.parse(typeArgument.capture())).thenReturn(AsnSchemaType.NULL);
+        ArgumentCaptor<AsnModuleTaggingMode> taggingMode = ArgumentCaptor.forClass(AsnModuleTaggingMode.class);
+        when(AsnSchemaTypeParser.parse(typeArgument.capture(), taggingMode.capture())).thenReturn(AsnSchemaType.NULL);
     }
 
     // -------------------------------------------------------------------------
@@ -63,7 +65,7 @@ public class AsnSchemaComponentTypeParserTest
         // test empty componentTypesText
         try
         {
-            AsnSchemaComponentTypeParser.parse("");
+            AsnSchemaComponentTypeParser.parse("", AsnModuleTaggingMode.DEFAULT);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -73,7 +75,7 @@ public class AsnSchemaComponentTypeParserTest
         // test null componentTypesText
         try
         {
-            AsnSchemaComponentTypeParser.parse(null);
+            AsnSchemaComponentTypeParser.parse(null, AsnModuleTaggingMode.DEFAULT);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -87,7 +89,7 @@ public class AsnSchemaComponentTypeParserTest
         // test parse invalid type name
         try
         {
-            AsnSchemaComponentTypeParser.parse("!invalidType [0] type");
+            AsnSchemaComponentTypeParser.parse("!invalidType [0] type", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -97,7 +99,7 @@ public class AsnSchemaComponentTypeParserTest
         // test parse no type
         try
         {
-            AsnSchemaComponentTypeParser.parse("typeName [0]");
+            AsnSchemaComponentTypeParser.parse("typeName [0]", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -107,7 +109,7 @@ public class AsnSchemaComponentTypeParserTest
         // test parse no type name
         try
         {
-            AsnSchemaComponentTypeParser.parse("[0] type");
+            AsnSchemaComponentTypeParser.parse("[0] type", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -117,7 +119,7 @@ public class AsnSchemaComponentTypeParserTest
         // test parse invalid type
         try
         {
-            AsnSchemaComponentTypeParser.parse("typeName [0] type?");
+            AsnSchemaComponentTypeParser.parse("typeName [0] type?", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -127,7 +129,7 @@ public class AsnSchemaComponentTypeParserTest
         // test invalid pseudo type
         try
         {
-            AsnSchemaComponentTypeParser.parse("typeName [0] SEQUENCE {");
+            AsnSchemaComponentTypeParser.parse("typeName [0] SEQUENCE {", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -140,7 +142,7 @@ public class AsnSchemaComponentTypeParserTest
     {
         // Document type
         ImmutableList<AsnSchemaComponentType> actualComponents = AsnSchemaComponentTypeParser.parse(
-                "header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL");
+                "header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL", AsnModuleTaggingMode.DEFAULT);
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForDocument(),
                 actualComponents);
@@ -158,7 +160,7 @@ public class AsnSchemaComponentTypeParserTest
 
         // Body type
         actualComponents = AsnSchemaComponentTypeParser.parse(
-                "lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL");
+                "lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL", AsnModuleTaggingMode.DEFAULT);
         assertEquals(6+4, callArguments.size());
         assertEquals("ModificationMetadata", callArguments.get(6));
         assertEquals("Section-Note", callArguments.get(7));
@@ -171,7 +173,7 @@ public class AsnSchemaComponentTypeParserTest
 
         // Section-Main type
         actualComponents = AsnSchemaComponentTypeParser.parse(
-                "text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph, sections [3] SET OF SET { number [1] INTEGER, text [2] OCTET STRING }");
+                "text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph, sections [3] SET OF SET { number [1] INTEGER, text [2] OCTET STRING }", AsnModuleTaggingMode.DEFAULT);
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForSectionMain(),
                 actualComponents);

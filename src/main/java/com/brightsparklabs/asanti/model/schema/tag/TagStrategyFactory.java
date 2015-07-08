@@ -15,7 +15,7 @@ public class TagStrategyFactory
             return SequenceTagMatchingStrategy.SEQUENCE_TAG_MATCHING_STRATEGY;
         }
 
-        return ChoiceTagMatchingStrategy.CHOICE_TAG_MATCHING_STRATEGY;
+        return UnorderedTagMatchingStrategy.UNORDERED_TAG_MATCHING_STRATEGY;
     }
 
     public static TagCreationStrategy getTagCreationStrategy(AsnPrimitiveType type, AsnModuleTaggingMode tagMode)

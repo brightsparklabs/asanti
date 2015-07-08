@@ -145,6 +145,7 @@ public class AsnSchemaModuleParser
                 line = lineIterator.next();
             }
 
+            // TODO MJF - tidy up
             //"(([A-Z]+) TAGS)? ::=");
             //"DEFINITIONS ((AUTOMATIC|IMPLICIT|EXPLICIT) TAGS)? ::=");
             String s = lines.toString();

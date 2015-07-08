@@ -9,7 +9,6 @@ import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.text.html.HTML;
 import java.text.ParseException;
 import java.util.Map;
 
@@ -27,9 +26,11 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
 
     // TODO MJF javadoc
     private static final TagDecorator TAG_DECORATOR_SEQUENCE = new SequenceTagDecorator();
+
     private static final TagDecorator TAG_DECORATOR_UNORDERED = new UnorderedTagDecorator();
 
     private static final TagAutomator TAG_AUTOMATOR_CHECK = new TagAutomatorCheck();
+
     private static final TagAutomator TAG_AUTOMATOR_FALSE = new TagAutomatorFalse();
 
     // -------------------------------------------------------------------------
@@ -37,6 +38,7 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
     // -------------------------------------------------------------------------
 
     TagDecorator tagDecorator;
+
     TagAutomator tagAutomator;
 
     private TagCreationStrategyImpl(TagDecorator tagDecorator, TagAutomator tagAutomator)
@@ -47,7 +49,9 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
 
     public static TagCreationStrategy create(AsnPrimitiveType type, AsnModuleTaggingMode tagMode)
     {
-        TagAutomator tagAutomator = tagMode == AsnModuleTaggingMode.AUTOMATIC ? TAG_AUTOMATOR_CHECK : TAG_AUTOMATOR_FALSE;
+        TagAutomator tagAutomator = tagMode == AsnModuleTaggingMode.AUTOMATIC ?
+                TAG_AUTOMATOR_CHECK :
+                TAG_AUTOMATOR_FALSE;
 
         if (type == AsnPrimitiveType.SEQUENCE)
         {
@@ -58,7 +62,8 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
     }
 
     @Override
-    public ImmutableMap<String, AsnSchemaComponentType> getTagsForComponents(Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
+    public ImmutableMap<String, AsnSchemaComponentType> getTagsForComponents(
+            Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
     {
         final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder
                 = ImmutableMap.builder();
@@ -68,22 +73,22 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
 
         // Key: decorated tag, Value: the component name (only for useful error messages)
         //Map<String, String> usedTags = Maps.newHashMap();
-        Map<String, String> usedTags = Maps.newLinkedHashMap(); // use this so that we have known iteration order for later...
+        Map<String, String> usedTags
+                = Maps.newLinkedHashMap(); // use this so that we have known iteration order for later...
 
         int index = 0;
         int autoTagNumber = 0;
         for (final AsnSchemaComponentType componentType : componentTypes)
         {
-            // auto tag if appropriate
+            // auto tag if appropriate, otherwise use the components tag (which will be a context-specific),
+            // otherwise use the Universal tag
             final String tag = (autoTag) ?
-                                    String.valueOf(autoTagNumber) :
-                                    Strings.isNullOrEmpty(componentType.getTag()) ?
-                                            //String.format("u.%s", componentType.getType().getBuiltinTypeAA()) :
-                                            AsnSchemaTag.getUniversalTagForBuiltInType(componentType.getType().getBuiltinTypeAA()) :
-                                            componentType.getTag();
+                    String.valueOf(autoTagNumber) :
+                    Strings.isNullOrEmpty(componentType.getTag()) ?
+                            AsnSchemaTag.createUniversalPortion(componentType.getType().getBuiltinTypeAA()) :
+                            componentType.getTag();
 
-
-            final String decoratedTag =  tagDecorator.getDecoratedTag(index, tag);
+            final String decoratedTag = tagDecorator.getDecoratedTag(index, tag);
 
             if (!componentType.isOptional())
             {
@@ -93,8 +98,10 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
 
             if (usedTags.containsKey(decoratedTag))
             {
-                logger.warn("Duplicate Tag {} for {}, already have {}", decoratedTag, componentType.getTagName(), usedTags.get(
-                        decoratedTag));
+                logger.warn("Duplicate Tag {} for {}, already have {}",
+                        decoratedTag,
+                        componentType.getTagName(),
+                        usedTags.get(decoratedTag));
                 throw new ParseException("Duplicate Tag", -1);
             }
 
@@ -106,7 +113,6 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
         return tagsToComponentTypesBuilder.build();
     }
 
-
     private interface TagDecorator
     {
         String getDecoratedTag(int index, String tag);
@@ -117,7 +123,7 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
         @Override
         public String getDecoratedTag(int index, String tag)
         {
-            return String.format("%d.%s", index, tag);
+            return AsnSchemaTag.createRawTag(index, tag);
         }
     }
 

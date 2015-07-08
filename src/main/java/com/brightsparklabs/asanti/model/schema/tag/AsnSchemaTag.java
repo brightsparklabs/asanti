@@ -1,6 +1,5 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.decoder.builtin.IntegerDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
@@ -11,8 +10,8 @@ import java.util.regex.Pattern;
 
 /**
  * Models a tag in a 'constructed' type. A tag conforms to one of the following formats: <ul>
- * <li>tagNumber (e.g. {@code 1}</li> <li>tagIndex.tagNumber (e.g. {@code 0.1} or {@code
- * 1.u.Integer}</li> </ul>
+ * <li>tagNumber (e.g. {@code 1}</li> <li>tagIndex.tagNumber (e.g. {@code 0.1} or {@code 1.u.2}</li>
+ * </ul>
  */
 public class AsnSchemaTag
 {
@@ -24,8 +23,10 @@ public class AsnSchemaTag
     private static final AsnSchemaTag NULL = new AsnSchemaTag("", "", "");
 
     /** pattern to match a raw tag coming out of the BER decoder */
+//    private static final Pattern PATTERN_TAG = Pattern.compile(
+//            "^([0-9]+)(\\.(([0-9]+)|(u\\.([a-zA-Z0-9]+))))$");
     private static final Pattern PATTERN_TAG = Pattern.compile(
-            "^([0-9]+)(\\.(([0-9]+)|(u\\.([a-zA-Z0-9]+))))$");
+            "^([0-9]+)(\\[(([0-9]+)|(UNIVERSAL ([a-zA-Z0-9]+)))\\])$");
 
     // ---------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -87,7 +88,6 @@ public class AsnSchemaTag
         final Matcher matcher = PATTERN_TAG.matcher(rawTag);
         if (matcher.matches())
         {
-
             return new AsnSchemaTag(matcher.group(1), matcher.group(4), matcher.group(5));
         }
         else
@@ -95,6 +95,43 @@ public class AsnSchemaTag
             return NULL;
         }
     }
+
+    /**
+     * Creates an instance, deriving the Universal type from the type passed in
+     *
+     * @param tagIndex
+     *         tag index component of the raw tag
+     * @param type
+     *         tag universal component of the raw tag.  Set to (@code null} if no universal
+     *         component.
+     */
+    public static AsnSchemaTag create(String tagIndex, AsnBuiltinType type)
+    {
+        return new AsnSchemaTag(tagIndex, "", createUniversalPortion(type));
+    }
+
+    public static AsnSchemaTag create(int tagIndex, String tag)
+    {
+        return create(createRawTag(tagIndex, tag));
+    }
+
+    public static AsnSchemaTag create(int tagIndex, AsnSchemaTag tag)
+    {
+        return new AsnSchemaTag(Integer.toString(tagIndex), tag.getTagContextSpecific(), tag.getTagUniversal());
+    }
+
+    public static String createRawTag(int tagIndex, String tag)
+    {
+        return String.format("%d[%s]", tagIndex, tag);
+        //return String.format("%d.%s", tagIndex, tag);
+    }
+
+    public static String createUniversalPortion(AsnBuiltinType type)
+    {
+        return "UNIVERSAL " + getUniversalTagForBuiltInType(type);
+        //return "u." + getUniversalTagForBuiltInType(type);
+    }
+
 
     // ---------------------------------------------------------------------
     // PUBLIC METHODS
@@ -120,7 +157,8 @@ public class AsnSchemaTag
             return "";
         }
 
-        return tagIndex + "." + getTagPortion();
+        return tagIndex + "[" + getTagPortion() + "]";
+        //return tagIndex + "." + getTagPortion();
     }
 
     /**
@@ -136,7 +174,7 @@ public class AsnSchemaTag
 
     /**
      * Returns the context-specific component of the raw tag. For a raw tag {@code "0.1"} this is
-     * {@code "1"}.  For raw tag {@code "0.u.Integer"} this is {@code ""}.
+     * {@code "1"}.  For raw tag {@code "0.u.2"} this is {@code ""}.
      *
      * @return the tag number
      */
@@ -146,8 +184,8 @@ public class AsnSchemaTag
     }
 
     /**
-     * Returns the universal component of the raw tag. For a raw tag {@code "0.u.Integer"} this is
-     * {@code "u.Integer"}.  For raw tag {@code "0.1"} this is {@code ""}.
+     * Returns the universal component of the raw tag. For a raw tag {@code "0.u.2"} this is {@code
+     * "u.2"}.  For raw tag {@code "0.1"} this is {@code ""}.
      *
      * @return the tag number
      */
@@ -157,8 +195,8 @@ public class AsnSchemaTag
     }
 
     /**
-     * Returns the non-index component of the raw tag. For a raw tag {@code "0.u.Integer"} this is
-     * {@code "u.Integer"}.  For raw tag {@code "0.1"} this is {@code "1"}.  This returns either the
+     * Returns the non-index component of the raw tag. For a raw tag {@code "0.u.2"} this is {@code
+     * "u.2"}.  For raw tag {@code "0.1"} this is {@code "1"}.  This returns either the
      * context-specific or universal tag, which ever is not empty
      *
      * @return the tag number
@@ -168,92 +206,80 @@ public class AsnSchemaTag
         return tagUniversal.isEmpty() ? tagContextSpecific : tagUniversal;
     }
 
-
     public static String getUniversalTagForBuiltInType(AsnBuiltinType type)
     {
         if (type == AsnBuiltinType.Choice)
         {
             // Make a special exception for choice as this never makes it to an encoded tag.
-            return "u.Choice";
+            return "Choice";
         }
 
-        int universalTag = Optional.fromNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type))
-                .or(0);
-
-        if (universalTag != 0)
-        {
-            return "u." + universalTag;
-        }
-
-        return "";  // TODO MJF - this or null???
+        return Optional.fromNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type))
+                .or("");
     }
 
     public static AsnBuiltinType getBuiltInTypeForUniversalTag(int universalTag)
     {
-
-        AsnBuiltinType type = Optional.fromNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag))
+        return Optional.fromNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag))
                 .or(AsnBuiltinType.Null);
-
-        return type;
     }
 
-    private static ImmutableMap<AsnBuiltinType, Integer> BUILTIN_TYPE_TO_UNIVERSAL_TAG = ImmutableMap.<AsnBuiltinType, Integer>builder()
-            .put(AsnBuiltinType.Boolean, 1)
-            .put(AsnBuiltinType.Integer, 2)
-            .put(AsnBuiltinType.BitString, 3)
-            .put(AsnBuiltinType.OctetString, 4)
-            .put(AsnBuiltinType.Null, 5)
-            .put(AsnBuiltinType.Oid, 6)
-            //.put(AsnBuiltinType. ObjectDescriptor, 7)
-            .put(AsnBuiltinType.InstanceOf, 8)
-            .put(AsnBuiltinType.External, 8)
-            .put(AsnBuiltinType.Real, 9)
-            .put(AsnBuiltinType.Enumerated, 10)
-            .put(AsnBuiltinType.EmbeddedPDV, 11)
-            .put(AsnBuiltinType.Utf8String, 12)
-            .put(AsnBuiltinType.RelativeOid, 13)
-            //.put( reserved, 14)
-            //.put( reserved, 15)
-            .put(AsnBuiltinType.Sequence, 16)
-            .put(AsnBuiltinType.SequenceOf, 16)
-            .put(AsnBuiltinType.Set, 17)
-            .put(AsnBuiltinType.SetOf, 17)
-            .put(AsnBuiltinType.NumericString, 18)
-            .put(AsnBuiltinType.PrintableString, 19)
-            .put(AsnBuiltinType.TeletexString, 20)
-            .put(AsnBuiltinType.VideotexString, 21)
-            .put(AsnBuiltinType.Ia5String, 22)
-            .put(AsnBuiltinType.UtcTime, 23)
-            .put(AsnBuiltinType.GeneralizedTime, 24)
-            .put(AsnBuiltinType.GraphicString, 25)
-            .put(AsnBuiltinType.VisibleString, 26)
-            .put(AsnBuiltinType.GeneralString, 27)
-            .put(AsnBuiltinType.UniversalString, 28)
-            .put(AsnBuiltinType.CharacterString, 29)
-            .put(AsnBuiltinType.BmpString, 30)
+    private static ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG
+            = ImmutableMap.<AsnBuiltinType, String>builder()
+            .put(AsnBuiltinType.Boolean, "1")
+            .put(AsnBuiltinType.Integer, "2")
+            .put(AsnBuiltinType.BitString, "3")
+            .put(AsnBuiltinType.OctetString, "4")
+            .put(AsnBuiltinType.Null, "5")
+            .put(AsnBuiltinType.Oid, "6")
+                    //.put(AsnBuiltinType. ObjectDescriptor, 7)
+            .put(AsnBuiltinType.InstanceOf, "8")
+            .put(AsnBuiltinType.External, "8")
+            .put(AsnBuiltinType.Real, "9")
+            .put(AsnBuiltinType.Enumerated, "10")
+            .put(AsnBuiltinType.EmbeddedPDV, "11")
+            .put(AsnBuiltinType.Utf8String, "12")
+            .put(AsnBuiltinType.RelativeOid, "13")
+                    //.put( reserved, 14)
+                    //.put( reserved, 15)
+            .put(AsnBuiltinType.Sequence, "16")
+            .put(AsnBuiltinType.SequenceOf, "16")
+            .put(AsnBuiltinType.Set, "17")
+            .put(AsnBuiltinType.SetOf, "17")
+            .put(AsnBuiltinType.NumericString, "18")
+            .put(AsnBuiltinType.PrintableString, "19")
+            .put(AsnBuiltinType.TeletexString, "20")
+            .put(AsnBuiltinType.VideotexString, "21")
+            .put(AsnBuiltinType.Ia5String, "22")
+            .put(AsnBuiltinType.UtcTime, "23")
+            .put(AsnBuiltinType.GeneralizedTime, "24")
+            .put(AsnBuiltinType.GraphicString, "25")
+            .put(AsnBuiltinType.VisibleString, "26")
+            .put(AsnBuiltinType.GeneralString, "27")
+            .put(AsnBuiltinType.UniversalString, "28")
+            .put(AsnBuiltinType.CharacterString, "29")
+            .put(AsnBuiltinType.BmpString, "30")
             .build();
 
-    private static ImmutableMap<Integer, AsnBuiltinType> UNIVERSAL_TAG_TO_BUILTIN_TYPE = ImmutableMap.<Integer, AsnBuiltinType>builder()
+    private static ImmutableMap<Integer, AsnBuiltinType> UNIVERSAL_TAG_TO_BUILTIN_TYPE
+            = ImmutableMap.<Integer, AsnBuiltinType>builder()
             .put(1, AsnBuiltinType.Boolean)
             .put(2, AsnBuiltinType.Integer)
             .put(3, AsnBuiltinType.BitString)
             .put(4, AsnBuiltinType.OctetString)
-            .put(5, AsnBuiltinType.Null)
-            .put(6, AsnBuiltinType.Oid)
+            .put(5, AsnBuiltinType.Null).put(6, AsnBuiltinType.Oid)
                     //.put(AsnBuiltinType. ObjectDescriptor, 7)
-            .put(8, AsnBuiltinType.InstanceOf)
-            .put(9, AsnBuiltinType.External)
-            //.put(9, AsnBuiltinType.Real)
+            .put(8, AsnBuiltinType.InstanceOf).put(9, AsnBuiltinType.External)
+                    //.put(9, AsnBuiltinType.Real)
             .put(10, AsnBuiltinType.Enumerated)
             .put(11, AsnBuiltinType.EmbeddedPDV)
-            .put(12, AsnBuiltinType.Utf8String)
-            .put(13, AsnBuiltinType.RelativeOid)
+            .put(12, AsnBuiltinType.Utf8String).put(13, AsnBuiltinType.RelativeOid)
                     //.put( reserved, 14)
                     //.put( reserved, 15)
             .put(16, AsnBuiltinType.Sequence)
-            //.put(16, AsnBuiltinType.SequenceOf)
+                    //.put(16, AsnBuiltinType.SequenceOf)
             .put(17, AsnBuiltinType.Set)
-            //.put(17, AsnBuiltinType.SetOf)
+                    //.put(17, AsnBuiltinType.SetOf)
             .put(18, AsnBuiltinType.NumericString)
             .put(19, AsnBuiltinType.PrintableString)
             .put(20, AsnBuiltinType.TeletexString)
@@ -268,8 +294,4 @@ public class AsnSchemaTag
             .put(29, AsnBuiltinType.CharacterString)
             .put(30, AsnBuiltinType.BmpString)
             .build();
-
-
-
-
 }

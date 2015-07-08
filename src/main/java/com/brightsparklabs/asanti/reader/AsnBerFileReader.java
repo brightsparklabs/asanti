@@ -34,12 +34,19 @@ import static com.brightsparklabs.asanti.common.ByteArrays.*;
  */
 public class AsnBerFileReader
 {
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(AsnBerFileReader.class);
+
+    /** this is used to construct tags of the UNIVERSAL type */
+    //private static final String TAG_FORMATTER = "%s/%d.%s";
+    //private static final String TAG_FORMATTER_UNIVERSAL = "%s/%d.u.%s";
+    private static final String TAG_FORMATTER = "%s/%d[%s]";
+    private static final String TAG_FORMATTER_UNIVERSAL = "%s/%d[UNIVERSAL %s]";
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -83,18 +90,22 @@ public class AsnBerFileReader
 
         final List<AsnData> result = Lists.newArrayList();
 
+        int index = 0;
         DERObject asnObject = asnInputStream.readObject();
         while (asnObject != null)
         {
-            logger.debug(ASN1Dump.dumpAsString(asnObject));
+            logger.trace(ASN1Dump.dumpAsString(asnObject));
 
-            final Map<String, byte[]> tagsToData = Maps.newHashMap();
-            logger.debug("processDerObject: {}", asnObject.toString());
+            //final Map<String, byte[]> tagsToData = Maps.newHashMap();
+            final Map<String, byte[]> tagsToData
+                    = Maps.newLinkedHashMap();  // we want to preserve input order
+            logger.trace("processDerObject {}: {}", index, asnObject.toString());
 
             processDerObject(asnObject, "", tagsToData);
             final AsnData asnData = new AsnDataImpl(tagsToData);
             result.add(asnData);
             asnObject = asnInputStream.readObject();
+            index++;
 
             /*
              * NOTE: do not use '>=' in the below if statement as we use 0 (or
@@ -141,7 +152,7 @@ public class AsnBerFileReader
             throws IOException
     {
         // TODO MJF
-        logger.debug("{}DerObject entry,  prefix {}, tagsToData.size() {} => {} : {}",
+        logger.trace("{}DerObject entry,  prefix {}, tagsToData.size() {} => {} : {}",
                 indent(),
                 prefix,
                 tagsToData.size(),
@@ -240,7 +251,7 @@ public class AsnBerFileReader
             throws IOException
     {
         // TODO MJF
-        logger.debug("{}ElementsFromSequenceOrSet prefix {}, tagsToData.size() {}",
+        logger.trace("{}ElementsFromSequenceOrSet prefix {}, tagsToData.size() {}",
                 indent(),
                 prefix,
                 tagsToData.size());
@@ -257,32 +268,24 @@ public class AsnBerFileReader
             boolean isTagged = (derObject instanceof ASN1TaggedObject);
             if (!isTagged)
             {
-                logger.debug("not tagged is type: {}", derObject.getClass().getName());
-            }
-            if (explicit)
-            {
-                logger.debug("Explicit Sequence");
-                logger.debug("Explicit Sequence is {} {}",
-                        derObject.getClass().getName(),
-                        (derObject instanceof ASN1Sequence) ? "ASN1Sequence" : "");
+                logger.trace("not tagged is type: {}", derObject.getClass().getName());
             }
             String elementPrefix = prefix;
+
             if (!isTagged)
             {
                 // Ideally we would extract Choice this way too, but since a Choice does not get
                 // encoded we have to extract that using the schema during the decoding stage.
                 if (derObject instanceof ASN1Sequence)
                 {
-                    // elementPrefix = String.format("%s/%d.u.Sequence", prefix, index);
-                    elementPrefix = String.format("%s/%d.%s",
+                    elementPrefix = String.format(TAG_FORMATTER_UNIVERSAL,
                             prefix,
                             index,
                             AsnSchemaTag.getUniversalTagForBuiltInType(AsnBuiltinType.Sequence));
                 }
                 else if (derObject instanceof ASN1Set)
                 {
-                    //elementPrefix = String.format("%s/%d.u.Set", prefix, index);
-                    elementPrefix = String.format("%s/%d.%s",
+                    elementPrefix = String.format(TAG_FORMATTER_UNIVERSAL,
                             prefix,
                             index,
                             AsnSchemaTag.getUniversalTagForBuiltInType(AsnBuiltinType.Set));
@@ -290,17 +293,13 @@ public class AsnBerFileReader
             }
             else if (explicit)
             {
-                //                elementPrefix = String.format("%s/%d.u.%s",
-                //                        prefix,
-                //                        index,
-                //                        isSequence ? "Sequence" : "Set");
-                elementPrefix = String.format("%s/%d.%s",
+                elementPrefix = String.format(TAG_FORMATTER_UNIVERSAL,
                         prefix,
                         index,
                         AsnSchemaTag.getUniversalTagForBuiltInType(type));
             }
 
-            logger.debug("elementPrefix {}, isTagged {} explicit {}, index {}",
+            logger.trace("elementPrefix {}, isTagged {} explicit {}, index {}",
                     elementPrefix,
                     isTagged,
                     explicit,
@@ -333,7 +332,7 @@ public class AsnBerFileReader
 
         DERObject obj = asnTaggedObject.getObject();
 
-        prefix = prefix + "/" + index + "." + asnTaggedObject.getTagNo();
+        prefix = String.format(TAG_FORMATTER, prefix, index, asnTaggedObject.getTagNo());
 
         byte[] bytes = obj.getDEREncoded();
         if ((bytes[0] & 0xE0) == 0xA0)
@@ -342,11 +341,12 @@ public class AsnBerFileReader
             index = 0;
         }
 
-        logger.debug("{}TaggedObject entry - prefix {}, adding {}, explicit {} ",
+        logger.trace("{}TaggedObject entry - prefix {}, adding {}, explicit {} ",
                 indent(),
                 prefix,
                 asnTaggedObject.getTagNo(),
                 asnTaggedObject.isExplicit());
+
         processDerObject(asnTaggedObject.getObject(),
                 prefix,
                 tagsToData,
@@ -415,26 +415,18 @@ public class AsnBerFileReader
             value = Arrays.copyOfRange(tlvData, firstDataByteIndex, tlvData.length);
         }
 
-        // TODO MJF
-        //if (explicit)
-        //if (!isTagged || explicit)
         if (!isTagged)
         {
-            String sss = derObject.toString();
             // add a faux tag.
-            if (index == -1)
-            {
-                logger.debug("***** NEGATIVE TAG");
-            }
-            //tag += "/" + index + ".u." + universalTagToAsnBuiltinType(t);
-            tag += "/" + index + ".u." + t;
+            tag = String.format(TAG_FORMATTER_UNIVERSAL, tag, index, t);
         }
-        logger.debug("{}PrimitiveDerObject.  T: [{}],  tagsToData.put {} : {} - object => {}",
+        logger.trace("{}PrimitiveDerObject.  T: [{}],  tagsToData.put {} : {} - object => {}",
                 indent(),
-                (!isTagged ? (" UNIVERSAL " + t) : index),
+                (!isTagged ? ("UNIVERSAL " + t) : index),
                 tag,
                 toHexString(value),
                 toHexString(derObject.getDEREncoded()));
+
         tagsToData.put(tag, value);
     }
 }

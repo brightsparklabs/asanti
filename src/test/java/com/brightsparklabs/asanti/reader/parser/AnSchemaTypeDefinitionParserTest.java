@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
@@ -56,7 +57,8 @@ public class AnSchemaTypeDefinitionParserTest
         PowerMockito.mockStatic(AsnSchemaTypeParser.class);
         // we want to capture the parserArgument that gets passed to the AsnSchemaTypeParser
         parserArgument = ArgumentCaptor.forClass(String.class);
-        when(AsnSchemaTypeParser.parse(parserArgument.capture())).thenReturn(AsnSchemaType.NULL);
+        ArgumentCaptor<AsnModuleTaggingMode> taggingMode = ArgumentCaptor.forClass(AsnModuleTaggingMode.class);
+        when(AsnSchemaTypeParser.parse(parserArgument.capture(), taggingMode.capture())).thenReturn(AsnSchemaType.NULL);
     }
 
     // -------------------------------------------------------------------------
@@ -69,7 +71,7 @@ public class AnSchemaTypeDefinitionParserTest
         // null name
         try
         {
-            AsnSchemaTypeDefinitionParser.parse(null, "SomeType");
+            AsnSchemaTypeDefinitionParser.parse(null, "SomeType", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -79,7 +81,7 @@ public class AnSchemaTypeDefinitionParserTest
         // blank name
         try
         {
-            AsnSchemaTypeDefinitionParser.parse("", "SomeType");
+            AsnSchemaTypeDefinitionParser.parse("", "SomeType", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -87,7 +89,7 @@ public class AnSchemaTypeDefinitionParserTest
         }
         try
         {
-            AsnSchemaTypeDefinitionParser.parse(" ", "SomeType");
+            AsnSchemaTypeDefinitionParser.parse(" ", "SomeType", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -97,7 +99,7 @@ public class AnSchemaTypeDefinitionParserTest
         // blank value
         try
         {
-            AsnSchemaTypeDefinitionParser.parse("TEST_NAME", "");
+            AsnSchemaTypeDefinitionParser.parse("TEST_NAME", "", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -106,10 +108,19 @@ public class AnSchemaTypeDefinitionParserTest
         // nulll value
         try
         {
-            AsnSchemaTypeDefinitionParser.parse("TEST_NAME", null);
+            AsnSchemaTypeDefinitionParser.parse("TEST_NAME", null, AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
+        {
+        }
+        // nulll tagging mode
+        try
+        {
+            AsnSchemaTypeDefinitionParser.parse("TEST_NAME", "SomeType", null);
+            fail("NullPointerException not thrown");
+        }
+        catch (final NullPointerException ex)
         {
         }
 
@@ -120,7 +131,7 @@ public class AnSchemaTypeDefinitionParserTest
     {
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
                 "TEST_NAME",
-                "IA5String (SIZE (10))");
+                "IA5String (SIZE (10))", AsnModuleTaggingMode.DEFAULT);
 
         assertEquals("TEST_NAME", result.getName());
         assertEquals("IA5String (SIZE (10))", parserArgument.getValue());
@@ -134,7 +145,7 @@ public class AnSchemaTypeDefinitionParserTest
                                 "That is where all the real parsing is done.";
 
         final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
-                "TEST_NAME", toParser);
+                "TEST_NAME", toParser, AsnModuleTaggingMode.DEFAULT);
 
         assertEquals("TEST_NAME", result.getName());
         assertEquals(toParser, parserArgument.getValue());

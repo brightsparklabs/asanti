@@ -147,9 +147,11 @@ public class AsnSchemaImpl implements AsnSchema
 
         decodedTags.add(0, topLevelTypeName);
         decodedTags.add(0, ""); // empty string prefixes just the root separator
-        final String decodedTagPath = tagJoiner.join(decodedTags);
+        // The raw tags create a new '/' for collection elements (eg .../foo/[0])
+        // and we would rather have .../foo[0]
+        final String decodedTagPath = tagJoiner.join(decodedTags).replaceAll("/\\[", "\\[");
 
-        logger.debug("getDecodedTag {} => {}", rawTag, decodedTagPath);
+        logger.trace("getDecodedTag {} => {}", rawTag, decodedTagPath);
 
         final DecodedTag decodedTag = new DecodedTag(decodedTagPath,
                 rawTag,

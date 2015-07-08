@@ -8,8 +8,11 @@ import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
@@ -146,6 +149,8 @@ public class MockAsnSchema
     /** singleton instance */
     private static AsnSchema instance;
 
+    private static Set<String> rawTags = Sets.newLinkedHashSet();
+
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -163,29 +168,52 @@ public class MockAsnSchema
         }
 
         instance = mock(AsnSchema.class);
-        configureGetDecodedTag(instance,
-                "/1/0/1",
-                "Document",
-                "/Document/header/published/date",
-                true,
-                AsnBuiltinType.Date);
-        configureGetDecodedTag(instance,
-                "/2/0/0",
-                "Document",
-                "/Document/body/lastModified/date",
-                true,
-                AsnBuiltinType.Date);
-        configureGetDecodedTag(instance, "/2/1/1", "Document", "/Document/body/prefix/text", true, AsnBuiltinType.OctetString);
-        configureGetDecodedTag(instance, "/2/2/1", "Document", "/Document/body/content/text", true, AsnBuiltinType.OctetString);
-        configureGetDecodedTag(instance,
-                "/3/0/1",
-                "Document",
-                "/Document/footer/author/firstName",
-                true,
-                AsnBuiltinType.OctetString);
-        configureGetDecodedTag(instance, "/2/2/99", "Document", "/Document/body/content/99", false,
-                AsnBuiltinType.Null);
-        configureGetDecodedTag(instance, "/99/1/1", "Document", "/Document/99/1/1", false, AsnBuiltinType.Null);
+
+        ImmutableSet<OperationResult<DecodedTag>> results
+                = ImmutableSet.<OperationResult<DecodedTag>>builder()
+                .add(configureGetDecodedTag("/1/0/1",
+                        "/Document/header/published/date",
+                        true,
+                        AsnBuiltinType.Date))
+                .add(configureGetDecodedTag("/2/0/0",
+                        "/Document/body/lastModified/date",
+                        true,
+                        AsnBuiltinType.Date))
+                .add(configureGetDecodedTag("/2/1/1",
+                        "/Document/body/prefix/text",
+                        true,
+                        AsnBuiltinType.OctetString))
+                .add(configureGetDecodedTag("/2/2/1",
+                        "/Document/body/content/text",
+                        true,
+                        AsnBuiltinType.OctetString))
+                .add(configureGetDecodedTag("/3/0/1",
+                                "/Document/footer/author/firstName",
+                                true,
+                                AsnBuiltinType.OctetString))
+                .add(configureGetDecodedTag("/2/2/99",
+                        "/Document/body/content/99",
+                        false,
+                        AsnBuiltinType.Null))
+                .add(configureGetDecodedTag("/99/1/1",
+                        "/Document/99/1/1",
+                        false,
+                        AsnBuiltinType.Null))
+                .build();
+
+
+
+        //        public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(ImmutableSet<String> rawTags,
+        //            String topLevelTypeName);
+        String topLevelTypeName = "Document";
+            when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName)).thenReturn(
+                    results);
+
+        ImmutableSet<String> emptyTags = ImmutableSet.of();
+        ImmutableSet<OperationResult<DecodedTag>> emptyResults = ImmutableSet.of();
+
+        when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName)).thenReturn(results);
+        when(instance.getDecodedTags(emptyTags, topLevelTypeName)).thenReturn(emptyResults);
 
         return instance;
     }
@@ -209,26 +237,51 @@ public class MockAsnSchema
      * @param isFullyDecoded
      *         the value to return for {@link OperationResult#wasSuccessful()}
      */
-    private static void configureGetDecodedTag(AsnSchema instance, String rawTag,
-            String topLevelTypeName, String decodedTagPath, boolean isFullyDecoded,
-            AsnBuiltinType builtinType)
+    private static OperationResult<DecodedTag> configureGetDecodedTag(String rawTag,
+            String decodedTagPath, boolean isFullyDecoded, AsnBuiltinType builtinType)
     {
         final DecodedTag decodedTag = mock(DecodedTag.class);
 
         final AsnSchemaType type = mock(AsnSchemaType.class);
-
         when(type.getBuiltinType()).thenReturn(builtinType);
 
         when(decodedTag.getTag()).thenReturn(decodedTagPath);
         when(decodedTag.getRawTag()).thenReturn(rawTag);
-        //when(decodedTag.getType()).thenReturn(AsnSchemaType.NULL);
+        when(decodedTag.getType()).thenReturn(type);
         when(decodedTag.getType()).thenReturn(type);
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
 
-        // TODO MJF - figure out how to deal with the session stuff here.  We also want unit tests
-        // to test the new method of tagging etc...
-//        when(instance.getDecodedTag(rawTag, topLevelTypeName)).thenReturn(isFullyDecoded ?
-//                OperationResult.createSuccessfulInstance(decodedTag) :
-//                OperationResult.createUnsuccessfulInstance(decodedTag, "Mock Failure"));
+        OperationResult<DecodedTag> result = mock(OperationResult.class);
+
+        when(result.getOutput()).thenReturn(decodedTag);
+        when(result.wasSuccessful()).thenReturn(isFullyDecoded);
+        when(result.getFailureReason()).thenReturn("mock failure reason");
+
+        rawTags.add(rawTag);
+
+        return result;
+
     }
+    //    private static void configureGetDecodedTag(AsnSchema instance, String rawTag,
+    //            String topLevelTypeName, String decodedTagPath, boolean isFullyDecoded,
+    //            AsnBuiltinType builtinType)
+    //    {
+    //        final DecodedTag decodedTag = mock(DecodedTag.class);
+    //
+    //        final AsnSchemaType type = mock(AsnSchemaType.class);
+    //
+    //        when(type.getBuiltinType()).thenReturn(builtinType);
+    //
+    //        when(decodedTag.getTag()).thenReturn(decodedTagPath);
+    //        when(decodedTag.getRawTag()).thenReturn(rawTag);
+    //        //when(decodedTag.getType()).thenReturn(AsnSchemaType.NULL);
+    //        when(decodedTag.getType()).thenReturn(type);
+    //        when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
+    //
+    //        // TODO MJF - figure out how to deal with the session stuff here.  We also want unit tests
+    //        // to test the new method of tagging etc...
+    //        when(instance.getDecodedTags(rawTag, topLevelTypeName)).thenReturn(isFullyDecoded ?
+    //                OperationResult.createSuccessfulInstance(decodedTag) :
+    //                OperationResult.createUnsuccessfulInstance(decodedTag, "Mock Failure"));
+    //    }
 }

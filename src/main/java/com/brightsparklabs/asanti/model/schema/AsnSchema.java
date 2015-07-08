@@ -23,8 +23,6 @@ public interface AsnSchema
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    //TODO MJF public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName, DecodingSession session);
-
     /**
      * Returns the decoded tags for the supplied raw tags. E.g. {@code getDecodedTag("/0.1/0.0/0.1",
      * "Document")} =&gt; {@code "/Document/header/published/date"}
