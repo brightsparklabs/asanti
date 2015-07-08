@@ -40,7 +40,7 @@ cd asanti
 // java
 
 // parse an ASN BER/DER binary file
-final ImmutableList<AsnData> allAsnData = AsnDecoder.readAsnBerFile(berFile);
+final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerFile(berFile);
 final AsnData asnData = allAsnData.first();
 
 // print raw tags
@@ -210,8 +210,7 @@ Decoding data against the schema can be achieved via:
 
 ```java
 // java
-
-final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, schemaFile, "Document");
+final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile, schemaFile, "Document");
 final DecodedAsnData allDecodedData = allDecodedData.first();
 
 // all decoded tags
@@ -256,8 +255,8 @@ decodedData.contains("/Car/door/material");              // => false
 ```java
 // java
 
-// get data as most appropriate Java Object via explicit cast (requires knowledge of schema)
-final Timestamp date = (Timestamp) decodedData.getDecodedObject("/Document/header/published/date");
+// get data as most appropriate Java Object via implicit cast (requires knowledge of schema)
+final Timestamp date = decodedData.getDecodedObject("/Document/header/published/date");
 // => bytes decoded as a Timestamp
 
 // get data as a printable string
@@ -315,7 +314,7 @@ decodedData.getBytesMatching("/Document/header/published/.+");
 // java
 
 // parse an ASN BER/DER binary file
-final ImmutableList<AsnData> allAsnData = AsnDecoder.readAsnBerFile(berFile);
+final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerFile(berFile);
 final AsnData asnData = allAsnData.first();
 
 // print raw tags
@@ -334,7 +333,7 @@ asnData.getRawTags();
 
 // decode against schema
 final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
-final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, schema);
+final DecodedAsnData decodedData = Asanti.decodeAsnData(asnData, schema);
 
 // all decoded tags
 decodedData.getTags();
@@ -392,7 +391,7 @@ final Schema customSchema = Schemas.from(schema)
     .build();
 
 // decode using customised schema
-final DecodedAsnData decodedData = AsnDecoder.decodeAsnData(asnData, customSchema);
+final DecodedAsnData decodedData = AsnAsanti.decodeAsnData(asnData, customSchema);
 
 String tag = "/Document/header/published/date";
 decodedData.getPrintableString(tag);                       // => "About 5 months ago"

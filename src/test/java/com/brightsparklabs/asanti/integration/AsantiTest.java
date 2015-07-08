@@ -5,15 +5,10 @@
 
 package com.brightsparklabs.asanti.integration;
 
-import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
-import com.brightsparklabs.asanti.decoder.AsnDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
@@ -26,20 +21,20 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.util.Map;
 
 import static org.junit.Assert.*;
 
 /**
- * Integration tests for {@link AsnDecoder}
+ * Integration tests for {@link Asanti}
  *
  * @author brightSPARK Labs
  */
-public class AsnDecoderTest {
+public class AsantiTest
+{
 
     /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnDecoderTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AsantiTest.class);
 
     @Before
     public void setUp() throws Exception {
@@ -64,7 +59,7 @@ public class AsnDecoderTest {
         String berFilename = getClass().getResource("/TestMostSimple.ber").getFile();
         final File berFile = new File(berFilename);
 
-        final ImmutableList<AsnData> allAsnData = AsnDecoder.readAsnBerFile(berFile);
+        final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerFile(berFile);
 
         int count = 0;
         for (final AsnData asnData : allAsnData)
@@ -104,7 +99,9 @@ public class AsnDecoderTest {
         final File asnFile = new File(getClass().getResource("/TestMostSimple.asn").getFile());
         final File berFile = new File(getClass().getResource("/TestMostSimple.ber").getFile());
 
-        final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, asnFile, "Human");
+        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile,
+                asnFile,
+                "Human");
 
 
         for (int i = 0; i < allDecodedData.size(); i++)
@@ -152,7 +149,9 @@ public class AsnDecoderTest {
         final File asnFile = new File(getClass().getResource("/barTypeDef.asn").getFile());
         final File berFile = new File(getClass().getResource("/bar.ber").getFile());
 
-        final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, asnFile, "Bar");
+        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile,
+                asnFile,
+                "Bar");
 
 
         for (int i = 0; i < allDecodedData.size(); i++)
@@ -182,7 +181,9 @@ public class AsnDecoderTest {
         final File berFile = new File(getClass().getResource("/TestMostSimple.ber").getFile());
 
 
-        final ImmutableList<DecodedAsnData> allDecodedData = AsnDecoder.decodeAsnData(berFile, asnFile, "Human");
+        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile,
+                asnFile,
+                "Human");
         for (int i = 0; i < allDecodedData.size(); i++)
         {
             logger.info("Parsing PDU[{}]", i);

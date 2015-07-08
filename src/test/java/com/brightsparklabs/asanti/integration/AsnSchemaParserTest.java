@@ -1,7 +1,7 @@
 package com.brightsparklabs.asanti.integration;
 
+import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.decoder.AsnDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
@@ -387,7 +387,7 @@ public class AsnSchemaParserTest
     // TODO ASN-123 - rationalise these.  Determine if we want many small examples, or one more
     // comprehensive example (using the AsantiSample schema).  The small examples were useful
     // during the refactoring (ASN-126), not sure how useful they will be beyond that.
-    // Also, consolidate this and AsnDecoderTest in to one, as they are both
+    // Also, consolidate this and AsantiTest in to one, as they are both
     // doing end-to-end testing.
 
 
@@ -544,7 +544,7 @@ public class AsnSchemaParserTest
 
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -580,7 +580,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -620,7 +620,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -645,7 +645,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
 
         String topLevelType = "Human";
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -677,7 +677,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -725,7 +725,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -754,7 +754,7 @@ public class AsnSchemaParserTest
         assertFalse(validationresult.hasFailures());
 
     }
-    
+
     @Test
     public void testParse_HumanUsingTypeDef() throws Exception
     {
@@ -780,7 +780,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -833,7 +833,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -903,7 +903,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -963,7 +963,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -992,7 +992,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -1048,7 +1048,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -1093,7 +1093,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -1124,7 +1124,7 @@ public class AsnSchemaParserTest
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                 schema,
                 topLevelType);
 
@@ -1175,7 +1175,7 @@ public class AsnSchemaParserTest
             final File berFile = new File(berFilename);
             String topLevelType = "PS-PDU";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+            final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                     schema,
                     topLevelType);
 
@@ -1220,7 +1220,7 @@ public class AsnSchemaParserTest
 //            final File berFile = new File(berFilename);
 //            String topLevelType = "PS-PDU";
 //
-//            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+//            final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
 //                    schema,
 //                    topLevelType);
 //
@@ -1282,7 +1282,7 @@ public class AsnSchemaParserTest
             final File berFile = new File(berFilename);
             String topLevelType = "PS-PDU";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+            final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
                     schema,
                     topLevelType);
 
