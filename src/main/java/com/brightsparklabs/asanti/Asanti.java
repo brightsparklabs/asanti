@@ -10,7 +10,7 @@ import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.data.DecodedAsnDataImpl;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnBerFileReader;
-import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
+import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -49,7 +49,7 @@ public class Asanti
             String topLevelType) throws IOException
     {
         // TODO: ASN-78 - cache schema
-        final AsnSchema asnSchema = AsnSchemaFileReader.read(schemaFile);
+        final AsnSchema asnSchema = AsnSchemaReader.read(schemaFile);
         return decodeAsnData(berFile, asnSchema, topLevelType);
     }
 
