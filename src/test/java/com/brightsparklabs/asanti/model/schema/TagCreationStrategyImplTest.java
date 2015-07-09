@@ -88,9 +88,9 @@ public class TagCreationStrategyImplTest
         assertNotNull(result.get("1[1]"));
         assertNotNull(result.get("2[1]"));
 
-        assertEquals("a", result.get("0[1]").getTagName());
-        assertEquals("b", result.get("1[1]").getTagName());
-        assertEquals("c", result.get("2[1]").getTagName());
+        assertEquals("a", result.get("0[1]").getName());
+        assertEquals("b", result.get("1[1]").getName());
+        assertEquals("c", result.get("2[1]").getName());
 
     }
 
@@ -140,8 +140,7 @@ public class TagCreationStrategyImplTest
     public void testDuplicateTagsSequence2() throws Exception
     {
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.<AsnSchemaComponentType>builder()
-                .add(getMockedComponent("1", "a", true))
-                .add(getMockedComponent("2", "b", true))
+                .add(getMockedComponent("1", "a", true)).add(getMockedComponent("2", "b", true))
                 .add(getMockedComponent("3", "c", true))
                 .add(getMockedComponent("1", "d", false))
                 .build();
@@ -178,7 +177,7 @@ public class TagCreationStrategyImplTest
         AsnSchemaComponentType result = mock(AsnSchemaComponentType.class);
 
         when(result.getTag()).thenReturn(tag);
-        when(result.getTagName()).thenReturn(name);
+        when(result.getName()).thenReturn(name);
         when(result.isOptional()).thenReturn(isOptional);
 
         return result;

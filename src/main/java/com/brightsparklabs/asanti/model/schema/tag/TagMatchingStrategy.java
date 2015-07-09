@@ -7,9 +7,12 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponent
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Created by Michael on 7/07/2015.
+ * A base type used for providing different tag matching capabilities.
+ *
+ * @author brightSPARK Labs
  */
 public interface TagMatchingStrategy
 {
+    /** TODO MJF */
     AsnSchemaNamedType getMatchingComponent(String tag, ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes, AsnSchemaType type, DecodingSession session);
 }

@@ -6,10 +6,12 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link AsnSchemaComponentType}
@@ -23,15 +25,13 @@ public class AsnSchemaComponentTypeTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testGetTagName() throws Exception
+    public void testConstructionPreConditions() throws Exception
     {
-        final AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", "TYPE", true, AsnSchemaType.NULL);
-        assertEquals("TAG_NAME", instance.getTagName());
 
-        // test null
+        // test null tag name
         try
         {
-            new AsnSchemaComponentType(null, "TAG", "TYPE", true, AsnSchemaType.NULL);
+            new AsnSchemaComponentType(null, "TAG", true, AsnSchemaType.NULL);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -41,7 +41,7 @@ public class AsnSchemaComponentTypeTest
         // test empty
         try
         {
-            new AsnSchemaComponentType("", "TAG", "TYPE", true, AsnSchemaType.NULL);
+            new AsnSchemaComponentType("", "TAG", true, AsnSchemaType.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -49,82 +49,61 @@ public class AsnSchemaComponentTypeTest
         }
         try
         {
-            new AsnSchemaComponentType(" ", "TAG", "TYPE", true, AsnSchemaType.NULL);
+            new AsnSchemaComponentType(" ", "TAG",  true, AsnSchemaType.NULL);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
         {
         }
+
+
+
+    }
+
+
+    @Test
+    public void testGetTagName() throws Exception
+    {
+        final AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", true, AsnSchemaType.NULL);
+        assertEquals("TAG_NAME", instance.getName());
     }
 
     @Test
     public void testGetTag() throws Exception
     {
-        AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", "TYPE_NAME", true,
+        AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", true,
                 AsnSchemaType.NULL);
         assertEquals("TAG", instance.getTag());
 
         // test null
-        instance = new AsnSchemaComponentType("TAG_NAME", null, "TYPE_NAME", true, AsnSchemaType.NULL);
+        instance = new AsnSchemaComponentType("TAG_NAME", null, true, AsnSchemaType.NULL);
         assertEquals("", instance.getTag());
 
         // test empty
-        instance = new AsnSchemaComponentType("TAG_NAME", "", "TYPE_NAME", true, AsnSchemaType.NULL);
+        instance = new AsnSchemaComponentType("TAG_NAME", "", true, AsnSchemaType.NULL);
         assertEquals("", instance.getTag());
-    }
-
-    @Test
-    public void testGetTypeName() throws Exception
-    {
-        final AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", "TYPE_NAME", true, AsnSchemaType.NULL);
-        assertEquals("TYPE_NAME", instance.getTypeName());
-
-        // test null
-        try
-        {
-            new AsnSchemaComponentType("TAG_NAME", "TAG", null, true, AsnSchemaType.NULL);
-            fail("NullPointerException not thrown");
-        }
-        catch (final NullPointerException ex)
-        {
-        }
-
-        try
-        {
-            new AsnSchemaComponentType("TAG_NAME", "TAG", "TYPE_NAME", true, null);
-            fail("NullPointerException not thrown");
-        }
-        catch (final NullPointerException ex)
-        {
-        }
-
-        // test empty
-        try
-        {
-            new AsnSchemaComponentType("TAG_NAME", "TAG", "", true, AsnSchemaType.NULL);
-            fail("IllegalArgumentException not thrown");
-        }
-        catch (final IllegalArgumentException ex)
-        {
-        }
-
-        try
-        {
-            new AsnSchemaComponentType("TAG_NAME", "TAG", " ", true, AsnSchemaType.NULL);
-            fail("IllegalArgumentException not thrown");
-        }
-        catch (final IllegalArgumentException ex)
-        {
-        }
     }
 
     @Test
     public void testIsOptional() throws Exception
     {
-        AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", "TYPE_NAME", true, AsnSchemaType.NULL);
+        AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", true, AsnSchemaType.NULL);
         assertEquals(true, instance.isOptional());
 
-        instance = new AsnSchemaComponentType("TAG_NAME", "TAG", "TYPE_NAME", false, AsnSchemaType.NULL);
+        instance = new AsnSchemaComponentType("TAG_NAME", "TAG", false, AsnSchemaType.NULL);
         assertEquals(false, instance.isOptional());
+    }
+
+    @Test
+    public void testGetType()
+    {
+        final AsnSchemaComponentType instanceNull = new AsnSchemaComponentType("TAG_NAME", "TAG", true, AsnSchemaType.NULL);
+        assertEquals(AsnSchemaType.NULL, instanceNull.getType());
+
+        // Test that we get out the type that we put in
+        AsnSchemaType mocked = mock(AsnSchemaType.class);
+        final AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", true, mocked);
+        assertEquals(mocked, instance.getType());
+
     }
 }

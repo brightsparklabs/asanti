@@ -46,20 +46,19 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** mapping from raw tag to component type */
-    private ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
-
     private final Iterable<AsnSchemaComponentType> componentTypes;
 
     /** the mode to use for tagging */
-    private final AsnModuleTaggingMode tagMode;
+    private final AsnModuleTaggingMode taggingMode;
 
-    // TODO MJF
-    //private boolean tagLess;
-
+    /** the mechanism to be used for creation of Tags, during schema creation */
     private final TagCreationStrategy tagCreationStrategy;
 
+    /** the mechanism to be used for Matching of tags (during decoding) */
     private final TagMatchingStrategy tagMatchingStrategy;
+
+    /** mapping from raw tag to component type */
+    private ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -82,23 +81,17 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      *         <br> For {@code INTEGER (1..256)} this would be {@code (1..256)}.
      * @param componentTypes
      *         the component types within this defined type
+     * @param taggingMode
+     *         the mode to be used to determine tags for components
      *
      * @throws NullPointerException
-     *         if {@code name} or {@code builtinType} are {@code null}
+     *         if {@code name}, {@code builtinType} or {@code taggingMode} are {@code null}
      * @throws IllegalArgumentException
      *         if {@code primitiveType} is not a constructed type (Currently: SEQUENCE, SET and
      *         CHOICE)
      */
-
     public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
-            Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
-    {
-        // TODO MJF - this is only here to not have to update the tests while I am playing.
-        this(primitiveType, constraint, componentTypes, AsnModuleTaggingMode.DEFAULT);
-    }
-
-    public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
-            Iterable<AsnSchemaComponentType> componentTypes, AsnModuleTaggingMode tagMode)
+            Iterable<AsnSchemaComponentType> componentTypes, AsnModuleTaggingMode taggingMode)
             throws ParseException
     {
         super(primitiveType, constraint);
@@ -107,18 +100,25 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 "Type must be either SET, SEQUENCE or CHOICE");
 
         checkNotNull(componentTypes);
-        // TODO MJF - update all call tree (ie all the functions that I added tagMode as a parameter)
-        // to include it in javadoc.  Also update javadoc for throw reasons.
-
-        checkNotNull(tagMode);
-        this.tagMode = tagMode;
+        checkNotNull(taggingMode);
+        this.taggingMode = taggingMode;
         this.componentTypes = componentTypes;
 
         this.tagMatchingStrategy = TagStrategyFactory.getTagMatchingStrategy(primitiveType);
         this.tagCreationStrategy = TagStrategyFactory.getTagCreationStrategy(primitiveType,
-                tagMode);
+                taggingMode);
     }
 
+    /**
+     * We store a mapping of tags to components.  That mapping is based on the rawTag that we are
+     * expecting to receive from the data.  Because some tags are not explicit (ie context-specific)
+     * we need to know the types of items to create Universal tags.  Until the whole schema has been
+     * parsed and all the Type Definitions and import resolved we may not know those types, ie we
+     * likely won't know them at the time when this object is constructed. This function allows the
+     * builder/coordinator of the schema to tell us when we can perform the tag creation
+     *
+     * @throws ParseException
+     */
     public void performTagging() throws ParseException
     {
         tagsToComponentTypes = tagCreationStrategy.getTagsForComponents(componentTypes);
@@ -127,7 +127,12 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     @Override
     public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
     {
-        return tagMatchingStrategy.getMatchingComponent(tag, tagsToComponentTypes, this, session);
+        final ImmutableMap<String, AsnSchemaComponentType> components =
+                tagsToComponentTypes == null ?
+                        ImmutableMap.<String, AsnSchemaComponentType>of() :
+                        tagsToComponentTypes;
+
+        return tagMatchingStrategy.getMatchingComponent(tag, components, this, session);
     }
 
     /**

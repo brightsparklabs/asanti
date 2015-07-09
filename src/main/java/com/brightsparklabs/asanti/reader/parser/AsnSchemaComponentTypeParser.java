@@ -194,10 +194,6 @@ public class AsnSchemaComponentTypeParser
         }
 
         final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType, tagMode);
-
-        String typeName = matcher.group(7);
-        // The Regex that is used here is a little simple and will leave trailing spaces,
-        typeName = typeName.trim();
-        return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
+        return new AsnSchemaComponentType(tagName, tag, isOptional, tagType);
     }
 }

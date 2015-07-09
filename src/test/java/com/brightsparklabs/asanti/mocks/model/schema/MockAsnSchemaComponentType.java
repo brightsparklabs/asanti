@@ -51,9 +51,9 @@ public class MockAsnSchemaComponentType
             String typeName, boolean isOptional, AsnSchemaType type)
     {
         final AsnSchemaComponentType mockedInstance = mock(AsnSchemaComponentType.class);
-        when(mockedInstance.getTagName()).thenReturn(tagName);
+        when(mockedInstance.getName()).thenReturn(tagName);
         when(mockedInstance.getTag()).thenReturn(tag);
-        when(mockedInstance.getTypeName()).thenReturn(typeName);
+        // TODO MJF when(mockedInstance.getTypeName()).thenReturn(typeName);
         when(mockedInstance.isOptional()).thenReturn(isOptional);
         when(mockedInstance.getType()).thenReturn(type);
         return mockedInstance;

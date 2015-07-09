@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
@@ -163,6 +164,7 @@ public class AsnSchemaImpl implements AsnSchema
                         "The supplied raw tag does not map to a type in this schema");
         return result;
     }
+    // ToDO MJF - see the tags in the comments!  maybe search for "/
 
     /**
      * Returns the decoded tags for the supplied raw tags
@@ -217,6 +219,21 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: DecodedTagAndType
     // -------------------------------------------------------------------------
+
+    boolean isConstructed(AsnBuiltinType type)
+    {
+        switch (type)
+        {
+            case SequenceOf:
+            case Sequence:
+            case Set:
+            case SetOf:
+            case Choice:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     /**
      * Transfer object to support returning a tuple of "Decoded Tags" and "Type"

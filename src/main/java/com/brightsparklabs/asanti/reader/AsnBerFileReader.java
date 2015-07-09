@@ -92,7 +92,10 @@ public class AsnBerFileReader
         DERObject asnObject = asnInputStream.readObject();
         while (asnObject != null)
         {
-            logger.trace(ASN1Dump.dumpAsString(asnObject));
+            if (logger.isTraceEnabled())
+            {
+                logger.trace(ASN1Dump.dumpAsString(asnObject));
+            }
 
             //final Map<String, byte[]> tagsToData = Maps.newHashMap();
             final Map<String, byte[]> tagsToData
@@ -135,15 +138,15 @@ public class AsnBerFileReader
      * @param tagsToData
      *         storage for the tags/data found
      * @param index
-     *          the index of this item within the parent container
+     *         the index of this item within the parent container
+     *
      * @throws IOException
      *         if any errors occur reading from the file
      */
     private static void processDerObject(DERObject derObject, String prefix,
             Map<String, byte[]> tagsToData, int index) throws IOException
     {
-        logger.trace("{}DerObject entry,  prefix {}, tagsToData.size() {} => {} : {}",
-                indent(),
+        logger.trace("DerObject entry,  prefix {}, tagsToData.size() {} => {} : {}",
                 prefix,
                 tagsToData.size(),
                 toHexString(derObject.getDEREncoded()),
@@ -163,7 +166,10 @@ public class AsnBerFileReader
         }
         else if (derObject instanceof DERApplicationSpecific)
         {
-            processApplicationSpecific((DERApplicationSpecific) derObject, prefix, tagsToData, index);
+            processApplicationSpecific((DERApplicationSpecific) derObject,
+                    prefix,
+                    tagsToData,
+                    index);
         }
         else
         {
@@ -218,24 +224,11 @@ public class AsnBerFileReader
      * @param tagsToData storage for the tags/data found
      * @throws IOException if any errors occur reading from the file
      */
-    // TODO MJF - clean up of get rid of.
-    private static int globalIndent = 0;
-
-    private static String indent()
-    {
-        String indent = "";
-        for (int i = 0; i < globalIndent; i++) indent += "    ";
-        return indent;
-    }
-
     private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix,
             Map<String, byte[]> tagsToData) throws IOException
     {
-        logger.trace("{}ElementsFromSequenceOrSet prefix {}, tagsToData.size() {}",
-                indent(),
-                prefix,
-                tagsToData.size());
-        globalIndent++;
+        logger.trace("ElementsFromSequenceOrSet prefix {}", prefix);
+
         int index = 0;
         while (elements.hasMoreElements())
         {
@@ -261,7 +254,6 @@ public class AsnBerFileReader
             processDerObject(derObject, elementPrefix, tagsToData, index);
             index++;
         }
-        globalIndent--;
     }
 
     /**
@@ -307,8 +299,7 @@ public class AsnBerFileReader
             prefix = String.format(TAG_FORMATTER_UNIVERSAL, prefix, index, number);
         }
 
-        logger.trace("{}TaggedObject entry - prefix {}, adding {}, explicit {} ",
-                indent(),
+        logger.trace("TaggedObject entry - prefix {}, adding {}, explicit {} ",
                 prefix,
                 asnTaggedObject.getTagNo(),
                 asnTaggedObject.isExplicit());
@@ -378,8 +369,7 @@ public class AsnBerFileReader
         if (logger.isTraceEnabled())
         {
             // The derObject.getDEREncoded is not a cheap operation, so only call it if needed.
-            logger.trace("{}PrimitiveDerObject.  tagsToData.put {} : {} - object => {}",
-                    indent(),
+            logger.trace("PrimitiveDerObject.  tagsToData.put {} : {} - object => {}",
                     tag,
                     toHexString(value),
                     toHexString(derObject.getDEREncoded()));

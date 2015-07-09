@@ -28,9 +28,6 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
     /** tag of this component type */
     private final String tag;
 
-    /** type of this component type */
-    private final String typeName;
-
     /** whether this component type is optional */
     private final boolean isOptional;
 
@@ -48,8 +45,6 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
      *         name of this component type (i.e. tag name)
      * @param tag
      *         tag of this component type. Will default to an empty string if {@code null}
-     * @param typeName
-     *         type of this component type
      * @param isOptional
      *         whether this component type is optional
      * @param type
@@ -60,18 +55,15 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
      * @throws IllegalArgumentException
      *         if {@code tagName} or {@code typeName} are blank
      */
-    public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional,
+    public AsnSchemaComponentType(String tagName, String tag, boolean isOptional,
             AsnSchemaType type)
     {
         checkNotNull(tagName);
         checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
-        checkNotNull(typeName);
-        checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");
         checkNotNull(type);
 
         this.tagName = tagName;
         this.tag = (tag == null) ? "" : tag;
-        this.typeName = typeName;
         this.isOptional = isOptional;
         this.type = type;
     }
@@ -79,14 +71,6 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
-
-    /**
-     * @return the name of the component type (i.e. tag name)
-     */
-    public String getTagName()
-    {
-        return tagName;
-    }
 
     /**
      * @return the tag of this component type
@@ -97,14 +81,6 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
     }
 
     /**
-     * @return the type of this component type
-     */
-    public String getTypeName()
-    {
-        return typeName;
-    }
-
-    /**
      * @return {@code true} if this component type is optional
      */
     public boolean isOptional()
@@ -112,15 +88,11 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
         return isOptional;
     }
 
-    /**
-     * @return the type for this component type
-     */
-
     @Override
     public AsnSchemaType getType() { return type; }
 
     @Override
-    public String getName() // TODO MJF - get rid of getTagName and use this everywhere instead.
+    public String getName()
     {
         return tagName;
     }

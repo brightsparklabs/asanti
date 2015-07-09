@@ -40,7 +40,6 @@ public interface AsnSchemaType
     // TODO MJF - do we still need this?  Is so then rename and document
     AsnBuiltinType getBuiltinTypeAA();
 
-
     /**
      * Returns the constraints of this type definition.  This will be all the constraints the create
      * this type (i.e. this and all the parent types)
@@ -53,14 +52,14 @@ public interface AsnSchemaType
      * Returns the {@code AsnSchemaNamedType} for the tag, or AsnSchemaNamedType#NULL if none found
      *
      * @param tag
-     *          a tag within this construct
+     *         a tag within this construct
      * @param session
-     *          TODO MJF
+     *         The {@link DecodingSession} used to maintain state while decoding a collection of
+     *         tags
      *
      * @return the {@code AsnSchemaNamedType} for the AsnSchemaNamedType#NULL, or null if none found
      */
     AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session);
-
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null

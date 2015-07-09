@@ -74,14 +74,10 @@ public class AsnDecoder
     {
         final ImmutableList<AsnData> allAsnData = readAsnBerFile(berFile);
         final List<DecodedAsnData> allDecodedAsnData = Lists.newArrayList();
-        // TODO MJF get rid of index and println
-//        int index = 0;
         for (final AsnData asnData : allAsnData)
         {
-//            System.out.println("********* " + index);
             final DecodedAsnData decodedAsnData = decodeAsnData(asnData, asnSchema, topLevelType);
             allDecodedAsnData.add(decodedAsnData);
-//            index++;
         }
         return ImmutableList.copyOf(allDecodedAsnData);
     }

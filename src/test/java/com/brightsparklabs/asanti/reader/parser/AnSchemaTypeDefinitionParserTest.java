@@ -5,9 +5,7 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import org.junit.Before;
@@ -21,7 +19,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.text.ParseException;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionParser}
@@ -38,7 +36,6 @@ public class AnSchemaTypeDefinitionParserTest
 
     /** an argument capture helper for AsnSchemaTypeParser */
     private ArgumentCaptor<String> parserArgument;
-
 
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
@@ -57,8 +54,10 @@ public class AnSchemaTypeDefinitionParserTest
         PowerMockito.mockStatic(AsnSchemaTypeParser.class);
         // we want to capture the parserArgument that gets passed to the AsnSchemaTypeParser
         parserArgument = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<AsnModuleTaggingMode> taggingMode = ArgumentCaptor.forClass(AsnModuleTaggingMode.class);
-        when(AsnSchemaTypeParser.parse(parserArgument.capture(), taggingMode.capture())).thenReturn(AsnSchemaType.NULL);
+        ArgumentCaptor<AsnModuleTaggingMode> taggingMode = ArgumentCaptor.forClass(
+                AsnModuleTaggingMode.class);
+        when(AsnSchemaTypeParser.parse(parserArgument.capture(), taggingMode.capture())).thenReturn(
+                AsnSchemaType.NULL);
     }
 
     // -------------------------------------------------------------------------
@@ -129,9 +128,9 @@ public class AnSchemaTypeDefinitionParserTest
     @Test
     public void testParse() throws Exception
     {
-        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
-                "TEST_NAME",
-                "IA5String (SIZE (10))", AsnModuleTaggingMode.DEFAULT);
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse("TEST_NAME",
+                "IA5String (SIZE (10))",
+                AsnModuleTaggingMode.DEFAULT);
 
         assertEquals("TEST_NAME", result.getName());
         assertEquals("IA5String (SIZE (10))", parserArgument.getValue());
@@ -140,12 +139,14 @@ public class AnSchemaTypeDefinitionParserTest
     @Test
     public void testArgumentPassing() throws Exception
     {
-        final String toParser = "It does not matter what the content, the AsnSchemaTypeDefinitionParser " +
-                                "should just pass it straight through to the parser.\n" +
-                                "That is where all the real parsing is done.";
+        final String toParser =
+                "It does not matter what the content, the AsnSchemaTypeDefinitionParser " +
+                        "should just pass it straight through to the parser.\n" +
+                        "That is where all the real parsing is done.";
 
-        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse(
-                "TEST_NAME", toParser, AsnModuleTaggingMode.DEFAULT);
+        final AsnSchemaTypeDefinition result = AsnSchemaTypeDefinitionParser.parse("TEST_NAME",
+                toParser,
+                AsnModuleTaggingMode.DEFAULT);
 
         assertEquals("TEST_NAME", result.getName());
         assertEquals(toParser, parserArgument.getValue());

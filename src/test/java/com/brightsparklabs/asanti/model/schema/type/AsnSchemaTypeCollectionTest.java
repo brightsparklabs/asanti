@@ -46,7 +46,7 @@ public class AsnSchemaTypeCollectionTest
         when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
         when(wrappedSequence.getMatchingChild("0", session)).thenReturn(namedtype);
 
-        instance = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE, AsnSchemaConstraint.NULL,
+        instance = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF, AsnSchemaConstraint.NULL,
                 wrappedSequence);
     }
 
@@ -76,7 +76,7 @@ public class AsnSchemaTypeCollectionTest
 
         try
         {
-            new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE, AsnSchemaConstraint.NULL, null);
+            new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF, AsnSchemaConstraint.NULL, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -97,7 +97,7 @@ public class AsnSchemaTypeCollectionTest
         AsnSchemaType wrappedInteger = mock(AsnSchemaType.class);
         when(wrappedInteger.getPrimitiveType()).thenReturn(AsnPrimitiveType.INTEGER);
 
-        AsnSchemaTypeCollection collection = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE, AsnSchemaConstraint.NULL,
+        AsnSchemaTypeCollection collection = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF, AsnSchemaConstraint.NULL,
                 wrappedInteger);
 
         // TODO ASN-140.  We currently get back the "wrapped" type, not the collection type.

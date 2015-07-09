@@ -476,6 +476,8 @@ public class AsnSchemaModule
                 resolveType(components.next().getType(), otherModules);
             }
 
+            // because some tags are not explicit (context-specific) we need to know the
+            // types of items to create Universal tags, which we don't know until now.
             type.performTagging();
         }
     }

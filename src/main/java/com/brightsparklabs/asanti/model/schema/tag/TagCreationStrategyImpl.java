@@ -13,7 +13,7 @@ import java.text.ParseException;
 import java.util.Map;
 
 /**
- * Created by Michael on 6/07/2015.
+ * TODO MJF
  */
 public class TagCreationStrategyImpl implements TagCreationStrategy
 {
@@ -24,32 +24,61 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(TagCreationStrategyImpl.class);
 
-    // TODO MJF javadoc
+    /** TODO MJF */
     private static final TagDecorator TAG_DECORATOR_SEQUENCE = new SequenceTagDecorator();
 
+    /** TODO MJF */
     private static final TagDecorator TAG_DECORATOR_UNORDERED = new UnorderedTagDecorator();
 
+    /** TODO MJF */
     private static final TagAutomator TAG_AUTOMATOR_CHECK = new TagAutomatorCheck();
 
+    /** TODO MJF */
     private static final TagAutomator TAG_AUTOMATOR_FALSE = new TagAutomatorFalse();
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
+    /** TODO MJF */
     TagDecorator tagDecorator;
 
+    /** TODO MJF */
     TagAutomator tagAutomator;
 
+    // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+
+    /**
+     * Default constuctor.  Use {@code create}
+     *
+     * @param tagDecorator
+     *         the TagDecorator to be used to create the tags
+     * @param tagAutomator
+     *         the TagAutomator to determine whether to automatically create tags
+     */
     private TagCreationStrategyImpl(TagDecorator tagDecorator, TagAutomator tagAutomator)
     {
         this.tagDecorator = tagDecorator;
         this.tagAutomator = tagAutomator;
     }
 
-    public static TagCreationStrategy create(AsnPrimitiveType type, AsnModuleTaggingMode tagMode)
+    /**
+     * creates a TagCreationStrategy configured for the permutations of type and tagging mode
+     *
+     * @param type
+     *         determines how the Constructed type determines duplicates
+     * @param taggingMode
+     *         determines whether the Constructed type will automatically generate context-specific
+     *         tags
+     *
+     * @return
+     */
+    public static TagCreationStrategy create(AsnPrimitiveType type,
+            AsnModuleTaggingMode taggingMode)
     {
-        TagAutomator tagAutomator = tagMode == AsnModuleTaggingMode.AUTOMATIC ?
+        TagAutomator tagAutomator = taggingMode == AsnModuleTaggingMode.AUTOMATIC ?
                 TAG_AUTOMATOR_CHECK :
                 TAG_AUTOMATOR_FALSE;
 
@@ -71,8 +100,8 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
         // Check to see if we need to apply automatic tags
         boolean autoTag = tagAutomator.canAutomate(componentTypes);
 
-        // Key: decorated tag, Value: the component name (only for useful error messages)
-        //Map<String, String> usedTags = Maps.newHashMap();
+        // Key: decorated tag, Value: component name.  We only really need a List, but by
+        // tracking the name of the component we can generate better error messages
         Map<String, String> usedTags
                 = Maps.newLinkedHashMap(); // use this so that we have known iteration order for later...
 
@@ -80,16 +109,18 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
         int autoTagNumber = 0;
         for (final AsnSchemaComponentType componentType : componentTypes)
         {
-            // auto tag if appropriate, otherwise use the components tag (which will be a context-specific),
+            // auto tag if appropriate, otherwise use the components' tag (which will be a context-specific),
             // otherwise use the Universal tag
             final String tag = (autoTag) ?
                     String.valueOf(autoTagNumber) :
                     Strings.isNullOrEmpty(componentType.getTag()) ?
-                            AsnSchemaTag.createUniversalPortion(componentType.getType().getBuiltinTypeAA()) :
+                            AsnSchemaTag.createUniversalPortion(componentType.getType()
+                                    .getBuiltinTypeAA()) :
                             componentType.getTag();
 
             final String decoratedTag = tagDecorator.getDecoratedTag(index, tag);
 
+            // TODO MJF - how to explain this?  Can I put in a link to a design doc?  It is too complex for a comment here.
             if (!componentType.isOptional())
             {
                 index++;
@@ -100,12 +131,12 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
             {
                 logger.warn("Duplicate Tag {} for {}, already have {}",
                         decoratedTag,
-                        componentType.getTagName(),
+                        componentType.getName(),
                         usedTags.get(decoratedTag));
                 throw new ParseException("Duplicate Tag", -1);
             }
 
-            usedTags.put(decoratedTag, componentType.getTagName());
+            usedTags.put(decoratedTag, componentType.getName());
 
             tagsToComponentTypesBuilder.put(decoratedTag, componentType);
         }
@@ -113,11 +144,32 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
         return tagsToComponentTypesBuilder.build();
     }
 
+    // -------------------------------------------------------------------------
+    // INTERNAL CLASSES
+    // -------------------------------------------------------------------------
+
+    /**
+     * Interface for creating the tag that we will store for later matching
+     */
     private interface TagDecorator
     {
+        /**
+         * From the supplied index and Tag create a new string Tag in the expected format
+         *
+         * @param index
+         *         the index portion of the tag to be created
+         * @param tag
+         *         the Tag portion of the tag to be created
+         *
+         * @return A string that represents the tag that we will store
+         */
         String getDecoratedTag(int index, String tag);
     }
 
+    /**
+     * TagDecorator for Sequence types, where the index is required for determination of duplication
+     * and for later tag matching
+     */
     private static class SequenceTagDecorator implements TagDecorator
     {
         @Override
@@ -127,6 +179,10 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
         }
     }
 
+    /**
+     * TagDecorator for unordered types (ie Set and Choice) where the index is not required for
+     * either determination of duplicates or for later tag matching
+     */
     private static class UnorderedTagDecorator implements TagDecorator
     {
         @Override
@@ -136,11 +192,26 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
         }
     }
 
+    /**
+     * Interface used to determine whether or not Automatic tags should be generated
+     */
     private interface TagAutomator
     {
+        /**
+         * Given the input components, determine whether it is appropriate to create Automatic tags
+         *
+         * @param componentTypes
+         *         input components to check
+         *
+         * @return true if the Constructed type should create Automatic tags.
+         */
         boolean canAutomate(Iterable<AsnSchemaComponentType> componentTypes);
     }
 
+    /**
+     * TagAutomator to use when tagging mode is {@link AsnModuleTaggingMode#AUTOMATIC} It will
+     * perform the appropriate calculations
+     */
     private static class TagAutomatorCheck implements TagAutomator
     {
         @Override
@@ -162,6 +233,10 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
         }
     }
 
+    /**
+     * TagAutomator to use when the tagging mode is not {@link AsnModuleTaggingMode#AUTOMATIC},
+     * simply returns false - ie don't create an automatic tag
+     */
     private static class TagAutomatorFalse implements TagAutomator
     {
         @Override
@@ -170,5 +245,4 @@ public class TagCreationStrategyImpl implements TagCreationStrategy
             return false;
         }
     }
-
 }

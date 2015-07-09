@@ -32,11 +32,8 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
      * built-in types which are considered 'collection'. Currently: SET OF and SEQUENCE OF
      */
     private static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(
-            AsnPrimitiveType.SET,
-            AsnPrimitiveType.SEQUENCE);
-    // TODO MJF explain!
-    //            AsnPrimitiveType.SET_OF,
-    //            AsnPrimitiveType.SEQUENCE_OF);
+            AsnPrimitiveType.SET_OF,
+            AsnPrimitiveType.SEQUENCE_OF);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
