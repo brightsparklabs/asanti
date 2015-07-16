@@ -6,6 +6,7 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
+import java.text.ParseException;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -147,10 +148,14 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
+    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession)
     {
-        return indirectType == null ?
-                AsnSchemaNamedType.NULL :
-                indirectType.getMatchingChild(tag, session);
+        return indirectType == null ? AsnSchemaNamedType.NULL : indirectType.getMatchingChild(tag, decodingSession);
+    }
+
+    @Override
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
+    {
+        return visitor.visit(this);
     }
 }

@@ -1,10 +1,14 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.common.Visitable;
+import com.brightsparklabs.asanti.common.VisitableThrowing;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
+
+import java.text.ParseException;
 
 /**
  * A base type used to model the types for objects within ASN.1 schema. These objects can be either
@@ -13,7 +17,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public interface AsnSchemaType
+public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>, ParseException>
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -59,7 +63,7 @@ public interface AsnSchemaType
      *
      * @return the {@code AsnSchemaNamedType} for the AsnSchemaNamedType#NULL, or null if none found
      */
-    AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session);
+    AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null
@@ -113,9 +117,15 @@ public interface AsnSchemaType
         }
 
         @Override
-        public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
+        public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession)
         {
             return AsnSchemaNamedType.NULL;
+        }
+
+        @Override
+        public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
+        {
+            return visitor.visit(this);
         }
     }
 }

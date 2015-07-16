@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+
 import static com.google.common.base.Preconditions.*;
 
 /**
@@ -105,10 +107,11 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String rawTag, DecodingSession session)
+    public AsnSchemaNamedType getMatchingChild(String rawTag, DecodingSession decodingSession)
     {
         AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
 
+        // TODO MJF - we should check that the universal type matches the elementType
         if (!tag.getTagUniversal().isEmpty())
         {
             return new AsnSchemaNamedTypeImpl("[" + tag.getTagIndex() + "]", elementType);
@@ -117,11 +120,24 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
         if (elementType.getBuiltinTypeAA() == AsnBuiltinType.Choice)
         {
             // We have a collection of Choice, so we need to insert the choice option
-            AsnSchemaNamedType child = elementType.getMatchingChild(rawTag, session);
-            String newTag = String.format("[%s]/%s", tag.getTagIndex(), child.getName());
+            AsnSchemaNamedType child = elementType.getMatchingChild(rawTag, decodingSession);
+			
+            String newTag = new StringBuilder()
+                    .append("[")
+                    .append(tag.getTagIndex())
+                    .append("]/")
+                    .append(child.getName())
+                    .toString();
             return new AsnSchemaNamedTypeImpl(newTag, child.getType());
         }
 
         return AsnSchemaNamedType.NULL;
     }
+
+    @Override
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
+    {
+        return visitor.visit(this);
+    }
+
 }

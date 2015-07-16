@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 
@@ -1825,6 +1826,21 @@ public class AsnSchemaParserTest
     }
 
     @Test
+    public void testParse_ChoiceDuplicate() throws Exception
+    {
+        try
+        {
+            String schemaFilename = getClass().getResource("/ChoiceDuplicate.asn").getFile();
+            File schemaFile = new File(schemaFilename);
+            final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+            fail("Should have thrown an IOException because of duplicate tags");
+        }
+        catch (IOException e)
+        {
+        }
+    }
+
+        @Test
     public void testParse_Choice3() throws Exception
     {
         String schemaFilename = getClass().getResource("/Human_Choice3.asn").getFile();

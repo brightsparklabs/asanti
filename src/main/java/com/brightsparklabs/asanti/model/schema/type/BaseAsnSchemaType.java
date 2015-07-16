@@ -6,7 +6,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.collect.ImmutableSet;
 
-import java.util.regex.Pattern;
+import java.text.ParseException;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -98,8 +98,15 @@ public class BaseAsnSchemaType implements AsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
+    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession)
     {
         return new AsnSchemaNamedTypeImpl("", AsnSchemaType.NULL);
     }
+
+    @Override
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor)  throws ParseException
+    {
+        return visitor.visit(this);
+    }
+
 }

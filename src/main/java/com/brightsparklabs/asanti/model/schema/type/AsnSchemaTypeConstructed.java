@@ -125,14 +125,14 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession session)
+    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession)
     {
         final ImmutableMap<String, AsnSchemaComponentType> components =
                 tagsToComponentTypes == null ?
                         ImmutableMap.<String, AsnSchemaComponentType>of() :
                         tagsToComponentTypes;
 
-        return tagMatchingStrategy.getMatchingComponent(tag, components, this, session);
+        return tagMatchingStrategy.getMatchingComponent(tag, components, this, decodingSession);
     }
 
     /**
@@ -143,6 +143,13 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     public Iterable<AsnSchemaComponentType> getAllComponents()
     {
         return componentTypes;
+    }
+
+
+    @Override
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
+    {
+        return visitor.visit(this);
     }
 
 }
