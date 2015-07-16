@@ -40,11 +40,13 @@ public class AsnBerFileReader
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(AsnBerFileReader.class);
 
-    /** this is used to construct tags of the UNIVERSAL type */
-    //private static final String TAG_FORMATTER = "%s/%d.%s";
-    //private static final String TAG_FORMATTER_UNIVERSAL = "%s/%d.u.%s";
+    /** this is used to construct tags of the type parent/index[tag] */
     private static final String TAG_FORMATTER = "%s/%d[%s]";
 
+    /**
+     * this is used to construct tags of the type parent/index[tag], where tag is of  UNIVERSAL
+     * type
+     */
     private static final String TAG_FORMATTER_UNIVERSAL = "%s/%d[UNIVERSAL %s]";
 
     // -------------------------------------------------------------------------
@@ -97,7 +99,6 @@ public class AsnBerFileReader
                 logger.trace(ASN1Dump.dumpAsString(asnObject));
             }
 
-            //final Map<String, byte[]> tagsToData = Maps.newHashMap();
             final Map<String, byte[]> tagsToData
                     = Maps.newLinkedHashMap();  // we want to preserve input order
             logger.trace("processDerObject: {}", asnObject.toString());
@@ -219,10 +220,15 @@ public class AsnBerFileReader
      * Processes the elements found in an ASN.1 'Sequence' or ASN.1 'Set' stores the tags/data found
      * in them
      *
-     * @param elements elements from the sequence or set
-     * @param prefix prefix to prepend to any tags found
-     * @param tagsToData storage for the tags/data found
-     * @throws IOException if any errors occur reading from the file
+     * @param elements
+     *         elements from the sequence or set
+     * @param prefix
+     *         prefix to prepend to any tags found
+     * @param tagsToData
+     *         storage for the tags/data found
+     *
+     * @throws IOException
+     *         if any errors occur reading from the file
      */
     private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix,
             Map<String, byte[]> tagsToData) throws IOException
@@ -243,7 +249,6 @@ public class AsnBerFileReader
 
             if (!isTagged)
             {
-                logger.trace("not tagged is type: {}", derObject.getClass().getName());
                 // Because this type is not tagged then we need to add a universal tag
                 int tagNumber = getTagNumber(getType(derObject));
                 logger.trace("adding faux tag, not tagged {}", tagNumber);
@@ -278,21 +283,14 @@ public class AsnBerFileReader
 
         prefix = String.format(TAG_FORMATTER, prefix, index, asnTaggedObject.getTagNo());
 
-        int containingType  = getType(asnTaggedObject);
+        int containingType = getType(asnTaggedObject);
         if (isConstructedType(containingType))
         {
             logger.trace("Containing type is Constructed.");
             index = 0;
         }
 
-
         int type = getType(obj);
-        if (isConstructedType(type))
-        {
-            // This is a "constructed" type, so reset the index
-            logger.trace("reset index");
-            index = 0;
-        }
 
         // We are looking for where UNIVERSAL tags are used in the encoding, so that we can insert
         // appropriate tags.
