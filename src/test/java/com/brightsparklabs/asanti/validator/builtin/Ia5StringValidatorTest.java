@@ -43,7 +43,8 @@ public class Ia5StringValidatorTest
         // TODO ASN-136 - use mock Constraints, not real.
 
         // setup mock
-        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.IA5_STRING,
+        final AsnSchemaType type
+                = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.IA5_STRING,
                 new AsnSchemaExactSizeConstraint(5));
         final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { '0', '1', '2', '3', '4' })

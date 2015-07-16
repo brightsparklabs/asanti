@@ -33,6 +33,21 @@ public class AsantiTest
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(AsantiTest.class);
 
+<<<<<<< HEAD
+=======
+    @Before
+    public void setUp() throws Exception
+    {
+
+    }
+
+    @After
+    public void tearDown() throws Exception
+    {
+
+    }
+
+>>>>>>> INC-4: Update 'DecodedAsnData' to return Guava 'Optional<T>' objects
     @Test
     public void testDecodeAsnData() throws Exception
     {
@@ -112,15 +127,15 @@ public class AsantiTest
 
         final DecodedAsnData pdu = allDecodedData.get(0);
         String tag = "/Human/name";
-        byte[] b = pdu.getBytes(tag);
+        byte[] b = pdu.getBytes(tag).get();
         String s = new String(b, Charsets.UTF_8);
         logger.info("{} is {}", tag, s);
         assertEquals("Adam", s);
 
-        String name = (String) pdu.getDecodedObject(tag);
+        String name = pdu.<String>getDecodedObject(tag).get();
         assertEquals("Adam", name);
 
-        b = pdu.getBytes("/Human");
+        b = pdu.getBytes("/Human").get();
         logger.info("/Human is {}", b);
 
     }
@@ -189,18 +204,19 @@ public class AsantiTest
         final DecodedAsnData pdu = allDecodedData.get(0);
         String tag = "/Human/name";
         // we 'know' that this is a UTF8String
-        String s = AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag));
+        String s = AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag).get());
         logger.info("{} is {}", tag, s);
         assertEquals("Adam", s);
-        s = (String) pdu.getDecodedObject(tag);
+        s = pdu.<String>getDecodedObject(tag).get();
         assertEquals("Adam", s);
 
         tag = "/Human/age";
         // we 'know' that this is an Integer
-        BigInteger age = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag));
+        BigInteger age = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag).get());
         logger.info("{} is {}", tag, age);
         assertEquals(new BigInteger("32"), age);
         age = (BigInteger) pdu.getDecodedObject(tag);
+        age = pdu.<BigInteger>getDecodedObject(tag).get();
         assertEquals(new BigInteger("32"), age);
     }
 }

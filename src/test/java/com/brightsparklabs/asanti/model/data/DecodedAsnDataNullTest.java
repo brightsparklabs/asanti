@@ -4,11 +4,11 @@
  */
 package com.brightsparklabs.asanti.model.data;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Unit test
@@ -55,7 +55,7 @@ public class DecodedAsnDataNullTest
     @Test
     public void testGetBytes() throws Exception
     {
-        assertArrayEquals(new byte[0], instance.getBytes("*"));
+        assertEquals(false, instance.getBytes("*").isPresent());
     }
 
     @Test
@@ -67,10 +67,10 @@ public class DecodedAsnDataNullTest
     @Test
     public void testGetHexString() throws Exception
     {
-        assertEquals("0x", instance.getHexString("*"));
-        assertEquals("0x", instance.getHexString("/*"));
-        assertEquals("0x", instance.getHexString("/"));
-        assertEquals("0x", instance.getHexString(""));
+        assertEquals(false, instance.getHexString("*").isPresent());
+        assertEquals(false, instance.getHexString("/*").isPresent());
+        assertEquals(false, instance.getHexString("/").isPresent());
+        assertEquals(false, instance.getHexString("").isPresent());
     }
 
     @Test
@@ -82,10 +82,10 @@ public class DecodedAsnDataNullTest
     @Test
     public void testGetPrintableString() throws Exception
     {
-        assertEquals("", instance.getPrintableString("*"));
-        assertEquals("", instance.getPrintableString("/*"));
-        assertEquals("", instance.getPrintableString("/"));
-        assertEquals("", instance.getPrintableString(""));
+        assertEquals(false, instance.getPrintableString("*").isPresent());
+        assertEquals(false, instance.getPrintableString("/*").isPresent());
+        assertEquals(false, instance.getPrintableString("/").isPresent());
+        assertEquals(false, instance.getPrintableString("").isPresent());
     }
 
     @Test
@@ -97,10 +97,10 @@ public class DecodedAsnDataNullTest
     @Test
     public void testGetDecodedObject() throws Exception
     {
-        assertArrayEquals(new byte[0], (byte[]) instance.getDecodedObject("*"));
-        assertArrayEquals(new byte[0], (byte[]) instance.getDecodedObject("/*"));
-        assertArrayEquals(new byte[0], (byte[]) instance.getDecodedObject("/"));
-        assertArrayEquals(new byte[0], (byte[]) instance.getDecodedObject(""));
+        assertEquals(false, instance.getDecodedObject("*").isPresent());
+        assertEquals(false, instance.getDecodedObject("/").isPresent());
+        assertEquals(false, instance.getDecodedObject("/*").isPresent());
+        assertEquals(false, instance.getDecodedObject("").isPresent());
     }
 
     @Test
