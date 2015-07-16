@@ -181,7 +181,7 @@ public class AsnSchemaImpl implements AsnSchema
      * returned (e.g. {@code ["Header", "Published", "Date"]})
      */
     private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType,
-            DecodingSession session)
+            DecodingSession decodingSession)
     {
         /* TODO: ASN-143.  does this functionality now belong here?
          * all the logic is about AsnSchemaType object - should it have a decodeTags function?
@@ -197,8 +197,11 @@ public class AsnSchemaImpl implements AsnSchema
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
+
+            final String decodedTagPath = tagJoiner.join(result.decodedTags).replaceAll("/\\[", "\\[");
             // By definition the new tag is the child of its container.
-            AsnSchemaNamedType namedType = type.getMatchingChild(tag, session);
+            decodingSession.setContext(decodedTagPath);
+            AsnSchemaNamedType namedType = type.getMatchingChild(tag, decodingSession);
             final String decodedTag = namedType.getName();
             result.type = namedType.getType();
 
@@ -219,21 +222,6 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: DecodedTagAndType
     // -------------------------------------------------------------------------
-
-    boolean isConstructed(AsnBuiltinType type)
-    {
-        switch (type)
-        {
-            case SequenceOf:
-            case Sequence:
-            case Set:
-            case SetOf:
-            case Choice:
-                return true;
-            default:
-                return false;
-        }
-    }
 
     /**
      * Transfer object to support returning a tuple of "Decoded Tags" and "Type"

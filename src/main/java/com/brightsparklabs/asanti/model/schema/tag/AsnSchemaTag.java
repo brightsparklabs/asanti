@@ -1,3 +1,8 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
 package com.brightsparklabs.asanti.model.schema.tag;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -23,8 +28,6 @@ public class AsnSchemaTag
     private static final AsnSchemaTag NULL = new AsnSchemaTag("", "", "");
 
     /** pattern to match a raw tag coming out of the BER decoder */
-//    private static final Pattern PATTERN_TAG = Pattern.compile(
-//            "^([0-9]+)(\\.(([0-9]+)|(u\\.([a-zA-Z0-9]+))))$");
     private static final Pattern PATTERN_TAG = Pattern.compile(
             "^([0-9]+)(\\[(([0-9]+)|(UNIVERSAL ([a-zA-Z0-9]+)))\\])$");
 
@@ -104,34 +107,72 @@ public class AsnSchemaTag
      * @param type
      *         tag universal component of the raw tag.  Set to (@code null} if no universal
      *         component.
+     *
+     * @return a new AsnSchemaTag
      */
     public static AsnSchemaTag create(String tagIndex, AsnBuiltinType type)
     {
         return new AsnSchemaTag(tagIndex, "", createUniversalPortion(type));
     }
 
+    /**
+     * Creates an instance, combining the index and tag
+     *
+     * @param tagIndex
+     *         tag index component of the raw tag
+     * @param tag
+     *         the tag portion
+     *
+     * @return a new AsnSchemaTag
+     */
     public static AsnSchemaTag create(int tagIndex, String tag)
     {
         return create(createRawTag(tagIndex, tag));
     }
 
+    /**
+     * Creates a new tag with an updated index
+     *
+     * @param tagIndex
+     *         tag index component of the raw tag
+     * @param tag
+     *         the old tag to get the tag Portion from
+     *
+     * @return a new AsnSchemaTag
+     */
     public static AsnSchemaTag create(int tagIndex, AsnSchemaTag tag)
     {
-        return new AsnSchemaTag(Integer.toString(tagIndex), tag.getTagContextSpecific(), tag.getTagUniversal());
+        return new AsnSchemaTag(Integer.toString(tagIndex),
+                tag.getTagContextSpecific(),
+                tag.getTagUniversal());
     }
 
+    /**
+     * @param tagIndex
+     *         tag index component of the raw tag
+     * @param tag
+     *         tag potion
+     *
+     * @return a String representation of what toString of this tag would be, or this string can be
+     * passed in to create a new tag
+     */
     public static String createRawTag(int tagIndex, String tag)
     {
         return String.format("%d[%s]", tagIndex, tag);
-        //return String.format("%d.%s", tagIndex, tag);
     }
 
+    /**
+     * Creates the Universal portion of a tag based on the type
+     *
+     * @param type
+     *         AsnBuiltinType to map to universal tag number
+     *
+     * @return the equivalent of the getTagUniversal for a tag created from this type
+     */
     public static String createUniversalPortion(AsnBuiltinType type)
     {
         return "UNIVERSAL " + getUniversalTagForBuiltInType(type);
-        //return "u." + getUniversalTagForBuiltInType(type);
     }
-
 
     // ---------------------------------------------------------------------
     // PUBLIC METHODS
@@ -158,7 +199,6 @@ public class AsnSchemaTag
         }
 
         return tagIndex + "[" + getTagPortion() + "]";
-        //return tagIndex + "." + getTagPortion();
     }
 
     /**
@@ -206,7 +246,16 @@ public class AsnSchemaTag
         return tagUniversal.isEmpty() ? tagContextSpecific : tagUniversal;
     }
 
-    public static String getUniversalTagForBuiltInType(AsnBuiltinType type)
+    /**
+     * Helper to map from AsnBuiltinType to the ASN.1 value for the Universal tag of this type.
+     *
+     * @param type
+     *         AsnBuiltinType to map to universal tag number
+     *
+     * @return the String representation of the universal type (integer), empty string if there is
+     * no mapping
+     */
+    private static String getUniversalTagForBuiltInType(AsnBuiltinType type)
     {
         if (type == AsnBuiltinType.Choice)
         {
@@ -214,32 +263,38 @@ public class AsnSchemaTag
             return "Choice";
         }
 
-        return Optional.fromNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type))
-                .or("");
+        return Optional.fromNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).or("");
     }
 
+    /**
+     * Map from the ASN.1 Universal tag to our AsnBuiltinType
+     *
+     * @param universalTag
+     *         ASN.1 Universal tag
+     *
+     * @return respective AsnBuiltinType for the Universal tag, AsnBuiltinType#NULL if there is no
+     * match
+     */
     public static AsnBuiltinType getBuiltInTypeForUniversalTag(int universalTag)
     {
         return Optional.fromNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag))
                 .or(AsnBuiltinType.Null);
     }
 
-    private static ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG
+    private static final ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG
             = ImmutableMap.<AsnBuiltinType, String>builder()
             .put(AsnBuiltinType.Boolean, "1")
             .put(AsnBuiltinType.Integer, "2")
             .put(AsnBuiltinType.BitString, "3")
             .put(AsnBuiltinType.OctetString, "4")
-            .put(AsnBuiltinType.Null, "5")
-            .put(AsnBuiltinType.Oid, "6")
+            .put(AsnBuiltinType.Null, "5").put(AsnBuiltinType.Oid, "6")
                     //.put(AsnBuiltinType. ObjectDescriptor, 7)
             .put(AsnBuiltinType.InstanceOf, "8")
             .put(AsnBuiltinType.External, "8")
             .put(AsnBuiltinType.Real, "9")
             .put(AsnBuiltinType.Enumerated, "10")
             .put(AsnBuiltinType.EmbeddedPDV, "11")
-            .put(AsnBuiltinType.Utf8String, "12")
-            .put(AsnBuiltinType.RelativeOid, "13")
+            .put(AsnBuiltinType.Utf8String, "12").put(AsnBuiltinType.RelativeOid, "13")
                     //.put( reserved, 14)
                     //.put( reserved, 15)
             .put(AsnBuiltinType.Sequence, "16")
@@ -261,7 +316,7 @@ public class AsnSchemaTag
             .put(AsnBuiltinType.BmpString, "30")
             .build();
 
-    private static ImmutableMap<Integer, AsnBuiltinType> UNIVERSAL_TAG_TO_BUILTIN_TYPE
+    private static final ImmutableMap<Integer, AsnBuiltinType> UNIVERSAL_TAG_TO_BUILTIN_TYPE
             = ImmutableMap.<Integer, AsnBuiltinType>builder()
             .put(1, AsnBuiltinType.Boolean)
             .put(2, AsnBuiltinType.Integer)

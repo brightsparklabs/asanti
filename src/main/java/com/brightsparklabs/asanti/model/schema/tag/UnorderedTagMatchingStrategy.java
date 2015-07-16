@@ -1,10 +1,12 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedTypeImpl;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableMap;
 
@@ -15,40 +17,51 @@ import com.google.common.collect.ImmutableMap;
  */
 public class UnorderedTagMatchingStrategy implements TagMatchingStrategy
 {
-    public static final UnorderedTagMatchingStrategy UNORDERED_TAG_MATCHING_STRATEGY
-            = new UnorderedTagMatchingStrategy();
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
 
+    /** singleton instance */
+    private static final UnorderedTagMatchingStrategy instance = new UnorderedTagMatchingStrategy();
+
+    // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+
+    /**
+     * Default constructor. This is a singleton, use the getInstance.
+     */
     private UnorderedTagMatchingStrategy()
     {
     }
 
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns an instance of this class
+     *
+     * @return an instance of this class
+     */
+    public static UnorderedTagMatchingStrategy getInstance()
+    {
+        return instance;
+    }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: TagMatchingStrategy
+    // -------------------------------------------------------------------------
+
     @Override
     public AsnSchemaNamedType getMatchingComponent(String rawTag,
-            ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes, AsnSchemaType type,
-            DecodingSession session)
+            ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
+            DecodingSession decodingSession)
     {
-        AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
+        // For an unordered type we don't need the decodingSession
+        final AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
+        final AsnSchemaNamedType result = tagsToComponentTypes.get(tag.getTagPortion());
 
-        AsnSchemaNamedType result = tagsToComponentTypes.get(tag.getTagPortion());
-
-        if (result != null)
-        {
-            return result;
-        }
-
-        // Was one of the components a choice (with no tag) that was transparently replaced by the option?
-        String choiceTag = AsnSchemaTag.createUniversalPortion(AsnBuiltinType.Choice);
-        result = tagsToComponentTypes.get(choiceTag);
-        if (result != null)
-        {
-            AsnSchemaNamedType namedType = result.getType().getMatchingChild(rawTag, session);
-
-            String newTag = result.getName() + "/" + namedType.getName();
-
-            return new AsnSchemaNamedTypeImpl(newTag, namedType.getType());
-        }
-
-        return AsnSchemaNamedType.NULL;
-
+        return (result != null) ? result : AsnSchemaNamedType.NULL;
     }
 }

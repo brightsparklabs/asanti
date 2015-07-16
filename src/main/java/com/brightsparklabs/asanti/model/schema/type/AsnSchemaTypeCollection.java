@@ -1,3 +1,8 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -6,8 +11,6 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.ImmutableSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 
@@ -27,9 +30,6 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaTypeConstructed.class);
-
     /**
      * built-in types which are considered 'collection'. Currently: SET OF and SEQUENCE OF
      */
@@ -43,6 +43,9 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
 
     /** name of the type for the elements in this collection */
     private final AsnSchemaType elementType;
+
+    /** the Universal tag we should expect */
+    private String myUniversalTag = "";
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -96,6 +99,23 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
         return elementType;
     }
 
+    /**
+     * When decoding we are expecting only certain values.  Some of those values are the Universal
+     * tag for the element type.  We may not know the element type's actual type at construction so
+     * as a post parsing step this function will be called to allow us to calculate the tags we
+     * expect to receive.
+     */
+    public void performTagging()
+    {
+        myUniversalTag = AsnSchemaTag.createUniversalPortion(elementType.getBuiltinTypeAA());
+    }
+
+    // TODO MJF
+    public AsnPrimitiveType getCollectionPrimitiveType()
+    {
+        return super.getPrimitiveType();
+    }
+
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BaseAsnSchemaType
     // -------------------------------------------------------------------------
@@ -109,10 +129,9 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     @Override
     public AsnSchemaNamedType getMatchingChild(String rawTag, DecodingSession decodingSession)
     {
-        AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
+        final AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
 
-        // TODO MJF - we should check that the universal type matches the elementType
-        if (!tag.getTagUniversal().isEmpty())
+        if (tag.getTagUniversal().equals(myUniversalTag))
         {
             return new AsnSchemaNamedTypeImpl("[" + tag.getTagIndex() + "]", elementType);
         }
@@ -120,15 +139,15 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
         if (elementType.getBuiltinTypeAA() == AsnBuiltinType.Choice)
         {
             // We have a collection of Choice, so we need to insert the choice option
-            AsnSchemaNamedType child = elementType.getMatchingChild(rawTag, decodingSession);
-			
-            String newTag = new StringBuilder()
-                    .append("[")
-                    .append(tag.getTagIndex())
-                    .append("]/")
-                    .append(child.getName())
-                    .toString();
-            return new AsnSchemaNamedTypeImpl(newTag, child.getType());
+            // We could pre-calculate the options here like we do with Constructed, but give
+            // that we have to do work here to sort out the index there is little to be saved
+            final AsnSchemaNamedType child = elementType.getMatchingChild(rawTag, decodingSession);
+
+            if (child != AsnSchemaNamedType.NULL)
+            {
+                final String newTag = "[" + tag.getTagIndex() + "]/" + child.getName();
+                return new AsnSchemaNamedTypeImpl(newTag, child.getType());
+            }
         }
 
         return AsnSchemaNamedType.NULL;

@@ -1,7 +1,8 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 /**
- * Created by Michael on 6/07/2015.
+ * Provides an abstraction of the concept of a Name and an AsnSchemaType
+ *
  */
 public interface AsnSchemaNamedType
 {
@@ -17,6 +18,18 @@ public interface AsnSchemaNamedType
     // -------------------------------------------------------------------------
     public static class Null implements AsnSchemaNamedType
     {
+        // ---------------------------------------------------------------------
+        // CONSTRUCTION
+        // ---------------------------------------------------------------------
+
+        /**
+         * Default constructor. This is private. Use {@link AsnSchemaNamedType#NULL} to obtain an
+         * instance.
+         */
+        private Null()
+        {
+        }
+
         @Override
         public String getName()
         {

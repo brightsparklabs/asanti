@@ -1,6 +1,10 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.common.Visitable;
 import com.brightsparklabs.asanti.common.VisitableThrowing;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
@@ -57,9 +61,8 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
      *
      * @param tag
      *         a tag within this construct
-     * @param session
-     *         The {@link DecodingSession} used to maintain state while decoding a collection of
-     *         tags
+     * @param decodingSession
+     *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
      *
      * @return the {@code AsnSchemaNamedType} for the AsnSchemaNamedType#NULL, or null if none found
      */

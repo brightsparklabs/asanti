@@ -1,7 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 /**
- * Created by Michael on 6/07/2015.
+ * TODO MJF
  */
 public class AsnSchemaNamedTypeImpl implements AsnSchemaNamedType
 {

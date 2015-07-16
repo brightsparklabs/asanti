@@ -1,54 +1,72 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedTypeImpl;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableMap;
 
 /**
  * This provides a mechanism to match raw tags from the AsnData with the way tags are stored in a
- * Constructed type for Sequene types - which rely on the order of the components.  It assumes that
+ * Constructed type for Sequence types - which rely on the order of the components.  It assumes that
  * the tags were created with the matching creation strategy.
  */
 public class SequenceTagMatchingStrategy implements TagMatchingStrategy
 {
-    public static final SequenceTagMatchingStrategy SEQUENCE_TAG_MATCHING_STRATEGY
-            = new SequenceTagMatchingStrategy();
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
 
+    private static final SequenceTagMatchingStrategy instance = new SequenceTagMatchingStrategy();
+
+    // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+
+    /**
+     * Default constructor. This is a singleton, use the getInstance.
+     */
     private SequenceTagMatchingStrategy()
     {
     }
 
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns an instance of this class
+     *
+     * @return an instance of this class
+     */
+    public static SequenceTagMatchingStrategy getInstance()
+    {
+        return instance;
+    }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: TagMatchingStrategy
+    // -------------------------------------------------------------------------
+
     @Override
     public AsnSchemaNamedType getMatchingComponent(String rawTag,
-            ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes, AsnSchemaType type,
+            ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
             DecodingSession session)
     {
+        // Use the session to translate this to have an index appropriate for the session (ie how
+        // many OPTIONAL items have been received)
         AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
-
-        tag = session.getTag(type, tag);
-
-        AsnSchemaComponentType result = tagsToComponentTypes.get(tag.getRawTag());
+        tag = session.getTag(tag);
+        final AsnSchemaComponentType result = tagsToComponentTypes.get(tag.getRawTag());
 
         if (result != null)
         {
-            session.setTag(type, tag, result.isOptional());
+            session.setTag(tag, result.isOptional());
             return result;
-        }
-
-        // Was one of the components a choice (with no tag) that was transparently replaced by the option?
-        String choiceTag = AsnSchemaTag.create(tag.getTagIndex(), AsnBuiltinType.Choice).getRawTag();
-        result = tagsToComponentTypes.get(choiceTag);
-        if (result != null)
-        {
-            AsnSchemaNamedType namedType = result.getType().getMatchingChild(rawTag, session);
-
-            String newTag = result.getName() + "/" + namedType.getName();
-
-            return new AsnSchemaNamedTypeImpl(newTag, namedType.getType());
         }
 
         return AsnSchemaNamedType.NULL;

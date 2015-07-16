@@ -24,8 +24,8 @@ public class BaseAsnSchemaType implements AsnSchemaType
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the primitiveType of this definition */ // TODO MJF
-    protected final AsnPrimitiveType primitiveType;
+    /** the primitiveType of this definition */
+    private final AsnPrimitiveType primitiveType;
 
     /** the constraint on the primitiveType */
     private final ImmutableSet<AsnSchemaConstraint> constraints;

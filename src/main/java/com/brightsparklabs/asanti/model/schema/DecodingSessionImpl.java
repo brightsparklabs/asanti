@@ -13,16 +13,25 @@ import java.util.Set;
  */
 public class DecodingSessionImpl implements DecodingSession
 {
-    Map<Object, LevelTagTracker> levelTagTrackerMap = Maps.newHashMap();
+    //Map<Object, LevelTagTracker> levelTagTrackerMap = Maps.newHashMap();
+    Map<String, LevelTagTracker> levelTagTrackerMap = Maps.newHashMap();
+
+    String context;
 
     @Override
-    public AsnSchemaTag getTag(Object object, AsnSchemaTag tag)
+    public void setContext(String context)
     {
-        LevelTagTracker levelTagTracker = levelTagTrackerMap.get(object);
+        this.context = context;
+    }
+
+    @Override
+    public AsnSchemaTag getTag(AsnSchemaTag tag)
+    {
+        LevelTagTracker levelTagTracker = levelTagTrackerMap.get(context);
         if (levelTagTracker == null)
         {
             levelTagTracker = new LevelTagTracker();
-            levelTagTrackerMap.put(object, levelTagTracker);
+            levelTagTrackerMap.put(context, levelTagTracker);
         }
 
         return levelTagTracker.getTag(tag);
@@ -30,13 +39,13 @@ public class DecodingSessionImpl implements DecodingSession
     }
 
     @Override
-    public void setTag(Object object, AsnSchemaTag tag, boolean isOptional)
+    public void setTag(AsnSchemaTag tag, boolean isOptional)
     {
-        LevelTagTracker levelTagTracker = levelTagTrackerMap.get(object);
+        LevelTagTracker levelTagTracker = levelTagTrackerMap.get(context);
         if (levelTagTracker == null)
         {
             levelTagTracker = new LevelTagTracker();
-            levelTagTrackerMap.put(this, levelTagTracker);
+            levelTagTrackerMap.put(context, levelTagTracker);
         }
 
         levelTagTracker.putUsedTag(tag, isOptional);
@@ -83,5 +92,4 @@ public class DecodingSessionImpl implements DecodingSession
             return tag;
         }
     }
-
 }

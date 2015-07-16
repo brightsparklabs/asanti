@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import java.text.ParseException;
-import java.util.List;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchemaModule} which conform to the test
@@ -97,11 +96,10 @@ public class MockAsnSchemaModule
     public static ImmutableMap<String, AsnSchemaModule> createMockedAsnSchemaModules()
             throws ParseException
     {
-        final List<Builder> otherModules = Lists.newArrayList();
         final AsnSchemaModule documentPduModuleinstance
-                = createMockedAsnSchemaModuleForDocumentPdu().build(otherModules);
+                = createMockedAsnSchemaModuleForDocumentPdu().build();
         final AsnSchemaModule peopleProtocolModule
-                = createMockedAsnSchemaModuleForPeopleProtocol().build(otherModules);
+                = createMockedAsnSchemaModuleForPeopleProtocol().build();
         final ImmutableMap<String, AsnSchemaModule> modules = ImmutableMap.of(
                 documentPduModuleinstance.getName(),
                 documentPduModuleinstance,

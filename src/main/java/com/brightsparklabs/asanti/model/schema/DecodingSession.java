@@ -8,7 +8,9 @@ import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 public interface DecodingSession
 {
 
-    AsnSchemaTag getTag(Object object, AsnSchemaTag tag);
+    void setContext(String context);
 
-    void setTag(Object object, AsnSchemaTag tag, boolean isOptional);
+    AsnSchemaTag getTag(AsnSchemaTag tag);
+
+    void setTag(AsnSchemaTag tag, boolean isOptional);
 }

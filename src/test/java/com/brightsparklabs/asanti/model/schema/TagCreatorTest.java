@@ -1,25 +1,22 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.tag.TagCreationStrategy;
-import com.brightsparklabs.asanti.model.schema.tag.TagCreationStrategyImpl;
+import com.brightsparklabs.asanti.model.schema.tag.TagCreator;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.text.ParseException;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for TagCreationStrategyImpl.
+ * Tests for TagCreator.
  */
-public class TagCreationStrategyImplTest
+public class TagCreatorTest
 {
 
     // TODO MJF - make real tests, javadoc class above.
@@ -34,9 +31,8 @@ public class TagCreationStrategyImplTest
                 .add(getMockedComponent("3", "c", false))
                 .build();
 
-        TagCreationStrategy taggingStrategy
-                = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE,
-                AsnModuleTaggingMode.DEFAULT);
+        TagCreator taggingStrategy
+                = TagCreator.create(AsnPrimitiveType.SEQUENCE, AsnModuleTaggingMode.DEFAULT);
 
         ImmutableMap<String, AsnSchemaComponentType> result = taggingStrategy.getTagsForComponents(
                 components);
@@ -51,9 +47,8 @@ public class TagCreationStrategyImplTest
                 .add(getMockedComponent("", "c", false))
                 .build();
 
-        TagCreationStrategy taggingStrategy
-                = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE,
-                AsnModuleTaggingMode.AUTOMATIC);
+        TagCreator taggingStrategy
+                = TagCreator.create(AsnPrimitiveType.SEQUENCE, AsnModuleTaggingMode.AUTOMATIC);
 
         ImmutableMap<String, AsnSchemaComponentType> result = taggingStrategy.getTagsForComponents(
                 components);
@@ -77,9 +72,8 @@ public class TagCreationStrategyImplTest
                 .build();
 
 
-        TagCreationStrategy taggingStrategy
-                = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE,
-                AsnModuleTaggingMode.DEFAULT);
+        TagCreator taggingStrategy
+                = TagCreator.create(AsnPrimitiveType.SEQUENCE, AsnModuleTaggingMode.DEFAULT);
 
         ImmutableMap<String, AsnSchemaComponentType> result = taggingStrategy.getTagsForComponents(
                 components);
@@ -104,9 +98,8 @@ public class TagCreationStrategyImplTest
                 .build();
 
 
-        TagCreationStrategy taggingStrategy
-                = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE,
-                AsnModuleTaggingMode.DEFAULT);
+        TagCreator taggingStrategy
+                = TagCreator.create(AsnPrimitiveType.SEQUENCE, AsnModuleTaggingMode.DEFAULT);
 
         ImmutableMap<String, AsnSchemaComponentType> result = taggingStrategy.getTagsForComponents(
                 components);
@@ -123,7 +116,7 @@ public class TagCreationStrategyImplTest
 
         try
         {
-            TagCreationStrategy taggingStrategy = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE,
+            TagCreator taggingStrategy = TagCreator.create(AsnPrimitiveType.SEQUENCE,
                     AsnModuleTaggingMode.DEFAULT);
 
             ImmutableMap<String, AsnSchemaComponentType> result = taggingStrategy.getTagsForComponents(
@@ -140,14 +133,15 @@ public class TagCreationStrategyImplTest
     public void testDuplicateTagsSequence2() throws Exception
     {
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.<AsnSchemaComponentType>builder()
-                .add(getMockedComponent("1", "a", true)).add(getMockedComponent("2", "b", true))
+                .add(getMockedComponent("1", "a", true))
+                .add(getMockedComponent("2", "b", true))
                 .add(getMockedComponent("3", "c", true))
                 .add(getMockedComponent("1", "d", false))
                 .build();
 
         try
         {
-            TagCreationStrategy taggingStrategy = TagCreationStrategyImpl.create(AsnPrimitiveType.SEQUENCE,
+            TagCreator taggingStrategy = TagCreator.create(AsnPrimitiveType.SEQUENCE,
                     AsnModuleTaggingMode.DEFAULT);
 
             ImmutableMap<String, AsnSchemaComponentType> result = taggingStrategy.getTagsForComponents(
@@ -174,13 +168,7 @@ public class TagCreationStrategyImplTest
      */
     private AsnSchemaComponentType getMockedComponent(String tag, String name, boolean isOptional)
     {
-        AsnSchemaComponentType result = mock(AsnSchemaComponentType.class);
-
-        when(result.getTag()).thenReturn(tag);
-        when(result.getName()).thenReturn(name);
-        when(result.isOptional()).thenReturn(isOptional);
-
-        return result;
+        return getMockedComponent(tag, name, isOptional, AsnBuiltinType.Null);
     }
 
     /**
@@ -201,10 +189,16 @@ public class TagCreationStrategyImplTest
             AsnBuiltinType type)
     {
         AsnSchemaType st = mock(AsnSchemaType.class);
-
         when(st.getBuiltinType()).thenReturn(type);
+        when(st.getBuiltinTypeAA()).thenReturn(type);
 
-        AsnSchemaComponentType result = getMockedComponent(tag, name, isOptional);
+        AsnSchemaComponentType result = mock(AsnSchemaComponentType.class);
+
+        when(result.getTag()).thenReturn(tag);
+        when(result.getName()).thenReturn(name);
+        when(result.isOptional()).thenReturn(isOptional);
+
+
         when(result.getType()).thenReturn(st);
 
         return result;

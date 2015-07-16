@@ -251,6 +251,7 @@ public class MockAsnSchema
         when(decodedTag.getType()).thenReturn(type);
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
 
+        @SuppressWarnings("unchecked")
         OperationResult<DecodedTag> result = mock(OperationResult.class);
 
         when(result.getOutput()).thenReturn(decodedTag);

@@ -1237,6 +1237,38 @@ public class AsnSchemaParserTest
     }
 
     @Test
+    public void test_ReuseTypeWithOptional() throws Exception
+    {
+        // This tests our decoding session management by re-using a Type Definition and
+        // having optional components.
+        String schemaFilename = getClass().getResource("/Human_ReuseWithOptional.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+
+        {
+            String berFilename = getClass().getResource("/Human_ReuseWithOptional.ber").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "Human";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+            debugPdus(pdus);
+
+            String tag = "/Human/a/a";
+            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/a/b";
+            assertEquals("U", pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/a/c";
+            assertEquals("V", pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/b/b";
+            assertEquals("A", pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/b/c";
+            assertEquals("B", pdus.get(0).getDecodedObject(tag));
+        }
+    }
+
+    @Test
     public void testParse_NonUniqueTags() throws Exception
     {
         String schemaFilename = getClass().getResource("/Human_NonUniqueTags.asn").getFile();
@@ -1392,6 +1424,60 @@ public class AsnSchemaParserTest
             assertEquals(1, bytes[0]);
         }
 
+    }
+
+    @Test
+    public void testParse_SetOfUnTaggedChoice() throws Exception
+    {
+        String schemaFilename = getClass().getResource("/Human_SetOfUnTaggedChoice.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+
+        {
+            String berFilename = getClass().getResource("/Human_SetOfUnTaggedChoice.ber").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "Human";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            debugPdus((pdus));
+
+            String tag = "/Human/name[0]/a";
+            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/name[1]/b";
+            assertEquals("U", pdus.get(0).getDecodedObject(tag));
+        }
+    }
+
+    @Test
+    public void testParse_SetOfSetOfUnTaggedChoice() throws Exception
+    {
+        String schemaFilename = getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+
+        {
+            String berFilename = getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.ber").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "Human";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            debugPdus((pdus));
+
+            String tag = "/Human/name[0][0]/a";
+            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/name[0][1]/b";
+            assertEquals("U", pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/name[1][0]/a";
+            assertEquals(new BigInteger("11"), pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/name[1][1]/b";
+            assertEquals("V", pdus.get(0).getDecodedObject(tag));
+        }
     }
 
     @Test
@@ -1832,7 +1918,7 @@ public class AsnSchemaParserTest
         {
             String schemaFilename = getClass().getResource("/ChoiceDuplicate.asn").getFile();
             File schemaFile = new File(schemaFilename);
-            final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+            AsnSchemaFileReader.read(schemaFile);
             fail("Should have thrown an IOException because of duplicate tags");
         }
         catch (IOException e)
@@ -1840,7 +1926,7 @@ public class AsnSchemaParserTest
         }
     }
 
-        @Test
+    @Test
     public void testParse_Choice3() throws Exception
     {
         String schemaFilename = getClass().getResource("/Human_Choice3.asn").getFile();

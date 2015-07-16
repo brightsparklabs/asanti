@@ -278,10 +278,19 @@ public class AsnBerFileReader
 
         prefix = String.format(TAG_FORMATTER, prefix, index, asnTaggedObject.getTagNo());
 
+        int containingType  = getType(asnTaggedObject);
+        if (isConstructedType(containingType))
+        {
+            logger.trace("Containing type is Constructed.");
+            index = 0;
+        }
+
+
         int type = getType(obj);
         if (isConstructedType(type))
         {
             // This is a "constructed" type, so reset the index
+            logger.trace("reset index");
             index = 0;
         }
 
