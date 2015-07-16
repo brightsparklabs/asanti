@@ -15,6 +15,9 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.io.BaseEncoding;
+import com.google.common.io.ByteSource;
+import com.google.common.io.CharSource;
+import com.google.common.io.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +82,8 @@ public class AsantiCli
                     final File asnFile = new File(asnFilename);
                     final File berFile = new File(berFilename);
                     // Load the schema once, and use it for all data files.
-                    final AsnSchema asnSchema = AsnSchemaReader.read(asnFile);
+                    final CharSource schemaSource = Files.asCharSource(asnFile, Charsets.UTF_8);
+                    final AsnSchema asnSchema = AsnSchemaReader.read(schemaSource);
                     handleDataFile(berFile, asnSchema, topLevelType);
                 }
                 break;
@@ -117,7 +121,8 @@ public class AsantiCli
 
             logger.info("Loading file: " + berFile.getCanonicalPath());
 
-            final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berFile,
+            final ByteSource byteSource = Files.asByteSource(berFile);
+            final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(byteSource,
                     asnSchema,
                     topLevelType);
             for (int i = 0; i < pdus.size(); i++)
@@ -212,7 +217,8 @@ public class AsantiCli
      */
     private static void testReadingAsnFile(File asnFile) throws IOException
     {
-        final AsnSchema asnSchema = AsnSchemaReader.read(asnFile);
+        final CharSource schemaSource = Files.asCharSource(asnFile, Charsets.UTF_8);
+        final AsnSchema asnSchema = AsnSchemaReader.read(schemaSource);
 
         logger.info("Expecting PASS");
         ImmutableList<String> rawTags = ImmutableList.of("/1/1",
@@ -270,7 +276,8 @@ public class AsantiCli
      */
     private static void testReadingBerFile(File berFile) throws IOException
     {
-        final ImmutableList<AsnData> data = Asanti.readAsnBerFile(berFile);
+        final ByteSource byteSource = Files.asByteSource(berFile);
+        final ImmutableList<AsnData> data = Asanti.readAsnBerData(byteSource);
         int count = 0;
         for (final AsnData asnData : data)
         {

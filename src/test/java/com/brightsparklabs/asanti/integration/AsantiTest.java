@@ -7,14 +7,12 @@ package com.brightsparklabs.asanti.integration;
 
 import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
-import com.google.common.io.BaseEncoding;
-import org.junit.After;
-import org.junit.Before;
+import com.google.common.io.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,19 +30,8 @@ import static org.junit.Assert.*;
  */
 public class AsantiTest
 {
-
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(AsantiTest.class);
-
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-    }
 
     @Test
     public void testDecodeAsnData() throws Exception
@@ -54,12 +41,12 @@ public class AsantiTest
          * manage this dependency/coupling, eg should we auto generate those files etc?
          */
 
-
         logger.info("Testing just the ber");
         String berFilename = getClass().getResource("/TestMostSimple.ber").getFile();
         final File berFile = new File(berFilename);
 
-        final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerFile(berFile);
+        final ByteSource byteSource = Files.asByteSource(berFile);
+        final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerData(byteSource);
 
         int count = 0;
         for (final AsnData asnData : allAsnData)
@@ -78,12 +65,12 @@ public class AsantiTest
         // expecting two tags.
         assertEquals(2, asnData.getRawTags().size());
 
-        byte [] b0 = asnData.getBytes("/0");
+        byte[] b0 = asnData.getBytes("/0");
         // we 'know' that this is a UTF8String
         String s = AsnByteDecoder.decodeAsUtf8String(b0);
         assertEquals("Adam", s);
 
-        byte [] b1 = asnData.getBytes("/1");
+        byte[] b1 = asnData.getBytes("/1");
         // we 'know' that this is an integer
         BigInteger big = AsnByteDecoder.decodeAsInteger(b1);
         assertEquals(32, big.intValue());
@@ -96,13 +83,14 @@ public class AsantiTest
     {
 
         logger.info("testing ber against schema");
-        final File asnFile = new File(getClass().getResource("/TestMostSimple.asn").getFile());
-        final File berFile = new File(getClass().getResource("/TestMostSimple.ber").getFile());
+        final CharSource schemaSource = Resources.asCharSource(getClass().getResource(
+                "/TestMostSimple.asn"), Charsets.UTF_8);
+        final ByteSource berSource = Resources.asByteSource(getClass().getResource(
+                "/TestMostSimple.ber"));
 
-        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile,
-                asnFile,
+        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berSource,
+                schemaSource,
                 "Human");
-
 
         for (int i = 0; i < allDecodedData.size(); i++)
         {
@@ -111,19 +99,16 @@ public class AsantiTest
             for (String tag : pdu.getTags())
             {
                 logger.info("\t{} => {}", tag, pdu.getHexString(tag));
-                logger.info("\t\tbuiltinType {} ",
-                        pdu.getType(tag).getBuiltinType());
+                logger.info("\t\tbuiltinType {} ", pdu.getType(tag).getBuiltinType());
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }
             for (String tag : pdu.getUnmappedTags())
             {
                 logger.info("?\t{} => {}", tag, pdu.getHexString(tag));
-                logger.info("\t\tbuiltinType{} ",
-                        pdu.getType(tag).getBuiltinType());
+                logger.info("\t\tbuiltinType{} ", pdu.getType(tag).getBuiltinType());
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }
         }
-
 
         final DecodedAsnData pdu = allDecodedData.get(0);
         String tag = "/Human/name";
@@ -132,12 +117,11 @@ public class AsantiTest
         logger.info("{} is {}", tag, s);
         assertEquals("Adam", s);
 
-        String name = (String)pdu.getDecodedObject(tag);
+        String name = (String) pdu.getDecodedObject(tag);
         assertEquals("Adam", name);
 
         b = pdu.getBytes("/Human");
         logger.info("/Human is {}", b);
-
 
     }
 
@@ -146,13 +130,13 @@ public class AsantiTest
     {
         logger.info("testing ber against schema");
 
-        final File asnFile = new File(getClass().getResource("/barTypeDef.asn").getFile());
-        final File berFile = new File(getClass().getResource("/bar.ber").getFile());
+        final CharSource schemaSource = Resources.asCharSource(getClass().getResource(
+                "/barTypeDef.asn"), Charsets.UTF_8);
+        final ByteSource berSource = Resources.asByteSource(getClass().getResource("/bar.ber"));
 
-        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile,
-                asnFile,
+        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berSource,
+                schemaSource,
                 "Bar");
-
 
         for (int i = 0; i < allDecodedData.size(); i++)
         {
@@ -176,13 +160,13 @@ public class AsantiTest
     @Test
     public void testReadAsnBerFile() throws Exception
     {
+        final CharSource schemaSource = Resources.asCharSource(getClass().getResource(
+                "/TestMostSimpleTypeDef.asn"), Charsets.UTF_8);
+        final ByteSource berSource = Resources.asByteSource(getClass().getResource(
+                "/TestMostSimple.ber"));
 
-        final File asnFile = new File(getClass().getResource("/TestMostSimpleTypeDef.asn").getFile());
-        final File berFile = new File(getClass().getResource("/TestMostSimple.ber").getFile());
-
-
-        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile,
-                asnFile,
+        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berSource,
+                schemaSource,
                 "Human");
         for (int i = 0; i < allDecodedData.size(); i++)
         {
@@ -205,10 +189,10 @@ public class AsantiTest
         final DecodedAsnData pdu = allDecodedData.get(0);
         String tag = "/Human/name";
         // we 'know' that this is a UTF8String
-        String s = AsnByteDecoder.decodeAsUtf8String( pdu.getBytes(tag));
+        String s = AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag));
         logger.info("{} is {}", tag, s);
         assertEquals("Adam", s);
-        s = (String)pdu.getDecodedObject(tag);
+        s = (String) pdu.getDecodedObject(tag);
         assertEquals("Adam", s);
 
         tag = "/Human/age";
@@ -216,14 +200,7 @@ public class AsantiTest
         BigInteger age = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag));
         logger.info("{} is {}", tag, age);
         assertEquals(new BigInteger("32"), age);
-        age = (BigInteger)pdu.getDecodedObject(tag);
+        age = (BigInteger) pdu.getDecodedObject(tag);
         assertEquals(new BigInteger("32"), age);
-
-    }
-
-    @Test
-    public void testReadAsnBerFile1() throws Exception
-    {
-
     }
 }
