@@ -12,6 +12,7 @@ import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -135,13 +136,13 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public byte[] getBytes(String tag)
+    public Optional<byte[]> getBytes(String tag)
     {
         final DecodedTag decodedTag = allTags.get(tag);
         // if no decoded tag, assume supplied tag is is already raw tag
         final String rawTag = (decodedTag == null) ? tag : decodedTag.getRawTag();
         final byte[] result = asnData.getBytes(rawTag);
-        return (result == null) ? new byte[0] : result;
+        return Optional.of(result);
     }
 
     @Override
@@ -150,17 +151,26 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final Map<String, byte[]> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            result.put(tag, getBytes(tag));
+            final Optional<byte[]> bytes = getBytes(tag);
+            if (bytes.isPresent())
+            {
+                result.put(tag, bytes.get());
+            }
         }
 
         return ImmutableMap.copyOf(result);
     }
 
     @Override
-    public String getHexString(String tag)
+    public Optional<String> getHexString(String tag)
     {
-        final byte[] bytes = getBytes(tag);
-        return "0x" + BaseEncoding.base16().encode(bytes);
+        final Optional<byte[]> bytes = getBytes(tag);
+        if (bytes.isPresent())
+        {
+            final String result = "0x" + BaseEncoding.base16().encode(bytes.get());
+            return Optional.of(result);
+        }
+        return Optional.absent();
     }
 
     @Override
@@ -169,14 +179,18 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final Map<String, String> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            result.put(tag, getHexString(tag));
+            final Optional<String> hexString = getHexString(tag);
+            if (hexString.isPresent())
+            {
+                result.put(tag, hexString.get());
+            }
         }
 
         return ImmutableMap.copyOf(result);
     }
 
     @Override
-    public String getPrintableString(String tag) throws DecodeException
+    public Optional<String> getPrintableString(String tag) throws DecodeException
     {
         final DecodedTag decodedTag = decodedTags.get(tag);
         if (decodedTag == null)
@@ -186,11 +200,16 @@ public class DecodedAsnDataImpl implements DecodedAsnData
             throw new DecodeException(error);
         }
 
-        final byte[] bytes = getBytes(tag);
+        final Optional<byte[]> bytes = getBytes(tag);
+        if (!bytes.isPresent())
+        {
+            return Optional.absent();
+        }
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(decoderVisitor);
-        return decoder.decodeAsString(bytes);
+        final String result = decoder.decodeAsString(bytes.get());
+        return Optional.of(result);
     }
 
     @Override
@@ -200,7 +219,11 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final Map<String, String> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            result.put(tag, getPrintableString(tag));
+            final Optional<String> printableString = getPrintableString(tag);
+            if (printableString.isPresent())
+            {
+                result.put(tag, printableString.get());
+            }
         }
 
         return ImmutableMap.copyOf(result);
@@ -214,7 +237,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public Object getDecodedObject(String tag) throws DecodeException
+    public Optional getDecodedObject(String tag) throws DecodeException
     {
         final DecodedTag decodedTag = decodedTags.get(tag);
         if (decodedTag == null)
@@ -224,12 +247,16 @@ public class DecodedAsnDataImpl implements DecodedAsnData
             throw new DecodeException(error);
         }
 
-        final byte[] bytes = getBytes(tag);
+        final Optional<byte[]> bytes = getBytes(tag);
+        if (!bytes.isPresent())
+        {
+            return Optional.absent();
+        }
+
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
-
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(decoderVisitor);
-        return decoder.decode(bytes);
+        return Optional.of(decoder.decode(bytes.get()));
     }
 
     @Override
@@ -239,7 +266,11 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final Map<String, Object> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            result.put(tag, getDecodedObject(tag));
+            final Optional<String> decodedeObject = getDecodedObject(tag);
+            if (decodedeObject.isPresent())
+            {
+                result.put(tag, decodedeObject.get());
+            }
         }
 
         return ImmutableMap.copyOf(result);
