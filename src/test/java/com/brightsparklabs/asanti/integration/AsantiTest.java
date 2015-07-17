@@ -33,21 +33,6 @@ public class AsantiTest
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(AsantiTest.class);
 
-<<<<<<< HEAD
-=======
-    @Before
-    public void setUp() throws Exception
-    {
-
-    }
-
-    @After
-    public void tearDown() throws Exception
-    {
-
-    }
-
->>>>>>> 933dfa251f24eb534f5519e787be779c7a06c4b5
     @Test
     public void testDecodeAsnData() throws Exception
     {
@@ -180,17 +165,8 @@ public class AsantiTest
         final ByteSource berSource = Resources.asByteSource(getClass().getResource(
                 "/TestMostSimple.ber"));
 
-<<<<<<< HEAD
         final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berSource,
                 schemaSource,
-=======
-        final File asnFile = new File(getClass().getResource("/TestMostSimpleTypeDef.asn")
-                .getFile());
-        final File berFile = new File(getClass().getResource("/TestMostSimple.ber").getFile());
-
-        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile,
-                asnFile,
->>>>>>> 933dfa251f24eb534f5519e787be779c7a06c4b5
                 "Human");
         for (int i = 0; i < allDecodedData.size(); i++)
         {
