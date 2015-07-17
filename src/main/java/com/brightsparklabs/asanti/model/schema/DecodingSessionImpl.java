@@ -1,10 +1,8 @@
 package com.brightsparklabs.asanti.model.schema;
 
-import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,8 +11,9 @@ import java.util.Set;
  */
 public class DecodingSessionImpl implements DecodingSession
 {
-    //Map<Object, LevelTagTracker> levelTagTrackerMap = Maps.newHashMap();
-    Map<String, LevelTagTracker> levelTagTrackerMap = Maps.newHashMap();
+    //Map<String, LevelTagTracker> levelTagTrackerMap = Maps.newHashMap();
+
+    Map<String, Map<Integer, Integer>> offsetMap = Maps.newHashMap();
 
     String context;
 
@@ -22,73 +21,94 @@ public class DecodingSessionImpl implements DecodingSession
     public void setContext(String context)
     {
         this.context = context;
+
+        if (offsetMap.get(context) == null)
+        {
+            offsetMap.put(context, Maps.<Integer, Integer>newHashMap());
+        }
     }
 
     @Override
-    public AsnSchemaTag getTag(AsnSchemaTag tag)
+    public int getOffset(int index)
     {
-        LevelTagTracker levelTagTracker = levelTagTrackerMap.get(context);
-        if (levelTagTracker == null)
-        {
-            levelTagTracker = new LevelTagTracker();
-            levelTagTrackerMap.put(context, levelTagTracker);
-        }
+        Map<Integer, Integer> offsets = offsetMap.get(context);
 
-        return levelTagTracker.getTag(tag);
+        Integer offset = offsets.get(index);
+        return (offset == null) ? 0 : offset;
     }
 
     @Override
-    public void setTag(AsnSchemaTag tag, boolean isOptional)
+    public void setOffset(int index, int offset)
     {
-        LevelTagTracker levelTagTracker = levelTagTrackerMap.get(context);
-        if (levelTagTracker == null)
-        {
-            levelTagTracker = new LevelTagTracker();
-            levelTagTrackerMap.put(context, levelTagTracker);
-        }
-
-        levelTagTracker.putUsedTag(tag, isOptional);
+        Map<Integer, Integer> offsets = offsetMap.get(context);
+        offsets.put(index, offset);
     }
 
-    private static class LevelTagTracker
-    {
-        Set<AsnSchemaTag> rawTagsUsed = Sets.newHashSet();
-        Set<Integer> offsets = Sets.newLinkedHashSet();
-
-        int lastOffset = 0;
-
-        void putUsedTag(AsnSchemaTag tag, boolean isOptional)
-        {
-            rawTagsUsed.add(tag);
-            Integer index = Integer.parseInt(tag.getTagIndex());
-            if (isOptional)
-            {
-                offsets.add(index+lastOffset);
-            }
-        }
-
-        public AsnSchemaTag getTag(AsnSchemaTag tag)
-        {
-            Integer index = Integer.parseInt(tag.getTagIndex());
-            Iterator<Integer> iterator = offsets.iterator();
-            int subtract = 0;
-            while(iterator.hasNext())
-            {
-                Integer offset = iterator.next();
-                if (offset < (index))
-                {
-                    subtract++;
-                }
-            }
-
-            if (subtract != 0)
-            {
-                tag = AsnSchemaTag.create((index - subtract), tag);
-            }
-
-            lastOffset = subtract;
-
-            return tag;
-        }
-    }
+    //    @Override
+    //    public AsnSchemaTag getTag(AsnSchemaTag tag)
+    //    {
+    //        LevelTagTracker levelTagTracker = levelTagTrackerMap.get(context);
+    //        if (levelTagTracker == null)
+    //        {
+    //            levelTagTracker = new LevelTagTracker();
+    //            levelTagTrackerMap.put(context, levelTagTracker);
+    //        }
+    //
+    //        return levelTagTracker.getTag(tag);
+    //    }
+    //
+    //    @Override
+    //    public void setTag(AsnSchemaTag tag, boolean isOptional)
+    //    {
+    //        LevelTagTracker levelTagTracker = levelTagTrackerMap.get(context);
+    //        if (levelTagTracker == null)
+    //        {
+    //            levelTagTracker = new LevelTagTracker();
+    //            levelTagTrackerMap.put(context, levelTagTracker);
+    //        }
+    //
+    //        levelTagTracker.putUsedTag(tag, isOptional);
+    //    }
+    //
+    //    private static class LevelTagTracker
+    //    {
+    //        Set<AsnSchemaTag> rawTagsUsed = Sets.newHashSet();
+    //        Set<Integer> offsets = Sets.newLinkedHashSet();
+    //
+    //        int lastOffset = 0;
+    //
+    //        void putUsedTag(AsnSchemaTag tag, boolean isOptional)
+    //        {
+    //            rawTagsUsed.add(tag);
+    //            Integer index = Integer.parseInt(tag.getTagIndex());
+    //            if (isOptional)
+    //            {
+    //                offsets.add(index+lastOffset);
+    //            }
+    //        }
+    //
+    //        public AsnSchemaTag getTag(AsnSchemaTag tag)
+    //        {
+    //            Integer index = Integer.parseInt(tag.getTagIndex());
+    //            Iterator<Integer> iterator = offsets.iterator();
+    //            int subtract = 0;
+    //            while(iterator.hasNext())
+    //            {
+    //                Integer offset = iterator.next();
+    //                if (offset < (index))
+    //                {
+    //                    subtract++;
+    //                }
+    //            }
+    //
+    //            if (subtract != 0)
+    //            {
+    //                tag = AsnSchemaTag.create((index - subtract), tag);
+    //            }
+    //
+    //            lastOffset = subtract;
+    //
+    //            return tag;
+    //        }
+    //    }
 }

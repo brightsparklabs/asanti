@@ -7,10 +7,15 @@ import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
  */
 public interface DecodingSession
 {
-
     void setContext(String context);
 
-    AsnSchemaTag getTag(AsnSchemaTag tag);
+    int getOffset(int index);
 
-    void setTag(AsnSchemaTag tag, boolean isOptional);
+    void setOffset(int index, int offset);
+
+//    void setContext(String context);
+//
+//    AsnSchemaTag getTag(AsnSchemaTag tag);
+//
+//    void setTag(AsnSchemaTag tag, boolean isOptional);
 }

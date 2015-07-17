@@ -9,10 +9,8 @@ import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.tag.SequenceTagMatchingStrategy;
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.brightsparklabs.asanti.model.schema.tag.TagCreator;
-import com.brightsparklabs.asanti.model.schema.tag.TagMatchingStrategy;
-import com.brightsparklabs.asanti.model.schema.tag.UnorderedTagMatchingStrategy;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -51,9 +49,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
 
     /** the mechanism to be used for creation of Tags, during schema creation */
     private final TagCreator tagCreator;
-
-    /** the mechanism to be used for Matching of tags (during decoding) */
-    private final TagMatchingStrategy tagMatchingStrategy;
 
     /** mapping from raw tag to component type */
     private ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
@@ -100,9 +95,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         checkNotNull(componentTypes);
         checkNotNull(taggingMode);
         this.componentTypes = componentTypes;
-        this.tagMatchingStrategy = (primitiveType == AsnPrimitiveType.SEQUENCE) ?
-                SequenceTagMatchingStrategy.getInstance() :
-                UnorderedTagMatchingStrategy.getInstance();
+
         this.tagCreator = TagCreator.create(primitiveType, taggingMode);
     }
 
@@ -161,14 +154,18 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession)
+    public AsnSchemaNamedType getMatchingChild(String rawTag, DecodingSession decodingSession)
     {
+        // Protect against the fact the tagsToComponentTypes may be null (because
+        // getTagsToComponentTypes has not yet been called)
+        // TODO MJF - should this throw instead?
         final ImmutableMap<String, AsnSchemaComponentType> components =
                 tagsToComponentTypes == null ?
                         ImmutableMap.<String, AsnSchemaComponentType>of() :
                         tagsToComponentTypes;
 
-        return tagMatchingStrategy.getMatchingComponent(tag, components, decodingSession);
+        AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
+        return tagCreator.getNamedType(tag, components, decodingSession);
     }
 
     @Override

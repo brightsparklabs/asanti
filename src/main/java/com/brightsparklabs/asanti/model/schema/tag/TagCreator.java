@@ -7,7 +7,9 @@ package com.brightsparklabs.asanti.model.schema.tag;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
 import com.brightsparklabs.asanti.model.schema.type.GetAsnSchemaTypeVisitor;
@@ -17,6 +19,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.*;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -37,17 +41,19 @@ public class TagCreator
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(TagCreator.class);
 
-    /** static instance of a decorator for Sequences */
-    private static final TagDecorator TAG_DECORATOR_SEQUENCE = new SequenceTagDecorator();
-
-    /** static instance of a decorator for Set and Choice */
-    private static final TagDecorator TAG_DECORATOR_UNORDERED = new UnorderedTagDecorator();
-
     /**
      * static instance of tag automator that checks the components according to the rules and should
      * be used when module tagging mode is AUTOMATIC
      */
     private static final TagAutomator TAG_AUTOMATOR_CHECK = new TagAutomatorCheck();
+
+    /** static instance of the tag matcher that matches components in a Sequence */
+    private static final TagMatchingCreator TAG_MATCHING_CREATOR_SEQUENCE
+            = new TagMatchingCreatorSequence();
+
+    /** static instance of the tag matcher that matches components in a Set and Choice */
+    private static final TagMatchingCreator TAG_MATCHING_CREATOR_UNORDERED
+            = new TagMatchingCreatorUnordered();
 
     /**
      * static instance of a tag automator that returns false and should be used with the module
@@ -55,25 +61,35 @@ public class TagCreator
      */
     private static final TagAutomator TAG_AUTOMATOR_FALSE = new TagAutomatorFalse();
 
+    /** static instance of a decorator for Sequences */
+    private static final TagDecorator TAG_DECORATOR_SEQUENCE = new SequenceTagDecorator();
+
+    /** static instance of a decorator for Set and Choice */
+    private static final TagDecorator TAG_DECORATOR_UNORDERED = new UnorderedTagDecorator();
+
     /** static instance configure for Sequence and Auto tag generation */
     private static final TagCreator TAG_CREATION_SEQUENCE_AUTOMATED = new TagCreator(
             TAG_DECORATOR_SEQUENCE,
-            TAG_AUTOMATOR_CHECK);
+            TAG_AUTOMATOR_CHECK,
+            TAG_MATCHING_CREATOR_SEQUENCE);
 
     /** static instance configure for Sequence and No auto tag generation */
     private static final TagCreator TAG_CREATION_SEQUENCE_FALSE = new TagCreator(
             TAG_DECORATOR_SEQUENCE,
-            TAG_AUTOMATOR_FALSE);
+            TAG_AUTOMATOR_FALSE,
+            TAG_MATCHING_CREATOR_SEQUENCE);
 
     /** static instance configure for Set/Choice and Auto tag generation */
     private static final TagCreator TAG_CREATION_UNORDERED_AUTOMATED = new TagCreator(
             TAG_DECORATOR_UNORDERED,
-            TAG_AUTOMATOR_CHECK);
+            TAG_AUTOMATOR_CHECK,
+            TAG_MATCHING_CREATOR_UNORDERED);
 
     /** static instance configure for Set/Choice and No auto tag generation */
     private static final TagCreator TAG_CREATION_UNORDERED_FALSE = new TagCreator(
             TAG_DECORATOR_UNORDERED,
-            TAG_AUTOMATOR_FALSE);
+            TAG_AUTOMATOR_FALSE,
+            TAG_MATCHING_CREATOR_UNORDERED);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -89,6 +105,9 @@ public class TagCreator
     /** the Strategy to use for determining whether to Automate tag creation */
     private final TagAutomator tagAutomator;
 
+    /** the Strategy to use for matching up tags at decoding time */
+    private final TagMatchingCreator tagMatchingCreator;
+
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -101,10 +120,12 @@ public class TagCreator
      * @param tagAutomator
      *         the TagAutomator to determine whether to automatically create tags
      */
-    private TagCreator(TagDecorator tagDecorator, TagAutomator tagAutomator)
+    private TagCreator(TagDecorator tagDecorator, TagAutomator tagAutomator,
+            TagMatchingCreator tagMatchingCreator)
     {
         this.tagDecorator = tagDecorator;
         this.tagAutomator = tagAutomator;
+        this.tagMatchingCreator = tagMatchingCreator;
     }
 
     // -------------------------------------------------------------------------
@@ -135,8 +156,11 @@ public class TagCreator
 
     /**
      * TODO MJF
+     *
      * @param componentTypes
+     *
      * @return
+     *
      * @throws ParseException
      */
     public ImmutableMap<String, AsnSchemaComponentType> getTagsForComponents(
@@ -219,6 +243,26 @@ public class TagCreator
         }
 
         return tagsToComponentTypesBuilder.build();
+    }
+
+    /**
+     * This is the "orthogonal" part of creating the tags - it matches them back up at decoding
+     * time.
+     *
+     * @param tag
+     *         the tag to match
+     * @param tagsToComponentTypes
+     *         the components to match from
+     * @param decodingSession
+     *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
+     *
+     * @return the matching component or {@link AsnSchemaNamedType#NULL} if no match
+     */
+    public AsnSchemaNamedType getNamedType(AsnSchemaTag tag,
+            ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
+            DecodingSession decodingSession)
+    {
+        return tagMatchingCreator.getComponent(tag, tagsToComponentTypes, decodingSession);
     }
 
     // -------------------------------------------------------------------------
@@ -313,7 +357,7 @@ public class TagCreator
     /**
      * Interface for creating the tag that we will store for later matching
      */
-    private interface TagDecorator
+    public interface TagDecorator
     {
         /**
          * From the supplied index and Tag create a new string Tag in the expected format
@@ -328,28 +372,30 @@ public class TagCreator
         String getDecoratedTag(int index, String tag);
     }
 
+
+
     /**
      * TagDecorator for Sequence types, where the index is required for determination of duplication
      * and for later tag matching
      */
-    private static class SequenceTagDecorator implements TagDecorator
+    public static class SequenceTagDecorator implements TagDecorator
     {
         // -------------------------------------------------------------------------
         // IMPLEMENTATION: TagDecorator
         // -------------------------------------------------------------------------
-
         @Override
         public String getDecoratedTag(int index, String tag)
         {
             return AsnSchemaTag.createRawTag(index, tag);
         }
+
     }
 
     /**
      * TagDecorator for unordered types (ie Set and Choice) where the index is not required for
      * either determination of duplicates or for later tag matching
      */
-    private static class UnorderedTagDecorator implements TagDecorator
+    public static class UnorderedTagDecorator implements TagDecorator
     {
         // -------------------------------------------------------------------------
         // IMPLEMENTATION: TagDecorator
@@ -419,4 +465,59 @@ public class TagCreator
             return false;
         }
     }
+
+    private interface TagMatchingCreator
+    {
+        // TODO MJF javadoc
+        AsnSchemaNamedType getComponent(AsnSchemaTag tag,
+                ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
+                DecodingSession decodingSession);
+    }
+
+    private static class TagMatchingCreatorSequence implements TagMatchingCreator
+    {
+        @Override
+        public AsnSchemaNamedType getComponent(AsnSchemaTag tag,
+                ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
+                DecodingSession decodingSession)
+        {
+            // For Sequences, where order matters, we store the index with the tag.  The index
+            // that we store is not incremented when we have an OPTIONAL component, so we need to
+            // reconstruct the 'expected' tag based on what OPTIONAL components we have received.
+            int tagIndex = Integer.parseInt(tag.getTagIndex());
+            int offset = decodingSession.getOffset(tagIndex);
+            int newTagIndex = tagIndex - offset;
+            final String newTag = TAG_DECORATOR_SEQUENCE.getDecoratedTag(newTagIndex,
+                    tag.getTagPortion());
+
+            final AsnSchemaComponentType result = tagsToComponentTypes.get(newTag);
+
+            if (result != null)
+            {
+                decodingSession.setOffset(tagIndex + 1, offset + (result.isOptional() ? 1 : 0));
+                return result;
+            }
+
+            return AsnSchemaNamedType.NULL;
+
+        }
+    }
+
+    private static class TagMatchingCreatorUnordered implements TagMatchingCreator
+    {
+        @Override
+        public AsnSchemaNamedType getComponent(AsnSchemaTag tag,
+                ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
+                DecodingSession decodingSession)
+        {
+            // Unordered (Set and Choice) don't use the index, so don't need to re-align to
+            // account for offsets for OPTIONALS.
+            final String newTag = TAG_DECORATOR_UNORDERED.getDecoratedTag(0, tag.getTagPortion());
+
+            final AsnSchemaComponentType result = tagsToComponentTypes.get(newTag);
+
+            return (result != null) ? result : AsnSchemaNamedType.NULL;
+        }
+    }
+
 }
