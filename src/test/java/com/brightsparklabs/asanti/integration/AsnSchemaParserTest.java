@@ -531,8 +531,14 @@ public class AsnSchemaParserTest
         actualTag = result.getOutput();
         logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
+<<<<<<< HEAD
         final ByteSource berData
                 = Resources.asByteSource(getClass().getResource("/Human_Simple.ber"));
+=======
+        //String berFilename = "d:\\tmp\\Human_Simple.ber";
+        String berFilename = getClass().getResource("/Human_Simple.ber").getFile();
+        final File berFile = new File(berFilename);
+>>>>>>> 933dfa251f24eb534f5519e787be779c7a06c4b5
 
         String topLevelType = "Human";
 
@@ -703,8 +709,13 @@ public class AsnSchemaParserTest
         actualTag = result.getOutput();
         logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
+<<<<<<< HEAD
         final ByteSource berData
                 = Resources.asByteSource(getClass().getResource("/Human_Nested.ber"));
+=======
+        String berFilename = getClass().getResource("/Human_Nested.ber").getFile();
+        final File berFile = new File(berFilename);
+>>>>>>> 933dfa251f24eb534f5519e787be779c7a06c4b5
         String topLevelType = "Human";
         final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
                 schema,
@@ -869,8 +880,14 @@ public class AsnSchemaParserTest
         actualTag = result.getOutput();
         logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
+<<<<<<< HEAD
         final ByteSource berData = Resources.asByteSource(getClass().getResource(
                 "/Human_TypedefSequence.ber"));
+=======
+        //String berFilename = "d:\\tmp\\Human_TypedefSequence.ber";
+        String berFilename = getClass().getResource("/Human_TypedefSequence.ber").getFile();
+        final File berFile = new File(berFilename);
+>>>>>>> 933dfa251f24eb534f5519e787be779c7a06c4b5
         String topLevelType = "Human";
         final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
                 schema,
@@ -952,8 +969,13 @@ public class AsnSchemaParserTest
         DecodedTag actualTag = result.getOutput();
         logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
+<<<<<<< HEAD
         final ByteSource berData = Resources.asByteSource(getClass().getResource(
                 "/Human_SequenceOfSequence3.ber"));
+=======
+        String berFilename = getClass().getResource("/Human_SequenceOfSequence3.ber").getFile();
+        final File berFile = new File(berFilename);
+>>>>>>> 933dfa251f24eb534f5519e787be779c7a06c4b5
         String topLevelType = "Human";
         final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
                 schema,
@@ -1005,8 +1027,13 @@ public class AsnSchemaParserTest
         DecodedTag actualTag = result.getOutput();
         logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
+<<<<<<< HEAD
         final ByteSource berData = Resources.asByteSource(getClass().getResource(
                 "/Human_SequenceOfSequence3.ber"));
+=======
+        String berFilename = getClass().getResource("/Human_SequenceOfSequence3.ber").getFile();
+        final File berFile = new File(berFilename);
+>>>>>>> 933dfa251f24eb534f5519e787be779c7a06c4b5
         String topLevelType = "Human";
         final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
                 schema,
@@ -1114,9 +1141,15 @@ public class AsnSchemaParserTest
     public void testParse_Etsi() throws Exception
     {
         // TODO ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
+<<<<<<< HEAD
         CharSource schemaSource = Resources.asCharSource(getClass().getResource("/EIFv122.asn"),
                 Charsets.UTF_8);
         final AsnSchema schema = AsnSchemaReader.read(schemaSource);
+=======
+        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaReader.read(schemaFile);
+>>>>>>> 933dfa251f24eb534f5519e787be779c7a06c4b5
         //
         //        {
         //            String tag = "/2/1/2/2/1/0";
