@@ -5,7 +5,6 @@
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 
 import static com.google.common.base.Preconditions.*;
@@ -16,14 +15,14 @@ import static com.google.common.base.Preconditions.*;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaComponentType implements AsnSchemaNamedType
+public class AsnSchemaComponentType
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
     /** name of this component type (i.e. tag name) */
-    private final String tagName;
+    private final String name;
 
     /** tag of this component type */
     private final String tag;
@@ -41,7 +40,7 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
     /**
      * Default constructor.
      *
-     * @param tagName
+     * @param name
      *         name of this component type (i.e. tag name)
      * @param tag
      *         tag of this component type. Will default to an empty string if {@code null}
@@ -51,18 +50,18 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
      *         the underlying {@link AsnSchemaType} for this component
      *
      * @throws NullPointerException
-     *         if {@code tagName}, {@code typeName} or {@code type} are {@code null}
+     *         if {@code name}, {@code typeName} or {@code type} are {@code null}
      * @throws IllegalArgumentException
-     *         if {@code tagName} or {@code typeName} are blank
+     *         if {@code name} or {@code typeName} are blank
      */
-    public AsnSchemaComponentType(String tagName, String tag, boolean isOptional,
+    public AsnSchemaComponentType(String name, String tag, boolean isOptional,
             AsnSchemaType type)
     {
-        checkNotNull(tagName);
-        checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
+        checkNotNull(name);
+        checkArgument(!name.trim().isEmpty(), "Tag name must be specified");
         checkNotNull(type);
 
-        this.tagName = tagName;
+        this.name = name;
         this.tag = (tag == null) ? "" : tag;
         this.isOptional = isOptional;
         this.type = type;
@@ -88,16 +87,18 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
         return isOptional;
     }
 
-    // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnSchemaNamedType
-    // -------------------------------------------------------------------------
-
-    @Override
+    /**
+     *
+     * @return the {@link AsnSchemaType} of this component
+     */
     public AsnSchemaType getType() { return type; }
 
-    @Override
+    /**
+     *
+     * @return the name of this component
+     */
     public String getName()
     {
-        return tagName;
+        return name;
     }
 }

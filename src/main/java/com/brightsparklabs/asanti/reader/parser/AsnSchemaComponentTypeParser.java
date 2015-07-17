@@ -170,7 +170,7 @@ public class AsnSchemaComponentTypeParser
      *         if any errors occur while parsing the data
      */
     private static AsnSchemaComponentType parseComponentType(String componentTypeLine,
-            AsnModuleTaggingMode tagMode) throws ParseException
+            AsnModuleTaggingMode taggingMode) throws ParseException
     {
         Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
         if (!matcher.matches())
@@ -193,7 +193,7 @@ public class AsnSchemaComponentTypeParser
             throw new ParseException(error, -1);
         }
 
-        final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType, tagMode);
+        final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType, taggingMode);
         return new AsnSchemaComponentType(tagName, tag, isOptional, tagType);
     }
 }

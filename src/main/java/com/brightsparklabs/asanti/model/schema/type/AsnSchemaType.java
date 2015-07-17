@@ -59,14 +59,16 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
     /**
-     * Returns the {@code AsnSchemaNamedType} for the tag, or AsnSchemaNamedType#NULL if none found
+     * Returns the {@code AsnSchemaComponentType} for the tag, or {@link Optional#absent()} if none
+     * found
      *
      * @param tag
      *         a tag within this construct
      * @param decodingSession
      *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
      *
-     * @return the {@code AsnSchemaNamedType} for the AsnSchemaNamedType#NULL, or null if none found
+     * @return the {@code AsnSchemaComponentType} for the tag, or {@link Optional#absent()} if none
+     * found
      */
     Optional<AsnSchemaComponentType> getMatchingChild(String tag, DecodingSession decodingSession);
 

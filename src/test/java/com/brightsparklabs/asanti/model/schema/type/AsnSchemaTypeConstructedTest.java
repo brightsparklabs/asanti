@@ -135,11 +135,11 @@ public class AsnSchemaTypeConstructedTest
 
     }
 
-    // TODO MJF - add a test for getMatchingChild (which essentially replaced getNamedType)
+    // TODO MJF - add a test for getMatchingChild (which essentially replaced getComponentTypes)
     @Test
     public void testGetMatchingChild() throws ParseException
     {
-        //AsnSchemaNamedType namedType = instance.getMatchingChild("", session);
+
     }
 
     @Test
@@ -176,11 +176,11 @@ public class AsnSchemaTypeConstructedTest
                 ImmutableSet.of(testComponent1, testComponent2, testComponent3, testComponent4),
                 AsnModuleTaggingMode.DEFAULT);
 
-        // TODO MJF - auto tag creation tests can move to the strategy, and getNamedType has been deleted
-        //        assertEquals(testComponent1, testInstance.getNamedType("0"));
-        //        assertEquals(testComponent2, testInstance.getNamedType("1"));
-        //        assertEquals(testComponent3, testInstance.getNamedType("9"));
-        //        assertEquals(testComponent4, testInstance.getNamedType("10"));
+        // TODO MJF - auto tag creation tests can move to the strategy, and getComponentTypes has been deleted
+        //        assertEquals(testComponent1, testInstance.getComponentTypes("0"));
+        //        assertEquals(testComponent2, testInstance.getComponentTypes("1"));
+        //        assertEquals(testComponent3, testInstance.getComponentTypes("9"));
+        //        assertEquals(testComponent4, testInstance.getComponentTypes("10"));
     }
 
     // TODO MJF getMatchingChild

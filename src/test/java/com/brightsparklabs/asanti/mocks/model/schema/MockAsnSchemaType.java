@@ -51,9 +51,9 @@ public class MockAsnSchemaType
         final ImmutableSet<AsnSchemaConstraint> constraints = ImmutableSet.of((constraint == null) ? AsnSchemaConstraint.NULL :
                 constraint);
 
-        final AsnSchemaNamedType namedType = mock(AsnSchemaNamedType.class);
-        when(namedType.getType()).thenReturn(AsnSchemaType.NULL);
-        when(namedType.getName()).thenReturn("");
+        final AsnSchemaComponentType componentType = mock(AsnSchemaComponentType.class);
+        when(componentType.getType()).thenReturn(AsnSchemaType.NULL);
+        when(componentType.getName()).thenReturn("");
 
         when(mockedInstance.getPrimitiveType()).thenReturn(primitiveType);
         when(mockedInstance.getConstraints()).thenReturn(constraints);

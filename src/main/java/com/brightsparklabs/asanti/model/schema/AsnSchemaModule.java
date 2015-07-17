@@ -43,9 +43,6 @@ public class AsnSchemaModule
     /** all types defined in this module */
     private final ImmutableMap<String, AsnSchemaTypeDefinition> types;
 
-    /** the mode that this module uses for tagging */
-    private final AsnModuleTaggingMode tagMode;
-
     /** all types imported by this module. Map is of form {typeName =&gt; importedModuleName} */
     private final ImmutableMap<String, String> imports;
 
@@ -67,20 +64,17 @@ public class AsnSchemaModule
      * @throws NullPointerException
      *         if any of the parameters are {@code null}
      * @throws IllegalArgumentException
-     *         if the name is blank
+     *         if the name, types, imports or tag is blank
      */
-    private AsnSchemaModule(String name, AsnModuleTaggingMode tagMode,
-            Map<String, AsnSchemaTypeDefinition> types, Map<String, String> imports)
+    private AsnSchemaModule(String name, Map<String, AsnSchemaTypeDefinition> types,
+            Map<String, String> imports)
     {
         checkNotNull(name);
         checkArgument(!name.trim().isEmpty(), "A module from an ASN.1 schema must have a name");
         checkNotNull(types);
         checkNotNull(imports);
 
-        checkNotNull(tagMode);
-
         this.name = name;
-        this.tagMode = tagMode;
         this.types = ImmutableMap.copyOf(types);
         this.imports = ImmutableMap.copyOf(imports);
     }
@@ -167,8 +161,6 @@ public class AsnSchemaModule
 
         /** name of the top level type defined in this module */
         private final Map<String, AsnSchemaTypeDefinition> types = Maps.newHashMap();
-
-        private final AsnModuleTaggingMode tagMode = AsnModuleTaggingMode.DEFAULT;
 
         /**
          * all types imported by this module. Map is of form {typeName =&gt; importedModuleName}
@@ -266,7 +258,7 @@ public class AsnSchemaModule
          */
         public AsnSchemaModule build() throws ParseException
         {
-            return new AsnSchemaModule(name, tagMode, types, imports);
+            return new AsnSchemaModule(name, types, imports);
         }
 
         /**
@@ -574,7 +566,6 @@ public class AsnSchemaModule
         private Null()
         {
             super("NULL",
-                    AsnModuleTaggingMode.DEFAULT,
                     Maps.<String, AsnSchemaTypeDefinition>newHashMap(),
                     Maps.<String, String>newHashMap());
         }

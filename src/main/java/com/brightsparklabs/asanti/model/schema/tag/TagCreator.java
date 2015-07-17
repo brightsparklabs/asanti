@@ -9,18 +9,16 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
 import com.brightsparklabs.asanti.model.schema.type.GetAsnSchemaTypeVisitor;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.*;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -155,13 +153,19 @@ public class TagCreator
     }
 
     /**
-     * TODO MJF
+     * For the given set of AsnSchemaComponentType objects generate the tags that are expected to be
+     * received during decoding. This will vary depending on the Module Tagging mode and whether the
+     * Constructed type is a Sequence or Set/Choice.
      *
      * @param componentTypes
+     *         AsnSchemaComponentType contained in the Constructed type
      *
-     * @return
+     * @return mapping of tag to AsnSchemaComponentType, where the tag is what is expected from the
+     * BER file, and the AsnSchemaComponentType objects may have been "fully qualified" to ensure
+     * that the full decoded tag path appears in teh XPath style that we desire.
      *
      * @throws ParseException
+     *         if there are duplicate tags detected
      */
     public ImmutableMap<String, AsnSchemaComponentType> getTagsForComponents(
             Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
@@ -174,8 +178,7 @@ public class TagCreator
 
         // Key: decorated tag, Value: component name.  We only really need a List, but by
         // tracking the name of the component we can generate better error messages
-        Map<String, String> usedTags
-                = Maps.newLinkedHashMap(); // use this so that we have known iteration order for later...
+        Map<String, String> usedTags = Maps.newHashMap();
 
         int index = 0;
         int autoTagNumber = 0;
@@ -207,6 +210,7 @@ public class TagCreator
 
                     assertNotDuplicate(usedTags, decoratedTag, choiceComponent.getName());
 
+                    // We need to fully qualify the decodedTag to have the Choice name
                     final AsnSchemaComponentType component = buildFullyQualifiedComponentType(
                             choiceComponent,
                             componentType.getName());
@@ -256,9 +260,9 @@ public class TagCreator
      * @param decodingSession
      *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
      *
-     * @return the matching component or {@link AsnSchemaNamedType#NULL} if no match
+     * @return the matching component or {@link Optional#absent()} if no match
      */
-    public Optional<AsnSchemaComponentType> getNamedType(AsnSchemaTag tag,
+    public Optional<AsnSchemaComponentType> getComponentTypes(AsnSchemaTag tag,
             ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
             DecodingSession decodingSession)
     {
@@ -292,7 +296,6 @@ public class TagCreator
             throw new ParseException("Duplicate Tag", -1);
         }
 
-        // We need to fully qualify the decodedTag to have the Choice name
         usedTags.put(decoratedTag, componentName);
     }
 
@@ -306,6 +309,9 @@ public class TagCreator
      *         the new rawTag to check/insert
      *
      * @return an AsnSchemaComponentType with the desired rawTag
+     *
+     * @throws NullPointerException
+     *         is rawTag or component are null
      */
     private static AsnSchemaComponentType buildComponentType(AsnSchemaComponentType component,
             String rawTag)
@@ -333,10 +339,16 @@ public class TagCreator
      *         the prefix to add to the component name to fully qualify it.
      *
      * @return new AsnSchemaComponentType with fully qualified name
+     *
+     * @throws NullPointerException
+     *         is prefix or component are null
      */
     private static AsnSchemaComponentType buildFullyQualifiedComponentType(
             AsnSchemaComponentType component, String prefix)
     {
+        checkNotNull(prefix);
+        checkNotNull(component);
+
         if (Strings.isNullOrEmpty(prefix))
         {
             return component;
@@ -371,8 +383,6 @@ public class TagCreator
          */
         String getDecoratedTag(int index, String tag);
     }
-
-
 
     /**
      * TagDecorator for Sequence types, where the index is required for determination of duplication
@@ -468,12 +478,28 @@ public class TagCreator
 
     private interface TagMatchingCreator
     {
-        // TODO MJF javadoc
+        /**
+         * Returns a AsnSchemaComponentType from the supplied map that matches the supplied tag.
+         * "Matches" is not a direct lookup as there may be some tag manipulation required
+         *
+         * @param tag
+         *         tag to match
+         * @param tagsToComponentTypes
+         *         input map to search from
+         * @param decodingSession
+         *         the DecodingSession that holds the state needed to manipulate the tag indexes
+         *
+         * @return appropriate AsnSchemaComponentType if match found, otherwise {@code
+         * Optional.absent()}
+         */
         Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
                 ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
                 DecodingSession decodingSession);
     }
 
+    /**
+     * implementation of TagMatchingCreator for Sequence types
+     */
     private static class TagMatchingCreatorSequence implements TagMatchingCreator
     {
         @Override
@@ -501,6 +527,9 @@ public class TagCreator
         }
     }
 
+    /**
+     * implementation of TagMatchingCreator for Set and Choice types
+     */
     private static class TagMatchingCreatorUnordered implements TagMatchingCreator
     {
         @Override

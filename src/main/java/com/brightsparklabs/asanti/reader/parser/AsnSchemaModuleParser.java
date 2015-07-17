@@ -88,8 +88,8 @@ public class AsnSchemaModuleParser
 
         final Iterator<String> iterator = moduleText.iterator();
         final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
-        AsnModuleTaggingMode tagMode = parseHeader(iterator, moduleBuilder);
-        parseBody(iterator, moduleBuilder, tagMode);
+        AsnModuleTaggingMode taggingMode = parseHeader(iterator, moduleBuilder);
+        parseBody(iterator, moduleBuilder, taggingMode);
 
         return moduleBuilder;
     }
@@ -126,7 +126,7 @@ public class AsnSchemaModuleParser
             logger.info("Found module: {}", moduleName);
             moduleBuilder.setName(moduleName);
 
-            StringBuilder lines = new StringBuilder();
+            final StringBuilder lines = new StringBuilder();
             String line = lineIterator.next();
 
             while (!"BEGIN".equals(line))
@@ -136,19 +136,19 @@ public class AsnSchemaModuleParser
             }
 
             AsnModuleTaggingMode result = AsnModuleTaggingMode.DEFAULT;
-            String s = lines.toString();
-            String[] a = s.split("DEFINITIONS ");
+            // split to make the regex easier
+            final String[] a = lines.toString().split("DEFINITIONS ");
             if (a.length == 2)  // it is optional
             {
-                Matcher matcher = PATTERN_DEFINITIONS.matcher(a[1]);
+                final Matcher matcher = PATTERN_DEFINITIONS.matcher(a[1]);
                 if (matcher.matches())
                 {
-                    String mode = matcher.group(2);
+                    final String mode = matcher.group(2);
                     if (!Strings.isNullOrEmpty(mode))
                     {
                         try
                         {
-                            AsnModuleTaggingMode tagMode = AsnModuleTaggingMode.valueOf(mode);
+                            final AsnModuleTaggingMode tagMode = AsnModuleTaggingMode.valueOf(mode);
                             logger.debug("Module tagging mode is {}", tagMode);
                             result = tagMode;
                         }
@@ -179,12 +179,14 @@ public class AsnSchemaModuleParser
      *         iterator pointing at the first line following the 'BEGIN' keyword
      * @param moduleBuilder
      *         builder to use to construct module from the parsed information
+     * @param taggingMode
+     *         the Module wide tagging mode, determines whether to automatically generate tags.
      *
      * @throws ParseException
      *         if any errors occur while parsing the schema
      */
     private static void parseBody(Iterator<String> lineIterator,
-            AsnSchemaModule.Builder moduleBuilder, AsnModuleTaggingMode tagMode)
+            AsnSchemaModule.Builder moduleBuilder, AsnModuleTaggingMode taggingMode)
             throws ParseException
     {
         try
@@ -193,7 +195,7 @@ public class AsnSchemaModuleParser
             parseTypeDefinitionsAndValueAssignments(lastLineRead,
                     lineIterator,
                     moduleBuilder,
-                    tagMode);
+                    taggingMode);
         }
         catch (final NoSuchElementException ex)
         {
@@ -284,12 +286,14 @@ public class AsnSchemaModuleParser
      *         iterator pointing at the first line following all imports/exports
      * @param moduleBuilder
      *         builder to use to construct module from the parsed information
+     * @param taggingMode
+     *         the Module wide tagging mode, determines whether to automatically generate tags.
      *
      * @throws ParseException
      */
     private static void parseTypeDefinitionsAndValueAssignments(String firstLine,
             Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder,
-            AsnModuleTaggingMode tagMode) throws ParseException
+            AsnModuleTaggingMode taggingMode) throws ParseException
     {
         String line = firstLine;
         while (!"END".equals(line))
@@ -318,7 +322,9 @@ public class AsnSchemaModuleParser
                 final String name = matcher.group(1);
                 final String value = matcher.group(2);
 
-                moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name, value, tagMode));
+                moduleBuilder.addType(AsnSchemaTypeDefinitionParser.parse(name,
+                        value,
+                        taggingMode));
                 continue;
             }
 

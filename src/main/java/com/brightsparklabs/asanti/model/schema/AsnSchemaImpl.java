@@ -106,7 +106,7 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the decoded tag for the supplied raw tag. E.g. {@code getDecodedTag("/1/0/1",
+     * Returns the decoded tag for the supplied raw tag. E.g. {@code getDecodedTag("/0[1]/0[0]/0[1]",
      * "Document")} =&gt; {@code "/Document/header/published/date"}
      *
      * @param rawTag
@@ -164,14 +164,13 @@ public class AsnSchemaImpl implements AsnSchema
                         "The supplied raw tag does not map to a type in this schema");
         return result;
     }
-    // ToDO MJF - see the tags in the comments!  maybe search for "/
 
     /**
      * Returns the decoded tags for the supplied raw tags
      *
      * @param rawTags
      *         raw tags to decode. This should be an iterable in the order of the tags. E.g. The raw
-     *         tag {code "/1/0/1"} should be provided as an iterator of {code ["1", "0", "1"]}
+     *         tag {code "/1[0]/0[1]/1[2]"} should be provided as an iterator of {code ["1[0]", "0[1]", "1[2]"]}
      * @param containingType
      *         the {@link AsnSchemaType} that is the parent of the chain to be decoded
      *

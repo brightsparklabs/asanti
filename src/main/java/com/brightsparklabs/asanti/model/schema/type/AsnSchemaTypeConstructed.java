@@ -160,14 +160,19 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     {
         // Protect against the fact the tagsToComponentTypes may be null (because
         // getTagsToComponentTypes has not yet been called)
-        // TODO MJF - should this throw instead?
+        // TODO ASN-115 - I don't love that this is constructed in a state that we can't really
+        // use it, but we can't tag untill we know all the types, which is well after creation
+        // I would like to rethink the whole construction chain, but that is a bigger job that I'd
+        // like to do in this task, so the question is how to handle this here
+        // This is not user facing, and the only time it should be null is if getTagsToComponentTypes
+        // was not called (programmer error), so I'm almost happy to let it throw a NullPointerException
         if (tagsToComponentTypes == null)
         {
             return Optional.absent();
         }
 
         AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
-        return tagCreator.getNamedType(tag, tagsToComponentTypes, decodingSession);
+        return tagCreator.getComponentTypes(tag, tagsToComponentTypes, decodingSession);
     }
 
     @Override
