@@ -258,7 +258,7 @@ public class TagCreator
      *
      * @return the matching component or {@link AsnSchemaNamedType#NULL} if no match
      */
-    public AsnSchemaNamedType getNamedType(AsnSchemaTag tag,
+    public Optional<AsnSchemaComponentType> getNamedType(AsnSchemaTag tag,
             ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
             DecodingSession decodingSession)
     {
@@ -469,7 +469,7 @@ public class TagCreator
     private interface TagMatchingCreator
     {
         // TODO MJF javadoc
-        AsnSchemaNamedType getComponent(AsnSchemaTag tag,
+        Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
                 ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
                 DecodingSession decodingSession);
     }
@@ -477,7 +477,7 @@ public class TagCreator
     private static class TagMatchingCreatorSequence implements TagMatchingCreator
     {
         @Override
-        public AsnSchemaNamedType getComponent(AsnSchemaTag tag,
+        public Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
                 ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
                 DecodingSession decodingSession)
         {
@@ -495,18 +495,16 @@ public class TagCreator
             if (result != null)
             {
                 decodingSession.setOffset(tagIndex + 1, offset + (result.isOptional() ? 1 : 0));
-                return result;
             }
 
-            return AsnSchemaNamedType.NULL;
-
+            return Optional.fromNullable(result);
         }
     }
 
     private static class TagMatchingCreatorUnordered implements TagMatchingCreator
     {
         @Override
-        public AsnSchemaNamedType getComponent(AsnSchemaTag tag,
+        public Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
                 ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
                 DecodingSession decodingSession)
         {
@@ -514,10 +512,7 @@ public class TagCreator
             // account for offsets for OPTIONALS.
             final String newTag = TAG_DECORATOR_UNORDERED.getDecoratedTag(0, tag.getTagPortion());
 
-            final AsnSchemaComponentType result = tagsToComponentTypes.get(newTag);
-
-            return (result != null) ? result : AsnSchemaNamedType.NULL;
+            return Optional.fromNullable(tagsToComponentTypes.get(newTag));
         }
     }
-
 }

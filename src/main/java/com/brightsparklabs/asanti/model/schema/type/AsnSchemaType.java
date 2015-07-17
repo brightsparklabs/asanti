@@ -10,6 +10,8 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
@@ -66,7 +68,7 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
      *
      * @return the {@code AsnSchemaNamedType} for the AsnSchemaNamedType#NULL, or null if none found
      */
-    AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession);
+    Optional<AsnSchemaComponentType> getMatchingChild(String tag, DecodingSession decodingSession);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null
@@ -120,9 +122,10 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
         }
 
         @Override
-        public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession)
+        public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
+                DecodingSession decodingSession)
         {
-            return AsnSchemaNamedType.NULL;
+            return Optional.absent();
         }
 
         @Override

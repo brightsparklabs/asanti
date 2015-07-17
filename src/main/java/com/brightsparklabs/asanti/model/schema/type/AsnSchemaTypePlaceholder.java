@@ -10,6 +10,8 @@ import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
@@ -124,8 +126,8 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
 
     /**
      * Used
-     * @return
-     * the AsnSchemaType that this placeholder is pointing to
+     *
+     * @return the AsnSchemaType that this placeholder is pointing to
      */
     public AsnSchemaType getIndirectType()
     {
@@ -164,10 +166,11 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession)
+    public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
+            DecodingSession decodingSession)
     {
         return indirectType == null ?
-                AsnSchemaNamedType.NULL :
+                Optional.<AsnSchemaComponentType>absent() :
                 indirectType.getMatchingChild(tag, decodingSession);
     }
 

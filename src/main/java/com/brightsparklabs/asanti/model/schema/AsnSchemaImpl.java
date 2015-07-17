@@ -6,11 +6,11 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaNamedType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -82,8 +82,8 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(
-            final Iterable<String> rawTags, String topLevelTypeName)
+    public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(final Iterable<String> rawTags,
+            String topLevelTypeName)
     {
         DecodingSession session = new DecodingSessionImpl();
 
@@ -197,21 +197,20 @@ public class AsnSchemaImpl implements AsnSchema
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
-
-            final String decodedTagPath = tagJoiner.join(result.decodedTags).replaceAll("/\\[", "\\[");
+            final String decodedTagPath = tagJoiner.join(result.decodedTags)
+                    .replaceAll("/\\[", "\\[");
             // By definition the new tag is the child of its container.
             decodingSession.setContext(decodedTagPath);
-            AsnSchemaNamedType namedType = type.getMatchingChild(tag, decodingSession);
-            final String decodedTag = namedType.getName();
-            result.type = namedType.getType();
 
-            // ensure it was found
-            if (result.type == AsnSchemaType.NULL)
+            Optional<AsnSchemaComponentType> child = type.getMatchingChild(tag, decodingSession);
+            if (!child.isPresent())
             {
                 // no type to delve into
                 break;
             }
 
+            final String decodedTag = child.get().getName();
+            result.type = child.get().getType();
             result.decodedTags.add(decodedTag);
             type = result.type;
         }

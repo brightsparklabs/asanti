@@ -3,8 +3,6 @@ package com.brightsparklabs.asanti.model.schema.type;
 import java.text.ParseException;
 
 /**
- *
- *
  * @author brightSPARK Labs
  */
 public class GetAsnSchemaTypeVisitor implements AsnSchemaTypeVisitor<AsnSchemaType>

@@ -4,6 +4,8 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
@@ -98,13 +100,14 @@ public class BaseAsnSchemaType implements AsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String tag, DecodingSession decodingSession)
+    public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
+            DecodingSession decodingSession)
     {
-        return new AsnSchemaNamedTypeImpl("", AsnSchemaType.NULL);
+        return Optional.absent();
     }
 
     @Override
-    public Object accept(final AsnSchemaTypeVisitor<?> visitor)  throws ParseException
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
     {
         return visitor.visit(this);
     }

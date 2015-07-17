@@ -10,6 +10,8 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
@@ -127,13 +129,17 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     }
 
     @Override
-    public AsnSchemaNamedType getMatchingChild(String rawTag, DecodingSession decodingSession)
+    public Optional<AsnSchemaComponentType> getMatchingChild(String rawTag,
+            DecodingSession decodingSession)
     {
         final AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
 
         if (tag.getTagUniversal().equals(myUniversalTag))
         {
-            return new AsnSchemaNamedTypeImpl("[" + tag.getTagIndex() + "]", elementType);
+            return Optional.of(new AsnSchemaComponentType("[" + tag.getTagIndex() + "]",
+                    rawTag,
+                    false,
+                    elementType));
         }
 
         if (elementType.getBuiltinTypeAA() == AsnBuiltinType.Choice)
@@ -141,16 +147,20 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
             // We have a collection of Choice, so we need to insert the choice option
             // We could pre-calculate the options here like we do with Constructed, but give
             // that we have to do work here to sort out the index there is little to be saved
-            final AsnSchemaNamedType child = elementType.getMatchingChild(rawTag, decodingSession);
+            final Optional<AsnSchemaComponentType> child = elementType.getMatchingChild(rawTag,
+                    decodingSession);
 
-            if (child != AsnSchemaNamedType.NULL)
+            if (child.isPresent())
             {
-                final String newTag = "[" + tag.getTagIndex() + "]/" + child.getName();
-                return new AsnSchemaNamedTypeImpl(newTag, child.getType());
+                final String newTag = "[" + tag.getTagIndex() + "]/" + child.get().getName();
+                return Optional.of(new AsnSchemaComponentType(newTag,
+                        rawTag,
+                        false,
+                        child.get().getType()));
             }
         }
 
-        return AsnSchemaNamedType.NULL;
+        return Optional.absent();
     }
 
     @Override
