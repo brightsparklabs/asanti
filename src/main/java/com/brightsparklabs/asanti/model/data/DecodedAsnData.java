@@ -8,6 +8,7 @@ package com.brightsparklabs.asanti.model.data;
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -67,7 +68,7 @@ public interface DecodedAsnData
      * @return data associated with the specified tag or an empty byte array if the tag does not
      * exist
      */
-    public byte[] getBytes(String tag);
+    public Optional<byte[]> getBytes(String tag);
 
     /**
      * Gets the data (bytes) from all tags matching the supplied regular expression
@@ -88,7 +89,7 @@ public interface DecodedAsnData
      * @return data associated with the specified tag (e.g. {@code "0x010203"}) or {@code "0x"} if
      * the tag does not exist
      */
-    public String getHexString(String tag);
+    public Optional<String> getHexString(String tag);
 
     /**
      * Gets the data (bytes) from all tags matching the supplied regular expression as hex strings
@@ -111,7 +112,7 @@ public interface DecodedAsnData
      * @throws DecodeException
      *         if any errors occur decoding the data associated with the tag
      */
-    public String getPrintableString(String tag) throws DecodeException;
+    public Optional<String> getPrintableString(String tag) throws DecodeException;
 
     /**
      * Gets the data (bytes) from all tags matching the supplied regular expression as printable
@@ -152,7 +153,7 @@ public interface DecodedAsnData
      * @throws DecodeException
      *         if any errors occur decoding the data associated with the tag
      */
-    public Object getDecodedObject(String tag) throws DecodeException;
+    public <T> Optional<T> getDecodedObject(String tag) throws DecodeException;
 
     /**
      * Gets the data (bytes) from all tags matching the supplied regular expression as the decoded
@@ -204,9 +205,9 @@ public interface DecodedAsnData
         }
 
         @Override
-        public byte[] getBytes(String tag)
+        public Optional<byte[]> getBytes(String tag)
         {
-            return new byte[0];
+            return Optional.absent();
         }
 
         @Override
@@ -216,9 +217,9 @@ public interface DecodedAsnData
         }
 
         @Override
-        public String getHexString(String tag)
+        public Optional<String> getHexString(String tag)
         {
-            return "0x";
+            return Optional.absent();
         }
 
         @Override
@@ -228,9 +229,9 @@ public interface DecodedAsnData
         }
 
         @Override
-        public String getPrintableString(String tag)
+        public Optional<String> getPrintableString(String tag)
         {
-            return "";
+            return Optional.absent();
         }
 
         @Override
@@ -246,9 +247,9 @@ public interface DecodedAsnData
         }
 
         @Override
-        public Object getDecodedObject(String tag)
+        public Optional<byte[]> getDecodedObject(String tag)
         {
-            return new byte[0];
+            return Optional.absent();
         }
 
         @Override

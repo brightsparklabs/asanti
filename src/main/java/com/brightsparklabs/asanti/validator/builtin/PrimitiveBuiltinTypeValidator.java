@@ -36,7 +36,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         final Set<DecodedTagValidationFailure> tagFailures = Sets.newHashSet();
 
         // validate data
-        final byte[] bytes = decodedAsnData.getBytes(tag);
+        final byte[] bytes = decodedAsnData.getBytes(tag).orNull();
         final Iterable<ByteValidationFailure> byteFailures = validate(bytes);
         for (ByteValidationFailure byteFailure : byteFailures)
         {
@@ -46,22 +46,20 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
             tagFailures.add(tagFailure);
         }
 
+        // validate against the tag's constraint
+        final AsnSchemaType type = decodedAsnData.getType(tag);
+        final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
+        final Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
+        for (AsnSchemaConstraint constraint : constraints)
         {
-            // validate against the tag's constraint
-            final AsnSchemaType type = decodedAsnData.getType(tag);
-            final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
-            final Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
-            for(AsnSchemaConstraint constraint : constraints)
-            {
-                constraintFailures.addAll(constraint.apply(bytes));
-            }
-            for (SchemaConstraintValidationFailure constraintFailure : constraintFailures)
-            {
-                final DecodedTagValidationFailure tagFailure = new DecodedTagValidationFailure(tag,
-                        constraintFailure.getFailureType(),
-                        constraintFailure.getFailureReason());
-                tagFailures.add(tagFailure);
-            }
+            constraintFailures.addAll(constraint.apply(bytes));
+        }
+        for (SchemaConstraintValidationFailure constraintFailure : constraintFailures)
+        {
+            final DecodedTagValidationFailure tagFailure = new DecodedTagValidationFailure(tag,
+                    constraintFailure.getFailureType(),
+                    constraintFailure.getFailureReason());
+            tagFailures.add(tagFailure);
         }
 
         return ImmutableSet.copyOf(tagFailures);
