@@ -547,7 +547,6 @@ public class AsnSchemaParserTest
         assertEquals(new BigInteger("32"), age);
 
         tag = "/Human/name";
-        String name = (String) pdu.getDecodedObject(tag);
         String name = pdu.<String>getDecodedObject(tag).get();
         logger.info("{} : {}", tag, name);
         assertEquals("Adam", name);
@@ -585,7 +584,7 @@ public class AsnSchemaParserTest
         assertEquals(new BigInteger("32"), age);
 
         tag = "/Human/name";
-		String name = pdu.<String>getDecodedObject(tag).get();
+        String name = pdu.<String>getDecodedObject(tag).get();
         logger.info(tag + " : " + name);
         assertEquals("Adam", name);
     }

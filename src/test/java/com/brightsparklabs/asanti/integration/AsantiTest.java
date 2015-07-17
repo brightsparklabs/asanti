@@ -33,21 +33,6 @@ public class AsantiTest
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(AsantiTest.class);
 
-<<<<<<< HEAD
-=======
-    @Before
-    public void setUp() throws Exception
-    {
-
-    }
-
-    @After
-    public void tearDown() throws Exception
-    {
-
-    }
-
->>>>>>> INC-4: Update 'DecodedAsnData' to return Guava 'Optional<T>' objects
     @Test
     public void testDecodeAsnData() throws Exception
     {
@@ -215,7 +200,6 @@ public class AsantiTest
         BigInteger age = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag).get());
         logger.info("{} is {}", tag, age);
         assertEquals(new BigInteger("32"), age);
-        age = (BigInteger) pdu.getDecodedObject(tag);
         age = pdu.<BigInteger>getDecodedObject(tag).get();
         assertEquals(new BigInteger("32"), age);
     }
