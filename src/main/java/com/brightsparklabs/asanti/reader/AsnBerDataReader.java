@@ -5,86 +5,78 @@
 
 package com.brightsparklabs.asanti.reader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.ASN1TaggedObject;
-import org.bouncycastle.asn1.DERApplicationSpecific;
-import org.bouncycastle.asn1.DEREncodable;
-import org.bouncycastle.asn1.DERObject;
-import org.bouncycastle.asn1.util.ASN1Dump;
-
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.AsnDataImpl;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.ByteSource;
+import org.bouncycastle.asn1.*;
+import org.bouncycastle.asn1.util.ASN1Dump;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Reads data from ASN.1 BER/DER binary files
  *
  * @author brightSPARK Labs
  */
-public class AsnBerFileReader
+public class AsnBerDataReader
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnBerFileReader.class);
+    private static final Logger logger = LoggerFactory.getLogger(AsnBerDataReader.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * Reads the supplied ASN.1 BER/DER binary file
+     * Reads the supplied ASN.1 BER/DER binary data
      *
-     * @param berFile
-     *            file to decode
+     * @param source
+     *         data to decode
      *
-     * @return list of {@link AsnData} objects found in the file
+     * @return list of {@link AsnData} objects found in the data
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading the data
      */
-    public static ImmutableList<AsnData> read(File berFile) throws IOException
+    public static ImmutableList<AsnData> read(ByteSource source) throws IOException
     {
-        return read(berFile, 0);
+        return read(source, 0);
     }
 
     /**
-     * Reads the supplied ASN.1 BER/DER binary file and stops reading when it
-     * has read the specified number of PDUs
+     * Reads the supplied ASN.1 BER/DER binary data and stops reading when it has read the specified
+     * number of PDUs
      *
-     * @param berFile
-     *            file to decode
-     *
+     * @param source
+     *         data  to decode
      * @param maxPDUs
-     *            number of PDUs to read from the file. The returned list will
-     *            be less than or equal to this value. Set to {@code 0} for no
-     *            maximum (or use {@link #read(File)} instead).
+     *         number of PDUs to read from the data. The returned list will be less than or equal to
+     *         this value. Set to {@code 0} for no maximum (or use {@link #read(ByteSource)}
+     *         instead).
      *
-     * @return list of {@link AsnData} objects found in the file
+     * @return list of {@link AsnData} objects found in the data
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading the data
      */
-    public static ImmutableList<AsnData> read(File berFile, int maxPDUs) throws IOException
+    public static ImmutableList<AsnData> read(ByteSource source, int maxPDUs) throws IOException
     {
-        final FileInputStream fileInputStream = new FileInputStream(berFile);
-        final ASN1InputStream asnInputStream = new ASN1InputStream(fileInputStream);
+        final InputStream inputStream = source.openStream();
+        final ASN1InputStream asnInputStream = new ASN1InputStream(inputStream);
 
         final List<AsnData> result = Lists.newArrayList();
 
@@ -124,18 +116,17 @@ public class AsnBerFileReader
      * Processes a DER object and stores the tags/data found in it
      *
      * @param derObject
-     *            object to process
-     *
+     *         object to process
      * @param prefix
-     *            prefix to prepend to any tags found
-     *
+     *         prefix to prepend to any tags found
      * @param tagsToData
-     *            storage for the tags/data found
+     *         storage for the tags/data found
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading from the file
      */
-    private static void processDerObject(DERObject derObject, String prefix, Map<String, byte[]> tagsToData) throws IOException
+    private static void processDerObject(DERObject derObject, String prefix,
+            Map<String, byte[]> tagsToData) throws IOException
     {
         if (derObject instanceof ASN1Sequence)
         {
@@ -163,18 +154,17 @@ public class AsnBerFileReader
      * Processes an ASN.1 'Sequence' and stores the tags/data found in it
      *
      * @param asnSequence
-     *            sequence to process
-     *
+     *         sequence to process
      * @param prefix
-     *            prefix to prepend to any tags found
-     *
+     *         prefix to prepend to any tags found
      * @param tagsToData
-     *            storage for the tags/data found
+     *         storage for the tags/data found
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading from the file
      */
-    private static void processSequence(ASN1Sequence asnSequence, String prefix, Map<String, byte[]> tagsToData) throws IOException
+    private static void processSequence(ASN1Sequence asnSequence, String prefix,
+            Map<String, byte[]> tagsToData) throws IOException
     {
         processElementsFromSequenceOrSet(asnSequence.getObjects(), prefix, tagsToData);
     }
@@ -183,50 +173,49 @@ public class AsnBerFileReader
      * Processes an ASN.1 'Set' and stores the tags/data found in it
      *
      * @param asnSet
-     *            set to process
-     *
+     *         set to process
      * @param prefix
-     *            prefix to prepend to any tags found
-     *
+     *         prefix to prepend to any tags found
      * @param tagsToData
-     *            storage for the tags/data found
+     *         storage for the tags/data found
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading from the file
      */
-    private static void processSet(ASN1Set asnSet, String prefix, Map<String, byte[]> tagsToData) throws IOException
+    private static void processSet(ASN1Set asnSet, String prefix, Map<String, byte[]> tagsToData)
+            throws IOException
     {
         processElementsFromSequenceOrSet(asnSet.getObjects(), prefix, tagsToData);
     }
 
     /**
-     * Processes the elements found in an ASN.1 'Sequence' or ASN.1 'Set' stores
-     * the tags/data found in them
+     * Processes the elements found in an ASN.1 'Sequence' or ASN.1 'Set' stores the tags/data found
+     * in them
      *
      * @param elements
-     *            elements from the sequence or set
-     *
+     *         elements from the sequence or set
      * @param prefix
-     *            prefix to prepend to any tags found
-     *
+     *         prefix to prepend to any tags found
      * @param tagsToData
-     *            storage for the tags/data found
+     *         storage for the tags/data found
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading from the file
      */
-    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix, Map<String, byte[]> tagsToData)
-            throws IOException
+    private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix,
+            Map<String, byte[]> tagsToData) throws IOException
     {
         int index = 0;
         while (elements.hasMoreElements())
         {
             final Object obj = elements.nextElement();
-            final DERObject derObject = (obj instanceof DERObject) ? (DERObject) obj
-                    : ((DEREncodable) obj).getDERObject();
+            final DERObject derObject = (obj instanceof DERObject) ?
+                    (DERObject) obj :
+                    ((DEREncodable) obj).getDERObject();
             // if object is not tagged, then include index in prefix
-            final String elementPrefix = (derObject instanceof ASN1TaggedObject) ? prefix
-                    : String.format("%s[%d]", prefix, index);
+            final String elementPrefix = (derObject instanceof ASN1TaggedObject) ?
+                    prefix :
+                    String.format("%s[%d]", prefix, index);
             processDerObject(derObject, elementPrefix, tagsToData);
             index++;
         }
@@ -236,64 +225,58 @@ public class AsnBerFileReader
      * Processes an ASN.1 'Tagged' object and stores the tags/data found in it
      *
      * @param asnTaggedObject
-     *            object to process
-     *
+     *         object to process
      * @param prefix
-     *            prefix to prepend to any tags found
-     *
+     *         prefix to prepend to any tags found
      * @param tagsToData
-     *            storage for the tags/data found
+     *         storage for the tags/data found
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading from the file
      */
-    private static void processTaggedObject(ASN1TaggedObject asnTaggedObject, String prefix, Map<String, byte[]> tagsToData)
-            throws IOException
+    private static void processTaggedObject(ASN1TaggedObject asnTaggedObject, String prefix,
+            Map<String, byte[]> tagsToData) throws IOException
     {
         prefix = prefix + "/" + asnTaggedObject.getTagNo();
         processDerObject(asnTaggedObject.getObject(), prefix, tagsToData);
     }
 
     /**
-     * Processes an ASN.1 'ApplicationSpecific' object and stores the tags/data
-     * found in it
+     * Processes an ASN.1 'ApplicationSpecific' object and stores the tags/data found in it
      *
      * @param asnApplicationSpecific
-     *            object to process
-     *
+     *         object to process
      * @param prefix
-     *            prefix to prepend to any tags found
-     *
+     *         prefix to prepend to any tags found
      * @param tagsToData
-     *            storage for the tags/data found
+     *         storage for the tags/data found
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading from the file
      */
-    private static void processApplicationSpecific(DERApplicationSpecific asnApplicationSpecific, String prefix,
-            Map<String, byte[]> tagsToData) throws IOException
+    private static void processApplicationSpecific(DERApplicationSpecific asnApplicationSpecific,
+            String prefix, Map<String, byte[]> tagsToData) throws IOException
     {
         prefix = prefix + "/" + asnApplicationSpecific.getApplicationTag();
         processDerObject(asnApplicationSpecific.getObject(), prefix, tagsToData);
     }
 
     /**
-     * Processes an ASN.1 'primitive' object and stores the binary data in it
-     * against the supplied tag
+     * Processes an ASN.1 'primitive' object and stores the binary data in it against the supplied
+     * tag
      *
      * @param derObject
-     *            object to process
-     *
+     *         object to process
      * @param tag
-     *            tag to associate the data with
-     *
+     *         tag to associate the data with
      * @param tagsToData
-     *            storage for the data found
+     *         storage for the data found
      *
      * @throws IOException
-     *             if any errors occur reading from the file
+     *         if any errors occur reading from the file
      */
-    private static void processPrimitiveDerObject(DERObject derObject, String tag, Map<String, byte[]> tagsToData) throws IOException
+    private static void processPrimitiveDerObject(DERObject derObject, String tag,
+            Map<String, byte[]> tagsToData) throws IOException
     {
         // get the bytes representing Tag-Length-Value
         final byte[] tlvData = derObject.getEncoded();

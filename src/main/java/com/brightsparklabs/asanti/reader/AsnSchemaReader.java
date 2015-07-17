@@ -7,13 +7,8 @@ package com.brightsparklabs.asanti.reader;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
-import com.google.common.base.Charsets;
 import com.google.common.io.CharSource;
-import com.google.common.io.Files;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -24,31 +19,10 @@ import java.text.ParseException;
  */
 public class AsnSchemaReader
 {
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaReader.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
-
-    /**
-     * Reads the data from the supplied ASN.1 schema file
-     *
-     * @param asnSchemaFile
-     *         schema file to parse
-     *
-     * @return the data from the supplied ASN.1 schema file
-     */
-    public static AsnSchema read(File asnSchemaFile) throws IOException
-    {
-        logger.debug("Parsing schema file: {}", asnSchemaFile.getAbsolutePath());
-        final CharSource source = Files.asCharSource(asnSchemaFile, Charsets.UTF_8);
-        return read(source);
-    }
 
     /**
      * Reads the data from the supplied ASN.1 schema source

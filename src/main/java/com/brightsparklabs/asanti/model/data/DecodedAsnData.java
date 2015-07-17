@@ -134,8 +134,8 @@ public interface DecodedAsnData
      * @param tag
      *         tag to retrieve the type of
      *
-     * @return the ASN.1 Type Definition of the specified tag or {@link AsnPrimitiveType#NULL}
-     * if the tag does not exist
+     * @return the ASN.1 Type Definition of the specified tag or {@link AsnPrimitiveType#NULL} if
+     * the tag does not exist
      */
     public AsnSchemaType getType(String tag);
 
