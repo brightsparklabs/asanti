@@ -57,7 +57,7 @@ public class SequenceTagMatchingStrategy implements TagMatchingStrategy
             ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
             DecodingSession session)
     {
-        // Use the session to translate this to have an index appropriate for the session (ie how
+        // Use the session to translate this tag to have an index appropriate for the session (ie how
         // many OPTIONAL items have been received)
         AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
         tag = session.getTag(tag);

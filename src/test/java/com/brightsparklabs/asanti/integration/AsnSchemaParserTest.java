@@ -1,5 +1,6 @@
 package com.brightsparklabs.asanti.integration;
 
+import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.decoder.AsnDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
@@ -1454,12 +1455,14 @@ public class AsnSchemaParserTest
     @Test
     public void testParse_SetOfSetOfUnTaggedChoice() throws Exception
     {
-        String schemaFilename = getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.asn").getFile();
+        String schemaFilename = getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.asn")
+                .getFile();
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
         {
-            String berFilename = getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.ber").getFile();
+            String berFilename = getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.ber")
+                    .getFile();
             final File berFile = new File(berFilename);
             String topLevelType = "Human";
 
@@ -1974,96 +1977,92 @@ public class AsnSchemaParserTest
 
         long mid2 = System.currentTimeMillis();
 
-        //for(int z = 0; z < 10000; ++z)
         {
 
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+
+            logger.debug("Results of /test.ber");
+
+            debugPdus(pdus);
+
+            assertEquals(3, pdus.size());
+            assertEquals(0, pdus.get(0).getUnmappedTags().size());
+            assertEquals(0, pdus.get(1).getUnmappedTags().size());
+            assertEquals(0, pdus.get(2).getUnmappedTags().size());
+
+            String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
+
+            BigInteger number = (BigInteger) pdus.get(0).getDecodedObject(tag);
+            assertEquals(new BigInteger("622697890"), number);
+
+            tag = "/PS-PDU/pSHeader/sequenceNumber";
+            number = (BigInteger) pdus.get(0).getDecodedObject(tag);
+            assertEquals(new BigInteger("0"), number);
+
+            tag = "/PS-PDU/pSHeader/authorizationCountryCode";
+            String str = (String) pdus.get(0).getDecodedObject(tag);
+            assertEquals("AU", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode";
+            str = (String) pdus.get(1).getDecodedObject(tag);
+            assertEquals("AU", str);
+
+            tag
+                    = "/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier";
+            byte[] bytes = (byte[]) pdus.get(1).getDecodedObject(tag);
+            str = new String(bytes, Charsets.UTF_8);
+            assertEquals("BAEProd2", str);
+
+            tag = "/PS-PDU/pSHeader/sequenceNumber";
+            number = (BigInteger) pdus.get(2).getDecodedObject(tag);
+            assertEquals(new BigInteger("8"), number);
+
+        }
+
+        {
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile5,
+                    schema,
+                    topLevelType);
+
+            logger.debug("Results of /test5.ber");
+
+            debugPdus(pdus);
+
+            String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
+
+            BigInteger number = (BigInteger) pdus.get(0).getDecodedObject(tag);
+            assertEquals(new BigInteger("622697903"), number);
+
+            tag = "/PS-PDU/pSHeader/sequenceNumber";
+            number = (BigInteger) pdus.get(0).getDecodedObject(tag);
+            assertEquals(new BigInteger("0"), number);
+
+            tag = "/PS-PDU/pSHeader/authorizationCountryCode";
+            String str = (String) pdus.get(0).getDecodedObject(tag);
+            assertEquals("AU", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode";
+            str = (String) pdus.get(1).getDecodedObject(tag);
+            assertEquals("AU", str);
+
+            tag
+                    = "/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier";
+            byte[] bytes = (byte[]) pdus.get(1).getDecodedObject(tag);
+            str = new String(bytes, Charsets.UTF_8);
+            assertEquals("BAEProd2", str);
+
+            tag = "/PS-PDU/pSHeader/communicationIdentifier/cINExtension/iri-to-CC/cc[0]";
+            bytes = (byte[]) pdus.get(1).getDecodedObject(tag);
+            str = new String(bytes, Charsets.UTF_8);
+            assertEquals("3030", str);
+
+            assertEquals(15, pdus.size());
+            for (int i = 0; i < 14; i++)
             {
-
-                final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                        schema,
-                        topLevelType);
-
-                logger.debug("Results of /test.ber");
-
-                debugPdus(pdus);
-
-                assertEquals(3, pdus.size());
-                assertEquals(0, pdus.get(0).getUnmappedTags().size());
-                assertEquals(0, pdus.get(1).getUnmappedTags().size());
-                assertEquals(0, pdus.get(2).getUnmappedTags().size());
-
-                String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
-
-                BigInteger number = (BigInteger) pdus.get(0).getDecodedObject(tag);
-                assertEquals(new BigInteger("622697890"), number);
-
-                tag = "/PS-PDU/pSHeader/sequenceNumber";
-                number = (BigInteger) pdus.get(0).getDecodedObject(tag);
-                assertEquals(new BigInteger("0"), number);
-
-                tag = "/PS-PDU/pSHeader/authorizationCountryCode";
-                String str = (String) pdus.get(0).getDecodedObject(tag);
-                assertEquals("AU", str);
-
-                tag = "/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode";
-                str = (String) pdus.get(1).getDecodedObject(tag);
-                assertEquals("AU", str);
-
-                tag
-                        = "/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier";
-                byte[] bytes = (byte[]) pdus.get(1).getDecodedObject(tag);
-                str = new String(bytes, Charsets.UTF_8);
-                assertEquals("BAEProd2", str);
-
-                tag = "/PS-PDU/pSHeader/sequenceNumber";
-                number = (BigInteger) pdus.get(2).getDecodedObject(tag);
-                assertEquals(new BigInteger("8"), number);
-
-            }
-
-            {
-
-                final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile5,
-                        schema,
-                        topLevelType);
-
-                logger.debug("Results of /test5.ber");
-
-                debugPdus(pdus);
-
-                String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
-
-                BigInteger number = (BigInteger) pdus.get(0).getDecodedObject(tag);
-                assertEquals(new BigInteger("622697903"), number);
-
-                tag = "/PS-PDU/pSHeader/sequenceNumber";
-                number = (BigInteger) pdus.get(0).getDecodedObject(tag);
-                assertEquals(new BigInteger("0"), number);
-
-                tag = "/PS-PDU/pSHeader/authorizationCountryCode";
-                String str = (String) pdus.get(0).getDecodedObject(tag);
-                assertEquals("AU", str);
-
-                tag = "/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode";
-                str = (String) pdus.get(1).getDecodedObject(tag);
-                assertEquals("AU", str);
-
-                tag
-                        = "/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier";
-                byte[] bytes = (byte[]) pdus.get(1).getDecodedObject(tag);
-                str = new String(bytes, Charsets.UTF_8);
-                assertEquals("BAEProd2", str);
-
-                tag = "/PS-PDU/pSHeader/communicationIdentifier/cINExtension/iri-to-CC/cc[0]";
-                bytes = (byte[]) pdus.get(1).getDecodedObject(tag);
-                str = new String(bytes, Charsets.UTF_8);
-                assertEquals("3030", str);
-
-                assertEquals(15, pdus.size());
-                for (int i = 0; i < 14; i++)
-                {
-                    assertEquals(0, pdus.get(i).getUnmappedTags().size());
-                }
+                assertEquals(0, pdus.get(i).getUnmappedTags().size());
             }
         }
 
@@ -2258,83 +2257,106 @@ public class AsnSchemaParserTest
         //        }
     }
 
-    //    @Test
-    //    public void testPerformance() throws Exception
-    //    {
-    //        long start = System.currentTimeMillis();
-    //
-    //        // TODO ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
-    //        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
-    //        File schemaFile = new File(schemaFilename);
-    //        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
-    //
-    //        long mid = System.currentTimeMillis();
-    //
-    //
-    //        String berFilename = getClass().getResource("/test.ber").getFile();
-    //        final File berFile = new File(berFilename);
-    //        String topLevelType = "PS-PDU";
-    //
-    //        String berFilename5 = getClass().getResource("/test5.ber").getFile();
-    //        final File berFile5 = new File(berFilename5);
-    //
-    //        long mid2 = System.currentTimeMillis();
-    //
-    //        for(int z = 0; z < 5; ++z)
-    //        {
-    //
-    //            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-    //                    schema,
-    //                    topLevelType);
-    //
-    //
-    //            final ImmutableList<DecodedAsnData> pdus2 = AsnDecoder.decodeAsnData(berFile5,
-    //                    schema,
-    //                    topLevelType);
-    //        }
-    //
-    //        long end = System.currentTimeMillis();
-    //
-    //        long duration = end - start;
-    //        logger.error("Duration {}ms", duration);
-    //
-    //        // On a Michael's dev machine this takes less than 1000ms with logging set to INFO
-    //        // and less than 2000ms set to DEBUG, but the whole test take 30+ seconds set at debug!!
-    //        int threshold = 3000;
-    //        if (logger.isDebugEnabled())
-    //        {
-    //            threshold *=2;
-    //        }
-    //
-    //        assertTrue(duration < threshold);
-    //
-    //    }
-
-    private void debugPdus(ImmutableList<DecodedAsnData> pdus)
+    @Test
+    public void testPerformance() throws Exception
     {
-        for (int i = 0; i < pdus.size(); i++)
+        long start = System.currentTimeMillis();
+
+        // TODO ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
+        String schemaFilename = getClass().getResource("/EIFv122.asn").getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+
+        String berFilename = getClass().getResource("/test.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "PS-PDU";
+
+        String berFilename5 = getClass().getResource("/test5.ber").getFile();
+        final File berFile5 = new File(berFilename5);
+
+        for (int z = 0; z < 5; ++z)
         {
 
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+            assertEquals(3, pdus.size());
+            for (int i = 0; i < 3; i++)
+            {
+                assertEquals(0, pdus.get(i).getUnmappedTags().size());
+            }
+
+            final ImmutableList<DecodedAsnData> pdus2 = AsnDecoder.decodeAsnData(berFile5,
+                    schema,
+                    topLevelType);
+            assertEquals(15, pdus2.size());
+            for (int i = 0; i < 14; i++)
+            {
+                assertEquals(0, pdus2.get(i).getUnmappedTags().size());
+            }
+        }
+
+        long end = System.currentTimeMillis();
+
+        long duration = end - start;
+        logger.error("Duration {}ms", duration);
+
+        // On a Michael's dev machine this takes less than 1000ms with logging set to INFO
+        // and less than 2000ms set to DEBUG, but the whole test take 30+ seconds set at debug!!
+        int threshold = 3000;
+        if (logger.isDebugEnabled())
+        {
+            threshold *= 2;
+        }
+
+        assertTrue(duration < threshold);
+
+    }
+
+    /**
+     * Do a dump of all the data, both Mapped and Unmapped in all DecodedAsnData Defaults to using
+     * {@link DecodedAsnData#getHexString} format.
+     *
+     * @param pdus
+     *         the input DecodedAsnData objects
+     */
+    private void debugPdus(Iterable<DecodedAsnData> pdus)
+    {
+        debugPdus(pdus, true);
+    }
+
+    /**
+     * @param pdus
+     *         the input DecodedAsnData objects
+     * @param printHexString
+     *         determines whether to use {@link DecodedAsnData#getHexString} (if true) or {@link
+     *         DecodedAsnData#getPrintableString} (if false)
+     */
+    private void debugPdus(Iterable<DecodedAsnData> pdus, boolean printHexString)
+    {
+        int i = 0;
+        for (DecodedAsnData pdu : pdus)
+        {
             logger.info("Parsing PDU[{}]", i);
-            final DecodedAsnData pdu = pdus.get(i);
             for (String t : pdu.getTags())
             {
                 try
                 {
                     logger.info("\t{} => {} as {}",
-                            //t, pdu.getHexString(t), pdu.getType(t).getBuiltinType() );
-                            t, pdu.getDecodedObject(t), pdu.getType(t).getBuiltinType());
+                            t,
+                            (printHexString ? pdu.getHexString(t) : pdu.getPrintableString(t)),
+                            pdu.getType(t).getBuiltinType());
                 }
-                catch (Exception e)
+                catch (DecodeException e)
                 {
-
+                    logger.info("\t\tDecodeException {}", e.getMessage());
                 }
             }
+
             for (String t : pdu.getUnmappedTags())
             {
                 logger.info("\t?{} => {}", t, pdu.getHexString(t));
             }
         }
-
     }
 }

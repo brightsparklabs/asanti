@@ -468,7 +468,6 @@ public class MockAsnSchemaType
             AsnSchemaComponentType component = MockAsnSchemaComponentType.createMockedComponentType(
                     componentName,
                     rawTag,
-                    "",
                     isOptional,
                     type);
 

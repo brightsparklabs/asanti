@@ -83,7 +83,7 @@ public class AsnSchemaImpl implements AsnSchema
 
     @Override
     public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(
-            final ImmutableSet<String> rawTags, String topLevelTypeName)
+            final Iterable<String> rawTags, String topLevelTypeName)
     {
         DecodingSession session = new DecodingSessionImpl();
 

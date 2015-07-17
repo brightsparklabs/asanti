@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static com.google.common.base.Preconditions.*;
 
 /**
@@ -193,7 +194,7 @@ public class AsnSchemaTypeParser
      *         if either of the parameters are {@code null}/empty or any errors occur while parsing
      *         the type
      * @throws NullPointerException
-     *          if taggingMode is {@code null}
+     *         if taggingMode is {@code null}
      */
     public static AsnSchemaType parse(String value, AsnModuleTaggingMode taggingMode)
             throws ParseException

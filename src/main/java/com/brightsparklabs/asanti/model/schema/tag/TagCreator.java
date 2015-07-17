@@ -24,7 +24,9 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * TODO MJF
+ * Creates Tag values for Constructed types (Sequence, Set Choice)
+ *
+ * @author brightSPARK Labs
  */
 public class TagCreator
 {
@@ -79,7 +81,7 @@ public class TagCreator
 
     // Seems a little bit heavy weight to use this sort of Strategy pattern, but
     // both of these are decision points that can be made at construction time
-    // rather than at run time.
+    // rather than at loop time.
 
     /** the Strategy to use for "decorating" tags, ie do we store the index along with the tag */
     private final TagDecorator tagDecorator;
@@ -92,7 +94,7 @@ public class TagCreator
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor.  Use {@code create}
+     * Default constructor.  This is private, Use {@code create} instead
      *
      * @param tagDecorator
      *         the TagDecorator to be used to create the tags
@@ -131,6 +133,12 @@ public class TagCreator
                         TAG_CREATION_UNORDERED_FALSE);
     }
 
+    /**
+     * TODO MJF
+     * @param componentTypes
+     * @return
+     * @throws ParseException
+     */
     public ImmutableMap<String, AsnSchemaComponentType> getTagsForComponents(
             Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
     {
@@ -326,6 +334,10 @@ public class TagCreator
      */
     private static class SequenceTagDecorator implements TagDecorator
     {
+        // -------------------------------------------------------------------------
+        // IMPLEMENTATION: TagDecorator
+        // -------------------------------------------------------------------------
+
         @Override
         public String getDecoratedTag(int index, String tag)
         {
@@ -339,10 +351,13 @@ public class TagCreator
      */
     private static class UnorderedTagDecorator implements TagDecorator
     {
+        // -------------------------------------------------------------------------
+        // IMPLEMENTATION: TagDecorator
+        // -------------------------------------------------------------------------
         @Override
         public String getDecoratedTag(int index, String tag)
         {
-            return tag;// TODO MJFString.format("%s", tag);
+            return tag;
         }
     }
 
@@ -368,22 +383,24 @@ public class TagCreator
      */
     private static class TagAutomatorCheck implements TagAutomator
     {
+        // -------------------------------------------------------------------------
+        // IMPLEMENTATION: TagAutomator
+        // -------------------------------------------------------------------------
         @Override
         public boolean canAutomate(Iterable<AsnSchemaComponentType> componentTypes)
         {
             // only need to automatically tag, if the global mode is automatic AND
-            // none of the components have context-specific (TODO MJF or application) tags
-            boolean anyTagSet = false;
+            // none of the components in the Constructed type have context-specific tags
+            boolean canAutomate = true;
             for (final AsnSchemaComponentType componentType : componentTypes)
             {
-                String tag = componentType.getTag();
-                if (!Strings.isNullOrEmpty(tag))
+                if (!Strings.isNullOrEmpty(componentType.getTag()))
                 {
-                    anyTagSet = true;
-                    break;
+                    canAutomate = false;
+                    break;  // fail early
                 }
             }
-            return !anyTagSet;
+            return canAutomate;
         }
     }
 
@@ -393,6 +410,9 @@ public class TagCreator
      */
     private static class TagAutomatorFalse implements TagAutomator
     {
+        // -------------------------------------------------------------------------
+        // IMPLEMENTATION: TagAutomator
+        // -------------------------------------------------------------------------
         @Override
         public boolean canAutomate(Iterable<AsnSchemaComponentType> componentTypes)
         {

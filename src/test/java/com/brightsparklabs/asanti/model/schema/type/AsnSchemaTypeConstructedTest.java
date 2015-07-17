@@ -139,7 +139,7 @@ public class AsnSchemaTypeConstructedTest
     @Test
     public void testGetMatchingChild() throws ParseException
     {
-        //AsnSchemaNamedType namedType = instance.getMatchingChild("", session);
+        AsnSchemaNamedType namedType = instance.getMatchingChild("", session);
     }
 
     @Test

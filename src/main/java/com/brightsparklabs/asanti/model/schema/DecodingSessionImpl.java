@@ -35,7 +35,6 @@ public class DecodingSessionImpl implements DecodingSession
         }
 
         return levelTagTracker.getTag(tag);
-
     }
 
     @Override

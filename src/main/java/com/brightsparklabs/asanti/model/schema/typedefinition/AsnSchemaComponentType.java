@@ -88,6 +88,10 @@ public class AsnSchemaComponentType implements AsnSchemaNamedType
         return isOptional;
     }
 
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: AsnSchemaNamedType
+    // -------------------------------------------------------------------------
+
     @Override
     public AsnSchemaType getType() { return type; }
 
