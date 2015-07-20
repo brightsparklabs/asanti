@@ -1,10 +1,10 @@
 package com.brightsparklabs.asanti.integration;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.*;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
@@ -13,6 +13,7 @@ import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResult;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -444,101 +445,152 @@ public class AsnSchemaParserTest
         final File asnFile = new File(getClass().getResource("/AsantiSample.asn").getFile());
         AsnSchema instance = AsnSchemaFileReader.read(asnFile);
 
-        // TODO MJF - having changed the raw tags to be index.tag, none of these work now!
-        //        assertEquals("/Document",
-        //                instance.getDecodedTag("", "Document").getOutput().getTag());
+        ImmutableMap<String, String> tags = ImmutableMap.<String, String>builder()
+                .put("", "/Document")
+                .put("0[1]", "/Document/header")
+                .put("0[1]/0[0]", "/Document/header/published")
+                .put("0[1]/0[0]/1[1]", "/Document/header/published/date")
+                .put("0[1]/0[0]/2[2]", "/Document/header/published/country")
+                .put("1[2]", "/Document/body")
+                .put("1[2]/0[0]", "/Document/body/lastModified")
+                .put("1[2]/0[0]/0[0]", "/Document/body/lastModified/date")
+                .put("1[2]/0[0]/1[1]/0[1]", "/Document/body/lastModified/modifiedBy/firstName")
+                .put("1[2]/0[0]/1[1]/1[2]", "/Document/body/lastModified/modifiedBy/lastName")
+                .put("1[2]/0[0]/1[1]/2[3]", "/Document/body/lastModified/modifiedBy/title")
+                .put("1[2]/1[1]/0[1]", "/Document/body/prefix/text")
+                .put("1[2]/2[2]/0[1]", "/Document/body/content/text")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/0[1]", "/Document/body/content/paragraphs[0]/title")
+                .put("1[2]/2[2]/1[2]/1[UNIVERSAL 16]/0[1]", "/Document/body/content/paragraphs[1]/title")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/0[1]", "/Document/body/content/paragraphs[0]/contributor/firstName")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/1[2]", "/Document/body/content/paragraphs[0]/contributor/lastName")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/2[3]", "/Document/body/content/paragraphs[0]/contributor/title")
+//                .put("1[2]/2[2]/2[0]/3", "/Document/body/content/paragraphs[0]/points")
+//                .put("1[2]/2[2]/2[0]/3[0]", "/Document/body/content/paragraphs[0]/points[0]")
+//                .put("1[2]/2[2]/2[99]/1", "/Document/body/content/paragraphs[99]/title")
+//                .put("1[2]/2[2]/2[99]/2/1", "/Document/body/content/paragraphs[99]/contributor/firstName")
+//                .put("1[2]/2[2]/2[99]/2/2", "/Document/body/content/paragraphs[99]/contributor/lastName")
+//                .put("1[2]/2[2]/2[99]/2/3", "/Document/body/content/paragraphs[99]/contributor/title")
+//                .put("1[2]/2[2]/2[99]/3", "/Document/body/content/paragraphs[99]/points")
+//                .put("1[2]/2[2]/2[99]/3[99]", "/Document/body/content/paragraphs[99]/points[99]")
+//                .put("1[2]/3/1", "/Document/body/suffix/text")
+//                .put("2[3]", "/Document/footer")
+//                .put("2[3]/0", "/Document/footer/authors")
+//                .put("2[3]/0[0]/1", "/Document/footer/authors[0]/firstName")
+//                .put("2[3]/0[0]/2", "/Document/footer/authors[0]/lastName")
+//                .put("4", "/Document/dueDate")
+//                .put("5", "/Document/version")
+//                .put("5/0", "/Document/version/majorVersion")
+//                .put("5/1", "/Document/version/minorVersion")
+//                .put("6", "/Document/description")
+//                .put("6/0", "/Document/description/numberLines")
+//                .put("6/1", "/Document/description/summary")
+                .build();
 
-        //        assertEquals("/Document/header",
-        //                instance.getDecodedTag("1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/header/published",
-        //                instance.getDecodedTag("1/0", "Document").getOutput().getTag());
-        //        assertEquals("/Document/header/published/date",
-        //                instance.getDecodedTag("1/0/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/header/published/country",
-        //                instance.getDecodedTag("1/0/2", "Document").getOutput().getTag());
-        //
-        //        assertEquals("/Document/body",
-        //                instance.getDecodedTag("2", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/lastModified",
-        //                instance.getDecodedTag("2/0", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/lastModified/date",
-        //                instance.getDecodedTag("2/0/0", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/lastModified/modifiedBy/firstName",
-        //                instance.getDecodedTag("2/0/1/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/lastModified/modifiedBy/lastName",
-        //                instance.getDecodedTag("2/0/1/2", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/lastModified/modifiedBy/title",
-        //                instance.getDecodedTag("2/0/1/3", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/prefix/text",
-        //                instance.getDecodedTag("2/1/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/text",
-        //                instance.getDecodedTag("2/2/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs/title",
-        //                instance.getDecodedTag("2/2/2/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[0]/title",
-        //                instance.getDecodedTag("2/2/2[0]/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[1]/title",
-        //                instance.getDecodedTag("2/2/2[1]/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
-        //                instance.getDecodedTag("2/2/2[0]/2/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
-        //                instance.getDecodedTag("2/2/2[0]/2/2", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
-        //                instance.getDecodedTag("2/2/2[0]/2/3", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[0]/points",
-        //                instance.getDecodedTag("2/2/2[0]/3", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[0]/points[0]",
-        //                instance.getDecodedTag("2/2/2[0]/3[0]", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[99]/title",
-        //                instance.getDecodedTag("2/2/2[99]/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
-        //                instance.getDecodedTag("2/2/2[99]/2/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
-        //                instance.getDecodedTag("2/2/2[99]/2/2", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
-        //                instance.getDecodedTag("2/2/2[99]/2/3", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[99]/points",
-        //                instance.getDecodedTag("2/2/2[99]/3", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/content/paragraphs[99]/points[99]",
-        //                instance.getDecodedTag("2/2/2[99]/3[99]", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/suffix/text",
-        //                instance.getDecodedTag("2/3/1", "Document").getOutput().getTag());
-        //
-        //        assertEquals("/Document/footer",
-        //                instance.getDecodedTag("3", "Document").getOutput().getTag());
-        //        assertEquals("/Document/footer/authors",
-        //                instance.getDecodedTag("3/0", "Document").getOutput().getTag());
-        //        assertEquals("/Document/footer/authors[0]/firstName",
-        //                instance.getDecodedTag("3/0[0]/1", "Document").getOutput().getTag());
-        //        assertEquals("/Document/footer/authors[0]/lastName",
-        //                instance.getDecodedTag("3/0[0]/2", "Document").getOutput().getTag());
-        //
-        //        assertEquals("/Document/dueDate",
-        //                instance.getDecodedTag("4", "Document").getOutput().getTag());
-        //
-        //        assertEquals("/Document/version",
-        //                instance.getDecodedTag("5", "Document").getOutput().getTag());
-        //        assertEquals("/Document/version/majorVersion",
-        //                instance.getDecodedTag("5/0", "Document").getOutput().getTag());
-        //        assertEquals("/Document/version/minorVersion",
-        //                instance.getDecodedTag("5/1", "Document").getOutput().getTag());
-        //
-        //        assertEquals("/Document/description",
-        //                instance.getDecodedTag("6", "Document").getOutput().getTag());
-        //        assertEquals("/Document/description/numberLines",
-        //                instance.getDecodedTag("6/0", "Document").getOutput().getTag());
-        //        assertEquals("/Document/description/summary",
-        //                instance.getDecodedTag("6/1", "Document").getOutput().getTag());
-        //
-        //        // test partial
-        //        assertEquals("/Document/header/published/99/98",
-        //                instance.getDecodedTag("1/0/99/98", "Document").getOutput().getTag());
-        //        assertEquals("/Document/body/lastModified/99/98",
-        //                instance.getDecodedTag("2/0/99/98", "Document").getOutput().getTag());
-        //
-        //        // test unknown
-        //        assertEquals("/Document/99/98",
-        //                instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
+        final ImmutableSet<OperationResult<DecodedTag>> decodedTags = instance.getDecodedTags(tags.keySet(),
+                "Document");
+
+        for(OperationResult<DecodedTag> decodedTag : decodedTags)
+        {
+            assertTrue(decodedTag.wasSuccessful());
+
+            final DecodedTag output = decodedTag.getOutput();
+            assertEquals(tags.get(output.getRawTag()), output.getTag());
+        }
+
+
+//        assertEquals("/Document", instance.getDecodedTag("", "Document").getOutput().getTag());
+//
+//                assertEquals("/Document/header",
+//                        instance.getDecodedTag("1", "Document").getOutput().getTag());
+//                assertEquals("/Document/header/published",
+//                        instance.getDecodedTag("1/0", "Document").getOutput().getTag());
+//                assertEquals("/Document/header/published/date",
+//                        instance.getDecodedTag("1/0/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/header/published/country",
+//                        instance.getDecodedTag("1/0/2", "Document").getOutput().getTag());
+//
+//                assertEquals("/Document/body",
+//                        instance.getDecodedTag("2", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/lastModified",
+//                        instance.getDecodedTag("2/0", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/lastModified/date",
+//                        instance.getDecodedTag("2/0/0", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/lastModified/modifiedBy/firstName",
+//                        instance.getDecodedTag("2/0/1/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/lastModified/modifiedBy/lastName",
+//                        instance.getDecodedTag("2/0/1/2", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/lastModified/modifiedBy/title",
+//                        instance.getDecodedTag("2/0/1/3", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/prefix/text",
+//                        instance.getDecodedTag("2/1/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/text",
+//                        instance.getDecodedTag("2/2/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs/title",
+//                        instance.getDecodedTag("2/2/2/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[0]/title",
+//                        instance.getDecodedTag("2/2/2[0]/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[1]/title",
+//                        instance.getDecodedTag("2/2/2[1]/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
+//                        instance.getDecodedTag("2/2/2[0]/2/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
+//                        instance.getDecodedTag("2/2/2[0]/2/2", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
+//                        instance.getDecodedTag("2/2/2[0]/2/3", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[0]/points",
+//                        instance.getDecodedTag("2/2/2[0]/3", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[0]/points[0]",
+//                        instance.getDecodedTag("2/2/2[0]/3[0]", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[99]/title",
+//                        instance.getDecodedTag("2/2/2[99]/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
+//                        instance.getDecodedTag("2/2/2[99]/2/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
+//                        instance.getDecodedTag("2/2/2[99]/2/2", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
+//                        instance.getDecodedTag("2/2/2[99]/2/3", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[99]/points",
+//                        instance.getDecodedTag("2/2/2[99]/3", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/content/paragraphs[99]/points[99]",
+//                        instance.getDecodedTag("2/2/2[99]/3[99]", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/suffix/text",
+//                        instance.getDecodedTag("2/3/1", "Document").getOutput().getTag());
+//
+//                assertEquals("/Document/footer",
+//                        instance.getDecodedTag("3", "Document").getOutput().getTag());
+//                assertEquals("/Document/footer/authors",
+//                        instance.getDecodedTag("3/0", "Document").getOutput().getTag());
+//                assertEquals("/Document/footer/authors[0]/firstName",
+//                        instance.getDecodedTag("3/0[0]/1", "Document").getOutput().getTag());
+//                assertEquals("/Document/footer/authors[0]/lastName",
+//                        instance.getDecodedTag("3/0[0]/2", "Document").getOutput().getTag());
+//
+//                assertEquals("/Document/dueDate",
+//                        instance.getDecodedTag("4", "Document").getOutput().getTag());
+//
+//                assertEquals("/Document/version",
+//                        instance.getDecodedTag("5", "Document").getOutput().getTag());
+//                assertEquals("/Document/version/majorVersion",
+//                        instance.getDecodedTag("5/0", "Document").getOutput().getTag());
+//                assertEquals("/Document/version/minorVersion",
+//                        instance.getDecodedTag("5/1", "Document").getOutput().getTag());
+//
+//                assertEquals("/Document/description",
+//                        instance.getDecodedTag("6", "Document").getOutput().getTag());
+//                assertEquals("/Document/description/numberLines",
+//                        instance.getDecodedTag("6/0", "Document").getOutput().getTag());
+//                assertEquals("/Document/description/summary",
+//                        instance.getDecodedTag("6/1", "Document").getOutput().getTag());
+//
+//                // test partial
+//                assertEquals("/Document/header/published/99/98",
+//                        instance.getDecodedTag("1/0/99/98", "Document").getOutput().getTag());
+//                assertEquals("/Document/body/lastModified/99/98",
+//                        instance.getDecodedTag("2/0/99/98", "Document").getOutput().getTag());
+//
+//                // test unknown
+//                assertEquals("/Document/99/98",
+//                        instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
 
     }
 
@@ -1348,33 +1400,6 @@ public class AsnSchemaParserTest
             assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
             tag = "/Human/a";
             assertEquals("U", pdus.get(0).getDecodedObject(tag));
-        }
-    }
-
-    @Test
-    public void DELETE_ME() throws Exception
-    {
-        String schemaFilename = getClass().getResource("/AA_DELETE_ME.asn")
-                .getFile();
-        File schemaFile = new File(schemaFilename);
-        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
-
-        {
-            String berFilename = getClass().getResource(
-                    "/AA_DELETE_ME.ber").getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
-
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
-            debugPdus((pdus));
-
-            String tag = "/Human/name";
-            assertEquals("Adam", pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/open/ch/c/n";
-            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
-
         }
     }
 
@@ -2263,25 +2288,6 @@ public class AsnSchemaParserTest
         catch (ParseException e)
         {
         }
-    }
-
-    @Test
-    public void testImports() throws Exception
-    {
-        String schemaFilename = getClass().getResource("/TestImports.asn").getFile();
-        File schemaFile = new File(schemaFilename);
-        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
-
-        //        {
-        //            String tag = "/0/1/1/0/4/7";
-        //            logger.info("get tag " + tag);
-        //            OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "PS-PDU");
-        //            if (result.wasSuccessful())
-        //            {
-        //                DecodedTag r = result.getOutput();
-        //                logger.info("decoded tag: {}", r.getTag());
-        //            }
-        //        }
     }
 
     @Test

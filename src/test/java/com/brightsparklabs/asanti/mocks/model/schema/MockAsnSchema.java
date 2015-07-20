@@ -188,9 +188,9 @@ public class MockAsnSchema
                         true,
                         AsnBuiltinType.OctetString))
                 .add(configureGetDecodedTag("/3/0/1",
-                                "/Document/footer/author/firstName",
-                                true,
-                                AsnBuiltinType.OctetString))
+                        "/Document/footer/author/firstName",
+                        true,
+                        AsnBuiltinType.OctetString))
                 .add(configureGetDecodedTag("/2/2/99",
                         "/Document/body/content/99",
                         false,
@@ -201,18 +201,17 @@ public class MockAsnSchema
                         AsnBuiltinType.Null))
                 .build();
 
-
-
         //        public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(ImmutableSet<String> rawTags,
         //            String topLevelTypeName);
         String topLevelTypeName = "Document";
-            when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName)).thenReturn(
-                    results);
+        when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName)).thenReturn(
+                results);
 
         ImmutableSet<String> emptyTags = ImmutableSet.of();
         ImmutableSet<OperationResult<DecodedTag>> emptyResults = ImmutableSet.of();
 
-        when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName)).thenReturn(results);
+        when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName)).thenReturn(
+                results);
         when(instance.getDecodedTags(emptyTags, topLevelTypeName)).thenReturn(emptyResults);
 
         return instance;
@@ -226,16 +225,14 @@ public class MockAsnSchema
      * Configures the {@code getDecodedTag()} method on the supplied instance to use the mocked
      * values supplied
      *
-     * @param instance
-     *         instance to configure
      * @param rawTag
      *         the raw tag to return
-     * @param topLevelTypeName
-     *         the top level type name
      * @param decodedTagPath
      *         the value to return for {@link DecodedTag#getTag()}
      * @param isFullyDecoded
      *         the value to return for {@link OperationResult#wasSuccessful()}
+     * @param builtinType
+     *         the value to return for {@link AsnSchemaType#getBuiltinType()}
      */
     private static OperationResult<DecodedTag> configureGetDecodedTag(String rawTag,
             String decodedTagPath, boolean isFullyDecoded, AsnBuiltinType builtinType)

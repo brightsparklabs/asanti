@@ -1,7 +1,9 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import org.junit.After;
 import org.junit.Before;
@@ -27,9 +29,6 @@ public class AsnSchemaTypePlaceholderTest
     /** the instance that will be used for testing */
     private AsnSchemaTypePlaceholder instance;
 
-    /** component "0" of the Sequence the placeholder will point to */
-    private AsnSchemaType sequenceComponent;
-
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
@@ -37,7 +36,6 @@ public class AsnSchemaTypePlaceholderTest
     @Before
     public void setUpBeforeTest() throws Exception
     {
-        sequenceComponent = mock(AsnSchemaType.class);
 
         indirectType = mock(AsnSchemaType.class);
         // For the sake of testing that the Collection is delegating to the element type make it
@@ -47,11 +45,12 @@ public class AsnSchemaTypePlaceholderTest
         AsnSchemaConstraint constraint2 = mock(AsnSchemaConstraint.class);
 
         when(indirectType.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
-        // TODO MJF getMatchingChild
-        //when(indirectType.getChildType("0")).thenReturn(sequenceComponent);
-        //when(indirectType.getChildName("0")).thenReturn("foo");
-        when(indirectType.getConstraints()).thenReturn(ImmutableSet.of(
-                constraint1, constraint2));
+
+        AsnSchemaComponentType component = mock(AsnSchemaComponentType.class);
+
+        when(indirectType.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
+                Optional.of(component));
+        when(indirectType.getConstraints()).thenReturn(ImmutableSet.of(constraint1, constraint2));
 
         instance = new AsnSchemaTypePlaceholder("Module", "Type", AsnSchemaConstraint.NULL);
 
@@ -159,5 +158,17 @@ public class AsnSchemaTypePlaceholderTest
         verify(indirectType).getConstraints();
     }
 
-    // TODO MJF getMatchingChild
+    @Test
+    public void testGetMatchingChild()
+    {
+        // test that if the placeholder is not resolved it does not delegate
+        DecodingSession decodingSession = mock(DecodingSession.class);
+        assertFalse(instance.getMatchingChild("0[0]", decodingSession).isPresent());
+        verify(indirectType, never()).getMatchingChild(anyString(), any(DecodingSession.class));
+        instance.setIndirectType(indirectType);
+
+        // and that it does delegate after it is resolved
+        assertTrue(instance.getMatchingChild("0[0]", decodingSession).isPresent());
+        verify(indirectType).getMatchingChild("0[0]", decodingSession);
+    }
 }

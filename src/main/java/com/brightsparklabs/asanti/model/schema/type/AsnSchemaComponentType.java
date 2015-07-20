@@ -76,7 +76,10 @@ public class AsnSchemaComponentType
         return tag;
     }
 
-    // TODO MJF
+    /**
+     * @param tag
+     *         set the tag of this component type
+     */
     public void setTag(String tag)
     {
         this.tag = tag;

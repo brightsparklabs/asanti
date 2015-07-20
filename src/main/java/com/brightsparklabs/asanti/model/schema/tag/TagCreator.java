@@ -142,9 +142,15 @@ public class TagCreator
      *         tags
      *
      * @return a TagCreator object configured appropriately for the input parameter
+     *
+     * @throws NullPointerException
+     *         if either {@code type} or {@code taggingMode} are {@code null}
      */
     public static TagCreator create(AsnPrimitiveType type, AsnModuleTaggingMode taggingMode)
     {
+        checkNotNull(type);
+        checkNotNull(taggingMode);
+
         return (type == AsnPrimitiveType.SEQUENCE) ?
                 ((taggingMode == AsnModuleTaggingMode.AUTOMATIC) ?
                         TAG_CREATION_SEQUENCE_AUTOMATED :
@@ -430,7 +436,7 @@ public class TagCreator
     /**
      * Interface for creating the tag that we will store for later matching
      */
-    public interface TagDecorator
+    private interface TagDecorator
     {
         /**
          * From the supplied index and Tag create a new string Tag in the expected format
@@ -449,7 +455,7 @@ public class TagCreator
      * TagDecorator for Sequence types, where the index is required for determination of duplication
      * and for later tag matching
      */
-    public static class SequenceTagDecorator implements TagDecorator
+    private static class SequenceTagDecorator implements TagDecorator
     {
         // -------------------------------------------------------------------------
         // IMPLEMENTATION: TagDecorator
@@ -465,7 +471,7 @@ public class TagCreator
      * TagDecorator for unordered types (ie Set and Choice) where the index is not required for
      * either determination of duplicates or for later tag matching
      */
-    public static class UnorderedTagDecorator implements TagDecorator
+    private static class UnorderedTagDecorator implements TagDecorator
     {
         // -------------------------------------------------------------------------
         // IMPLEMENTATION: TagDecorator
@@ -569,7 +575,7 @@ public class TagCreator
             // during decoding (via the DecodingSession).
 
             // Get the next expected component.
-            int index = decodingSession.getOffset(tag);
+            int index = decodingSession.getIndex(tag);
 
             AsnSchemaComponentType component;
             do
@@ -580,7 +586,7 @@ public class TagCreator
                         decodingSession);
                 if (result.isPresent())
                 {
-                    decodingSession.setOffset(tag, index);
+                    decodingSession.setIndex(tag, index);
                     return result;
                 }
 

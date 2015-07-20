@@ -16,23 +16,20 @@ public interface DecodingSession
     void setContext(String context);
 
     /**
-     * @param index
-     *         the index of the tag that was received
+     * @param tag
+     *         the AsnSchemaTag that we want the offset for
      *
      * @return any offset needed to be applied to that index
      */
-    //int getOffset(int index);
-
-    int getOffset(AsnSchemaTag tag);
+    int getIndex(AsnSchemaTag tag);
 
     /**
+     * @param tag
+     *         the AsnSchemaTag that we want to set the offset for
      * @param index
-     *         the index of the tag that was received
-     * @param offset
-     *         the value to be returned at the next call to {@code getOffset} with the given
+     *         the value to be returned at the next call to {@code getIndex} with the given
      *         context
      */
-    //void setOffset(int index, int offset);
-    void setOffset(AsnSchemaTag tag, int offset);
+    void setIndex(AsnSchemaTag tag, int index);
 
 }

@@ -1,11 +1,12 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
+import com.brightsparklabs.asanti.model.schema.tag.TagCreator;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,47 +27,34 @@ public class AsnSchemaTypeConstructedTest
     // FIXTURES
     // -------------------------------------------------------------------------
 
-    /** the type the instance collection is wrapping */
-    private AsnSchemaType wrappedSequence;
-
     /** the only component to add */
     private AsnSchemaComponentType component;
-
-    /** mocked DecodingSession to be used */
-    private DecodingSession session;
 
     /** the instance that will be used for testing */
     private AsnSchemaTypeConstructed instance;
 
+    /** the instance used in construction */
+    private TagCreator tagCreator;
+
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
-
+    @SuppressWarnings("unchecked")
     @Before
     public void setUpBeforeTest() throws Exception
     {
-        AsnSchemaType sequenceComponent = mock(AsnSchemaType.class);
-
-        session = mock(DecodingSession.class);
-
-        wrappedSequence = mock(AsnSchemaType.class);
-        // For the sake of testing that the Collection is delegating to the element type make it
-        // return testable values
-        when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
-
-        // TODO MJF getMatchingChild
-        //when(wrappedSequence.getChildType("0")).thenReturn(sequenceComponent);
-        //when(wrappedSequence.getChildName("0")).thenReturn("foo");
-
         component = mock(AsnSchemaComponentType.class);
-        when(component.getType()).thenReturn(wrappedSequence);
-        when(component.getTag()).thenReturn("0");
-        when(component.getName()).thenReturn("name");
+
+        tagCreator = mock(TagCreator.class);
+
+        when(tagCreator.getComponentTypes(any(AsnSchemaTag.class),
+                any(ImmutableList.class),
+                any(DecodingSession.class))).thenReturn(Optional.of(component));
 
         instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 ImmutableList.of(component),
-                AsnModuleTaggingMode.DEFAULT);
+                tagCreator);
     }
 
     @After
@@ -89,7 +77,7 @@ public class AsnSchemaTypeConstructedTest
             new AsnSchemaTypeConstructed(null,
                     AsnSchemaConstraint.NULL,
                     ImmutableList.<AsnSchemaComponentType>of(),
-                    AsnModuleTaggingMode.DEFAULT);
+                    tagCreator);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -101,13 +89,13 @@ public class AsnSchemaTypeConstructedTest
             new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
                     AsnSchemaConstraint.NULL,
                     null,
-                    AsnModuleTaggingMode.DEFAULT);
+                    tagCreator);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
         {
         }
-        // null tagging mode
+        // null tag creator
         try
         {
             new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
@@ -126,70 +114,48 @@ public class AsnSchemaTypeConstructedTest
             new AsnSchemaTypeConstructed(AsnPrimitiveType.INTEGER,
                     AsnSchemaConstraint.NULL,
                     ImmutableList.<AsnSchemaComponentType>of(),
-                    AsnModuleTaggingMode.DEFAULT);
+                    tagCreator);
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
         {
         }
-
     }
 
-    // TODO MJF - add a test for getMatchingChild (which essentially replaced getComponentTypes)
+    @SuppressWarnings("unchecked")
     @Test
     public void testGetMatchingChild() throws ParseException
     {
 
+        DecodingSession decodingSession = mock(DecodingSession.class);
+        final Optional<AsnSchemaComponentType> matchingChild = instance.getMatchingChild("0",
+                decodingSession);
+
+        assertTrue(matchingChild.isPresent());
+
+        verify(tagCreator).getComponentTypes(any(AsnSchemaTag.class),
+                any(ImmutableList.class),
+                any(DecodingSession.class));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testAutomaticTagGeneration() throws ParseException
+    public void testPerformTagging() throws ParseException
     {
-        AsnSchemaType type1 = mock(AsnSchemaType.class);
-        AsnSchemaType type2 = mock(AsnSchemaType.class);
-        AsnSchemaType type3 = mock(AsnSchemaType.class);
-        AsnSchemaType type4 = mock(AsnSchemaType.class);
+        verify(tagCreator, never()).setTagsForComponents(any(Iterable.class));
+        instance.performTagging();
+        verify(tagCreator).setTagsForComponents(any(Iterable.class));
 
-        AsnSchemaComponentType testComponent1 = mock(AsnSchemaComponentType.class);
-        when(testComponent1.getType()).thenReturn(type1);
-        when(testComponent1.getTag()).thenReturn(null);
-        when(testComponent1.getName()).thenReturn("firstName");
+        instance.performTagging();
 
-        AsnSchemaComponentType testComponent2 = mock(AsnSchemaComponentType.class);
-        when(testComponent2.getType()).thenReturn(type2);
-        when(testComponent2.getTag()).thenReturn(null);
-        when(testComponent2.getName()).thenReturn("lastName");
-
-        AsnSchemaComponentType testComponent3 = mock(AsnSchemaComponentType.class);
-        when(testComponent3.getType()).thenReturn(type3);
-        when(testComponent3.getTag()).thenReturn("9");
-        when(testComponent3.getName()).thenReturn("someComponent");
-
-        AsnSchemaComponentType testComponent4 = mock(AsnSchemaComponentType.class);
-        when(testComponent4.getType()).thenReturn(type4);
-        when(testComponent4.getTag()).thenReturn(null);
-        when(testComponent4.getName()).thenReturn("lastComponent");
-
-        AsnSchemaTypeConstructed testInstance
-                = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
-                AsnSchemaConstraint.NULL,
-                ImmutableList.of(testComponent1, testComponent2, testComponent3, testComponent4),
-                AsnModuleTaggingMode.DEFAULT);
-
-        // TODO MJF - auto tag creation tests can move to the strategy, and getComponentTypes has been deleted
-        //        assertEquals(testComponent1, testInstance.getComponentTypes("0"));
-        //        assertEquals(testComponent2, testInstance.getComponentTypes("1"));
-        //        assertEquals(testComponent3, testInstance.getComponentTypes("9"));
-        //        assertEquals(testComponent4, testInstance.getComponentTypes("10"));
+        // still only the once.
+        verify(tagCreator).setTagsForComponents(any(Iterable.class));
     }
-
-    // TODO MJF getMatchingChild
 
     @Test
     public void testGetAllComponents() throws Exception
     {
-        // TODO MJF
-        //assertEquals(1, instance.getAllComponents().size());
-        //assertEquals(component, instance.getAllComponents().get("0"));
+        assertEquals(1, instance.getAllComponents().size());
+        assertEquals(component, instance.getAllComponents().get(0));
     }
 }

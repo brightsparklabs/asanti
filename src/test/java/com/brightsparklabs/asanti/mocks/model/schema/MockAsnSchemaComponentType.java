@@ -41,7 +41,7 @@ public class MockAsnSchemaComponentType
      * @param isOptional
      *         value to return for {@link AsnSchemaComponentType#isOptional()}
      * @param type
-     *          value to return for {@link AsnSchemaComponentType#getType()}
+     *          an AsnSchemaType is mocked around this primitive type
      *
      * @return mock instance which returns the supplied values
      */
@@ -53,6 +53,23 @@ public class MockAsnSchemaComponentType
         when(mockedInstance.getTag()).thenReturn(tag);
         when(mockedInstance.isOptional()).thenReturn(isOptional);
         when(mockedInstance.getType()).thenReturn(type);
+        return mockedInstance;
+    }
+
+    public static AsnSchemaComponentType createMockedComponentType(String tagName, String tag,
+            boolean isOptional, AsnPrimitiveType type)
+    {
+        final AsnSchemaComponentType mockedInstance = mock(AsnSchemaComponentType.class);
+        when(mockedInstance.getName()).thenReturn(tagName);
+        when(mockedInstance.getTag()).thenReturn(tag);
+        when(mockedInstance.isOptional()).thenReturn(isOptional);
+
+        AsnSchemaType schemaType = mock(AsnSchemaType.class);
+        when(schemaType.getPrimitiveType()).thenReturn(type);
+        when(schemaType.getBuiltinType()).thenReturn(type.getBuiltinType());
+        when(schemaType.getBuiltinTypeAA()).thenReturn(type.getBuiltinType());
+
+        when(mockedInstance.getType()).thenReturn(schemaType);
         return mockedInstance;
     }
 

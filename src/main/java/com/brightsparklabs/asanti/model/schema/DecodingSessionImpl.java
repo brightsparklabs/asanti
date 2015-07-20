@@ -17,19 +17,11 @@ public class DecodingSessionImpl implements DecodingSession
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    class ZZ
-    {
-        AsnSchemaTag tag = null;
-        Integer index = 0;
-    }
-
-    /** storage of the offsets for each index for each "context" */
-    private final Map<String, ZZ> offsetMap = Maps.newHashMap();
-    //private final Map<String, Map<Integer, Integer>> offsetMap = Maps.newHashMap();
+    /** storage of the  for each index for each "context" */
+    private final Map<String, TagToIndex> offsetMap = Maps.newHashMap();
 
     /** the context is how we provide unique offsets for each level of the hierarchy of data */
-    String context;
-
+    private String context;
 
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: DecodingSession
@@ -42,52 +34,59 @@ public class DecodingSessionImpl implements DecodingSession
 
         if (offsetMap.get(context) == null)
         {
-            offsetMap.put(context, new ZZ());
+            offsetMap.put(context, new TagToIndex());
         }
-
-//        if (offsetMap.get(context) == null)
-//        {
-//            offsetMap.put(context, Maps.<Integer, Integer>newHashMap());
-//        }
     }
 
     @Override
-    public int getOffset(AsnSchemaTag tag)
+    public int getIndex(AsnSchemaTag tag)
     {
-        //"0[0], 0[0], 0[0], 1[1], 2[3],..."
 
-        ZZ zz = offsetMap.get(context);
+        TagToIndex tagToIndex = offsetMap.get(context);
 
-        if (zz.tag == null)
+        // If this is the first time this context has been used then by default we are at 0
+        if (tagToIndex.tag == null)
         {
-            zz.tag = tag;
-            return zz.index;
+            tagToIndex.tag = tag;
+            return tagToIndex.index;
         }
 
-        if (zz.tag.getRawTag().equals(tag.getRawTag()))
+        // If this the last tag that we used then the last index
+        if (tagToIndex.tag.getRawTag().equals(tag.getRawTag()))
         {
-            return zz.index;
+            return tagToIndex.index;
         }
 
-        zz.tag = tag;
-        zz.index++;
+        // this must be a new tag, so capture it and increment the index.
+        tagToIndex.tag = tag;
+        tagToIndex.index++;
 
-        return zz.index;
-
-//        Map<Integer, Integer> offsets = offsetMap.get(context);
-//
-//        Integer offset = offsets.get(index);
-//        return (offset == null) ? 0 : offset;
+        return tagToIndex.index;
     }
 
     @Override
-    public void setOffset(AsnSchemaTag tag, int offset)
+    public void setIndex(AsnSchemaTag tag, int index)
     {
+        TagToIndex tagToIndex = offsetMap.get(context);
+        tagToIndex.tag = tag;
+        tagToIndex.index = index;
+    }
 
-        ZZ zz = offsetMap.get(context);
-        zz.tag = tag;
-        zz.index = offset;
-//        Map<Integer, Integer> offsets = offsetMap.get(context);
-//        offsets.put(index, offset);
+    // -------------------------------------------------------------------------
+    // INTERNAL CLASS:
+    // -------------------------------------------------------------------------
+
+    /**
+     * Transfer object to support tracking a tuple of tag and index
+     *
+     * @author brightSPARK Labs
+     */
+    private static class TagToIndex
+    {
+        /** the tag to keep track of */
+        AsnSchemaTag tag = null;
+
+        /** the index associated with the tag */
+        Integer index = 0;
     }
 }

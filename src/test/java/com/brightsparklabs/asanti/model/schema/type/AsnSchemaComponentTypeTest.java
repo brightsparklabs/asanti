@@ -2,7 +2,7 @@
  * Created by brightSPARK Labs
  * www.brightsparklabs.com
  */
-package com.brightsparklabs.asanti.model.schema.typedefinition;
+package com.brightsparklabs.asanti.model.schema.type;
 
 import static org.junit.Assert.*;
 

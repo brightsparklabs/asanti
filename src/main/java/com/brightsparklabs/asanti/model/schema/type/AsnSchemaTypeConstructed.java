@@ -76,17 +76,17 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      *         <br> For {@code INTEGER (1..256)} this would be {@code (1..256)}.
      * @param componentTypes
      *         the component types within this defined type
-     * @param taggingMode
-     *         the mode to be used to determine tags for components
+     * @param tagCreator
+     *         the TagCreator helper to use to create and match tags.
      *
      * @throws NullPointerException
-     *         if {@code name}, {@code builtinType} or {@code taggingMode} are {@code null}
+     *         if {@code componentTypes} or {@code tagCreator} are {@code null}
      * @throws IllegalArgumentException
      *         if {@code primitiveType} is not a constructed type (Currently: SEQUENCE, SET and
      *         CHOICE)
      */
     public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
-            List<AsnSchemaComponentType> componentTypes, AsnModuleTaggingMode taggingMode)
+            List<AsnSchemaComponentType> componentTypes, TagCreator tagCreator)
     {
         super(primitiveType, constraint);
 
@@ -94,10 +94,9 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 "Type must be either SET, SEQUENCE or CHOICE");
 
         checkNotNull(componentTypes);
-        checkNotNull(taggingMode);
+        checkNotNull(tagCreator);
         this.componentTypes = ImmutableList.copyOf(componentTypes);
-
-        this.tagCreator = TagCreator.create(primitiveType, taggingMode);
+        this.tagCreator = tagCreator;
     }
 
     // -------------------------------------------------------------------------
@@ -132,7 +131,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         {
             havePerformedTagging = true;
             tagCreator.setTagsForComponents(componentTypes);
-
         }
     }
 
