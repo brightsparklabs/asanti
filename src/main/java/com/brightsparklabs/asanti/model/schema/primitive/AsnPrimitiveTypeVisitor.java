@@ -3,7 +3,7 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.model.schema.typedefinition;
+package com.brightsparklabs.asanti.model.schema.primitive;
 
 import com.brightsparklabs.asanti.common.Visitor;
 import com.brightsparklabs.asanti.model.schema.primitive.*;

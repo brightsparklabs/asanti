@@ -6,6 +6,7 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import org.junit.Test;
 

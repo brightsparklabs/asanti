@@ -12,7 +12,7 @@ package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
 import com.brightsparklabs.asanti.model.schema.primitive.*;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnPrimitiveTypeVisitor;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeVisitor;
 
 /**
  * Visitor that visits {@link AsnPrimitiveType} objects and returns the most appropriate {@link

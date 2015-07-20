@@ -20,7 +20,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactNumericV
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.google.common.base.Strings;
 
 /**
