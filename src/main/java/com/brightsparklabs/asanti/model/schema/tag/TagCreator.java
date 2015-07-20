@@ -9,10 +9,10 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
 import com.brightsparklabs.asanti.model.schema.type.GetAsnSchemaTypeVisitor;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -27,7 +27,8 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * Creates Tag values for Constructed types (Sequence, Set Choice)
+ * Creates Tag values for Constructed types (Sequence, Set Choice), and also subsequently matches
+ * them back up during decoding
  *
  * @author brightSPARK Labs
  */
@@ -156,25 +157,19 @@ public class TagCreator
     /**
      * For the given set of AsnSchemaComponentType objects generate the tags that are expected to be
      * received during decoding. This will vary depending on the Module Tagging mode and whether the
-     * Constructed type is a Sequence or Set/Choice.
+     * Constructed type is a Sequence or Set/Choice.  This will SET the tag for each component to be
+     * either the tag that it already had if one was defined, auto generated if the Module Tagging
+     * mode is AUTOMATIC, or the UNIVERSAL type.
      *
      * @param componentTypes
      *         AsnSchemaComponentType contained in the Constructed type
      *
-     * @return mapping of tag to AsnSchemaComponentType, where the tag is what is expected from the
-     * BER file, and the AsnSchemaComponentType objects may have been "fully qualified" to ensure
-     * that the full decoded tag path appears in teh XPath style that we desire.
-     *
      * @throws ParseException
      *         if there are duplicate tags detected
      */
-    //    public ImmutableMap<String, AsnSchemaComponentType> getTagsForComponents(
-    //            Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
-    public ImmutableList<AsnSchemaComponentType> getTagsForComponents(
-            Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
+    public void setTagsForComponents(Iterable<AsnSchemaComponentType> componentTypes)
+            throws ParseException
     {
-        final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
-
         // Check to see if we need to apply automatic tags
         boolean autoTag = tagAutomator.canAutomate(componentTypes);
 
@@ -196,26 +191,31 @@ public class TagCreator
                                     .getBuiltinTypeAA()) :
                             componentType.getTag();
 
-            final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
+            // At the time of construction/parsing the component only had any value for a tag if
+            // it was explicitly added in the schema.  Ensure it has the appropriate tag now that
+            // the Auto tagging has been run and the type is known.
+            componentType.setTag(rawTag);
 
-            if (!checkChoiceForDuplicates(componentType, autoTag, index, usedTags))
+            if (isTaglessChoice(componentType))
             {
+                checkChoiceForDuplicates(componentType, index, usedTags);
+            }
+            else
+            {
+                final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
                 assertNotDuplicate(usedTags, decoratedTag, componentType.getName());
             }
 
-            final AsnSchemaComponentType component = buildComponentType(componentType, rawTag);
-
-            builder.add(component);
-
-            // TODO MJF - how to explain this?  Can I put in a link to a design doc?  It is too complex for a comment here.
+            // In order to detect duplication in tags we include an expected 'index' in the sequence
+            // as part of the tag, so the "tag portion" for each index needs to be unique.
+            // We only generate such a tag ("index[tag]") for calculating duplicates, and only then
+            // for Sequence types, not Set or Choice which are not ordered.
             if (!componentType.isOptional())
             {
                 index++;
             }
             autoTagNumber++;
         }
-
-        return builder.build();
     }
 
     /**
@@ -268,24 +268,27 @@ public class TagCreator
     }
 
     /**
-     * TODO MJF
+     * Choice components that do not have a context-specific tag (either manually or Auto generated)
+     * will not be encoded, instead the selected Choice component will appear in its place.  This
+     * function will recurse through such choice components if needed, or will otherwise determine
+     * it the passed in component is a match
      *
      * @param componentType
-     * @param autoTag
+     *         AsnSchemaComponentType to match against whether
      * @param index
+     *         where we are up to in the Sequence
      * @param usedTags
-     *
-     * @return
+     *         the tags that have already been used, how duplicates are detected.
      *
      * @throws ParseException
      *         if there is a duplicate tag
      */
-    private boolean checkChoiceForDuplicates(AsnSchemaComponentType componentType, boolean autoTag,
-            int index, Map<String, String> usedTags) throws ParseException
+    private void checkChoiceForDuplicates(AsnSchemaComponentType componentType, int index,
+            Map<String, String> usedTags) throws ParseException
     {
         // TODO MJF - AA so we only go here if it is a Choice not a Collection OF CHOICE
         if ((componentType.getType().getBuiltinTypeAA() == AsnBuiltinType.Choice)
-                && componentType.getTag().isEmpty() && (!autoTag))
+                && componentType.getTag().isEmpty())
         {
             // If a component is a Choice, and does not have a tag then the Choice's components
             // can appear at this level
@@ -294,61 +297,40 @@ public class TagCreator
             final AsnSchemaType type = componentType.getType();
             final AsnSchemaTypeConstructed choiceType = (AsnSchemaTypeConstructed) type.accept(
                     visitor);
+            // Ensure that this type has done it's auto tagging.
+            choiceType.performTagging();
             final ImmutableList<AsnSchemaComponentType> choiceComponents
-                    = choiceType.getTagsToComponentTypes();
+                    = choiceType.getAllComponents();
 
             // These are already tagged etc.  What we need to do is reset the rawTag to align
-            // with the index we are currently at, and reset the decoded tag to be "fully qualified"
-            // ie to contain this components name and the Choice components name.
-            //for (ImmutableMap.Entry<String, AsnSchemaComponentType> entry : choiceTypes.entrySet())
-            for (AsnSchemaComponentType component : choiceComponents)
+            // with the index we are currently at
+            for (AsnSchemaComponentType choiceComponent : choiceComponents)
             {
-                final String rawTag = component.getTag();
-                final AsnSchemaComponentType choiceComponent = component;
-                final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
+                final String rawTag = choiceComponent.getTag();
 
-                //  recursively check if needed.
-                if (!checkChoiceForDuplicates(choiceComponent, autoTag, index, usedTags))
+                if (isTaglessChoice(choiceComponent))
                 {
-                    assertNotDuplicate(usedTags, decoratedTag, choiceComponent.getName());
+                    checkChoiceForDuplicates(choiceComponent, index, usedTags);
+                }
+                else
+                {
+                    final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
+                    assertNotDuplicate(usedTags, decoratedTag, componentType.getName());
                 }
             }
-
-            return true;
         }
-
-        return false;
     }
 
     /**
-     * If needed builds a new AsnSchemaComponentType so that it has the new rawTag.  If the tags are
-     * already correct then is returns the original
+     * @param componentType
+     *         the component to check
      *
-     * @param component
-     *         the component we are copying from
-     * @param rawTag
-     *         the new rawTag to check/insert
-     *
-     * @return an AsnSchemaComponentType with the desired rawTag
-     *
-     * @throws NullPointerException
-     *         is rawTag or component are null
+     * @return true if the component is of type Choice and does not have a context-specific tag
      */
-    private static AsnSchemaComponentType buildComponentType(AsnSchemaComponentType component,
-            String rawTag)
+    private boolean isTaglessChoice(AsnSchemaComponentType componentType)
     {
-        checkNotNull(rawTag);
-        checkNotNull(component);
-
-        if (rawTag.equals(component.getTag()))
-        {
-            return component;
-        }
-
-        return new AsnSchemaComponentType(component.getName(),
-                rawTag,
-                component.isOptional(),
-                component.getType());
+        return ((componentType.getType().getBuiltinTypeAA() == AsnBuiltinType.Choice)
+                && componentType.getTag().isEmpty());
     }
 
     /**
@@ -635,6 +617,7 @@ public class TagCreator
 
                 // TODO MJF - how to avoid matching the same thing multiple times?
                 // Obviously the decodingSession will have to manage this
+                // add a new Jira ticket and reference it here.
             }
             return Optional.absent();
         }

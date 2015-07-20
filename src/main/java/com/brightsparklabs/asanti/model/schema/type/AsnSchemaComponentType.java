@@ -5,13 +5,10 @@
 
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-
 import static com.google.common.base.Preconditions.*;
 
 /**
- * An item within a 'constructed' (SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED) type
- * definition
+ * An item within a 'constructed' (SET, SEQUENCE, CHOICE) type definition
  *
  * @author brightSPARK Labs
  */
@@ -25,7 +22,8 @@ public class AsnSchemaComponentType
     private final String name;
 
     /** tag of this component type */
-    private final String tag;
+    //private final String tag;
+    private String tag;
 
     /** whether this component type is optional */
     private final boolean isOptional;
@@ -54,8 +52,7 @@ public class AsnSchemaComponentType
      * @throws IllegalArgumentException
      *         if {@code name} or {@code typeName} are blank
      */
-    public AsnSchemaComponentType(String name, String tag, boolean isOptional,
-            AsnSchemaType type)
+    public AsnSchemaComponentType(String name, String tag, boolean isOptional, AsnSchemaType type)
     {
         checkNotNull(name);
         checkArgument(!name.trim().isEmpty(), "Tag name must be specified");
@@ -79,6 +76,12 @@ public class AsnSchemaComponentType
         return tag;
     }
 
+    // TODO MJF
+    public void setTag(String tag)
+    {
+        this.tag = tag;
+    }
+
     /**
      * @return {@code true} if this component type is optional
      */
@@ -88,13 +91,11 @@ public class AsnSchemaComponentType
     }
 
     /**
-     *
      * @return the {@link AsnSchemaType} of this component
      */
     public AsnSchemaType getType() { return type; }
 
     /**
-     *
      * @return the name of this component
      */
     public String getName()

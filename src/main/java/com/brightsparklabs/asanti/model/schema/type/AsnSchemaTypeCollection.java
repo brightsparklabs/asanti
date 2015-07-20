@@ -168,5 +168,4 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     {
         return visitor.visit(this);
     }
-
 }

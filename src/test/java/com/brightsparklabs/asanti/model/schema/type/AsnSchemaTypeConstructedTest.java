@@ -4,6 +4,7 @@ import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.After;
 import org.junit.Before;
@@ -64,7 +65,7 @@ public class AsnSchemaTypeConstructedTest
 
         instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
                 AsnSchemaConstraint.NULL,
-                ImmutableSet.of(component),
+                ImmutableList.of(component),
                 AsnModuleTaggingMode.DEFAULT);
     }
 
@@ -87,7 +88,7 @@ public class AsnSchemaTypeConstructedTest
         {
             new AsnSchemaTypeConstructed(null,
                     AsnSchemaConstraint.NULL,
-                    ImmutableSet.<AsnSchemaComponentType>of(),
+                    ImmutableList.<AsnSchemaComponentType>of(),
                     AsnModuleTaggingMode.DEFAULT);
             fail("NullPointerException not thrown");
         }
@@ -111,7 +112,7 @@ public class AsnSchemaTypeConstructedTest
         {
             new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
                     AsnSchemaConstraint.NULL,
-                    ImmutableSet.<AsnSchemaComponentType>of(),
+                    ImmutableList.<AsnSchemaComponentType>of(),
                     null);
             fail("NullPointerException not thrown");
         }
@@ -124,7 +125,7 @@ public class AsnSchemaTypeConstructedTest
         {
             new AsnSchemaTypeConstructed(AsnPrimitiveType.INTEGER,
                     AsnSchemaConstraint.NULL,
-                    ImmutableSet.<AsnSchemaComponentType>of(),
+                    ImmutableList.<AsnSchemaComponentType>of(),
                     AsnModuleTaggingMode.DEFAULT);
             fail("IllegalArgumentException not thrown");
         }
@@ -172,7 +173,7 @@ public class AsnSchemaTypeConstructedTest
         AsnSchemaTypeConstructed testInstance
                 = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
                 AsnSchemaConstraint.NULL,
-                ImmutableSet.of(testComponent1, testComponent2, testComponent3, testComponent4),
+                ImmutableList.of(testComponent1, testComponent2, testComponent3, testComponent4),
                 AsnModuleTaggingMode.DEFAULT);
 
         // TODO MJF - auto tag creation tests can move to the strategy, and getComponentTypes has been deleted

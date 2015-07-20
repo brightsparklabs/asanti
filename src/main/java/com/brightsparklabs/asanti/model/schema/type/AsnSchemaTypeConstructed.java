@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -45,14 +46,13 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     /** all of the AsnSchemaComponentType objects that this Constructed type "owns" */
-    private final Iterable<AsnSchemaComponentType> componentTypes;
+    private final ImmutableList<AsnSchemaComponentType> componentTypes;
 
     /** the mechanism to be used for creation of Tags, during schema creation */
     private final TagCreator tagCreator;
 
-    /** mapping from raw tag to component type */
-    //private ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
-    private ImmutableList<AsnSchemaComponentType> components;
+    /** keeps track of whether we have performed the post parsing Tagging step */
+    private boolean havePerformedTagging = false;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -86,7 +86,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      *         CHOICE)
      */
     public AsnSchemaTypeConstructed(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
-            Iterable<AsnSchemaComponentType> componentTypes, AsnModuleTaggingMode taggingMode)
+            List<AsnSchemaComponentType> componentTypes, AsnModuleTaggingMode taggingMode)
     {
         super(primitiveType, constraint);
 
@@ -95,7 +95,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
 
         checkNotNull(componentTypes);
         checkNotNull(taggingMode);
-        this.componentTypes = componentTypes;
+        this.componentTypes = ImmutableList.copyOf(componentTypes);
 
         this.tagCreator = TagCreator.create(primitiveType, taggingMode);
     }
@@ -107,41 +107,13 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     /**
      * This function allows the 'tree' to be walked, by being able to get to child types.
      *
-     * @return the Map of components - names to types.
+     * @return the components
      */
-    public Iterable<AsnSchemaComponentType> getAllComponents()
+    public ImmutableList<AsnSchemaComponentType> getAllComponents()
     {
         return componentTypes;
     }
 
-    /**
-     * Will only calculate the tags the first time it is called.
-     *
-     * @return a mapping of raw tags (as received from BER files) to AsnSchemaComponentType object
-     * that hold both a fully qualified decoded tag and the AsnSchemaType
-     *
-     * @throws ParseException
-     *         if there are duplicate tags
-     */
-   // public ImmutableMap<String, AsnSchemaComponentType> getTagsToComponentTypes()
-    public ImmutableList<AsnSchemaComponentType> getTagsToComponentTypes()
-            throws ParseException
-    {
-
-        if (components == null)
-        {
-            components = tagCreator.getTagsForComponents(componentTypes);
-        }
-
-        return components;
-
-//        if (tagsToComponentTypes == null)
-//        {
-//            tagsToComponentTypes = tagCreator.getTagsForComponents(componentTypes);
-//        }
-//
-//        return tagsToComponentTypes;
-    }
 
     /**
      * We store a mapping of tags to components.  That mapping is based on the rawTag that we are
@@ -156,8 +128,12 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      */
     public void performTagging() throws ParseException
     {
-        components = getTagsToComponentTypes();
-        //tagsToComponentTypes = getTagsToComponentTypes();
+        if (!havePerformedTagging)
+        {
+            havePerformedTagging = true;
+            tagCreator.setTagsForComponents(componentTypes);
+
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -168,22 +144,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     public Optional<AsnSchemaComponentType> getMatchingChild(String rawTag,
             DecodingSession decodingSession)
     {
-        // Protect against the fact the tagsToComponentTypes may be null (because
-        // getTagsToComponentTypes has not yet been called)
-        // TODO ASN-115 - I don't love that this is constructed in a state that we can't really
-        // use it, but we can't tag until we know all the types, which is well after creation
-        // I would like to rethink the whole construction chain, but that is a bigger job that I'd
-        // like to do in this task, so the question is how to handle this here
-        // This is not user facing, and the only time it should be null is if getTagsToComponentTypes
-        // was not called (programmer error), so I'm almost happy to let it throw a NullPointerException
-        //if (tagsToComponentTypes == null)
-        if (components == null)
-        {
-            return Optional.absent();
-        }
-
         AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
-        return tagCreator.getComponentTypes(tag, components, decodingSession);
+        return tagCreator.getComponentTypes(tag, componentTypes, decodingSession);
     }
 
     @Override
