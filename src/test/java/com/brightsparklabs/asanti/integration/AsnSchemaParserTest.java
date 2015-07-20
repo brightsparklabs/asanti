@@ -1352,6 +1352,33 @@ public class AsnSchemaParserTest
     }
 
     @Test
+    public void DELETE_ME() throws Exception
+    {
+        String schemaFilename = getClass().getResource("/AA_DELETE_ME.asn")
+                .getFile();
+        File schemaFile = new File(schemaFilename);
+        final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
+
+        {
+            String berFilename = getClass().getResource(
+                    "/AA_DELETE_ME.ber").getFile();
+            final File berFile = new File(berFilename);
+            String topLevelType = "Human";
+
+            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                    schema,
+                    topLevelType);
+            debugPdus((pdus));
+
+            String tag = "/Human/name";
+            assertEquals("Adam", pdus.get(0).getDecodedObject(tag));
+            tag = "/Human/open/ch/c/n";
+            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
+
+        }
+    }
+
+    @Test
     public void testParse_NonUniqueTagsOptional_missing() throws Exception
     {
         String schemaFilename = getClass().getResource("/Human_NonUniqueTagsOptional.asn")
@@ -2357,6 +2384,8 @@ public class AsnSchemaParserTest
             {
                 logger.info("\t?{} => {}", t, pdu.getHexString(t));
             }
+
+            i++;
         }
     }
 }

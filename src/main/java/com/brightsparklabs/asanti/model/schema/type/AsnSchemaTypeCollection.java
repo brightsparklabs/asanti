@@ -134,14 +134,6 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     {
         final AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
 
-        if (tag.getTagUniversal().equals(myUniversalTag))
-        {
-            return Optional.of(new AsnSchemaComponentType("[" + tag.getTagIndex() + "]",
-                    rawTag,
-                    false,
-                    elementType));
-        }
-
         if (elementType.getBuiltinTypeAA() == AsnBuiltinType.Choice)
         {
             // We have a collection of Choice, so we need to insert the choice option
@@ -159,6 +151,15 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
                         child.get().getType()));
             }
         }
+
+        if (tag.getTagUniversal().equals(myUniversalTag))
+        {
+            return Optional.of(new AsnSchemaComponentType("[" + tag.getTagIndex() + "]",
+                    rawTag,
+                    false,
+                    elementType));
+        }
+
 
         return Optional.absent();
     }

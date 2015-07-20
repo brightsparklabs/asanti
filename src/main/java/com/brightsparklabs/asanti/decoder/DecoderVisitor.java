@@ -12,11 +12,11 @@ package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
 import com.brightsparklabs.asanti.model.schema.primitive.*;
-import com.brightsparklabs.asanti.model.schema.typedefinition.*;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnPrimitiveTypeVisitor;
 
 /**
- * Visitor that visits {@link AsnPrimitiveType} objects and returns the most appropriate
- * {@link BuiltinTypeDecoder} pertaining to it.
+ * Visitor that visits {@link AsnPrimitiveType} objects and returns the most appropriate {@link
+ * BuiltinTypeDecoder} pertaining to it.
  *
  * @author brightSPARK Labs
  */
@@ -29,8 +29,7 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     @Override
     public BuiltinTypeDecoder.Null visit(final AsnPrimitiveType.Null visitable)
     {
-        return new BuiltinTypeDecoder.Null(
-                "null instances of AsnPrimitiveType cannot be decoded");
+        return new BuiltinTypeDecoder.Null("null instances of AsnPrimitiveType cannot be decoded");
     }
 
     @Override

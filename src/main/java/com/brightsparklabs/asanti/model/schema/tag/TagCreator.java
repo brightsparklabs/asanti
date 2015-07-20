@@ -15,12 +15,13 @@ import com.brightsparklabs.asanti.model.schema.type.GetAsnSchemaTypeVisitor;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.*;
@@ -167,75 +168,44 @@ public class TagCreator
      * @throws ParseException
      *         if there are duplicate tags detected
      */
-    public ImmutableMap<String, AsnSchemaComponentType> getTagsForComponents(
+    //    public ImmutableMap<String, AsnSchemaComponentType> getTagsForComponents(
+    //            Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
+    public ImmutableList<AsnSchemaComponentType> getTagsForComponents(
             Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
     {
-        final ImmutableMap.Builder<String, AsnSchemaComponentType> tagsToComponentTypesBuilder
-                = ImmutableMap.builder();
+        final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
 
         // Check to see if we need to apply automatic tags
         boolean autoTag = tagAutomator.canAutomate(componentTypes);
 
         // Key: decorated tag, Value: component name.  We only really need a List, but by
         // tracking the name of the component we can generate better error messages
-        Map<String, String> usedTags = Maps.newHashMap();
+        final Map<String, String> usedTags = Maps.newHashMap();
 
         int index = 0;
         int autoTagNumber = 0;
+
         for (final AsnSchemaComponentType componentType : componentTypes)
         {
-            // TODO MJF - AA so we only go here if it is a Choice not a Collection OF CHOICE
-            if ((componentType.getType().getBuiltinTypeAA() == AsnBuiltinType.Choice)
-                    && componentType.getTag().isEmpty() && (!autoTag))
+            // auto tag if appropriate, otherwise use the components' tag (which will be a context-specific),
+            // otherwise use the Universal tag
+            final String rawTag = (autoTag) ?
+                    String.valueOf(autoTagNumber) :
+                    Strings.isNullOrEmpty(componentType.getTag()) ?
+                            AsnSchemaTag.createUniversalPortion(componentType.getType()
+                                    .getBuiltinTypeAA()) :
+                            componentType.getTag();
+
+            final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
+
+            if (!checkChoiceForDuplicates(componentType, autoTag, index, usedTags))
             {
-                // If a component is a Choice, and does not have a tag then the Choice's components
-                // can appear at this level
-                GetAsnSchemaTypeVisitor visitor = GetAsnSchemaTypeVisitor.getInstance();
-                AsnSchemaType type = componentType.getType();
-                AsnSchemaTypeConstructed choiceType
-                        = (AsnSchemaTypeConstructed) type.accept(visitor);
-
-                final ImmutableMap<String, AsnSchemaComponentType> choiceTypes
-                        = choiceType.getTagsToComponentTypes();
-
-                // These are already tagged etc.  What we need to do is reset the rawTag to align
-                // with the index we are currently at, and reset the decoded tag to be "fully qualified"
-                // ie to contain this components name and the Choice components name.
-                for (ImmutableMap.Entry<String, AsnSchemaComponentType> entry : choiceTypes.entrySet())
-                {
-                    String rawTag = entry.getKey();
-                    AsnSchemaComponentType choiceComponent = entry.getValue();
-
-                    final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
-
-                    assertNotDuplicate(usedTags, decoratedTag, choiceComponent.getName());
-
-                    // We need to fully qualify the decodedTag to have the Choice name
-                    final AsnSchemaComponentType component = buildFullyQualifiedComponentType(
-                            choiceComponent,
-                            componentType.getName());
-
-                    tagsToComponentTypesBuilder.put(decoratedTag, component);
-                }
-            }
-            else
-            {
-                // auto tag if appropriate, otherwise use the components' tag (which will be a context-specific),
-                // otherwise use the Universal tag
-                final String rawTag = (autoTag) ?
-                        String.valueOf(autoTagNumber) :
-                        Strings.isNullOrEmpty(componentType.getTag()) ?
-                                AsnSchemaTag.createUniversalPortion(componentType.getType()
-                                        .getBuiltinTypeAA()) :
-                                componentType.getTag();
-
-                final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
-
                 assertNotDuplicate(usedTags, decoratedTag, componentType.getName());
-
-                AsnSchemaComponentType component = buildComponentType(componentType, rawTag);
-                tagsToComponentTypesBuilder.put(decoratedTag, component);
             }
+
+            final AsnSchemaComponentType component = buildComponentType(componentType, rawTag);
+
+            builder.add(component);
 
             // TODO MJF - how to explain this?  Can I put in a link to a design doc?  It is too complex for a comment here.
             if (!componentType.isOptional())
@@ -243,10 +213,9 @@ public class TagCreator
                 index++;
             }
             autoTagNumber++;
-
         }
 
-        return tagsToComponentTypesBuilder.build();
+        return builder.build();
     }
 
     /**
@@ -255,7 +224,7 @@ public class TagCreator
      *
      * @param tag
      *         the tag to match
-     * @param tagsToComponentTypes
+     * @param components
      *         the components to match from
      * @param decodingSession
      *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
@@ -263,10 +232,9 @@ public class TagCreator
      * @return the matching component or {@link Optional#absent()} if no match
      */
     public Optional<AsnSchemaComponentType> getComponentTypes(AsnSchemaTag tag,
-            ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
-            DecodingSession decodingSession)
+            ImmutableList<AsnSchemaComponentType> components, DecodingSession decodingSession)
     {
-        return tagMatchingCreator.getComponent(tag, tagsToComponentTypes, decodingSession);
+        return tagMatchingCreator.getComponent(tag, components, decodingSession);
     }
 
     // -------------------------------------------------------------------------
@@ -297,6 +265,59 @@ public class TagCreator
         }
 
         usedTags.put(decoratedTag, componentName);
+    }
+
+    /**
+     * TODO MJF
+     *
+     * @param componentType
+     * @param autoTag
+     * @param index
+     * @param usedTags
+     *
+     * @return
+     *
+     * @throws ParseException
+     *         if there is a duplicate tag
+     */
+    private boolean checkChoiceForDuplicates(AsnSchemaComponentType componentType, boolean autoTag,
+            int index, Map<String, String> usedTags) throws ParseException
+    {
+        // TODO MJF - AA so we only go here if it is a Choice not a Collection OF CHOICE
+        if ((componentType.getType().getBuiltinTypeAA() == AsnBuiltinType.Choice)
+                && componentType.getTag().isEmpty() && (!autoTag))
+        {
+            // If a component is a Choice, and does not have a tag then the Choice's components
+            // can appear at this level
+            // Get the components of the choice
+            final GetAsnSchemaTypeVisitor visitor = GetAsnSchemaTypeVisitor.getInstance();
+            final AsnSchemaType type = componentType.getType();
+            final AsnSchemaTypeConstructed choiceType = (AsnSchemaTypeConstructed) type.accept(
+                    visitor);
+            final ImmutableList<AsnSchemaComponentType> choiceComponents
+                    = choiceType.getTagsToComponentTypes();
+
+            // These are already tagged etc.  What we need to do is reset the rawTag to align
+            // with the index we are currently at, and reset the decoded tag to be "fully qualified"
+            // ie to contain this components name and the Choice components name.
+            //for (ImmutableMap.Entry<String, AsnSchemaComponentType> entry : choiceTypes.entrySet())
+            for (AsnSchemaComponentType component : choiceComponents)
+            {
+                final String rawTag = component.getTag();
+                final AsnSchemaComponentType choiceComponent = component;
+                final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
+
+                //  recursively check if needed.
+                if (!checkChoiceForDuplicates(choiceComponent, autoTag, index, usedTags))
+                {
+                    assertNotDuplicate(usedTags, decoratedTag, choiceComponent.getName());
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -362,6 +383,64 @@ public class TagCreator
                 component.getType());
     }
 
+    /**
+     * Determines if the passed in component is a match for the passed in tag.  This takes into
+     * account the behaviour of Choice items (ie a choice component can transparently appear in
+     * place of the parent component)
+     *
+     * @param component
+     *         the AsnSchemaComponentType to match
+     * @param tag
+     *         the AsnSchemaTag to match
+     * @param decodingSession
+     *         the DecodingSession to use for context
+     *
+     * @return the matching AsnSchemaComponentType if there is a match, {@link Optional#absent()}
+     * otherwise.  Noting that the returned component may be a sub-component if the passed in
+     * component was a CHOICE, and in this case the Name will be fully qualified to provide a full
+     * path
+     */
+    private static Optional<AsnSchemaComponentType> isMatch(AsnSchemaComponentType component,
+            AsnSchemaTag tag, DecodingSession decodingSession)
+    {
+        if ((component.getType().getBuiltinTypeAA() == AsnBuiltinType.Choice) && component.getTag()
+                .isEmpty())
+        {
+            try
+            {
+                // This is a Choice with no tags, which means it will "transparently" replace its
+                // children at this level.
+                final GetAsnSchemaTypeVisitor visitor = GetAsnSchemaTypeVisitor.getInstance();
+                final AsnSchemaType type = component.getType();
+                final AsnSchemaTypeConstructed choiceType = (AsnSchemaTypeConstructed) type.accept(
+                        visitor);
+
+                final Optional<AsnSchemaComponentType> choiceChild = choiceType.getMatchingChild(tag
+                        .getRawTag(), decodingSession);
+
+                if (choiceChild.isPresent())
+                {
+                    final AsnSchemaComponentType result = choiceChild.get();
+                    return Optional.of(buildFullyQualifiedComponentType(result,
+                            component.getName()));
+                }
+            }
+            catch (ParseException e)    // TODO MJF - not good...
+            {
+                return Optional.absent();
+            }
+        }
+
+        // Is it a direct match
+        if (component.getTag().equals(tag.getTagPortion()))
+        {
+            return Optional.of(component);
+        }
+
+        // No match
+        return Optional.absent();
+    }
+
     // -------------------------------------------------------------------------
     // INTERNAL CLASSES
     // -------------------------------------------------------------------------
@@ -398,7 +477,6 @@ public class TagCreator
         {
             return AsnSchemaTag.createRawTag(index, tag);
         }
-
     }
 
     /**
@@ -484,8 +562,8 @@ public class TagCreator
          *
          * @param tag
          *         tag to match
-         * @param tagsToComponentTypes
-         *         input map to search from
+         * @param components
+         *         the input components to match from
          * @param decodingSession
          *         the DecodingSession that holds the state needed to manipulate the tag indexes
          *
@@ -493,8 +571,7 @@ public class TagCreator
          * Optional.absent()}
          */
         Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
-                ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
-                DecodingSession decodingSession);
+                List<AsnSchemaComponentType> components, DecodingSession decodingSession);
     }
 
     /**
@@ -504,26 +581,34 @@ public class TagCreator
     {
         @Override
         public Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
-                ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
-                DecodingSession decodingSession)
+                List<AsnSchemaComponentType> components, DecodingSession decodingSession)
         {
-            // For Sequences, where order matters, we store the index with the tag.  The index
-            // that we store is not incremented when we have an OPTIONAL component, so we need to
-            // reconstruct the 'expected' tag based on what OPTIONAL components we have received.
-            int tagIndex = Integer.parseInt(tag.getTagIndex());
-            int offset = decodingSession.getOffset(tagIndex);
-            int newTagIndex = tagIndex - offset;
-            final String newTag = TAG_DECORATOR_SEQUENCE.getDecoratedTag(newTagIndex,
-                    tag.getTagPortion());
+            // For Sequences, where order matters, we keep track of where we are to in the Sequence
+            // during decoding (via the DecodingSession).
 
-            final AsnSchemaComponentType result = tagsToComponentTypes.get(newTag);
+            // Get the next expected component.
+            int index = decodingSession.getOffset(tag);
 
-            if (result != null)
+            AsnSchemaComponentType component;
+            do
             {
-                decodingSession.setOffset(tagIndex + 1, offset + (result.isOptional() ? 1 : 0));
-            }
+                component = components.get(index);
+                final Optional<AsnSchemaComponentType> result = isMatch(component,
+                        tag,
+                        decodingSession);
+                if (result.isPresent())
+                {
+                    decodingSession.setOffset(tag, index);
+                    return result;
+                }
 
-            return Optional.fromNullable(result);
+                // If it was not a match, then if the component was optional and we are not
+                // already at the last component, then we can try the next one.
+                index++;
+            } while (component.isOptional() && (index < components.size()));
+
+            //  No match found.
+            return Optional.absent();
         }
     }
 
@@ -534,14 +619,24 @@ public class TagCreator
     {
         @Override
         public Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
-                ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes,
-                DecodingSession decodingSession)
+                List<AsnSchemaComponentType> components, DecodingSession decodingSession)
         {
             // Unordered (Set and Choice) don't use the index, so don't need to re-align to
             // account for offsets for OPTIONALS.
-            final String newTag = TAG_DECORATOR_UNORDERED.getDecoratedTag(0, tag.getTagPortion());
+            for (AsnSchemaComponentType component : components)
+            {
+                final Optional<AsnSchemaComponentType> result = isMatch(component,
+                        tag,
+                        decodingSession);
+                if (result.isPresent())
+                {
+                    return result;
+                }
 
-            return Optional.fromNullable(tagsToComponentTypes.get(newTag));
+                // TODO MJF - how to avoid matching the same thing multiple times?
+                // Obviously the decodingSession will have to manage this
+            }
+            return Optional.absent();
         }
     }
 }

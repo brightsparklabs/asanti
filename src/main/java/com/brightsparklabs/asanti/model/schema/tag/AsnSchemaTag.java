@@ -171,7 +171,9 @@ public class AsnSchemaTag
      */
     public static String createUniversalPortion(AsnBuiltinType type)
     {
-        return "UNIVERSAL " + getUniversalTagForBuiltInType(type);
+        // Some AsnBuiltinType's don't translate to a UNIVERSAL tag, eg Choice
+        final String universalType = getUniversalTagForBuiltInType(type);
+        return (universalType.isEmpty()) ? "" : ("UNIVERSAL " + universalType);
     }
 
     // ---------------------------------------------------------------------
@@ -257,12 +259,6 @@ public class AsnSchemaTag
      */
     private static String getUniversalTagForBuiltInType(AsnBuiltinType type)
     {
-        if (type == AsnBuiltinType.Choice)
-        {
-            // Make a special exception for choice as this never makes it to an encoded tag.
-            return "Choice";
-        }
-
         return Optional.fromNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).or("");
     }
 

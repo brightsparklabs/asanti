@@ -13,7 +13,7 @@ import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.brightsparklabs.asanti.model.schema.tag.TagCreator;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
@@ -52,7 +52,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     private final TagCreator tagCreator;
 
     /** mapping from raw tag to component type */
-    private ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
+    //private ImmutableMap<String, AsnSchemaComponentType> tagsToComponentTypes;
+    private ImmutableList<AsnSchemaComponentType> components;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -123,15 +124,24 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      * @throws ParseException
      *         if there are duplicate tags
      */
-    public ImmutableMap<String, AsnSchemaComponentType> getTagsToComponentTypes()
+   // public ImmutableMap<String, AsnSchemaComponentType> getTagsToComponentTypes()
+    public ImmutableList<AsnSchemaComponentType> getTagsToComponentTypes()
             throws ParseException
     {
-        if (tagsToComponentTypes == null)
+
+        if (components == null)
         {
-            tagsToComponentTypes = tagCreator.getTagsForComponents(componentTypes);
+            components = tagCreator.getTagsForComponents(componentTypes);
         }
 
-        return tagsToComponentTypes;
+        return components;
+
+//        if (tagsToComponentTypes == null)
+//        {
+//            tagsToComponentTypes = tagCreator.getTagsForComponents(componentTypes);
+//        }
+//
+//        return tagsToComponentTypes;
     }
 
     /**
@@ -147,7 +157,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      */
     public void performTagging() throws ParseException
     {
-        tagsToComponentTypes = getTagsToComponentTypes();
+        components = getTagsToComponentTypes();
+        //tagsToComponentTypes = getTagsToComponentTypes();
     }
 
     // -------------------------------------------------------------------------
@@ -161,18 +172,19 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
         // Protect against the fact the tagsToComponentTypes may be null (because
         // getTagsToComponentTypes has not yet been called)
         // TODO ASN-115 - I don't love that this is constructed in a state that we can't really
-        // use it, but we can't tag untill we know all the types, which is well after creation
+        // use it, but we can't tag until we know all the types, which is well after creation
         // I would like to rethink the whole construction chain, but that is a bigger job that I'd
         // like to do in this task, so the question is how to handle this here
         // This is not user facing, and the only time it should be null is if getTagsToComponentTypes
         // was not called (programmer error), so I'm almost happy to let it throw a NullPointerException
-        if (tagsToComponentTypes == null)
+        //if (tagsToComponentTypes == null)
+        if (components == null)
         {
             return Optional.absent();
         }
 
         AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
-        return tagCreator.getComponentTypes(tag, tagsToComponentTypes, decodingSession);
+        return tagCreator.getComponentTypes(tag, components, decodingSession);
     }
 
     @Override

@@ -259,6 +259,16 @@ public class AsnBerFileReader
             processDerObject(derObject, elementPrefix, tagsToData, index);
             index++;
         }
+
+        if (index == 0)
+        {
+            // Then there were no elements found in the Sequence or Set.  (Having an empty
+            // Sequence/Set is valid, for example all the components could be OPTIONAL)
+            // Make an empty data object against this tag so that we know we received the
+            // Constructed type as this is important for decoding and validation.
+            logger.trace("Creating an Empty tagsToData for an empty Sequence/Set {}", prefix);
+            tagsToData.put(prefix, new byte[0]);
+        }
     }
 
     /**

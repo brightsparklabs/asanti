@@ -1,5 +1,7 @@
 package com.brightsparklabs.asanti.model.schema;
 
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
+
 /**
  * An object to store state during the decoding of all the tags in an AsnData object. This is needed
  * because the ability to map the "raw" tags received from the BER data is dependent on what other
@@ -19,7 +21,9 @@ public interface DecodingSession
      *
      * @return any offset needed to be applied to that index
      */
-    int getOffset(int index);
+    //int getOffset(int index);
+
+    int getOffset(AsnSchemaTag tag);
 
     /**
      * @param index
@@ -28,6 +32,7 @@ public interface DecodingSession
      *         the value to be returned at the next call to {@code getOffset} with the given
      *         context
      */
-    void setOffset(int index, int offset);
+    //void setOffset(int index, int offset);
+    void setOffset(AsnSchemaTag tag, int offset);
 
 }

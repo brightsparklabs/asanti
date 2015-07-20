@@ -6,11 +6,9 @@ package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import static org.junit.Assert.*;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import static org.mockito.Mockito.*;
 
 /**
