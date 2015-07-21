@@ -55,6 +55,7 @@ public class TagCreatorTest
                 mockedComponent("b", "", false, AsnPrimitiveType.INTEGER));
 
         instance.setTagsForComponents(components);
+        instance.checkForDuplicates(components);
 
         verify(components.get(0)).setTag("0");
         verify(components.get(1)).setTag("1");
@@ -74,8 +75,9 @@ public class TagCreatorTest
                 mockedComponent("b", "", false, AsnPrimitiveType.INTEGER));
 
         instance.setTagsForComponents(components);
+        instance.checkForDuplicates(components);
 
-        verify(components.get(0)).setTag("0");
+        verify(components.get(0), never()).setTag(anyString());
         verify(components.get(1)).setTag("UNIVERSAL 2");
     }
 
@@ -102,14 +104,15 @@ public class TagCreatorTest
                 AsnModuleTaggingMode.AUTOMATIC);
 
         instance.setTagsForComponents(components);
+        instance.checkForDuplicates(components);
 
         // check that it only set a different tag for the one already with none.
-        verify(components.get(0)).setTag("1");
-        verify(components.get(1)).setTag("1");
-        verify(components.get(2)).setTag("1");
-        verify(components.get(3)).setTag("2");
+        verify(components.get(0), never()).setTag(anyString());
+        verify(components.get(1), never()).setTag(anyString());
+        verify(components.get(2), never()).setTag(anyString());
+        verify(components.get(3), never()).setTag(anyString());
         verify(components.get(4)).setTag("UNIVERSAL 2");
-        verify(components.get(5)).setTag("1");
+        verify(components.get(5), never()).setTag(anyString());
     }
 
     @Test
@@ -127,9 +130,10 @@ public class TagCreatorTest
         final TagCreator instance = TagCreator.create(AsnPrimitiveType.SEQUENCE,
                 AsnModuleTaggingMode.AUTOMATIC);
 
+        instance.setTagsForComponents(components);
         try
         {
-            instance.setTagsForComponents(components);
+            instance.checkForDuplicates(components);
             fail("Should have thrown ParseException");
         }
         catch (ParseException e)
@@ -155,14 +159,15 @@ public class TagCreatorTest
                 AsnModuleTaggingMode.AUTOMATIC);
 
         instance.setTagsForComponents(components);
+        instance.checkForDuplicates(components);
 
         // check that it only set a different tag for the one already with none.
-        verify(components.get(0)).setTag("1");
-        verify(components.get(1)).setTag("2");
-        verify(components.get(2)).setTag("3");
-        verify(components.get(3)).setTag("4");
+        verify(components.get(0), never()).setTag(anyString());
+        verify(components.get(1), never()).setTag(anyString());
+        verify(components.get(2), never()).setTag(anyString());
+        verify(components.get(3), never()).setTag(anyString());
         verify(components.get(4)).setTag("UNIVERSAL 2");
-        verify(components.get(5)).setTag("5");
+        verify(components.get(5), never()).setTag(anyString());
     }
 
     @Test
@@ -178,9 +183,10 @@ public class TagCreatorTest
         final TagCreator instance = TagCreator.create(AsnPrimitiveType.SET,
                 AsnModuleTaggingMode.AUTOMATIC);
 
+        instance.setTagsForComponents(components);
         try
         {
-            instance.setTagsForComponents(components);
+            instance.checkForDuplicates(components);
             fail("Should have thrown ParseException");
         }
         catch (ParseException e)
@@ -213,6 +219,7 @@ public class TagCreatorTest
                 AsnModuleTaggingMode.AUTOMATIC);
 
         instance.setTagsForComponents(components);
+        instance.checkForDuplicates(components);
 
         // verify that we recursed in to the Choice components, but did not try to set the tags
         verify(choiceComponents.get(0)).getType();
@@ -242,10 +249,11 @@ public class TagCreatorTest
         final TagCreator instance = TagCreator.create(AsnPrimitiveType.SEQUENCE,
                 AsnModuleTaggingMode.AUTOMATIC);
 
+        instance.setTagsForComponents(components);
         try
         {
             // the c/y and b tags are duplicate (both 1[2])
-            instance.setTagsForComponents(components);
+            instance.checkForDuplicates(components);
             fail("Should have thrown ParseException");
         }
         catch (ParseException e)

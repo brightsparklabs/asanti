@@ -151,6 +151,9 @@ public class AsnSchemaModule
         /** our mechanism for visiting each AsnSchemaType to apply appropriate tags */
         private static final Tagger TAGGER = new Builder.Tagger();
 
+        /** our mechanism for visiting each AsnSchemaType to check for duplicate  tags */
+        private static final DuplicateChecker DuplicateChecker = new Builder.DuplicateChecker();
+
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
@@ -305,6 +308,19 @@ public class AsnSchemaModule
 
                 typeDefinition.getType().accept(TAGGER);
             }
+        }
+
+        public void checkForDuplicates() throws ParseException
+        {
+            for (AsnSchemaTypeDefinition typeDefinition : types.values())
+            {
+                logger.debug("Perform Tagging for TypeDef {} in module {}",
+                        typeDefinition.getName(),
+                        this.name);
+
+                typeDefinition.getType().accept(DuplicateChecker);
+            }
+
         }
 
         // -------------------------------------------------------------------------
@@ -524,6 +540,65 @@ public class AsnSchemaModule
                 visitable.getElementType().accept(this);
 
                 visitable.performTagging();
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypeWithNamedTags visitable) throws ParseException
+            {
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypePlaceholder visitable) throws ParseException
+            {
+                visitable.getIndirectType().accept(this);
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaType.Null visitable) throws ParseException
+            {
+                return null;
+            }
+        }
+
+        /**
+         * Use a double dispatch to "visit" each type in the hierarchy of types, allowing us to
+         * provide functionality that is type specific. We need to visit each AsnSchemaType, in each
+         * Type Definition in a schema.  We do this so that we can check for duplicate tags
+         */
+        private static class DuplicateChecker implements AsnSchemaTypeVisitor<Void>
+        {
+            // ---------------------------------------------------------------------
+            // PUBLIC METHODS
+            // ---------------------------------------------------------------------
+
+            @Override
+            public Void visit(AsnSchemaTypeConstructed visitable) throws ParseException
+            {
+                for (AsnSchemaComponentType component : visitable.getAllComponents())
+                {
+                    component.getType().accept(this);
+                }
+
+                // because checking for duplicates involves knowing the tag of each component,
+                // which is not fully set/known until after the TAGGER visit we will set in
+                // another visit.
+                visitable.checkForDuplicates();
+                return null;
+            }
+
+            @Override
+            public Void visit(BaseAsnSchemaType visitable) throws ParseException
+            {
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypeCollection visitable) throws ParseException
+            {
+                visitable.getElementType().accept(this);
                 return null;
             }
 

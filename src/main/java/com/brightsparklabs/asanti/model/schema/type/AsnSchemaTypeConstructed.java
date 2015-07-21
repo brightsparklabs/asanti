@@ -103,23 +103,25 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     /**
-     * We store a mapping of tags to components.  That mapping is based on the rawTag that we are
-     * expecting to receive from the data.  Because some tags are not explicit (ie context-specific)
-     * we need to know the types of items to create Universal tags.  Until the whole schema has been
-     * parsed and all the Type Definitions and import resolved we may not know those types, ie we
-     * likely won't know them at the time when this object is constructed. This function allows the
-     * builder/coordinator of the schema to tell us when we can perform the tag creation
+     * Determines if there are any duplicate tags (meaning that decoding would be ambiguous) and
+     * throws if there are.  This function requires that all the components have their final tags,
+     * i.e. that {@link this.performTagging()} has been called
      *
      * @throws ParseException
      *         if there are duplicate tags
      */
-    public void performTagging() throws ParseException
+    public void checkForDuplicates() throws ParseException
     {
-        if (!havePerformedTagging)
-        {
-            tagCreator.setTagsForComponents(componentTypes);
-            havePerformedTagging = true;    // only set if we didn't throw
-        }
+        tagCreator.checkForDuplicates(componentTypes);
+    }
+
+    /**
+     * Will provide an automatic or universal tag for each component as appropriate. This requires
+     * that all the types and imports have been fully resolved.
+     */
+    public void performTagging()
+    {
+        tagCreator.setTagsForComponents(componentTypes);
     }
 
     // -------------------------------------------------------------------------

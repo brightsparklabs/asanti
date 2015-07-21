@@ -10,8 +10,6 @@ import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
-import com.brightsparklabs.asanti.model.schema.type.GetAsnSchemaTypeVisitor;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -173,41 +171,51 @@ public class TagCreator
      *         if there are duplicate tags detected
      */
     public void setTagsForComponents(Iterable<AsnSchemaComponentType> componentTypes)
-            throws ParseException
     {
         // Check to see if we need to apply automatic tags
         boolean autoTag = tagAutomator.canAutomate(componentTypes);
 
-        // Key: decorated tag, Value: component name.  We only really need a List, but by
-        // tracking the name of the component we can generate better error messages
-        final Map<String, String> usedTags = Maps.newHashMap();
-
         int index = 0;
-        int autoTagNumber = 0;
 
         for (final AsnSchemaComponentType componentType : componentTypes)
         {
             // auto tag if appropriate, otherwise use the components' tag (which will be a context-specific),
             // otherwise use the Universal tag
+            final String originalTag = componentType.getTag();
             final String rawTag = (autoTag) ?
-                    String.valueOf(autoTagNumber) :
-                    Strings.isNullOrEmpty(componentType.getTag()) ?
+                    String.valueOf(index) :
+                    Strings.isNullOrEmpty(originalTag) ?
                             AsnSchemaTag.createUniversalPortion(componentType.getType()
                                     .getBuiltinType()) :
-                            componentType.getTag();
+                            originalTag;
 
             // At the time of construction/parsing the component only had any value for a tag if
             // it was explicitly added in the schema.  Ensure it has the appropriate tag now that
             // the Auto tagging has been run and the type is known.
-            componentType.setTag(rawTag);
+            if (!originalTag.equals(rawTag))
+            {
+                componentType.setTag(rawTag);
+            }
+            index++;
+        }
+    }
 
+    public void checkForDuplicates(Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
+    {
+        // Key: decorated tag, Value: component name.  We only really need a List, but by
+        // tracking the name of the component we can generate better error messages
+        final Map<String, String> usedTags = Maps.newHashMap();
+        int index = 0;
+
+        for (final AsnSchemaComponentType componentType : componentTypes)
+        {
             if (isTaglessChoice(componentType))
             {
                 checkChoiceForDuplicates(componentType, index, usedTags);
             }
             else
             {
-                final String decoratedTag = tagDecorator.getDecoratedTag(index, rawTag);
+                final String decoratedTag = tagDecorator.getDecoratedTag(index, componentType.getTag());
                 assertNotDuplicate(usedTags, decoratedTag, componentType.getName());
             }
 
@@ -219,7 +227,6 @@ public class TagCreator
             {
                 index++;
             }
-            autoTagNumber++;
         }
     }
 
@@ -296,14 +303,7 @@ public class TagCreator
         {
             // Get all the components of the Choice, and check them for duplicates
 
-            // We use this visitor pattern so that we can get the AsnSchemaTypeConstructed type
-            // ie get through any Placeholder types.
-            final GetAsnSchemaTypeVisitor visitor = GetAsnSchemaTypeVisitor.getInstance();
-            final AsnSchemaTypeConstructed choiceType = (AsnSchemaTypeConstructed)componentType.getType().accept(visitor);
-            // Depending on the order of definitions and how items are related this constructed type
-            // may not have had a chance to perform its own tagging yet.
-            choiceType.performTagging();
-            final ImmutableList<AsnSchemaComponentType> choiceComponents = choiceType.getAllComponents();
+            final ImmutableList<AsnSchemaComponentType> choiceComponents = componentType.getType().getAllComponents();
 
             // These are already tagged etc, so we can just use the component's tag, we don't need
             // to worry about auto tagging etc.

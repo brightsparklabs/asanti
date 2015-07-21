@@ -112,11 +112,16 @@ public class AsnSchemaParser
             builder.resolveTypes(moduleBuilders);
         }
 
+        for (AsnSchemaModule.Builder builder : moduleBuilders)
+        {
+            builder.performTagging();
+        }
+
         // do the final build, which will also calculate all the tags, which can't be done until
         // all the types are known (even across module boundaries), which is not until the above loop
         for (AsnSchemaModule.Builder builder : moduleBuilders)
         {
-            builder.performTagging();
+            builder.checkForDuplicates();
             final AsnSchemaModule module = builder.build();
             modules.put(module.getName(), module);
 

@@ -142,13 +142,9 @@ public class AsnSchemaTypeConstructedTest
     @Test
     public void testPerformTagging() throws ParseException
     {
+        // check that this delegates through to the tag creator
         verify(tagCreator, never()).setTagsForComponents(any(Iterable.class));
         instance.performTagging();
-        verify(tagCreator).setTagsForComponents(any(Iterable.class));
-
-        instance.performTagging();
-
-        // still only the once.
         verify(tagCreator).setTagsForComponents(any(Iterable.class));
     }
 
