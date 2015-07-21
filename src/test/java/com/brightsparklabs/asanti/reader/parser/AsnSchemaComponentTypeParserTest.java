@@ -228,7 +228,6 @@ public class AsnSchemaComponentTypeParserTest
 
             assertEquals(expectedComponentType.getTag(), actualComponentType.getTag());
             assertEquals(expectedComponentType.getName(), actualComponentType.getName());
-            // TODO MJF assertEquals(expectedComponentType.getTypeName(), actualComponentType.getTypeName());
             assertEquals(expectedComponentType.isOptional(), actualComponentType.isOptional());
 
             // Not comparing the AsnSchemaTypes deliberately, as these are not part of the scope.

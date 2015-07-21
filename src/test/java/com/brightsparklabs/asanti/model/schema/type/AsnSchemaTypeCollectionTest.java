@@ -36,19 +36,23 @@ public class AsnSchemaTypeCollectionTest
     @Before
     public void setUpBeforeTest() throws Exception
     {
-        AsnSchemaType sequenceComponent = mock(AsnSchemaType.class);
         AsnSchemaComponentType component = mock(AsnSchemaComponentType.class);
-        DecodingSession session = mock(DecodingSession.class);
 
         wrappedSequence = mock(AsnSchemaType.class);
         // For the sake of testing that the Collection is delegating to the element type make it
         // return testable values
         when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
-        when(wrappedSequence.getMatchingChild("0", session)).thenReturn(Optional.of(component));
+        when(wrappedSequence.getBuiltinType()).thenReturn(AsnBuiltinType.Sequence);
+        when(wrappedSequence.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
+                Optional.<AsnSchemaComponentType>absent());
+        when(wrappedSequence.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
+                Optional.of(component));
 
         instance = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF,
                 AsnSchemaConstraint.NULL,
                 wrappedSequence);
+
+        //instance.performTagging();
     }
 
     @After
@@ -106,19 +110,77 @@ public class AsnSchemaTypeCollectionTest
                 AsnSchemaConstraint.NULL,
                 wrappedInteger);
 
-        // TODO ASN-140.  We currently get back the "wrapped" type, not the collection type.
-        assertEquals(AsnBuiltinType.Integer, collection.getBuiltinType());
+        assertEquals(AsnBuiltinType.SequenceOf, collection.getBuiltinType());
     }
 
     @Test
     public void testGetPrimitiveType() throws Exception
     {
-        // TODO ASN-140.  We currently get back the "wrapped" type, not the collection type.
-        assertEquals(AsnPrimitiveType.SEQUENCE, instance.getPrimitiveType());
-        verify(wrappedSequence).getPrimitiveType();
+        assertEquals(AsnPrimitiveType.SEQUENCE_OF, instance.getPrimitiveType());
+        verify(wrappedSequence, never()).getPrimitiveType();
     }
 
-    // TODO MJF getMatchingChild
+    @Test
+    public void testGetMatchingChild()
+    {
+        instance.performTagging();
+
+        final DecodingSession decodingSession = mock(DecodingSession.class);
+        Optional<AsnSchemaComponentType> result = instance.getMatchingChild("0[UNIVERSAL 16]",
+                decodingSession);
+
+        assertTrue(result.isPresent());
+        assertEquals("[0]", result.get().getName());
+
+        result = instance.getMatchingChild("77[UNIVERSAL 16]", decodingSession);
+        assertEquals("[77]", result.get().getName());
+
+        // Something that does not match
+        result = instance.getMatchingChild("0[UNIVERSAL 2]", decodingSession);
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void testGetMatchingChildChoice()
+    {
+        AsnSchemaComponentType component = mock(AsnSchemaComponentType.class);
+        AsnSchemaType type = mock(AsnSchemaType.class);
+        when(component.getName()).thenReturn("a");
+        when(component.getType()).thenReturn(type);
+
+        DecodingSession decodingSession = mock(DecodingSession.class);
+
+        AsnSchemaType wrappedChoice = mock(AsnSchemaType.class);
+        when(wrappedChoice.getPrimitiveType()).thenReturn(AsnPrimitiveType.CHOICE);
+        when(wrappedChoice.getBuiltinType()).thenReturn(AsnBuiltinType.Choice);
+        when(wrappedChoice.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
+                Optional.<AsnSchemaComponentType>absent());
+        when(wrappedChoice.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
+                Optional.of(component));
+
+        AsnSchemaTypeCollection collection
+                = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF,
+                AsnSchemaConstraint.NULL,
+                wrappedChoice);
+
+        collection.performTagging();
+
+        Optional<AsnSchemaComponentType> result = collection.getMatchingChild("0[0]",
+                decodingSession);
+
+        assertTrue(result.isPresent());
+
+        // verify that the call was delegated
+        verify(wrappedChoice).getMatchingChild(eq("0[0]"), any(DecodingSession.class));
+
+        // verify that the name gets qualified appropriately, and that the type is correct
+        assertEquals("[0]/a", result.get().getName());
+        assertEquals(type, result.get().getType());
+
+        // something that does not match
+        result = collection.getMatchingChild("0[44]", decodingSession);
+        assertFalse(result.isPresent());
+    }
 
     @Test
     public void testGetElementType() throws Exception

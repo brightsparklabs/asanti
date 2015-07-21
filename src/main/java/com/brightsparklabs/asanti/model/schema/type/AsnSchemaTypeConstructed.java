@@ -5,7 +5,6 @@
 
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
@@ -104,17 +103,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     /**
-     * This function allows the 'tree' to be walked, by being able to get to child types.
-     *
-     * @return the components
-     */
-    public ImmutableList<AsnSchemaComponentType> getAllComponents()
-    {
-        return componentTypes;
-    }
-
-
-    /**
      * We store a mapping of tags to components.  That mapping is based on the rawTag that we are
      * expecting to receive from the data.  Because some tags are not explicit (ie context-specific)
      * we need to know the types of items to create Universal tags.  Until the whole schema has been
@@ -129,14 +117,20 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     {
         if (!havePerformedTagging)
         {
-            havePerformedTagging = true;
             tagCreator.setTagsForComponents(componentTypes);
+            havePerformedTagging = true;    // only set if we didn't throw
         }
     }
 
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BaseAsnSchemaType
     // -------------------------------------------------------------------------
+
+    @Override
+    public ImmutableList<AsnSchemaComponentType> getAllComponents()
+    {
+        return componentTypes;
+    }
 
     @Override
     public Optional<AsnSchemaComponentType> getMatchingChild(String rawTag,

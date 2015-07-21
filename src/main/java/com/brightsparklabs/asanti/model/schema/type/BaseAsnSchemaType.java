@@ -5,6 +5,7 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
@@ -28,11 +29,8 @@ public class BaseAsnSchemaType implements AsnSchemaType
     /** the primitiveType of this definition */
     private final AsnPrimitiveType primitiveType;
 
-    /** the constraint on the primitiveType */
+    /** the constraints on the primitiveType */
     private final ImmutableSet<AsnSchemaConstraint> constraints;
-
-    /** the parent type if this type is defined in terms on another */
-    //private final AsnSchemaType indirectType;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -73,9 +71,9 @@ public class BaseAsnSchemaType implements AsnSchemaType
     // -------------------------------------------------------------------------
 
     @Override
-    public AsnPrimitiveType getPrimitiveType()
+    public ImmutableList<AsnSchemaComponentType> getAllComponents()
     {
-        return primitiveType;
+        return ImmutableList.of();
     }
 
     @Override
@@ -84,12 +82,6 @@ public class BaseAsnSchemaType implements AsnSchemaType
         // getPrimitiveType may be overridden in some derived classes.
         // by calling it here it means we are less likely to need to override this function too.
         return getPrimitiveType().getBuiltinType();
-    }
-
-    @Override
-    public AsnBuiltinType getBuiltinTypeAA()
-    {
-        return primitiveType.getBuiltinType();
     }
 
     @Override
@@ -106,9 +98,14 @@ public class BaseAsnSchemaType implements AsnSchemaType
     }
 
     @Override
+    public AsnPrimitiveType getPrimitiveType()
+    {
+        return primitiveType;
+    }
+
+    @Override
     public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
     {
         return visitor.visit(this);
     }
-
 }

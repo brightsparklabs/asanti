@@ -96,13 +96,13 @@ public class MockAsnSchemaModule
     public static ImmutableMap<String, AsnSchemaModule> createMockedAsnSchemaModules()
             throws ParseException
     {
-        final AsnSchemaModule documentPduModuleinstance
+        final AsnSchemaModule documentPduModuleInstance
                 = createMockedAsnSchemaModuleForDocumentPdu().build();
         final AsnSchemaModule peopleProtocolModule
                 = createMockedAsnSchemaModuleForPeopleProtocol().build();
         final ImmutableMap<String, AsnSchemaModule> modules = ImmutableMap.of(
-                documentPduModuleinstance.getName(),
-                documentPduModuleinstance,
+                documentPduModuleInstance.getName(),
+                documentPduModuleInstance,
                 peopleProtocolModule.getName(),
                 peopleProtocolModule);
         return modules;

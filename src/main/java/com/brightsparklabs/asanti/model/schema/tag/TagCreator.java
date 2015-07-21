@@ -10,7 +10,6 @@ import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
 import com.brightsparklabs.asanti.model.schema.type.GetAsnSchemaTypeVisitor;
 import com.google.common.base.Optional;
@@ -194,7 +193,7 @@ public class TagCreator
                     String.valueOf(autoTagNumber) :
                     Strings.isNullOrEmpty(componentType.getTag()) ?
                             AsnSchemaTag.createUniversalPortion(componentType.getType()
-                                    .getBuiltinTypeAA()) :
+                                    .getBuiltinType()) :
                             componentType.getTag();
 
             // At the time of construction/parsing the component only had any value for a tag if
@@ -292,30 +291,29 @@ public class TagCreator
     private void checkChoiceForDuplicates(AsnSchemaComponentType componentType, int index,
             Map<String, String> usedTags) throws ParseException
     {
-        // TODO MJF - AA so we only go here if it is a Choice not a Collection OF CHOICE
-        if ((componentType.getType().getBuiltinTypeAA() == AsnBuiltinType.Choice)
+        if ((componentType.getType().getBuiltinType() == AsnBuiltinType.Choice)
                 && componentType.getTag().isEmpty())
         {
-            // If a component is a Choice, and does not have a tag then the Choice's components
-            // can appear at this level
-            // Get the components of the choice
-            final GetAsnSchemaTypeVisitor visitor = GetAsnSchemaTypeVisitor.getInstance();
-            final AsnSchemaType type = componentType.getType();
-            final AsnSchemaTypeConstructed choiceType = (AsnSchemaTypeConstructed) type.accept(
-                    visitor);
-            // Ensure that this type has done it's auto tagging.
-            choiceType.performTagging();
-            final ImmutableList<AsnSchemaComponentType> choiceComponents
-                    = choiceType.getAllComponents();
+            // Get all the components of the Choice, and check them for duplicates
 
-            // These are already tagged etc.  What we need to do is reset the rawTag to align
-            // with the index we are currently at
+            // We use this visitor pattern so that we can get the AsnSchemaTypeConstructed type
+            // ie get through any Placeholder types.
+            final GetAsnSchemaTypeVisitor visitor = GetAsnSchemaTypeVisitor.getInstance();
+            final AsnSchemaTypeConstructed choiceType = (AsnSchemaTypeConstructed)componentType.getType().accept(visitor);
+            // Depending on the order of definitions and how items are related this constructed type
+            // may not have had a chance to perform its own tagging yet.
+            choiceType.performTagging();
+            final ImmutableList<AsnSchemaComponentType> choiceComponents = choiceType.getAllComponents();
+
+            // These are already tagged etc, so we can just use the component's tag, we don't need
+            // to worry about auto tagging etc.
             for (AsnSchemaComponentType choiceComponent : choiceComponents)
             {
                 final String rawTag = choiceComponent.getTag();
 
                 if (isTaglessChoice(choiceComponent))
                 {
+                    // recurse!
                     checkChoiceForDuplicates(choiceComponent, index, usedTags);
                 }
                 else
@@ -335,8 +333,9 @@ public class TagCreator
      */
     private boolean isTaglessChoice(AsnSchemaComponentType componentType)
     {
-        return ((componentType.getType().getBuiltinTypeAA() == AsnBuiltinType.Choice)
-                && componentType.getTag().isEmpty());
+        return ((componentType.getType().getBuiltinType() == AsnBuiltinType.Choice) && componentType
+                .getTag()
+                .isEmpty());
     }
 
     /**
@@ -391,31 +390,18 @@ public class TagCreator
     private static Optional<AsnSchemaComponentType> isMatch(AsnSchemaComponentType component,
             AsnSchemaTag tag, DecodingSession decodingSession)
     {
-        if ((component.getType().getBuiltinTypeAA() == AsnBuiltinType.Choice) && component.getTag()
+        if ((component.getType().getBuiltinType() == AsnBuiltinType.Choice) && component.getTag()
                 .isEmpty())
         {
-            try
-            {
-                // This is a Choice with no tags, which means it will "transparently" replace its
-                // children at this level.
-                final GetAsnSchemaTypeVisitor visitor = GetAsnSchemaTypeVisitor.getInstance();
-                final AsnSchemaType type = component.getType();
-                final AsnSchemaTypeConstructed choiceType = (AsnSchemaTypeConstructed) type.accept(
-                        visitor);
 
-                final Optional<AsnSchemaComponentType> choiceChild = choiceType.getMatchingChild(tag
-                        .getRawTag(), decodingSession);
+            // delegate through to the choice
+            final Optional<AsnSchemaComponentType> choiceChild = component.getType()
+                    .getMatchingChild(tag.getRawTag(), decodingSession);
 
-                if (choiceChild.isPresent())
-                {
-                    final AsnSchemaComponentType result = choiceChild.get();
-                    return Optional.of(buildFullyQualifiedComponentType(result,
-                            component.getName()));
-                }
-            }
-            catch (ParseException e)    // TODO MJF - not good...
+            if (choiceChild.isPresent())
             {
-                return Optional.absent();
+                final AsnSchemaComponentType result = choiceChild.get();
+                return Optional.of(buildFullyQualifiedComponentType(result, component.getName()));
             }
         }
 

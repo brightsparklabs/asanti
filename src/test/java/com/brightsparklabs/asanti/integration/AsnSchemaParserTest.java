@@ -4,7 +4,9 @@ import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.*;
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
@@ -459,37 +461,52 @@ public class AsnSchemaParserTest
                 .put("1[2]/0[0]/1[1]/2[3]", "/Document/body/lastModified/modifiedBy/title")
                 .put("1[2]/1[1]/0[1]", "/Document/body/prefix/text")
                 .put("1[2]/2[2]/0[1]", "/Document/body/content/text")
-                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/0[1]", "/Document/body/content/paragraphs[0]/title")
-                .put("1[2]/2[2]/1[2]/1[UNIVERSAL 16]/0[1]", "/Document/body/content/paragraphs[1]/title")
-                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/0[1]", "/Document/body/content/paragraphs[0]/contributor/firstName")
-                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/1[2]", "/Document/body/content/paragraphs[0]/contributor/lastName")
-                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/2[3]", "/Document/body/content/paragraphs[0]/contributor/title")
-//                .put("1[2]/2[2]/2[0]/3", "/Document/body/content/paragraphs[0]/points")
-//                .put("1[2]/2[2]/2[0]/3[0]", "/Document/body/content/paragraphs[0]/points[0]")
-//                .put("1[2]/2[2]/2[99]/1", "/Document/body/content/paragraphs[99]/title")
-//                .put("1[2]/2[2]/2[99]/2/1", "/Document/body/content/paragraphs[99]/contributor/firstName")
-//                .put("1[2]/2[2]/2[99]/2/2", "/Document/body/content/paragraphs[99]/contributor/lastName")
-//                .put("1[2]/2[2]/2[99]/2/3", "/Document/body/content/paragraphs[99]/contributor/title")
-//                .put("1[2]/2[2]/2[99]/3", "/Document/body/content/paragraphs[99]/points")
-//                .put("1[2]/2[2]/2[99]/3[99]", "/Document/body/content/paragraphs[99]/points[99]")
-//                .put("1[2]/3/1", "/Document/body/suffix/text")
-//                .put("2[3]", "/Document/footer")
-//                .put("2[3]/0", "/Document/footer/authors")
-//                .put("2[3]/0[0]/1", "/Document/footer/authors[0]/firstName")
-//                .put("2[3]/0[0]/2", "/Document/footer/authors[0]/lastName")
-//                .put("4", "/Document/dueDate")
-//                .put("5", "/Document/version")
-//                .put("5/0", "/Document/version/majorVersion")
-//                .put("5/1", "/Document/version/minorVersion")
-//                .put("6", "/Document/description")
-//                .put("6/0", "/Document/description/numberLines")
-//                .put("6/1", "/Document/description/summary")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/0[1]",
+                        "/Document/body/content/paragraphs[0]/title")
+                .put("1[2]/2[2]/1[2]/1[UNIVERSAL 16]/0[1]",
+                        "/Document/body/content/paragraphs[1]/title")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/0[1]",
+                        "/Document/body/content/paragraphs[0]/contributor/firstName")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/1[2]",
+                        "/Document/body/content/paragraphs[0]/contributor/lastName")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/2[3]",
+                        "/Document/body/content/paragraphs[0]/contributor/title")
+                .put("1[2]/2[2]/1[2]/99[UNIVERSAL 16]/0[1]",
+                        "/Document/body/content/paragraphs[99]/title")
+                .put("1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/0[1]",
+                        "/Document/body/content/paragraphs[99]/contributor/firstName")
+                .put("1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/1[2]",
+                        "/Document/body/content/paragraphs[99]/contributor/lastName")
+                .put("1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/2[3]",
+                        "/Document/body/content/paragraphs[99]/contributor/title")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]",
+                        "/Document/body/content/paragraphs[0]/points")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]/0[UNIVERSAL 4]",
+                        "/Document/body/content/paragraphs[0]/points[0]")
+                .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/0[1]",
+                        "/Document/body/content/paragraphs[11]/title")
+                .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/3[3]/44[UNIVERSAL 4]",
+                        "/Document/body/content/paragraphs[11]/points[44]")
+
+                .put("1[2]/3[3]/0[1]", "/Document/body/suffix/text")
+
+                .put("2[3]", "/Document/footer")
+                .put("2[3]/0[0]", "/Document/footer/authors")
+                .put("2[3]/0[0]/0[UNIVERSAL 16]/0[1]", "/Document/footer/authors[0]/firstName")
+                .put("2[3]/0[0]/0[UNIVERSAL 16]/1[2]", "/Document/footer/authors[0]/lastName")
+                .put("3[4]", "/Document/dueDate")
+                .put("4[5]", "/Document/version")
+                .put("4[5]/0[0]", "/Document/version/majorVersion")
+                .put("4[5]/1[1]", "/Document/version/minorVersion")
+                .put("5[6]", "/Document/description")
+                .put("5[6]/0[0]", "/Document/description/numberLines")
+                .put("5[6]/1[1]", "/Document/description/summary")
                 .build();
 
-        final ImmutableSet<OperationResult<DecodedTag>> decodedTags = instance.getDecodedTags(tags.keySet(),
-                "Document");
+        final ImmutableSet<OperationResult<DecodedTag>> decodedTags
+                = instance.getDecodedTags(tags.keySet(), "Document");
 
-        for(OperationResult<DecodedTag> decodedTag : decodedTags)
+        for (OperationResult<DecodedTag> decodedTag : decodedTags)
         {
             assertTrue(decodedTag.wasSuccessful());
 
@@ -497,100 +514,99 @@ public class AsnSchemaParserTest
             assertEquals(tags.get(output.getRawTag()), output.getTag());
         }
 
-
-//        assertEquals("/Document", instance.getDecodedTag("", "Document").getOutput().getTag());
-//
-//                assertEquals("/Document/header",
-//                        instance.getDecodedTag("1", "Document").getOutput().getTag());
-//                assertEquals("/Document/header/published",
-//                        instance.getDecodedTag("1/0", "Document").getOutput().getTag());
-//                assertEquals("/Document/header/published/date",
-//                        instance.getDecodedTag("1/0/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/header/published/country",
-//                        instance.getDecodedTag("1/0/2", "Document").getOutput().getTag());
-//
-//                assertEquals("/Document/body",
-//                        instance.getDecodedTag("2", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/lastModified",
-//                        instance.getDecodedTag("2/0", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/lastModified/date",
-//                        instance.getDecodedTag("2/0/0", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/lastModified/modifiedBy/firstName",
-//                        instance.getDecodedTag("2/0/1/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/lastModified/modifiedBy/lastName",
-//                        instance.getDecodedTag("2/0/1/2", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/lastModified/modifiedBy/title",
-//                        instance.getDecodedTag("2/0/1/3", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/prefix/text",
-//                        instance.getDecodedTag("2/1/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/text",
-//                        instance.getDecodedTag("2/2/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs/title",
-//                        instance.getDecodedTag("2/2/2/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[0]/title",
-//                        instance.getDecodedTag("2/2/2[0]/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[1]/title",
-//                        instance.getDecodedTag("2/2/2[1]/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
-//                        instance.getDecodedTag("2/2/2[0]/2/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
-//                        instance.getDecodedTag("2/2/2[0]/2/2", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
-//                        instance.getDecodedTag("2/2/2[0]/2/3", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[0]/points",
-//                        instance.getDecodedTag("2/2/2[0]/3", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[0]/points[0]",
-//                        instance.getDecodedTag("2/2/2[0]/3[0]", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[99]/title",
-//                        instance.getDecodedTag("2/2/2[99]/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
-//                        instance.getDecodedTag("2/2/2[99]/2/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
-//                        instance.getDecodedTag("2/2/2[99]/2/2", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
-//                        instance.getDecodedTag("2/2/2[99]/2/3", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[99]/points",
-//                        instance.getDecodedTag("2/2/2[99]/3", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/content/paragraphs[99]/points[99]",
-//                        instance.getDecodedTag("2/2/2[99]/3[99]", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/suffix/text",
-//                        instance.getDecodedTag("2/3/1", "Document").getOutput().getTag());
-//
-//                assertEquals("/Document/footer",
-//                        instance.getDecodedTag("3", "Document").getOutput().getTag());
-//                assertEquals("/Document/footer/authors",
-//                        instance.getDecodedTag("3/0", "Document").getOutput().getTag());
-//                assertEquals("/Document/footer/authors[0]/firstName",
-//                        instance.getDecodedTag("3/0[0]/1", "Document").getOutput().getTag());
-//                assertEquals("/Document/footer/authors[0]/lastName",
-//                        instance.getDecodedTag("3/0[0]/2", "Document").getOutput().getTag());
-//
-//                assertEquals("/Document/dueDate",
-//                        instance.getDecodedTag("4", "Document").getOutput().getTag());
-//
-//                assertEquals("/Document/version",
-//                        instance.getDecodedTag("5", "Document").getOutput().getTag());
-//                assertEquals("/Document/version/majorVersion",
-//                        instance.getDecodedTag("5/0", "Document").getOutput().getTag());
-//                assertEquals("/Document/version/minorVersion",
-//                        instance.getDecodedTag("5/1", "Document").getOutput().getTag());
-//
-//                assertEquals("/Document/description",
-//                        instance.getDecodedTag("6", "Document").getOutput().getTag());
-//                assertEquals("/Document/description/numberLines",
-//                        instance.getDecodedTag("6/0", "Document").getOutput().getTag());
-//                assertEquals("/Document/description/summary",
-//                        instance.getDecodedTag("6/1", "Document").getOutput().getTag());
-//
-//                // test partial
-//                assertEquals("/Document/header/published/99/98",
-//                        instance.getDecodedTag("1/0/99/98", "Document").getOutput().getTag());
-//                assertEquals("/Document/body/lastModified/99/98",
-//                        instance.getDecodedTag("2/0/99/98", "Document").getOutput().getTag());
-//
-//                // test unknown
-//                assertEquals("/Document/99/98",
-//                        instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
+        //        assertEquals("/Document", instance.getDecodedTag("", "Document").getOutput().getTag());
+        //
+        //                assertEquals("/Document/header",
+        //                        instance.getDecodedTag("1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/header/published",
+        //                        instance.getDecodedTag("1/0", "Document").getOutput().getTag());
+        //                assertEquals("/Document/header/published/date",
+        //                        instance.getDecodedTag("1/0/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/header/published/country",
+        //                        instance.getDecodedTag("1/0/2", "Document").getOutput().getTag());
+        //
+        //                assertEquals("/Document/body",
+        //                        instance.getDecodedTag("2", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/lastModified",
+        //                        instance.getDecodedTag("2/0", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/lastModified/date",
+        //                        instance.getDecodedTag("2/0/0", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/lastModified/modifiedBy/firstName",
+        //                        instance.getDecodedTag("2/0/1/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/lastModified/modifiedBy/lastName",
+        //                        instance.getDecodedTag("2/0/1/2", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/lastModified/modifiedBy/title",
+        //                        instance.getDecodedTag("2/0/1/3", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/prefix/text",
+        //                        instance.getDecodedTag("2/1/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/text",
+        //                        instance.getDecodedTag("2/2/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs/title",
+        //                        instance.getDecodedTag("2/2/2/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[0]/title",
+        //                        instance.getDecodedTag("2/2/2[0]/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[1]/title",
+        //                        instance.getDecodedTag("2/2/2[1]/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
+        //                        instance.getDecodedTag("2/2/2[0]/2/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
+        //                        instance.getDecodedTag("2/2/2[0]/2/2", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
+        //                        instance.getDecodedTag("2/2/2[0]/2/3", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[0]/points",
+        //                        instance.getDecodedTag("2/2/2[0]/3", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[0]/points[0]",
+        //                        instance.getDecodedTag("2/2/2[0]/3[0]", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[99]/title",
+        //                        instance.getDecodedTag("2/2/2[99]/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
+        //                        instance.getDecodedTag("2/2/2[99]/2/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
+        //                        instance.getDecodedTag("2/2/2[99]/2/2", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
+        //                        instance.getDecodedTag("2/2/2[99]/2/3", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[99]/points",
+        //                        instance.getDecodedTag("2/2/2[99]/3", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/content/paragraphs[99]/points[99]",
+        //                        instance.getDecodedTag("2/2/2[99]/3[99]", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/suffix/text",
+        //                        instance.getDecodedTag("2/3/1", "Document").getOutput().getTag());
+        //
+        //                assertEquals("/Document/footer",
+        //                        instance.getDecodedTag("3", "Document").getOutput().getTag());
+        //                assertEquals("/Document/footer/authors",
+        //                        instance.getDecodedTag("3/0", "Document").getOutput().getTag());
+        //                assertEquals("/Document/footer/authors[0]/firstName",
+        //                        instance.getDecodedTag("3/0[0]/1", "Document").getOutput().getTag());
+        //                assertEquals("/Document/footer/authors[0]/lastName",
+        //                        instance.getDecodedTag("3/0[0]/2", "Document").getOutput().getTag());
+        //
+        //                assertEquals("/Document/dueDate",
+        //                        instance.getDecodedTag("4", "Document").getOutput().getTag());
+        //
+        //                assertEquals("/Document/version",
+        //                        instance.getDecodedTag("5", "Document").getOutput().getTag());
+        //                assertEquals("/Document/version/majorVersion",
+        //                        instance.getDecodedTag("5/0", "Document").getOutput().getTag());
+        //                assertEquals("/Document/version/minorVersion",
+        //                        instance.getDecodedTag("5/1", "Document").getOutput().getTag());
+        //
+        //                assertEquals("/Document/description",
+        //                        instance.getDecodedTag("6", "Document").getOutput().getTag());
+        //                assertEquals("/Document/description/numberLines",
+        //                        instance.getDecodedTag("6/0", "Document").getOutput().getTag());
+        //                assertEquals("/Document/description/summary",
+        //                        instance.getDecodedTag("6/1", "Document").getOutput().getTag());
+        //
+        //                // test partial
+        //                assertEquals("/Document/header/published/99/98",
+        //                        instance.getDecodedTag("1/0/99/98", "Document").getOutput().getTag());
+        //                assertEquals("/Document/body/lastModified/99/98",
+        //                        instance.getDecodedTag("2/0/99/98", "Document").getOutput().getTag());
+        //
+        //                // test unknown
+        //                assertEquals("/Document/99/98",
+        //                        instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
 
     }
 
@@ -634,25 +650,6 @@ public class AsnSchemaParserTest
     {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE);
 
-        //        String tag = "/0.0";
-        //        logger.info("get tag " + tag);
-        //        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        //
-        //        assertTrue(result.wasSuccessful());
-        //
-        //        DecodedTag actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-        //
-        //
-        //        tag = "/1";
-        //        logger.info("get tag " + tag);
-        //        result = schema.getDecodedTag(tag, "Human");
-        //
-        //
-        //        actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-        //
-        //        //String berFilename = "d:\\tmp\\Human_Simple.ber";
         String berFilename = getClass().getResource("/Human_Simple.ber").getFile();
         final File berFile = new File(berFilename);
 
@@ -680,16 +677,6 @@ public class AsnSchemaParserTest
     {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE2);
 
-        //        String tag = "/0";
-        //        logger.info("get tag " + tag);
-        //        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        //
-        //        assertTrue(result.wasSuccessful());
-        //
-        //        DecodedTag actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-
-        //String berFilename = "d:\\tmp\\Human_Simple2.ber";
         String berFilename = getClass().getResource("/Human_Simple2.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
@@ -718,15 +705,6 @@ public class AsnSchemaParserTest
     public void testParse_HumanEnumerated() throws Exception
     {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE_ENUMERATED);
-
-        //        String tag = "/0";
-        //        logger.info("get tag " + tag);
-        //        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        //
-        //        assertTrue(result.wasSuccessful());
-        //
-        //        DecodedTag actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         String berFilename = getClass().getResource("/Human_SimpleEnumerated.ber").getFile();
         final File berFile = new File(berFilename);
@@ -776,15 +754,6 @@ public class AsnSchemaParserTest
     {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE_SET);
 
-        ////        String tag = "/0";
-        ////        logger.info("get tag " + tag);
-        ////        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        ////
-        ////        assertTrue(result.wasSuccessful());
-        //
-        //        DecodedTag actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-
         String berFilename = getClass().getResource("/Human_SimpleSet.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
@@ -806,29 +775,12 @@ public class AsnSchemaParserTest
         String name = (String) pdu.getDecodedObject(tag);
         logger.info(tag + " : " + name);
         assertEquals("Adam", name);
-
     }
 
     @Test
     public void testParse_HumanNested() throws Exception
     {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_NESTED);
-
-        //        String tag = "/0";
-        //        logger.info("get tag " + tag);
-        //        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        //        assertTrue(result.wasSuccessful());
-        //
-        //        DecodedTag actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-        //
-        //        tag = "/0/0";
-        //        logger.info("get tag " + tag);
-        //        result = schema.getDecodedTag(tag, "Human");
-        //        assertTrue(result.wasSuccessful());
-        //
-        //        actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         String berFilename = getClass().getResource("/Human_Nested.ber").getFile();
         final File berFile = new File(berFilename);
@@ -857,8 +809,8 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + age);
         assertEquals(new BigInteger("32"), age);
 
-        ValidatorImpl validator = new ValidatorImpl();
-        ValidationResult validationresult = validator.validate(pdu);
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdu);
 
         assertFalse(validationresult.hasFailures());
 
@@ -867,22 +819,8 @@ public class AsnSchemaParserTest
     @Test
     public void testParse_HumanUsingTypeDef() throws Exception
     {
-        // TODO - In order for this to work we need to figure out how to handle TypeDefs as types,
-        // Eg age PersonAge in a sequence.  This will require some update to AsnSchemaComponentTypeParser.parse
-        // at least, but also some mechanism to store and sweep after the whole file is processed to
-        // attempt to re-align things that were not declared when they were first used.
-
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF);
 
-        //        String tag = "/0";
-        //        logger.info("get tag " + tag);
-        //        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        //
-        //        assertTrue(result.wasSuccessful());
-        //
-        //        DecodedTag actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-        //
         String berFilename = getClass().getResource("/Human_Typedef.ber").getFile();
         final File berFile = new File(berFilename);
         String topLevelType = "Human";
@@ -900,8 +838,8 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + age);
         assertEquals(new BigInteger("32"), age);
 
-        ValidatorImpl validator = new ValidatorImpl();
-        ValidationResult validationresult = validator.validate(pdu);
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdu);
 
         assertTrue(validationresult.hasFailures());
 
@@ -916,7 +854,6 @@ public class AsnSchemaParserTest
                     " reason: " + fail.getFailureReason() +
                     " type: " + fail.getFailureType());
         }
-
     }
 
     @Test
@@ -924,15 +861,6 @@ public class AsnSchemaParserTest
     {
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_INDIRECT);
-
-        //        String tag = "/0";
-        //        logger.info("get tag " + tag);
-        //        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        //
-        //        assertTrue(result.wasSuccessful());
-        //
-        //        DecodedTag actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         String berFilename = getClass().getResource("/Human_Typedef.ber").getFile();
         final File berFile = new File(berFilename);
@@ -952,8 +880,8 @@ public class AsnSchemaParserTest
         BigInteger age = (BigInteger) pdu.getDecodedObject(tag);
         logger.info(tag + " : " + age);
 
-        ValidatorImpl validator = new ValidatorImpl();
-        ValidationResult validationresult = validator.validate(pdu);
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdu);
 
         // dump any failures so we can see what went wrong
         for (DecodedTagValidationFailure fail : validationresult.getFailures())
@@ -964,7 +892,6 @@ public class AsnSchemaParserTest
         }
 
         assertFalse(validationresult.hasFailures());
-
     }
 
     @Test
@@ -972,28 +899,6 @@ public class AsnSchemaParserTest
     {
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_SEQUENCE);
-
-        //        String tag = "/0";
-        //        logger.info("get tag " + tag);
-        //        OperationResult<DecodedTag> result = schema.getDecodedTag(tag, "Human");
-        //
-        //        assertTrue(result.wasSuccessful());
-        //
-        //        DecodedTag actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-        //
-        //
-        //        tag = "/1/0";
-        //        logger.info("get tag " + tag);
-        //        result = schema.getDecodedTag(tag, "Human");
-        //        actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
-        //
-        //        tag = "/1/1";
-        //        logger.info("get tag " + tag);
-        //        result = schema.getDecodedTag(tag, "Human");
-        //        actualTag = result.getOutput();
-        //        logger.info(actualTag.getTag() + " : " + actualTag.getType().getBuiltinType());
 
         String berFilename = getClass().getResource("/Human_TypedefSequence.ber").getFile();
         final File berFile = new File(berFilename);
@@ -1029,8 +934,8 @@ public class AsnSchemaParserTest
         assertEquals("Smith", last);
 
 /*
-        ValidatorImpl validator = new ValidatorImpl();
-        ValidationResult validationresult = validator.validate(pdu);
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdu);
 
         assertTrue(validationresult.hasFailures());
 
@@ -1062,6 +967,17 @@ public class AsnSchemaParserTest
                 topLevelType);
 
         debugPdus(pdus);
+
+        String tag = "/Human/age[0]";
+        assertEquals(new BigInteger("1"), pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/age[1]";
+        assertEquals(new BigInteger("2"), pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/age[2]";
+        assertEquals(new BigInteger("3"), pdus.get(0).getDecodedObject(tag));
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
 
     }
 
@@ -1107,6 +1023,10 @@ public class AsnSchemaParserTest
         tag = "/Human/friends[1]/age";
         age = (BigInteger) pdu.getDecodedObject(tag);
         assertEquals(3, age.intValue());
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
     }
 
     @Test
@@ -1152,6 +1072,10 @@ public class AsnSchemaParserTest
         tag = "/Human/friends[1]/age";
         age = (BigInteger) pdu.getDecodedObject(tag);
         assertEquals(3, age.intValue());
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
     }
 
     @Test
@@ -1181,6 +1105,9 @@ public class AsnSchemaParserTest
             logger.info("\t{} => {}", tag, pdu.getHexString(tag));
         }
 
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
     }
 
     @Test
@@ -1220,6 +1147,9 @@ public class AsnSchemaParserTest
         fave = (BigInteger) pdu.getDecodedObject(tag + "[2]");
         logger.info("fave[2]: {}", fave);
 
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
     }
 
     @Test
@@ -1229,16 +1159,18 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        {
-            String berFilename = getClass().getResource("/Human_ImplicitTagging.ber").getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
+        String berFilename = getClass().getResource("/Human_ImplicitTagging.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
-            debugPdus((pdus));
-        }
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+        debugPdus((pdus));
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
     }
 
     @Test
@@ -1248,20 +1180,22 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        {
-            String berFilename = getClass().getResource("/Human_ImplicitTagging2.ber").getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
+        String berFilename = getClass().getResource("/Human_ImplicitTagging2.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
-            debugPdus((pdus));
-            String tag = "/Human/payload/lastName";
-            assertEquals("Smith", pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/payload/firstName";
-            assertEquals("Adam", pdus.get(0).getDecodedObject(tag));
-        }
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+        debugPdus((pdus));
+        String tag = "/Human/payload/lastName";
+        assertEquals("Smith", pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/payload/firstName";
+        assertEquals("Adam", pdus.get(0).getDecodedObject(tag));
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
     }
 
     @Test
@@ -1271,22 +1205,20 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        {
-            String berFilename = getClass().getResource("/Human_ImplicitTagging3.ber").getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
+        String berFilename = getClass().getResource("/Human_ImplicitTagging3.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
-            debugPdus((pdus));
-            String tag = "/Human/payload/a";
-            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/payload/b/i";
-            assertEquals(new BigInteger("1"), pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/payload/c";
-            assertEquals("U", pdus.get(0).getDecodedObject(tag));
-        }
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+        debugPdus((pdus));
+        String tag = "/Human/payload/a";
+        assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/payload/b/i";
+        assertEquals(new BigInteger("1"), pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/payload/c";
+        assertEquals("U", pdus.get(0).getDecodedObject(tag));
     }
 
     @Test
@@ -1298,27 +1230,25 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        {
-            String berFilename = getClass().getResource("/Human_ReuseWithOptional.ber").getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
+        String berFilename = getClass().getResource("/Human_ReuseWithOptional.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
-            debugPdus(pdus);
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+        debugPdus(pdus);
 
-            String tag = "/Human/a/a";
-            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/a/b";
-            assertEquals("U", pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/a/c";
-            assertEquals("V", pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/b/b";
-            assertEquals("A", pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/b/c";
-            assertEquals("B", pdus.get(0).getDecodedObject(tag));
-        }
+        String tag = "/Human/a/a";
+        assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/a/b";
+        assertEquals("U", pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/a/c";
+        assertEquals("V", pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/b/b";
+        assertEquals("A", pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/b/c";
+        assertEquals("B", pdus.get(0).getDecodedObject(tag));
     }
 
     @Test
@@ -1486,22 +1416,20 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        {
-            String berFilename = getClass().getResource("/Human_SetOfUnTaggedChoice.ber").getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
+        String berFilename = getClass().getResource("/Human_SetOfUnTaggedChoice.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
 
-            debugPdus((pdus));
+        debugPdus((pdus));
 
-            String tag = "/Human/name[0]/a";
-            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/name[1]/b";
-            assertEquals("U", pdus.get(0).getDecodedObject(tag));
-        }
+        String tag = "/Human/name[0]/a";
+        assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/name[1]/b";
+        assertEquals("U", pdus.get(0).getDecodedObject(tag));
     }
 
     @Test
@@ -1512,27 +1440,25 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        {
-            String berFilename = getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.ber")
-                    .getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
+        String berFilename = getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.ber")
+                .getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
 
-            debugPdus((pdus));
+        debugPdus((pdus));
 
-            String tag = "/Human/name[0][0]/a";
-            assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/name[0][1]/b";
-            assertEquals("U", pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/name[1][0]/a";
-            assertEquals(new BigInteger("11"), pdus.get(0).getDecodedObject(tag));
-            tag = "/Human/name[1][1]/b";
-            assertEquals("V", pdus.get(0).getDecodedObject(tag));
-        }
+        String tag = "/Human/name[0][0]/a";
+        assertEquals(new BigInteger("10"), pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/name[0][1]/b";
+        assertEquals("U", pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/name[1][0]/a";
+        assertEquals(new BigInteger("11"), pdus.get(0).getDecodedObject(tag));
+        tag = "/Human/name[1][1]/b";
+        assertEquals("V", pdus.get(0).getDecodedObject(tag));
     }
 
     @Test
@@ -1557,6 +1483,10 @@ public class AsnSchemaParserTest
             assertEquals(new BigInteger("1"), pdus.get(0).getDecodedObject(tag));
             tag = "/Human/selection/optA/ints[1]";
             assertEquals(new BigInteger("2"), pdus.get(0).getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_SequenceOf_optB.ber").getFile();
@@ -1579,6 +1509,9 @@ public class AsnSchemaParserTest
             tag = "/Human/selection/optB/namesInline[1]/last";
             assertEquals("Brown", pdus.get(0).getDecodedObject(tag));
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_SequenceOf_optC.ber").getFile();
@@ -1600,6 +1533,10 @@ public class AsnSchemaParserTest
             assertEquals("Michael", pdus.get(0).getDecodedObject(tag));
             tag = "/Human/selection/optC/names[1]/last";
             assertEquals("Brown", pdus.get(0).getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
 
     }
@@ -1626,6 +1563,10 @@ public class AsnSchemaParserTest
             assertEquals(new BigInteger("1"), pdus.get(0).getDecodedObject(tag));
             tag = "/Human/selection/optA/ints[1]";
             assertEquals(new BigInteger("2"), pdus.get(0).getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_SetOf_optB.ber").getFile();
@@ -1648,6 +1589,9 @@ public class AsnSchemaParserTest
             tag = "/Human/selection/optB/namesInline[1]/last";
             assertEquals("Brown", pdus.get(0).getDecodedObject(tag));
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_SetOf_optC.ber").getFile();
@@ -1669,6 +1613,10 @@ public class AsnSchemaParserTest
             assertEquals("Michael", pdus.get(0).getDecodedObject(tag));
             tag = "/Human/selection/optC/names[1]/last";
             assertEquals("Brown", pdus.get(0).getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
 
     }
@@ -1680,24 +1628,26 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        {
-            String berFilename = getClass().getResource("/Human_ChoiceImplicit_milliSeconds.ber")
-                    .getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
+        String berFilename = getClass().getResource("/Human_ChoiceImplicit_milliSeconds.ber")
+                .getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
-            debugPdus(pdus);
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+        debugPdus(pdus);
 
-            DecodedAsnData pdu = pdus.get(0);
-            String tag = "/Human/payload/name";
-            assertEquals("Adam", pdu.getDecodedObject(tag));
+        DecodedAsnData pdu = pdus.get(0);
+        String tag = "/Human/payload/name";
+        assertEquals("Adam", pdu.getDecodedObject(tag));
 
-            tag = "/Human/payload/open/milliSeconds";
-            assertEquals(new BigInteger("100"), pdu.getDecodedObject(tag));
-        }
+        tag = "/Human/payload/open/milliSeconds";
+        assertEquals(new BigInteger("100"), pdu.getDecodedObject(tag));
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
     }
 
     @Test
@@ -1729,6 +1679,9 @@ public class AsnSchemaParserTest
             actual = (byte[]) pdu.getDecodedObject(tag);
             assertEquals("123", new String(actual, Charsets.UTF_8));
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_Choice_ZZZ_2.ber").getFile();
@@ -1756,6 +1709,9 @@ public class AsnSchemaParserTest
             actual = (byte[]) pdu.getDecodedObject(tag);
             assertEquals("456", new String(actual, Charsets.UTF_8));
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
     }
 
@@ -1784,6 +1740,9 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("Fred", pdu.getDecodedObject(tag));
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_Choice_basic_ymd.ber").getFile();
@@ -1805,6 +1764,10 @@ public class AsnSchemaParserTest
 
             tag = "/Human/payload/name";
             assertEquals("Fred", pdu.getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_Choice_basic_dob.ber").getFile();
@@ -1823,6 +1786,10 @@ public class AsnSchemaParserTest
 
             tag = "/Human/payload/name";
             assertEquals("Fred", pdu.getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
 
     }
@@ -1854,6 +1821,9 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("payload", pdu.getDecodedObject(tag));
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_Choice2_int.ber").getFile();
@@ -1871,6 +1841,10 @@ public class AsnSchemaParserTest
 
             tag = "/Human/payload/name";
             assertEquals("payload", pdu.getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
 
         {
@@ -1892,6 +1866,10 @@ public class AsnSchemaParserTest
 
             tag = "/Human/payload/name";
             assertEquals("payload", pdu.getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_Choice2_sofA_2_mid_entries.ber")
@@ -1917,6 +1895,10 @@ public class AsnSchemaParserTest
             assertEquals(new BigInteger("11"), pdu.getDecodedObject(tag));
             tag = "/Human/payload/iRIsContent/sequenceOfA[1]/mid/stuff";
             assertEquals("V", pdu.getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_Choice2_setOfA.ber").getFile();
@@ -1937,6 +1919,10 @@ public class AsnSchemaParserTest
 
             tag = "/Human/payload/name";
             assertEquals("payload", pdu.getDecodedObject(tag));
+
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
         }
         {
             String berFilename = getClass().getResource("/Human_Choice2_setOfA_2entries.ber")
@@ -1962,8 +1948,11 @@ public class AsnSchemaParserTest
             assertEquals(new BigInteger("11"), pdu.getDecodedObject(tag));
             tag = "/Human/payload/iRIsContent/setOfA[1]/mid/stuff";
             assertEquals("V", pdu.getDecodedObject(tag));
-        }
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
+        }
     }
 
     @Test
@@ -1988,22 +1977,24 @@ public class AsnSchemaParserTest
         File schemaFile = new File(schemaFilename);
         final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
 
-        {
-            String berFilename = getClass().getResource("/Human_Choice3_typeB.ber").getFile();
-            final File berFile = new File(berFilename);
-            String topLevelType = "Human";
+        String berFilename = getClass().getResource("/Human_Choice3_typeB.ber").getFile();
+        final File berFile = new File(berFilename);
+        String topLevelType = "Human";
 
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    schema,
-                    topLevelType);
-            debugPdus(pdus);
+        final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
+                schema,
+                topLevelType);
+        debugPdus(pdus);
 
-            DecodedAsnData pdu = pdus.get(0);
-            String tag = "/Human/payload/iRIsContent/typeB/other";
-            assertEquals(new BigInteger("10"), pdu.getDecodedObject(tag));
-            tag = "/Human/payload/iRIsContent/typeB/stuff";
-            assertEquals("U", pdu.getDecodedObject(tag));
-        }
+        DecodedAsnData pdu = pdus.get(0);
+        String tag = "/Human/payload/iRIsContent/typeB/other";
+        assertEquals(new BigInteger("10"), pdu.getDecodedObject(tag));
+        tag = "/Human/payload/iRIsContent/typeB/stuff";
+        assertEquals("U", pdu.getDecodedObject(tag));
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
     }
 
     @Test
@@ -2070,7 +2061,6 @@ public class AsnSchemaParserTest
             tag = "/PS-PDU/pSHeader/sequenceNumber";
             number = (BigInteger) pdus.get(2).getDecodedObject(tag);
             assertEquals(new BigInteger("8"), number);
-
         }
 
         {
@@ -2141,8 +2131,8 @@ public class AsnSchemaParserTest
         //            {
         //
         //
-        //                ValidatorImpl validator = new ValidatorImpl();
-        //                ValidationResult validationresult = validator.validate(pdu);
+        //                final ValidatorImpl validator = new ValidatorImpl();
+        //                final ValidationResult validationresult = validator.validate(pdu);
         //                // TODO - we should get a validation failure where we can't determine the type of a tag
         //                //assertTrue(validationresult.hasFailures());
         //

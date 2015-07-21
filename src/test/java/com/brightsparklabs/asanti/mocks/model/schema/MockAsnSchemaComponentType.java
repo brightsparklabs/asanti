@@ -67,8 +67,6 @@ public class MockAsnSchemaComponentType
         AsnSchemaType schemaType = mock(AsnSchemaType.class);
         when(schemaType.getPrimitiveType()).thenReturn(type);
         when(schemaType.getBuiltinType()).thenReturn(type.getBuiltinType());
-        when(schemaType.getBuiltinTypeAA()).thenReturn(type.getBuiltinType());
-
         when(mockedInstance.getType()).thenReturn(schemaType);
         return mockedInstance;
     }

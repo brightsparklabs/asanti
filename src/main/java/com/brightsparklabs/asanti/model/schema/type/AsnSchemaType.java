@@ -11,6 +11,7 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
@@ -32,11 +33,13 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
     public static final AsnSchemaType.Null NULL = new AsnSchemaType.Null();
 
     /**
-     * Returns the AsnPrimitiveType of this type definition
+     * Returns all the {@code AsnSchemaComponentType} objects owned by this object, or an empty list
+     * if there are none
      *
-     * @return the AsnPrimitiveType of this type definition
+     * @return all the {@code AsnSchemaComponentType} objects owned by this object, or an empty list
+     * if there are none
      */
-    AsnPrimitiveType getPrimitiveType();
+    ImmutableList<AsnSchemaComponentType> getAllComponents();
 
     /**
      * Returns the {@code AsnBuiltinType} enum for this type. This is simply a shortcut for
@@ -45,9 +48,6 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
      * @return the {@code AsnBuiltinType} enum for this type.
      */
     AsnBuiltinType getBuiltinType();
-
-    // TODO MJF - do we still need this?  Is so then rename and document
-    AsnBuiltinType getBuiltinTypeAA();
 
     /**
      * Returns the constraints of this type definition.  This will be all the constraints the create
@@ -70,6 +70,13 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
      * found
      */
     Optional<AsnSchemaComponentType> getMatchingChild(String tag, DecodingSession decodingSession);
+
+    /**
+     * Returns the AsnPrimitiveType of this type definition
+     *
+     * @return the AsnPrimitiveType of this type definition
+     */
+    AsnPrimitiveType getPrimitiveType();
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null
@@ -99,19 +106,13 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
         // ---------------------------------------------------------------------
 
         @Override
-        public AsnPrimitiveType getPrimitiveType()
+        public ImmutableList<AsnSchemaComponentType> getAllComponents()
         {
-            return AsnPrimitiveType.NULL;
+            return ImmutableList.of();
         }
 
         @Override
         public AsnBuiltinType getBuiltinType()
-        {
-            return getPrimitiveType().getBuiltinType();
-        }
-
-        @Override
-        public AsnBuiltinType getBuiltinTypeAA()
         {
             return getPrimitiveType().getBuiltinType();
         }
@@ -128,6 +129,13 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
         {
             return Optional.absent();
         }
+
+        @Override
+        public AsnPrimitiveType getPrimitiveType()
+        {
+            return AsnPrimitiveType.NULL;
+        }
+
 
         @Override
         public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException

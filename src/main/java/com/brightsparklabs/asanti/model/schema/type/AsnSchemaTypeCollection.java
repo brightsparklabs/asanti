@@ -108,13 +108,7 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
      */
     public void performTagging()
     {
-        myUniversalTag = AsnSchemaTag.createUniversalPortion(elementType.getBuiltinTypeAA());
-    }
-
-    // TODO MJF
-    public AsnPrimitiveType getCollectionPrimitiveType()
-    {
-        return super.getPrimitiveType();
+        myUniversalTag = AsnSchemaTag.createUniversalPortion(elementType.getBuiltinType());
     }
 
     // -------------------------------------------------------------------------
@@ -122,21 +116,15 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     @Override
-    public AsnPrimitiveType getPrimitiveType()
-    {
-        return elementType.getPrimitiveType();
-    }
-
-    @Override
     public Optional<AsnSchemaComponentType> getMatchingChild(String rawTag,
             DecodingSession decodingSession)
     {
         final AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
 
-        if (elementType.getBuiltinTypeAA() == AsnBuiltinType.Choice)
+        if (elementType.getBuiltinType() == AsnBuiltinType.Choice)
         {
             // We have a collection of Choice, so we need to insert the choice option
-            // We could pre-calculate the options here like we do with Constructed, but give
+            // We could pre-calculate the options here like we do with Constructed, but given
             // that we have to do work here to sort out the index there is little to be saved
             final Optional<AsnSchemaComponentType> child = elementType.getMatchingChild(rawTag,
                     decodingSession);
@@ -144,6 +132,8 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
             if (child.isPresent())
             {
                 final String newTag = "[" + tag.getTagIndex() + "]/" + child.get().getName();
+                // TODO ASN-115 - I don't like this, as it is a dependency issue.  Makes it
+                // hard to test etc.  Ditto a couple of lines lower.
                 return Optional.of(new AsnSchemaComponentType(newTag,
                         rawTag,
                         false,
@@ -151,14 +141,13 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
             }
         }
 
-        if (tag.getTagUniversal().equals(myUniversalTag))
+        if (tag.getTagPortion().equals(myUniversalTag))
         {
             return Optional.of(new AsnSchemaComponentType("[" + tag.getTagIndex() + "]",
                     rawTag,
                     false,
                     elementType));
         }
-
 
         return Optional.absent();
     }

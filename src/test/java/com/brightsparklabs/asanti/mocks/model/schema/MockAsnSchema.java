@@ -201,8 +201,6 @@ public class MockAsnSchema
                         AsnBuiltinType.Null))
                 .build();
 
-        //        public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(ImmutableSet<String> rawTags,
-        //            String topLevelTypeName);
         String topLevelTypeName = "Document";
         when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName)).thenReturn(
                 results);
@@ -210,8 +208,6 @@ public class MockAsnSchema
         ImmutableSet<String> emptyTags = ImmutableSet.of();
         ImmutableSet<OperationResult<DecodedTag>> emptyResults = ImmutableSet.of();
 
-        when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName)).thenReturn(
-                results);
         when(instance.getDecodedTags(emptyTags, topLevelTypeName)).thenReturn(emptyResults);
 
         return instance;
@@ -258,28 +254,5 @@ public class MockAsnSchema
         rawTags.add(rawTag);
 
         return result;
-
     }
-    //    private static void configureGetDecodedTag(AsnSchema instance, String rawTag,
-    //            String topLevelTypeName, String decodedTagPath, boolean isFullyDecoded,
-    //            AsnBuiltinType builtinType)
-    //    {
-    //        final DecodedTag decodedTag = mock(DecodedTag.class);
-    //
-    //        final AsnSchemaType type = mock(AsnSchemaType.class);
-    //
-    //        when(type.getBuiltinType()).thenReturn(builtinType);
-    //
-    //        when(decodedTag.getTag()).thenReturn(decodedTagPath);
-    //        when(decodedTag.getRawTag()).thenReturn(rawTag);
-    //        //when(decodedTag.getType()).thenReturn(AsnSchemaType.NULL);
-    //        when(decodedTag.getType()).thenReturn(type);
-    //        when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
-    //
-    //        // TODO MJF - figure out how to deal with the session stuff here.  We also want unit tests
-    //        // to test the new method of tagging etc...
-    //        when(instance.getDecodedTags(rawTag, topLevelTypeName)).thenReturn(isFullyDecoded ?
-    //                OperationResult.createSuccessfulInstance(decodedTag) :
-    //                OperationResult.createUnsuccessfulInstance(decodedTag, "Mock Failure"));
-    //    }
 }
