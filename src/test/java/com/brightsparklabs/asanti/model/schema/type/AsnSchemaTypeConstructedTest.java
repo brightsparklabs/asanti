@@ -47,7 +47,7 @@ public class AsnSchemaTypeConstructedTest
 
         tagCreator = mock(TagCreator.class);
 
-        when(tagCreator.getComponentTypes(any(AsnSchemaTag.class),
+        when(tagCreator.getComponentType(any(AsnSchemaTag.class),
                 any(ImmutableList.class),
                 any(DecodingSession.class))).thenReturn(Optional.of(component));
 
@@ -133,7 +133,7 @@ public class AsnSchemaTypeConstructedTest
 
         assertTrue(matchingChild.isPresent());
 
-        verify(tagCreator).getComponentTypes(any(AsnSchemaTag.class),
+        verify(tagCreator).getComponentType(any(AsnSchemaTag.class),
                 any(ImmutableList.class),
                 any(DecodingSession.class));
     }

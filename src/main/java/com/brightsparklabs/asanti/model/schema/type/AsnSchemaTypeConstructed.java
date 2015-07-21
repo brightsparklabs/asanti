@@ -50,9 +50,6 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     /** the mechanism to be used for creation of Tags, during schema creation */
     private final TagCreator tagCreator;
 
-    /** keeps track of whether we have performed the post parsing Tagging step */
-    private boolean havePerformedTagging = false;
-
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -105,7 +102,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
     /**
      * Determines if there are any duplicate tags (meaning that decoding would be ambiguous) and
      * throws if there are.  This function requires that all the components have their final tags,
-     * i.e. that {@link this.performTagging()} has been called
+     * i.e. that {@link AsnSchemaTypeConstructed#performTagging()} has been called
      *
      * @throws ParseException
      *         if there are duplicate tags
@@ -139,7 +136,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
             DecodingSession decodingSession)
     {
         AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
-        return tagCreator.getComponentTypes(tag, componentTypes, decodingSession);
+        return tagCreator.getComponentType(tag, componentTypes, decodingSession);
     }
 
     @Override

@@ -166,9 +166,6 @@ public class TagCreator
      *
      * @param componentTypes
      *         AsnSchemaComponentType contained in the Constructed type
-     *
-     * @throws ParseException
-     *         if there are duplicate tags detected
      */
     public void setTagsForComponents(Iterable<AsnSchemaComponentType> componentTypes)
     {
@@ -200,7 +197,8 @@ public class TagCreator
         }
     }
 
-    public void checkForDuplicates(Iterable<AsnSchemaComponentType> componentTypes) throws ParseException
+    public void checkForDuplicates(Iterable<AsnSchemaComponentType> componentTypes)
+            throws ParseException
     {
         // Key: decorated tag, Value: component name.  We only really need a List, but by
         // tracking the name of the component we can generate better error messages
@@ -215,7 +213,8 @@ public class TagCreator
             }
             else
             {
-                final String decoratedTag = tagDecorator.getDecoratedTag(index, componentType.getTag());
+                final String decoratedTag = tagDecorator.getDecoratedTag(index,
+                        componentType.getTag());
                 assertNotDuplicate(usedTags, decoratedTag, componentType.getName());
             }
 
@@ -243,7 +242,7 @@ public class TagCreator
      *
      * @return the matching component or {@link Optional#absent()} if no match
      */
-    public Optional<AsnSchemaComponentType> getComponentTypes(AsnSchemaTag tag,
+    public Optional<AsnSchemaComponentType> getComponentType(AsnSchemaTag tag,
             ImmutableList<AsnSchemaComponentType> components, DecodingSession decodingSession)
     {
         return tagMatchingCreator.getComponent(tag, components, decodingSession);
@@ -303,7 +302,8 @@ public class TagCreator
         {
             // Get all the components of the Choice, and check them for duplicates
 
-            final ImmutableList<AsnSchemaComponentType> choiceComponents = componentType.getType().getAllComponents();
+            final ImmutableList<AsnSchemaComponentType> choiceComponents = componentType.getType()
+                    .getAllComponents();
 
             // These are already tagged etc, so we can just use the component's tag, we don't need
             // to worry about auto tagging etc.
@@ -401,6 +401,8 @@ public class TagCreator
             if (choiceChild.isPresent())
             {
                 final AsnSchemaComponentType result = choiceChild.get();
+                // TODO ASN-115 (review) - here we make a new AsnSchemaComponentType, which makes
+                // this function difficult to test in isolation.
                 return Optional.of(buildFullyQualifiedComponentType(result, component.getName()));
             }
         }
@@ -566,6 +568,12 @@ public class TagCreator
             AsnSchemaComponentType component;
             do
             {
+                // Protect against more data than the schema knows about
+                if (index >= components.size())
+                {
+                    return Optional.absent();
+                }
+
                 component = components.get(index);
                 final Optional<AsnSchemaComponentType> result = isMatch(component,
                         tag,
@@ -606,10 +614,6 @@ public class TagCreator
                 {
                     return result;
                 }
-
-                // TODO MJF - how to avoid matching the same thing multiple times?
-                // Obviously the decodingSession will have to manage this
-                // add a new Jira ticket and reference it here.
             }
             return Optional.absent();
         }

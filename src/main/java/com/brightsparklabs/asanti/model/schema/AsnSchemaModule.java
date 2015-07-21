@@ -258,7 +258,7 @@ public class AsnSchemaModule
          * @throws ParseException
          *         if there are imports that cannot be resolved
          */
-        public AsnSchemaModule build() throws ParseException
+        public AsnSchemaModule build()
         {
             return new AsnSchemaModule(name, types, imports);
         }
@@ -326,6 +326,8 @@ public class AsnSchemaModule
         // -------------------------------------------------------------------------
         // INTERNAL CLASS: Builder.Resolver
         // -------------------------------------------------------------------------
+
+        // TODO ASN-115 review - these here or in own files?
 
         /**
          * Use a double dispatch to avoid instanceof so that we can "visit" each type in the
