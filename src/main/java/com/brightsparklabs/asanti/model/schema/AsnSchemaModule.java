@@ -254,9 +254,6 @@ public class AsnSchemaModule
          * Creates an instance of {@link AsnSchemaModule} from the information in this builder
          *
          * @return an instance of {@link AsnSchemaModule}
-         *
-         * @throws ParseException
-         *         if there are imports that cannot be resolved
          */
         public AsnSchemaModule build()
         {
@@ -327,7 +324,7 @@ public class AsnSchemaModule
         // INTERNAL CLASS: Builder.Resolver
         // -------------------------------------------------------------------------
 
-        // TODO ASN-115 review - these here or in own files?
+        // TODO ASN-115 (review style) - these here or in own files?
 
         /**
          * Use a double dispatch to avoid instanceof so that we can "visit" each type in the

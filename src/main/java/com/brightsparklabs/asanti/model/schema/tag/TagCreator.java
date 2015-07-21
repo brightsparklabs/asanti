@@ -31,12 +31,22 @@ import static com.google.common.base.Preconditions.*;
  */
 public class TagCreator
 {
+
+    // TODO ASN-115 (review style).
+    // All of this is specific to AsnSchemaTypeConstructed, so really could be in that class.
+    // Having it out keeps it more testable I think, and the functionality is encapsulated.
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(TagCreator.class);
+
+    // TODO ASN-115 (review style/design)
+    // All of these are to avoid making 'new' objects.  We could perhaps avoid the TagAutomator and
+    // TagDecorator (both small) and create anonymous classes (implementing the interface)
+    // inside the create method
 
     /**
      * static instance of tag automator that checks the components according to the rules and should
@@ -92,6 +102,7 @@ public class TagCreator
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
+    // TODO ASN-115 (review style/design)
     // Seems a little bit heavy weight to use this sort of Strategy pattern, but
     // both of these are decision points that can be made at construction time
     // rather than at loop time.
@@ -174,6 +185,10 @@ public class TagCreator
 
         int index = 0;
 
+        // TODO ASN-115 (review design)
+        //  We currently only generate tags for the components within the bounds
+        // of the Constructed type.  We do NOT currently pre-calculate all the Choice components
+        // that could be a match.
         for (final AsnSchemaComponentType componentType : componentTypes)
         {
             // auto tag if appropriate, otherwise use the components' tag (which will be a context-specific),
@@ -297,10 +312,10 @@ public class TagCreator
     private void checkChoiceForDuplicates(AsnSchemaComponentType componentType, int index,
             Map<String, String> usedTags) throws ParseException
     {
-        if ((componentType.getType().getBuiltinType() == AsnBuiltinType.Choice)
-                && componentType.getTag().isEmpty())
+        if (isTaglessChoice(componentType))
         {
-            // Get all the components of the Choice, and check them for duplicates
+            // Get all the components of the Choice, and check them for duplicates against the
+            // other components at this level
 
             final ImmutableList<AsnSchemaComponentType> choiceComponents = componentType.getType()
                     .getAllComponents();
@@ -331,7 +346,7 @@ public class TagCreator
      *
      * @return true if the component is of type Choice and does not have a context-specific tag
      */
-    private boolean isTaglessChoice(AsnSchemaComponentType componentType)
+    private static boolean isTaglessChoice(AsnSchemaComponentType componentType)
     {
         return ((componentType.getType().getBuiltinType() == AsnBuiltinType.Choice) && componentType
                 .getTag()
@@ -390,9 +405,18 @@ public class TagCreator
     private static Optional<AsnSchemaComponentType> isMatch(AsnSchemaComponentType component,
             AsnSchemaTag tag, DecodingSession decodingSession)
     {
-        if ((component.getType().getBuiltinType() == AsnBuiltinType.Choice) && component.getTag()
-                .isEmpty())
+        if (isTaglessChoice(component))
         {
+
+            // TODO ASN-115 (review design).
+            // We currently do not pre-calculate the Choice aspect upfront.  It is easy enough to do
+            // and probably has some merit, but we can't just store the Choice components in a
+            // "flat" list with all the other components because of OPTIONAL (ie the Choice may have
+            // been optional or not)
+            // In order for our decoded tag to include the Choice that was followed we need to
+            // create a "fully qualified" tag name  (unless we change that loop in the SchemaImpl)
+            // That fully qualified tag name is relative and it "owned" by the Constructed type that
+            // had the component that was a choice, not the Choice type itself.
 
             // delegate through to the choice
             final Optional<AsnSchemaComponentType> choiceChild = component.getType()
@@ -401,7 +425,7 @@ public class TagCreator
             if (choiceChild.isPresent())
             {
                 final AsnSchemaComponentType result = choiceChild.get();
-                // TODO ASN-115 (review) - here we make a new AsnSchemaComponentType, which makes
+                // TODO ASN-115 (review design) - here we make a new AsnSchemaComponentType, which makes
                 // this function difficult to test in isolation.
                 return Optional.of(buildFullyQualifiedComponentType(result, component.getName()));
             }
@@ -420,6 +444,17 @@ public class TagCreator
     // -------------------------------------------------------------------------
     // INTERNAL CLASSES
     // -------------------------------------------------------------------------
+
+    // TODO ASN-115 (review style).
+    // Happy for these to be internal or should they be stand alone classes,
+    // or even in-line anonymous
+    //    private static TagDecorator zz = new TagDecorator() {
+    //        @Override
+    //        public String getDecoratedTag(int index, String tag)
+    //        {
+    //            return AsnSchemaTag.createRawTag(index, tag);
+    //        }
+    //    };
 
     /**
      * Interface for creating the tag that we will store for later matching
@@ -589,6 +624,13 @@ public class TagCreator
                 index++;
             } while (component.isOptional() && (index < components.size()));
 
+            // TODO ASN-115 (review behaviour)
+            // What should the expected behaviour be now for any further attempts to match up
+            // stuff in this Constructed type (now that one child did not match).  We are no long
+            // sure about alignment.
+            // I think that we should explicitly force any further attempts to fail rather than
+            // attempting a match.
+
             //  No match found.
             return Optional.absent();
         }
@@ -603,6 +645,14 @@ public class TagCreator
         public Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
                 List<AsnSchemaComponentType> components, DecodingSession decodingSession)
         {
+            // TODO ASN-115 (review design).  It would be more efficient to store the components
+            // as a map (Tag->Component) when we are Unordered.
+            // Currently the Constructed type "owns" the components and has a TagCreator which is one
+            // of the statically created versions.
+            // If we moved the "ownership" of the components to the TagCreator then it could store
+            // as appropriate for its version, but we would need to create a new one for each
+            // Constructed type (not an issue)
+
             // Unordered (Set and Choice) don't use the index, so don't need to re-align to
             // account for offsets for OPTIONALS.
             for (AsnSchemaComponentType component : components)

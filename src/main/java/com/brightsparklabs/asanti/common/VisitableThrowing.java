@@ -20,6 +20,9 @@ public interface VisitableThrowing<ArgType extends Visitor, ExceptionType extend
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
+    // TODO ASN-115 (review design) - I wanted to be able to have a visit throw
+    // and with the other visitable pattern we couldn't
+    // ("accept" rather than "visit", should I revert or change the other one to accept?)
 
     /**
      * Accept a visitor
