@@ -311,6 +311,16 @@ public class TagCreatorTest
         assertTrue(resultC.isPresent());
         assertEquals(components.get(2), resultC.get());
 
+        // check that we fail if the tag does not match
+        when(tag.getTagPortion()).thenReturn("4");
+        when(decodingSession.getIndex(eq(tag))).thenReturn(1);
+        final Optional<AsnSchemaComponentType> resultFail = instance.getComponentType(tag,
+                components,
+                decodingSession);
+        assertFalse(resultFail.isPresent());
+        // if we fail we should ensure that all the rest of the matches at this level fail
+        verify(decodingSession).setIndex(eq(tag), eq(3));
+
         // check that we don't throw if we have data that is not in the schema
         when(tag.getTagPortion()).thenReturn("4");
         when(decodingSession.getIndex(eq(tag))).thenReturn(10);
@@ -318,6 +328,7 @@ public class TagCreatorTest
                 components,
                 decodingSession);
         assertFalse(resultEmpty.isPresent());
+
     }
 
     @Test

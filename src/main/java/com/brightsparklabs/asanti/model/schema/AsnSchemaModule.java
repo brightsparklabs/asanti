@@ -111,6 +111,8 @@ public class AsnSchemaModule
      * @return the type definition associated with the specified type name or {@link
      * AsnSchemaTypeDefinition#NULL} if no type definition is found
      */
+    // TODO ASN-115 (design) - I think this should use Optional, then AsnSchemaTypeDefinition.NULL
+    // is no longer needed.  I think the same for AsnSchemaType.  Should be a new task.
     public AsnSchemaTypeDefinition getType(String typeName)
     {
         final AsnSchemaTypeDefinition type = types.get(typeName);
@@ -152,7 +154,7 @@ public class AsnSchemaModule
         private static final Tagger TAGGER = new Builder.Tagger();
 
         /** our mechanism for visiting each AsnSchemaType to check for duplicate  tags */
-        private static final DuplicateChecker DuplicateChecker = new Builder.DuplicateChecker();
+        private static final DuplicateChecker DUPLICATE_CHECKER = new Builder.DuplicateChecker();
 
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
@@ -311,11 +313,11 @@ public class AsnSchemaModule
         {
             for (AsnSchemaTypeDefinition typeDefinition : types.values())
             {
-                logger.debug("Perform Tagging for TypeDef {} in module {}",
+                logger.debug("Checking Duplicates for TypeDef {} in module {}",
                         typeDefinition.getName(),
                         this.name);
 
-                typeDefinition.getType().accept(DuplicateChecker);
+                typeDefinition.getType().accept(DUPLICATE_CHECKER);
             }
 
         }

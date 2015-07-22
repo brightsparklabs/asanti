@@ -626,10 +626,14 @@ public class TagCreator
 
             // TODO ASN-115 (review behaviour)
             // What should the expected behaviour be now for any further attempts to match up
-            // stuff in this Constructed type (now that one child did not match).  We are no long
+            // stuff in this Constructed type (now that one child did not match).  We are no longer
             // sure about alignment.
             // I think that we should explicitly force any further attempts to fail rather than
             // attempting a match.
+
+            // if we failed a match then ensure all the subsequent components within this context
+            // also fail (avoid an 'accidental' match)
+            decodingSession.setIndex(tag, components.size());
 
             //  No match found.
             return Optional.absent();
