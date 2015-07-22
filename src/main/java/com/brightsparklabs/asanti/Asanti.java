@@ -5,260 +5,140 @@
 
 package com.brightsparklabs.asanti;
 
-import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.decoder.AsnDecoder;
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.DecodedAsnDataImpl;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.reader.AsnSchemaFileReader;
-import com.google.common.base.Charsets;
+import com.brightsparklabs.asanti.reader.AsnBerDataReader;
+import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Ordering;
-import com.google.common.io.BaseEncoding;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.common.collect.Lists;
+import com.google.common.io.ByteSource;
+import com.google.common.io.CharSource;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Map;
+import java.util.List;
 
 /**
- * Main class as an example of how to use the library.
+ * The entry point to the API. This contains the logic for decoding tagged/application ASN.1 data
  *
  * @author brightSPARK Labs
  */
 public class Asanti
 {
     // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static Logger logger = LoggerFactory.getLogger(Asanti.class);
-
-    // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * Main method. Used for testing.
+     * Decodes the supplied ASN.1 binary data against the specified schema as objects of the
+     * specified top level type
      *
-     * @param args
-     *         command line arguments
-     */
-    public static void main(String[] args)
-    {
-        try
-        {
-            switch (args.length)
-            {
-                case 1:
-                    final String filename = args[0];
-                    final File file = new File(filename);
-
-                    if (filename.endsWith(".asn"))
-                    {
-                        testReadingAsnFile(file);
-                    }
-                    else
-                    {
-                        testReadingBerFile(file);
-                    }
-                    break;
-
-                case 2:
-                    throw new Exception("Top level type name not supplied");
-
-                case 3:
-                {
-                    final String asnFilename = args[0].endsWith(".asn") ? args[0] : args[1];
-                    final String berFilename = args[0].endsWith(".asn") ? args[1] : args[0];
-                    final String topLevelType = args[2];
-                    final File asnFile = new File(asnFilename);
-                    final File berFile = new File(berFilename);
-                    // Load the schema once, and use it for all data files.
-                    final AsnSchema asnSchema = AsnSchemaFileReader.read(asnFile);
-                    handleDataFile(berFile, asnSchema, topLevelType);
-                }
-                break;
-
-                default:
-                    throw new Exception("No ASN Schema (.asn) or ASN Data (.ber) file supplied");
-            }
-        }
-        catch (final Exception ex)
-        {
-            logger.error("Could not parse file", ex);
-            System.exit(1);
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
-
-    /**
-     * Handle the loading of a single data (ber) file against the provided schema This will not
-     * propagate exceptions, will only log them.
-     *
-     * @param berFile
-     *         ASN.1 BER binary file to decode
-     * @param asnSchema
-     *         schema to decode against
+     * @param source
+     *         ASN.1 BER binary data to decode
+     * @param schema
+     *         ASN.1 schema to decode data against
      * @param topLevelType
      *         top level type in the schema to decode objects as
+     *
+     * @return all decoded ASN.1 data as per the schema
+     *
+     * @throws IOException
+     *         if any errors occur reading from the file
      */
-    private static void loadDataFile(File berFile, AsnSchema asnSchema, String topLevelType)
+    public static ImmutableList<DecodedAsnData> decodeAsnData(ByteSource source, CharSource schema,
+            String topLevelType) throws IOException
     {
-        try
-        {
-
-            logger.info("Loading file: " + berFile.getCanonicalPath());
-
-            final ImmutableList<DecodedAsnData> pdus = AsnDecoder.decodeAsnData(berFile,
-                    asnSchema,
-                    topLevelType);
-            for (int i = 0; i < pdus.size(); i++)
-            {
-
-                logger.info("Parsing PDU[{}]", i);
-                final DecodedAsnData pdu = pdus.get(i);
-                for (String tag : pdu.getTags())
-                {
-                    logger.info("\t{} => {} as {}",
-                            tag,
-                            pdu.getHexString(tag),
-                            pdu.getType(tag).getPrimitiveType());
-                }
-                for (String tag : pdu.getUnmappedTags())
-                {
-                    logger.info("\t?{} => {}", tag, pdu.getHexString(tag));
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            logger.error("Exception loading data file: " + e.getMessage());
-        }
-
+        // TODO: ASN-78 - cache schema
+        final AsnSchema asnSchema = AsnSchemaReader.read(schema);
+        return decodeAsnData(source, asnSchema, topLevelType);
     }
 
     /**
-     * This function will take a schema file and run it against the data file(s) passed.  If
-     * dataFile is a directory then it will load all files in the directory (against the schema),
-     * and recurse directories. This will attempt to ignore/skip files that are not ASN.1 BER files.
-     * This will not propagate exceptions, will only log them.
+     * Decodes the supplied ASN.1 Data against the specified schema as an object of the specified
+     * top level type
      *
-     * @param dataFile
-     *         either a directory or ASN.1 BER binary file to decode
+     * @param source
+     *         ASN.1 BER binary data to decode
      * @param asnSchema
-     *         schema to decode against
+     *         schema to decode data against
      * @param topLevelType
-     *         the name of the top level
+     *         top level type in the schema to decode object as
+     *
+     * @return the decoded ASN.1 data as per the schema
+     *
+     * @throws IOException
+     *         if any errors occur reading the data
      */
-    private static void handleDataFile(File dataFile, AsnSchema asnSchema, String topLevelType)
+    public static ImmutableList<DecodedAsnData> decodeAsnData(ByteSource source,
+            AsnSchema asnSchema, String topLevelType) throws IOException
     {
-
-        try
+        final ImmutableList<AsnData> allAsnData = readAsnBerData(source);
+        final List<DecodedAsnData> allDecodedAsnData = Lists.newArrayList();
+        for (final AsnData asnData : allAsnData)
         {
-            if (dataFile.isDirectory())
-            {
-                File[] files = dataFile.listFiles();
-                for (File f : files)
-                {
-                    handleDataFile(f, asnSchema, topLevelType);
-                }
-            }
-            else
-            {
-                String name = dataFile.getCanonicalPath();
-
-                // I don't really know what the 'right' file extensions are, so let's just rule out
-                // some of the ones that we have come across!
-                if (!name.toLowerCase().endsWith(".txt") &&
-                        !name.toLowerCase().endsWith(".jpg") &&
-                        !name.toLowerCase().endsWith(".bmp") &&
-                        !name.toLowerCase().endsWith(".asn") &&
-                        !name.toLowerCase().endsWith(".zip") &&
-                        !name.toLowerCase().endsWith(".wav") &&
-                        !name.toLowerCase().endsWith(".csv") &&
-                        !name.toLowerCase().endsWith(".xlsx") &&
-                        !name.toLowerCase().endsWith(".xls"))
-                {
-                    loadDataFile(dataFile, asnSchema, topLevelType);
-                }
-                else
-                {
-                    logger.debug("Ignoring file: " + name);
-                }
-            }
+            final DecodedAsnData decodedAsnData = decodeAsnData(asnData, asnSchema, topLevelType);
+            allDecodedAsnData.add(decodedAsnData);
         }
-        catch (Exception e)
-        {
-            logger.error("Exception: " + e.getMessage());
-        }
-
+        return ImmutableList.copyOf(allDecodedAsnData);
     }
 
     /**
-     * Test parsing an ASN.1 schema file
+     * Decodes the supplied ASN.1 Data against the specified schema as an object of the specified
+     * top level type
      *
-     * @param asnFile
-     *         file to parse
+     * @param asnData
+     *         data from an ASN.1 binary file
+     * @param asnSchema
+     *         schema to decode data against
+     * @param topLevelType
+     *         top level type in the schema to decode object as
+     *
+     * @return the decoded ASN.1 data as per the schema
      *
      * @throws IOException
-     *         if any errors occur while parsing
+     *         if any errors occur reading from the file
      */
-    private static void testReadingAsnFile(File asnFile) throws IOException
+    public static DecodedAsnData decodeAsnData(AsnData asnData, AsnSchema asnSchema,
+            String topLevelType) throws IOException
     {
-        final AsnSchema asnSchema = AsnSchemaFileReader.read(asnFile);
-
-        logger.info("User testing:");
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in,
-                Charsets.UTF_8));
-        while (true)
-        {
-            System.out.print("\tEnter raw tag: ");
-            final String rawTag = reader.readLine();
-            ImmutableList<String> rawTags = ImmutableList.of(rawTag);
-            final ImmutableSet<OperationResult<DecodedTag>> results = asnSchema.getDecodedTags(
-                    rawTags,
-                    "PS-PDU");
-            OperationResult<DecodedTag> result = results.iterator().next();
-            logger.info("\t{}:\t decode {} => {}",
-                    result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag,
-                    result.getOutput().getTag());
-        }
+        return new DecodedAsnDataImpl(asnData, asnSchema, topLevelType);
     }
 
     /**
-     * Test parsing a BER file
+     * Reads the supplied ASN.1 BER/DER binary data
      *
-     * @param berFile
-     *         file to parse
+     * @param source
+     *         data to read
+     *
+     * @return list of {@link AsnData} objects found in the file
      *
      * @throws IOException
-     *         if any errors occur while parsing
+     *         if any errors occur reading from the file
      */
-    private static void testReadingBerFile(File berFile) throws IOException
+    public static ImmutableList<AsnData> readAsnBerData(ByteSource source) throws IOException
     {
-        final ImmutableList<AsnData> data = AsnDecoder.readAsnBerFile(berFile);
-        int count = 0;
-        for (final AsnData asnData : data)
-        {
-            logger.info("PDU[" + count + "]");
-            final Map<String, byte[]> tagsData = asnData.getBytes();
+        return AsnBerDataReader.read(source);
+    }
 
-            for (final String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
-            {
-                logger.info("\t {}: 0x{}", tag, BaseEncoding.base16().encode(tagsData.get(tag)));
-            }
-            count++;
-        }
+    /**
+     * Reads the supplied ASN.1 BER/DER binary file and stops reading when it has read the specified
+     * number of items
+     *
+     * @param source
+     *         file to decode
+     * @param maxPDUs
+     *         number of PDUs to read from the file. The returned list will be less than or equal to
+     *         this value. To read all items call {@link #readAsnBerData(ByteSource)}) instead.
+     *
+     * @return list of {@link AsnData} objects found in the file
+     *
+     * @throws IOException
+     *         if any errors occur reading from the file
+     */
+    public static ImmutableList<AsnData> readAsnBerData(ByteSource source, int maxPDUs)
+            throws IOException
+    {
+        return AsnBerDataReader.read(source, maxPDUs);
     }
 }

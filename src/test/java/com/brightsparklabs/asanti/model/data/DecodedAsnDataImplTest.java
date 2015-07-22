@@ -197,35 +197,36 @@ public class DecodedAsnDataImplTest
     public void testGetBytes() throws Exception
     {
         assertArrayEquals("/1/0/1".getBytes(Charsets.UTF_8),
-                instance.getBytes("/Document/header/published/date"));
+                instance.getBytes("/Document/header/published/date").get());
         assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8),
-                instance.getBytes("/Document/body/lastModified/date"));
+                instance.getBytes("/Document/body/lastModified/date").get());
         assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8),
-                instance.getBytes("/Document/body/prefix/text"));
+                instance.getBytes("/Document/body/prefix/text").get());
         assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8),
-                instance.getBytes("/Document/body/content/text"));
+                instance.getBytes("/Document/body/content/text").get());
         assertArrayEquals("/3/0/1".getBytes(Charsets.UTF_8),
-                instance.getBytes("/Document/footer/author/firstName"));
+                instance.getBytes("/Document/footer/author/firstName").get());
 
         // test unmapped tags
         assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8),
-                instance.getBytes("/Document/body/content/99"));
+                instance.getBytes("/Document/body/content/99").get());
         assertArrayEquals("/99/1/1".getBytes(Charsets.UTF_8),
-                instance.getBytes("/Document/99/1/1"));
+                instance.getBytes("/Document/99/1/1").get());
 
         // test raw tags
-        assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8), instance.getBytes("/2/2/99"));
-        assertArrayEquals("/99/1/1".getBytes(Charsets.UTF_8), instance.getBytes("/99/1/1"));
+        assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8), instance.getBytes("/2/2/99").get());
+        assertArrayEquals("/99/1/1".getBytes(Charsets.UTF_8), instance.getBytes("/99/1/1").get());
 
         // test unknown tags
-        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes(""));
-        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("/Document/0/0/0"));
-        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("/Document/2/2/99"));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("").get());
+        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("/Document/0/0/0").get());
+        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("/Document/2/2/99").get());
 
-        assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes(""));
-        assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes("/Document/0/0/0"));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), emptyInstance.getBytes("").get());
         assertArrayEquals("".getBytes(Charsets.UTF_8),
-                emptyInstance.getBytes("/Document/header/published/date"));
+                emptyInstance.getBytes("/Document/0/0/0").get());
+        assertArrayEquals("".getBytes(Charsets.UTF_8),
+                emptyInstance.getBytes("/Document/header/published/date").get());
     }
 
     @Test
@@ -242,7 +243,7 @@ public class DecodedAsnDataImplTest
                 result.get("/Document/body/content/text"));
         assertArrayEquals("/2/2/99".getBytes(Charsets.UTF_8),
                 result.get("/Document/body/content/99"));
-        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("/Document/2/2/99"));
+        assertArrayEquals("".getBytes(Charsets.UTF_8), instance.getBytes("/Document/2/2/99").get());
         result = emptyInstance.getBytesMatching(regex);
         assertEquals(0, result.size());
 
@@ -263,28 +264,31 @@ public class DecodedAsnDataImplTest
     @Test
     public void testGetHexString() throws Exception
     {
-        assertEquals("0x2F312F302F31", instance.getHexString("/Document/header/published/date"));
-        assertEquals("0x2F322F302F30", instance.getHexString("/Document/body/lastModified/date"));
-        assertEquals("0x2F322F312F31", instance.getHexString("/Document/body/prefix/text"));
-        assertEquals("0x2F322F322F31", instance.getHexString("/Document/body/content/text"));
-        assertEquals("0x2F332F302F31", instance.getHexString("/Document/footer/author/firstName"));
+        assertEquals("0x2F312F302F31",
+                instance.getHexString("/Document/header/published/date").get());
+        assertEquals("0x2F322F302F30",
+                instance.getHexString("/Document/body/lastModified/date").get());
+        assertEquals("0x2F322F312F31", instance.getHexString("/Document/body/prefix/text").get());
+        assertEquals("0x2F322F322F31", instance.getHexString("/Document/body/content/text").get());
+        assertEquals("0x2F332F302F31",
+                instance.getHexString("/Document/footer/author/firstName").get());
 
         // test unmapped tags
-        assertEquals("0x2F322F322F3939", instance.getHexString("/Document/body/content/99"));
-        assertEquals("0x2F39392F312F31", instance.getHexString("/Document/99/1/1"));
+        assertEquals("0x2F322F322F3939", instance.getHexString("/Document/body/content/99").get());
+        assertEquals("0x2F39392F312F31", instance.getHexString("/Document/99/1/1").get());
 
         // test raw tags
-        assertEquals("0x2F322F322F3939", instance.getHexString("/2/2/99"));
-        assertEquals("0x2F39392F312F31", instance.getHexString("/99/1/1"));
+        assertEquals("0x2F322F322F3939", instance.getHexString("/2/2/99").get());
+        assertEquals("0x2F39392F312F31", instance.getHexString("/99/1/1").get());
 
         // test unknown tags
-        assertEquals("0x", instance.getHexString(""));
-        assertEquals("0x", instance.getHexString("/0/0/0"));
-        assertEquals("0x", instance.getHexString("/Document/2/2/99"));
+        assertEquals("0x", instance.getHexString("").get());
+        assertEquals("0x", instance.getHexString("/0/0/0").get());
+        assertEquals("0x", instance.getHexString("/Document/2/2/99").get());
 
-        assertEquals("0x", emptyInstance.getHexString(""));
-        assertEquals("0x", emptyInstance.getHexString("/Document/0/0/0"));
-        assertEquals("0x", emptyInstance.getHexString("/Document/header/published/date"));
+        assertEquals("0x", emptyInstance.getHexString("").get());
+        assertEquals("0x", emptyInstance.getHexString("/Document/0/0/0").get());
+        assertEquals("0x", emptyInstance.getHexString("/Document/header/published/date").get());
     }
 
     @Test
@@ -389,7 +393,6 @@ public class DecodedAsnDataImplTest
                 instance.getType("/Document/body/content/text").getBuiltinType());
         assertEquals(AsnBuiltinType.OctetString,
                 instance.getType("/Document/footer/author/firstName").getBuiltinType());
-
 
         // test unmapped tags
         assertEquals(AsnBuiltinType.Null,

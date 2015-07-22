@@ -10,27 +10,27 @@ import com.brightsparklabs.asanti.model.data.AsnDataImpl;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.ByteSource;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.util.ASN1Dump;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
-import static com.brightsparklabs.asanti.common.ByteArrays.*;
+import static com.brightsparklabs.asanti.common.ByteArrays.toHexString;
 
 /**
  * Reads data from ASN.1 BER/DER binary files
  *
  * @author brightSPARK Labs
  */
-public class AsnBerFileReader
+public class AsnBerDataReader
 {
 
     // -------------------------------------------------------------------------
@@ -38,7 +38,7 @@ public class AsnBerFileReader
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnBerFileReader.class);
+    private static final Logger logger = LoggerFactory.getLogger(AsnBerDataReader.class);
 
     /** this is used to construct tags of the type parent/index[tag] */
     private static final String TAG_FORMATTER = "%s/%d[%s]";
@@ -54,40 +54,41 @@ public class AsnBerFileReader
     // -------------------------------------------------------------------------
 
     /**
-     * Reads the supplied ASN.1 BER/DER binary file
+     * Reads the supplied ASN.1 BER/DER binary data
      *
-     * @param berFile
-     *         file to decode
+     * @param source
+     *         data to decode
      *
-     * @return list of {@link AsnData} objects found in the file
+     * @return list of {@link AsnData} objects found in the data
      *
      * @throws IOException
-     *         if any errors occur reading from the file
+     *         if any errors occur reading the data
      */
-    public static ImmutableList<AsnData> read(File berFile) throws IOException
+    public static ImmutableList<AsnData> read(ByteSource source) throws IOException
     {
-        return read(berFile, 0);
+        return read(source, 0);
     }
 
     /**
-     * Reads the supplied ASN.1 BER/DER binary file and stops reading when it has read the specified
+     * Reads the supplied ASN.1 BER/DER binary data and stops reading when it has read the specified
      * number of PDUs
      *
-     * @param berFile
-     *         file to decode
+     * @param source
+     *         data  to decode
      * @param maxPDUs
-     *         number of PDUs to read from the file. The returned list will be less than or equal to
-     *         this value. Set to {@code 0} for no maximum (or use {@link #read(File)} instead).
+     *         number of PDUs to read from the data. The returned list will be less than or equal to
+     *         this value. Set to {@code 0} for no maximum (or use {@link #read(ByteSource)}
+     *         instead).
      *
-     * @return list of {@link AsnData} objects found in the file
+     * @return list of {@link AsnData} objects found in the data
      *
      * @throws IOException
-     *         if any errors occur reading from the file
+     *         if any errors occur reading the data
      */
-    public static ImmutableList<AsnData> read(File berFile, int maxPDUs) throws IOException
+    public static ImmutableList<AsnData> read(ByteSource source, int maxPDUs) throws IOException
     {
-        final FileInputStream fileInputStream = new FileInputStream(berFile);
-        final ASN1InputStream asnInputStream = new ASN1InputStream(fileInputStream);
+        final InputStream inputStream = source.openStream();
+        final ASN1InputStream asnInputStream = new ASN1InputStream(inputStream);
 
         final List<AsnData> result = Lists.newArrayList();
 

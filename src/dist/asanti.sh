@@ -56,12 +56,6 @@ do
     l)
       LOGGING_PROPERTIES="$OPTARG"
       ;;
-    b)
-      echo "-b used: $OPTARG";
-      ;;
-    c)
-      echo "-c used";
-      ;;
     ?)
       print_usage_and_exit "Invalid option supplied"
       ;;
@@ -79,14 +73,10 @@ readonly APP_JAR=`find "$APP_DIR/" -maxdepth 1 -name '*.jar' | head -1`
 echo "INFO: Using logging configuration from: $LOGGING_PROPERTIES"
 
 # build class path
-CLASSPATH=""
-for JAR in `find "$APP_DIR/lib" -name '*.jar'`
-do
-  CLASSPATH=$CLASSPATH:$JAR
-done
+CLASSPATH="`find "$APP_DIR" -name '*.jar' | tr '\n' ':'`"
 
 # execute
-readonly CMD="java -cp $APP_JAR$CLASSPATH -Dlog4j.configuration=file:$LOGGING_PROPERTIES com.brightsparklabs.asanti.Asanti $*"
+readonly CMD="java -cp $CLASSPATH -Dlog4j.configuration=file:$LOGGING_PROPERTIES com.brightsparklabs.asanti.AsantiCli $*"
 echo "INFO: Executing: $CMD"
 $CMD
 

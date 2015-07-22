@@ -10,18 +10,17 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.BaseEncoding;
+import com.google.common.io.ByteSource;
 import org.junit.Test;
-
-import java.io.File;
 
 import static org.junit.Assert.*;
 
 /**
- * Unit test for {@link AsnBerFileReader}
+ * Unit test for {@link AsnBerDataReader}
  *
  * @author brightSPARK Labs
  */
-public class AsnBerFileReaderTest
+public class AsnBerDataReaderTest
 {
     // -------------------------------------------------------------------------
     // FIXTURES
@@ -58,38 +57,38 @@ public class AsnBerFileReaderTest
     @Test
     public void testReadFileInt() throws Exception
     {
-        final File berFile = MockAsnBerFile.createAsnBerFileContainingPeoplePdus(5);
+        final ByteSource berData = MockAsnBerFile.createAsnBerDataContainingPeoplePdus(5);
 
         // test minimum
-        ImmutableList<AsnData> result = AsnBerFileReader.read(berFile, 1);
+        ImmutableList<AsnData> result = AsnBerDataReader.read(berData, 1);
         assertEquals(1, result.size());
 
         // test middle
-        result = AsnBerFileReader.read(berFile, 3);
+        result = AsnBerDataReader.read(berData, 3);
         assertEquals(3, result.size());
 
         // test maximum
-        result = AsnBerFileReader.read(berFile, 5);
+        result = AsnBerDataReader.read(berData, 5);
         assertEquals(5, result.size());
 
         // test over-specified
-        result = AsnBerFileReader.read(berFile, Integer.MAX_VALUE);
+        result = AsnBerDataReader.read(berData, Integer.MAX_VALUE);
         assertEquals(5, result.size());
 
         // test unlimited
-        result = AsnBerFileReader.read(berFile, 0);
+        result = AsnBerDataReader.read(berData, 0);
         assertEquals(5, result.size());
-        result = AsnBerFileReader.read(berFile, -1);
+        result = AsnBerDataReader.read(berData, -1);
         assertEquals(5, result.size());
-        result = AsnBerFileReader.read(berFile, Integer.MIN_VALUE);
+        result = AsnBerDataReader.read(berData, Integer.MIN_VALUE);
         assertEquals(5, result.size());
     }
 
     @Test
     public void testReadFile() throws Exception
     {
-        final File berFile = MockAsnBerFile.createAsnBerFileContainingDocumentPdus(5);
-        final ImmutableList<AsnData> result = AsnBerFileReader.read(berFile);
+        final ByteSource berData = MockAsnBerFile.createAsnBerDataContainingDocumentPdus(5);
+        final ImmutableList<AsnData> result = AsnBerDataReader.read(berData);
         assertEquals(5, result.size());
         for (final AsnData pdu : result)
         {
@@ -131,9 +130,9 @@ public class AsnBerFileReaderTest
     @Test
     public void testReadFile_LargeOctetString() throws Exception
     {
-        final File berFile = MockAsnBerFile.createAsnBerFile(5,
+        final ByteSource berData = MockAsnBerFile.createAsnBerData(5,
                 EXAMPLE_SCHEMA_PEOPLE_PDU_LARGE_OCTET_STRING_BER);
-        final ImmutableList<AsnData> result = AsnBerFileReader.read(berFile);
+        final ImmutableList<AsnData> result = AsnBerDataReader.read(berData);
         assertEquals(5, result.size());
 
         final AsnData pdu = result.get(0);
