@@ -294,8 +294,12 @@ public class AsnSchemaModule
         }
 
         /**
+         * Perform any AUTOMATIC tagging as needed, and if there are components with no tags then
+         * give them the appropriate UNIVERSAL tag relevant to their respective type. Should not be
+         * called until after {@link AsnSchemaModule.Builder#resolveTypes(Iterable)}
+         *
          * @throws ParseException
-         *         if there are duplicate tags found
+         *         should not throw - needed due to the visitor implementation
          */
         public void performTagging() throws ParseException
         {
@@ -309,6 +313,14 @@ public class AsnSchemaModule
             }
         }
 
+        /**
+         * Checks that the Components of a Constructed type do not have duplicate tags that would
+         * cause ambiguous decoding. Should not be called until after {@link
+         * AsnSchemaModule.Builder#performTagging()}
+         *
+         * @throws ParseException
+         *         if duplicates are found
+         */
         public void checkForDuplicates() throws ParseException
         {
             for (AsnSchemaTypeDefinition typeDefinition : types.values())
