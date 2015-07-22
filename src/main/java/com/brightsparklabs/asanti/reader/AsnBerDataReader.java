@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.reader;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.AsnDataImpl;
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -23,7 +24,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
-import static com.brightsparklabs.asanti.common.ByteArrays.toHexString;
+import static com.brightsparklabs.asanti.common.ByteArrays.*;
 
 /**
  * Reads data from ASN.1 BER/DER binary files
@@ -39,15 +40,6 @@ public class AsnBerDataReader
 
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(AsnBerDataReader.class);
-
-    /** this is used to construct tags of the type parent/index[tag] */
-    private static final String TAG_FORMATTER = "%s/%d[%s]";
-
-    /**
-     * this is used to construct tags of the type parent/index[tag], where tag is of  UNIVERSAL
-     * type
-     */
-    private static final String TAG_FORMATTER_UNIVERSAL = "%s/%d[UNIVERSAL %s]";
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -253,7 +245,7 @@ public class AsnBerDataReader
                 // Because this type is not tagged then we need to add a universal tag
                 int tagNumber = getTagNumber(getType(derObject));
                 logger.trace("adding faux tag, not tagged {}", tagNumber);
-                elementPrefix = String.format(TAG_FORMATTER_UNIVERSAL, prefix, index, tagNumber);
+                elementPrefix = prefix + "/" + AsnSchemaTag.createRawTag(index, tagNumber);
             }
 
             logger.trace("elementPrefix {}, isTagged {} index {}", elementPrefix, isTagged, index);
@@ -292,7 +284,8 @@ public class AsnBerDataReader
 
         DERObject obj = asnTaggedObject.getObject();
 
-        prefix = String.format(TAG_FORMATTER, prefix, index, asnTaggedObject.getTagNo());
+        prefix = prefix + "/" + AsnSchemaTag.createRawTag(index,
+                String.valueOf(asnTaggedObject.getTagNo()));
 
         int containingType = getType(asnTaggedObject);
         if (isConstructedType(containingType))
@@ -314,7 +307,7 @@ public class AsnBerDataReader
         {
             int number = getTagNumber(type);
             logger.trace("adding faux tag, tagged explicit {}", number);
-            prefix = String.format(TAG_FORMATTER_UNIVERSAL, prefix, index, number);
+            prefix = prefix + "/" + AsnSchemaTag.createRawTag(index, number);
         }
 
         logger.trace("TaggedObject entry - prefix {}, adding {}, explicit {} ",

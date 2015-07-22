@@ -162,6 +162,21 @@ public class AsnSchemaTag
     }
 
     /**
+     * @param tagIndex
+     *         tag index component of the raw tag
+     * @param universalTagNumber
+     *         ASN.1 Universal tag number
+     *
+     * @return a String representation of what toString of this tag would be, or this string can be
+     * passed in to create a new tag
+     */
+    public static String createRawTag(int tagIndex, int universalTagNumber)
+    {
+        return createRawTag(tagIndex,
+                createUniversalPortion(getBuiltInTypeForUniversalTag(universalTagNumber)));
+    }
+
+    /**
      * Creates the Universal portion of a tag based on the type
      *
      * @param type
