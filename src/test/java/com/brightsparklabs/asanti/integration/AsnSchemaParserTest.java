@@ -1250,7 +1250,7 @@ public class AsnSchemaParserTest
         tag = "/Human/b/c";
         assertEquals("B", pdus.get(0).getDecodedObject(tag));
     }
-    
+
     @Test
     public void testParse_NonUniqueTags() throws Exception
     {
