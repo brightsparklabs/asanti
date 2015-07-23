@@ -111,8 +111,6 @@ public class AsnSchemaModule
      * @return the type definition associated with the specified type name or {@link
      * AsnSchemaTypeDefinition#NULL} if no type definition is found
      */
-    // TODO ASN-115 (design) - I think this should use Optional, then AsnSchemaTypeDefinition.NULL
-    // is no longer needed.  I think the same for AsnSchemaType.  Should be a new task.
     public AsnSchemaTypeDefinition getType(String typeName)
     {
         final AsnSchemaTypeDefinition type = types.get(typeName);
@@ -337,8 +335,6 @@ public class AsnSchemaModule
         // -------------------------------------------------------------------------
         // INTERNAL CLASS: Builder.Resolver
         // -------------------------------------------------------------------------
-
-        // TODO ASN-115 (review style) - these here or in own files?
 
         /**
          * Use a double dispatch to avoid instanceof so that we can "visit" each type in the

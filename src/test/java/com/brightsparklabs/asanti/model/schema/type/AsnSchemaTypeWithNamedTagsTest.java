@@ -6,6 +6,8 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
+import java.text.ParseException;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -34,7 +36,9 @@ public class AsnSchemaTypeWithNamedTagsTest
         // null primitive type
         try
         {
-            new AsnSchemaTypeWithNamedTags(null, AsnSchemaConstraint.NULL, ImmutableList.<AsnSchemaNamedTag>of());
+            new AsnSchemaTypeWithNamedTags(null,
+                    AsnSchemaConstraint.NULL,
+                    ImmutableList.<AsnSchemaNamedTag>of());
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -43,7 +47,7 @@ public class AsnSchemaTypeWithNamedTagsTest
         // null named tags
         try
         {
-            new AsnSchemaTypeWithNamedTags(null, AsnSchemaConstraint.NULL, null);
+            new AsnSchemaTypeWithNamedTags(AsnPrimitiveType.INTEGER, AsnSchemaConstraint.NULL, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -61,13 +65,26 @@ public class AsnSchemaTypeWithNamedTagsTest
         when(mockTag0.getTag()).thenReturn("0");
         when(mockTag1.getTag()).thenReturn("1");
 
-        AsnSchemaTypeWithNamedTags withTags = new
-                AsnSchemaTypeWithNamedTags(AsnPrimitiveType.INTEGER,
-                                           AsnSchemaConstraint.NULL,
-                                           ImmutableList.of(mockTag0, mockTag1));
+        AsnSchemaTypeWithNamedTags withTags
+                = new AsnSchemaTypeWithNamedTags(AsnPrimitiveType.INTEGER,
+                AsnSchemaConstraint.NULL,
+                ImmutableList.of(mockTag0, mockTag1));
 
         assertEquals(AsnPrimitiveType.INTEGER, withTags.getPrimitiveType());
         verify(mockTag0).getTag();
         verify(mockTag1).getTag();
+    }
+
+    @Test
+    public void testVisitor() throws ParseException
+    {
+        AsnSchemaTypeVisitor v = BaseAsnSchemaTypeTest.getVisitor();
+
+        AsnSchemaTypeWithNamedTags instance = new AsnSchemaTypeWithNamedTags(AsnPrimitiveType.INTEGER,
+                AsnSchemaConstraint.NULL,
+                ImmutableList.<AsnSchemaNamedTag>of());
+
+        Object o = instance.accept(v);
+        assertEquals("Got AsnSchemaTypeWithNamedTags", o);
     }
 }

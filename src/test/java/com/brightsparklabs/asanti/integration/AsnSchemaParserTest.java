@@ -2217,7 +2217,7 @@ public class AsnSchemaParserTest
      * @param pdus
      *         the input DecodedAsnData objects
      */
-    private void debugPdus(Iterable<DecodedAsnData> pdus)
+    public static void debugPdus(Iterable<DecodedAsnData> pdus)
     {
         debugPdus(pdus, true);
     }
@@ -2229,7 +2229,7 @@ public class AsnSchemaParserTest
      *         determines whether to use {@link DecodedAsnData#getHexString} (if true) or {@link
      *         DecodedAsnData#getPrintableString} (if false)
      */
-    private void debugPdus(Iterable<DecodedAsnData> pdus, boolean printHexString)
+    public static void debugPdus(Iterable<DecodedAsnData> pdus, boolean printHexString)
     {
         int i = 0;
         for (DecodedAsnData pdu : pdus)

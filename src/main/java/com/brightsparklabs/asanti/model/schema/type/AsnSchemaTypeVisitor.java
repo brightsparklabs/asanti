@@ -22,6 +22,9 @@ public interface AsnSchemaTypeVisitor<T> extends Visitor
      *         the object to process
      *
      * @return the results from processing the supplied object
+     *
+     * @throws ParseException
+     *         dependent on visitor implementation
      */
     T visit(AsnSchemaTypeConstructed visitable) throws ParseException;
 
@@ -32,6 +35,9 @@ public interface AsnSchemaTypeVisitor<T> extends Visitor
      *         the object to process
      *
      * @return the results from processing the supplied object
+     *
+     * @throws ParseException
+     *         dependent on visitor implementation
      */
     T visit(BaseAsnSchemaType visitable) throws ParseException;
 
@@ -42,6 +48,9 @@ public interface AsnSchemaTypeVisitor<T> extends Visitor
      *         the object to process
      *
      * @return the results from processing the supplied object
+     *
+     * @throws ParseException
+     *         dependent on visitor implementation
      */
     T visit(AsnSchemaTypeCollection visitable) throws ParseException;
 
@@ -52,6 +61,9 @@ public interface AsnSchemaTypeVisitor<T> extends Visitor
      *         the object to process
      *
      * @return the results from processing the supplied object
+     *
+     * @throws ParseException
+     *         dependent on visitor implementation
      */
     T visit(AsnSchemaTypeWithNamedTags visitable) throws ParseException;
 
@@ -62,6 +74,9 @@ public interface AsnSchemaTypeVisitor<T> extends Visitor
      *         the object to process
      *
      * @return the results from processing the supplied object
+     *
+     * @throws ParseException
+     *         dependent on visitor implementation
      */
     T visit(AsnSchemaTypePlaceholder visitable) throws ParseException;
 
@@ -72,6 +87,9 @@ public interface AsnSchemaTypeVisitor<T> extends Visitor
      *         the object to process
      *
      * @return the results from processing the supplied object
+     *
+     * @throws ParseException
+     *         dependent on visitor implementation
      */
     T visit(AsnSchemaType.Null visitable) throws ParseException;
 }

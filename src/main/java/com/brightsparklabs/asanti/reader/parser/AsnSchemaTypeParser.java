@@ -3,7 +3,6 @@ package com.brightsparklabs.asanti.reader.parser;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.tag.TagCreator;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.base.Strings;
@@ -297,6 +296,8 @@ public class AsnSchemaTypeParser
      *
      * @param matcher
      *         matcher which matched on a corresponding
+     * @param taggingMode
+     *         dictates the mode in which to handle/generate tags
      *
      * @return an {@link AsnSchemaTypeConstructed} representing the parsed data
      *
@@ -316,10 +317,7 @@ public class AsnSchemaTypeParser
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        return new AsnSchemaTypeConstructed(primitiveType,
-                constraint,
-                componentTypes,
-                TagCreator.create(primitiveType, taggingMode));
+        return new AsnSchemaTypeConstructed(primitiveType, constraint, componentTypes, taggingMode);
     }
 
     /**

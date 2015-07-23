@@ -168,12 +168,16 @@ public class AsnSchemaTag
      *         ASN.1 Universal tag number
      *
      * @return a String representation of what toString of this tag would be, or this string can be
-     * passed in to create a new tag
+     * passed in to create a new tag.  If the universalTagNumber is invalid returns empty string
      */
-    public static String createRawTag(int tagIndex, int universalTagNumber)
+    public static String createRawTagUniversal(int tagIndex, int universalTagNumber)
     {
-        return createRawTag(tagIndex,
-                createUniversalPortion(getBuiltInTypeForUniversalTag(universalTagNumber)));
+        Optional<AsnBuiltinType> type = getBuiltInTypeForUniversalTag(universalTagNumber);
+        if (type.isPresent())
+        {
+            return createRawTag(tagIndex, createUniversalPortion(type.get()));
+        }
+        return "";
     }
 
     /**
@@ -283,13 +287,12 @@ public class AsnSchemaTag
      * @param universalTag
      *         ASN.1 Universal tag
      *
-     * @return respective AsnBuiltinType for the Universal tag, AsnBuiltinType#NULL if there is no
-     * match
+     * @return respective AsnBuiltinType for the Universal tag, {@link Optional#absent()} if there
+     * is no match
      */
-    public static AsnBuiltinType getBuiltInTypeForUniversalTag(int universalTag)
+    public static Optional<AsnBuiltinType> getBuiltInTypeForUniversalTag(int universalTag)
     {
-        return Optional.fromNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag))
-                .or(AsnBuiltinType.Null);
+        return Optional.fromNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag));
     }
 
     private static final ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG

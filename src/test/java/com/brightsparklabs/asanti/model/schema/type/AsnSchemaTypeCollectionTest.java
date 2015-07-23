@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.ParseException;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -187,5 +189,14 @@ public class AsnSchemaTypeCollectionTest
     {
         assertEquals(wrappedSequence, instance.getElementType());
         verifyZeroInteractions(wrappedSequence);
+    }
+
+    @Test
+    public void testVisitor() throws ParseException
+    {
+        AsnSchemaTypeVisitor v = BaseAsnSchemaTypeTest.getVisitor();
+
+        Object o = instance.accept(v);
+        assertEquals("Got AsnSchemaTypeCollection", o);
     }
 }

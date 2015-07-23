@@ -132,14 +132,10 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
             if (child.isPresent())
             {
                 final String newTag = "[" + tag.getTagIndex() + "]/" + child.get().getName();
-                // TODO ASN-115 (review design)) - I don't like this, as it is a dependency issue.  Makes it
-                // hard to test etc.  Ditto a couple of lines lower.
-                // as a reference there used to be a getChildName and getChildType
-                // I also played with the concept of an Interface AsnSchemaNamedType with a getName
-                // and getType methods, with AsnSchemaComponentType implementing it an also making a
-                // new light class AsnSchemaNamedTypeImpl to implement just that which we could
-                // return here (except that while ever we are calling getMatchingChild recursively
-                // (we are in the Constructed side of matching, we need to use AsnSchemaComponentType)
+                // TODO ASN-152
+                // As with the other ASN-152 "code smells" - good enough for now but if there is
+                // a refactor done later then think about this a dependency issue.
+                //  This makes it hard to test etc.  Ditto a couple of lines lower.
                 return Optional.of(new AsnSchemaComponentType(newTag,
                         rawTag,
                         false,

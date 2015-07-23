@@ -245,7 +245,7 @@ public class AsnBerDataReader
                 // Because this type is not tagged then we need to add a universal tag
                 int tagNumber = getTagNumber(getType(derObject));
                 logger.trace("adding faux tag, not tagged {}", tagNumber);
-                elementPrefix = prefix + "/" + AsnSchemaTag.createRawTag(index, tagNumber);
+                elementPrefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, tagNumber);
             }
 
             logger.trace("elementPrefix {}, isTagged {} index {}", elementPrefix, isTagged, index);
@@ -307,7 +307,7 @@ public class AsnBerDataReader
         {
             int number = getTagNumber(type);
             logger.trace("adding faux tag, tagged explicit {}", number);
-            prefix = prefix + "/" + AsnSchemaTag.createRawTag(index, number);
+            prefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, number);
         }
 
         logger.trace("TaggedObject entry - prefix {}, adding {}, explicit {} ",

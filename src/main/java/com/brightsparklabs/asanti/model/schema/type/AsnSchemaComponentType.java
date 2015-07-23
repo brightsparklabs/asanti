@@ -78,11 +78,11 @@ public class AsnSchemaComponentType
 
     /**
      * @param tag
-     *         set the tag of this component type
+     *         set the tag of this component type.  Will default to an empty string if {@code null}
      */
     public void setTag(String tag)
     {
-        this.tag = tag;
+        this.tag = (tag == null) ? "" : tag;
     }
 
     /**

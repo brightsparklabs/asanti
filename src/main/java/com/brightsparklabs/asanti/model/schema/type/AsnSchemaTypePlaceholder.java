@@ -124,11 +124,12 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     }
 
     /**
-     * @return the AsnSchemaType that this placeholder is pointing to
+     * @return the AsnSchemaType that this placeholder is pointing to, {@link AsnSchemaType#NULL} if
+     * none has yet been set.
      */
     public AsnSchemaType getIndirectType()
     {
-        return indirectType;
+        return indirectType == null ? AsnSchemaType.NULL : indirectType;
     }
 
     // -------------------------------------------------------------------------

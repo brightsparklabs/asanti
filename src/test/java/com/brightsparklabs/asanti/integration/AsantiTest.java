@@ -98,13 +98,13 @@ public class AsantiTest
             final DecodedAsnData pdu = allDecodedData.get(i);
             for (String tag : pdu.getTags())
             {
-                logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("\t{} => {}", tag, pdu.getHexString(tag).get());
                 logger.info("\t\tbuiltinType {} ", pdu.getType(tag).getBuiltinType());
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }
             for (String tag : pdu.getUnmappedTags())
             {
-                logger.info("?\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("?\t{} => {}", tag, pdu.getHexString(tag).get());
                 logger.info("\t\tbuiltinType{} ", pdu.getType(tag).getBuiltinType());
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }
@@ -144,13 +144,13 @@ public class AsantiTest
             final DecodedAsnData pdu = allDecodedData.get(i);
             for (String tag : pdu.getTags())
             {
-                logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("\t{} => {}", tag, pdu.getHexString(tag).get());
                 logger.info("\t\tbuiltinType {} ", pdu.getType(tag).getBuiltinType());
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }
             for (String tag : pdu.getUnmappedTags())
             {
-                logger.info("?\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("?\t{} => {}", tag, pdu.getHexString(tag).get());
                 logger.info("\t\tbuiltinType{} ", pdu.getType(tag).getBuiltinType());
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }
@@ -174,13 +174,13 @@ public class AsantiTest
             final DecodedAsnData pdu = allDecodedData.get(i);
             for (String tag : pdu.getTags())
             {
-                logger.info("\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("\t{} => {}", tag, pdu.getHexString(tag).get());
                 logger.info("\t\tbuiltinType {} ", pdu.getType(tag).getBuiltinType());
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }
             for (String tag : pdu.getUnmappedTags())
             {
-                logger.info("?\t{} => {}", tag, pdu.getHexString(tag));
+                logger.info("?\t{} => {}", tag, pdu.getHexString(tag).get());
                 logger.info("\t\tbuiltinType{} ", pdu.getType(tag).getBuiltinType());
                 assertTrue("Tag is found with contains", pdu.contains(tag));
             }

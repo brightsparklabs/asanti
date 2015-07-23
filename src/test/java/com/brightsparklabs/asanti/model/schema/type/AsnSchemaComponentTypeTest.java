@@ -103,6 +103,28 @@ public class AsnSchemaComponentTypeTest
         AsnSchemaType mocked = mock(AsnSchemaType.class);
         final AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", true, mocked);
         assertEquals(mocked, instance.getType());
-
     }
+
+    @Test
+    public void testSetTag() throws Exception
+    {
+        AsnSchemaComponentType instance = new AsnSchemaComponentType("TAG_NAME", "TAG", true,
+                AsnSchemaType.NULL);
+        assertEquals("TAG", instance.getTag());
+
+        instance.setTag("OTHER");
+        assertEquals("OTHER", instance.getTag());
+
+        // null, converts to empty
+        instance.setTag(null);
+        assertEquals("", instance.getTag());
+
+        instance.setTag("OTHER");
+        assertEquals("OTHER", instance.getTag());
+
+        // blank
+        instance.setTag("");
+        assertEquals("", instance.getTag());
+    }
+
 }

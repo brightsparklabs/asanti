@@ -1,5 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -20,6 +22,27 @@ public class AsnSchemaTagTest
         assertEquals("", tag.getTagIndex());
         assertEquals("", tag.getTagPortion());
         assertEquals("", tag.getTagUniversal());
+    }
+
+    @Test
+    public void testCreateHelpers() throws Exception
+    {
+        AsnSchemaTag tag = AsnSchemaTag.create("0[1]");
+        assertEquals("0[1]", tag.getRawTag());
+
+        tag = AsnSchemaTag.create(1,"2");
+        assertEquals("1[2]", tag.getRawTag());
+        tag = AsnSchemaTag.create("2", AsnBuiltinType.Integer);
+        assertEquals("2[UNIVERSAL 2]", tag.getRawTag());
+        tag = AsnSchemaTag.create(3, tag);
+        assertEquals("3[UNIVERSAL 2]", tag.getRawTag());
+
+        tag = AsnSchemaTag.create(AsnSchemaTag.createRawTagUniversal(4, 5));
+        assertEquals("4[UNIVERSAL 5]", tag.getRawTag());
+
+        tag = AsnSchemaTag.create(AsnSchemaTag.createRawTagUniversal(4, 31));
+        assertEquals("", tag.getRawTag());
+
     }
 
     @Test
@@ -139,5 +162,12 @@ public class AsnSchemaTagTest
         assertEquals("", tag.getTagIndex());
         tag = AsnSchemaTag.create("[UNIVERSAL 2]");
         assertEquals("", tag.getTagIndex());
+    }
+
+    @Test
+    public void testGetBuiltInTypeForUniversalTag()
+    {
+        assertEquals(AsnBuiltinType.Integer, AsnSchemaTag.getBuiltInTypeForUniversalTag(2).get());
+        assertFalse(AsnSchemaTag.getBuiltInTypeForUniversalTag(31).isPresent());
     }
 }
