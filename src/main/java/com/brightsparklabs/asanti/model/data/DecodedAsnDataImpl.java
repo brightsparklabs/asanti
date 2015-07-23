@@ -209,7 +209,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
-        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(decoderVisitor);
+        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
         final String result = decoder.decodeAsString(bytes.get());
         return Optional.of(result);
     }
@@ -257,7 +257,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
-        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(decoderVisitor);
+        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
         return Optional.of(decoder.decode(bytes.get()));
     }
 

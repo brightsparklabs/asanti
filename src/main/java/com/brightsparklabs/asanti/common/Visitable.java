@@ -10,22 +10,22 @@ package com.brightsparklabs.asanti.common;
  *
  * @author brightSPARK Labs
  *
- * @param <T>
+ * @param <VisitorType>
  *            type of {@link Visitor} that can visit this object
  */
-public interface Visitable<T extends Visitor>
+public interface Visitable<VisitorType extends Visitor>
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * Visits this objects with the supplied visitor
+     * Accepts a visit from a suitable visitor
      *
      * @param visitor
      *            the visitor to visit the object with
      *
      * @return the result from the visitor
      */
-    public Object visit(T visitor);
+    public Object accept(VisitorType visitor);
 }

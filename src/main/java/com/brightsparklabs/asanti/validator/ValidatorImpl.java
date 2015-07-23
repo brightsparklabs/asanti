@@ -40,8 +40,7 @@ public class ValidatorImpl implements Validator
         for (final String tag : decodedAsnData.getTags())
         {
             final AsnPrimitiveType type = decodedAsnData.getType(tag).getPrimitiveType();
-            final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.visit(
-                    validationVisitor);
+            final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(validationVisitor);
             final ImmutableSet<DecodedTagValidationFailure> failures = tagValidator.validate(tag,
                     decodedAsnData);
             builder.addAll(failures);

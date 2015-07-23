@@ -111,7 +111,7 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
         }
 
         @Override
-        public Object visit(AsnPrimitiveTypeVisitor<?> visitor)
+        public Object accept(AsnPrimitiveTypeVisitor<?> visitor)
         {
             return visitor.visit(this);
         }

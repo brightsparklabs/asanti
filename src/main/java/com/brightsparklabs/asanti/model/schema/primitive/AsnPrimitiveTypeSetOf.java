@@ -21,7 +21,7 @@ public class AsnPrimitiveTypeSetOf implements AsnPrimitiveType
     }
 
     @Override
-    public Object visit(AsnPrimitiveTypeVisitor<?> visitor)
+    public Object accept(AsnPrimitiveTypeVisitor<?> visitor)
     {
         return visitor.visit(this);
     }
