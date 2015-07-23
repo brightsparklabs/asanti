@@ -29,9 +29,6 @@ public class AsnSchemaModuleTest
     /** instance under test */
     private static AsnSchemaModule instance;
 
-    /** instance of the iterator for the 'other' builders */
-    private static Iterable<Builder> others;
-
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
@@ -39,8 +36,7 @@ public class AsnSchemaModuleTest
     @BeforeClass
     public static void setUpBeforeClass() throws ParseException
     {
-        others = Lists.newArrayList();
-        instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu().build(others);
+        instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu().build();
     }
 
     // -------------------------------------------------------------------------
@@ -53,12 +49,12 @@ public class AsnSchemaModuleTest
 
         // test standard build works
         final Builder builder = AsnSchemaModule.builder();
-        builder.setName("TEST").build(others);
+        builder.setName("TEST").build();
 
         // test null name
         try
         {
-            builder.setName(null).build(others);
+            builder.setName(null).build();
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -68,7 +64,7 @@ public class AsnSchemaModuleTest
         // test empty name
         try
         {
-            builder.setName("").build(others);
+            builder.setName("").build();
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)
@@ -76,7 +72,7 @@ public class AsnSchemaModuleTest
         }
         try
         {
-            builder.setName(" ").build(others);
+            builder.setName(" ").build();
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)

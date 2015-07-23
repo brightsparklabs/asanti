@@ -1,0 +1,7 @@
+choice-test Human ::= 
+{
+    payload {
+        name "payload"
+        iRIsContent typeA: { stuff "U", other 10 }
+    }    
+}

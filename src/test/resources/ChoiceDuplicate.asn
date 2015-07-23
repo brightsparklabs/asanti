@@ -1,0 +1,39 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+IMPORTS
+Bar FROM Other-Protocol { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) other(3) }
+;
+
+Human ::= SEQUENCE
+{
+    a PrintableString OPTIONAL,
+    foo Foo
+}
+Foo ::= CHOICE
+{
+    m CHOICE { x INTEGER, y UTF8String, z Bar },
+    n [1] PrintableString
+}
+
+
+END
+
+Other-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) other(3) }
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+IMPORTS
+;
+
+Bar ::= CHOICE
+{
+    p OCTET STRING,
+    q PrintableString
+}
+
+
+END

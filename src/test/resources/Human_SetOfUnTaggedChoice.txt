@@ -1,0 +1,6 @@
+
+human Human ::= 
+{
+    name 
+    { a: 10, b: "U" }
+}

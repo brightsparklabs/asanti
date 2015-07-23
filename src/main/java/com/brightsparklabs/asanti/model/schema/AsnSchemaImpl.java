@@ -7,17 +7,18 @@ package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -81,12 +82,52 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     @Override
-    public OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName)
+    public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(final Iterable<String> rawTags,
+            String topLevelTypeName)
+    {
+        DecodingSession session = new DecodingSessionImpl();
+
+        final Set<OperationResult<DecodedTag>> results = Sets.newHashSet();
+        for (String rawTag : rawTags)
+        {
+            final OperationResult<DecodedTag> decodeResult = getDecodedTag(rawTag,
+                    topLevelTypeName,
+                    session);
+
+            results.add(decodeResult);
+
+        }
+
+        return ImmutableSet.copyOf(results);
+    }
+
+    // -------------------------------------------------------------------------
+    // PRIVATE METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns the decoded tag for the supplied raw tag. E.g. {@code getDecodedTag("/0[1]/0[0]/0[1]",
+     * "Document")} =&gt; {@code "/Document/header/published/date"}
+     *
+     * @param rawTag
+     *         raw tag to decode
+     * @param topLevelTypeName
+     *         the name of the top level type in this module from which to begin decoding the raw
+     *         tag
+     * @param session
+     *         the session state that tracks the ordering and stateful part of decoding a complete
+     *         set of asn data.
+     *
+     * @return the result of the decode attempt containing the decoded tag
+     */
+    private OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName,
+            DecodingSession session)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final AsnSchemaTypeDefinition typeDefinition = primaryModule.getType(topLevelTypeName);
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(),
-                typeDefinition.getType());
+                typeDefinition.getType(),
+                session);
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
 
         // check if decode was successful
@@ -107,9 +148,11 @@ public class AsnSchemaImpl implements AsnSchema
 
         decodedTags.add(0, topLevelTypeName);
         decodedTags.add(0, ""); // empty string prefixes just the root separator
-        final String decodedTagPath = tagJoiner.join(decodedTags);
+        // The raw tags create a new '/' for collection elements (eg .../foo/[0])
+        // and we would rather have .../foo[0]
+        final String decodedTagPath = tagJoiner.join(decodedTags).replaceAll("/\\[", "\\[");
 
-        logger.debug("getDecodedTag {} => {}", rawTag, decodedTagPath);
+        logger.trace("getDecodedTag {} => {}", rawTag, decodedTagPath);
 
         final DecodedTag decodedTag = new DecodedTag(decodedTagPath,
                 rawTag,
@@ -122,16 +165,12 @@ public class AsnSchemaImpl implements AsnSchema
         return result;
     }
 
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
-
     /**
      * Returns the decoded tags for the supplied raw tags
      *
      * @param rawTags
      *         raw tags to decode. This should be an iterable in the order of the tags. E.g. The raw
-     *         tag {code "/1/0/1"} should be provided as an iterator of {code ["1", "0", "1"]}
+     *         tag {code "/1[0]/0[1]/1[2]"} should be provided as an iterator of {code ["1[0]", "0[1]", "1[2]"]}
      * @param containingType
      *         the {@link AsnSchemaType} that is the parent of the chain to be decoded
      *
@@ -140,7 +179,8 @@ public class AsnSchemaImpl implements AsnSchema
      * decoded, then a list containing the decoded tags for only the first three raw tags is
      * returned (e.g. {@code ["Header", "Published", "Date"]})
      */
-    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType)
+    private DecodedTagsAndType decodeTags(Iterator<String> rawTags, AsnSchemaType containingType,
+            DecodingSession decodingSession)
     {
         /* TODO: ASN-143.  does this functionality now belong here?
          * all the logic is about AsnSchemaType object - should it have a decodeTags function?
@@ -156,15 +196,20 @@ public class AsnSchemaImpl implements AsnSchema
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
+            final String decodedTagPath = tagJoiner.join(result.decodedTags)
+                    .replaceAll("/\\[", "\\[");
             // By definition the new tag is the child of its container.
-            final String decodedTag = type.getChildName(tag);
-            result.type = type.getChildType(tag);
-            // ensure it was found
-            if (result.type == AsnSchemaType.NULL)
+            decodingSession.setContext(decodedTagPath);
+
+            Optional<AsnSchemaComponentType> child = type.getMatchingChild(tag, decodingSession);
+            if (!child.isPresent())
             {
                 // no type to delve into
                 break;
             }
+
+            final String decodedTag = child.get().getName();
+            result.type = child.get().getType();
             result.decodedTags.add(decodedTag);
             type = result.type;
         }

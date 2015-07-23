@@ -1,0 +1,7 @@
+choice-test Human ::= 
+{
+    payload {
+        name "payload"
+        iRIsContent sequenceOfA: { mid: { stuff "U", other 10 } }
+    }    
+}

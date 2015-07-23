@@ -90,10 +90,11 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         // decode the tags in the data
         final Map<String, DecodedTag> decodedToRawTags = Maps.newHashMap();
         final Map<String, DecodedTag> unmappedTags = Maps.newHashMap();
-        for (final String rawTag : asnData.getRawTags())
+
+        ImmutableSet<OperationResult<DecodedTag>> results
+                = asnSchema.getDecodedTags(asnData.getRawTags(), topLevelTypeName);
+        for (OperationResult<DecodedTag> decodeResult : results)
         {
-            final OperationResult<DecodedTag> decodeResult = asnSchema.getDecodedTag(rawTag,
-                    topLevelTypeName);
             final DecodedTag decodedTag = decodeResult.getOutput();
             if (decodeResult.wasSuccessful())
             {
@@ -105,6 +106,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
                 unmappedTags.put(decodedTag.getTag(), decodedTag);
             }
         }
+
         this.decodedTags = ImmutableMap.copyOf(decodedToRawTags);
         this.unmappedTags = ImmutableMap.copyOf(unmappedTags);
         this.allTags = ImmutableMap.<String, DecodedTag>builder()
@@ -207,7 +209,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
-        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(decoderVisitor);
+        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
         final String result = decoder.decodeAsString(bytes.get());
         return Optional.of(result);
     }
@@ -255,7 +257,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
-        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.visit(decoderVisitor);
+        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
         return Optional.of(decoder.decode(bytes.get()));
     }
 

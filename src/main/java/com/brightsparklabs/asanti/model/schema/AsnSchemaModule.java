@@ -5,11 +5,7 @@
 
 package com.brightsparklabs.asanti.model.schema;
 
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeCollection;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePlaceholder;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -46,9 +42,7 @@ public class AsnSchemaModule
     /** all types defined in this module */
     private final ImmutableMap<String, AsnSchemaTypeDefinition> types;
 
-    /**
-     * all types imported by this module. Map is of form {typeName =&gt; importedModuleName}
-     */
+    /** all types imported by this module. Map is of form {typeName =&gt; importedModuleName} */
     private final ImmutableMap<String, String> imports;
 
     // -------------------------------------------------------------------------
@@ -69,7 +63,7 @@ public class AsnSchemaModule
      * @throws NullPointerException
      *         if any of the parameters are {@code null}
      * @throws IllegalArgumentException
-     *         if the name is blank
+     *         if the name, types, imports or tag is blank
      */
     private AsnSchemaModule(String name, Map<String, AsnSchemaTypeDefinition> types,
             Map<String, String> imports)
@@ -153,6 +147,12 @@ public class AsnSchemaModule
 
         /** class logger */
         private static final Logger logger = LoggerFactory.getLogger(Builder.class);
+
+        /** our mechanism for visiting each AsnSchemaType to apply appropriate tags */
+        private static final Tagger TAGGER = new Builder.Tagger();
+
+        /** our mechanism for visiting each AsnSchemaType to check for duplicate  tags */
+        private static final DuplicateChecker DUPLICATE_CHECKER = new Builder.DuplicateChecker();
 
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
@@ -253,16 +253,25 @@ public class AsnSchemaModule
         /**
          * Creates an instance of {@link AsnSchemaModule} from the information in this builder
          *
-         * @param otherModules
-         *         the other {@link AsnSchemaModule.Builder AsnSchemaModule.Builders} within the
-         *         schema.  They will be used to resolve imports as part of the final build.
-         *
          * @return an instance of {@link AsnSchemaModule}
+         */
+        public AsnSchemaModule build()
+        {
+            return new AsnSchemaModule(name, types, imports);
+        }
+
+        /**
+         * Resolve all of the "placeholder" type definitions such that they point to actual types,
+         * even across modules.
+         *
+         * @param otherModules
+         *         the other {@link AsnSchemaModule.Builder} within the schema.  They will be used
+         *         to resolve imports as part of the final build.
          *
          * @throws ParseException
          *         if there are imports that cannot be resolved
          */
-        public AsnSchemaModule build(Iterable<Builder> otherModules) throws ParseException
+        public void resolveTypes(Iterable<Builder> otherModules) throws ParseException
         {
             // convert to a Map so we can easily key off the name when doing
             // import resolution
@@ -273,192 +282,355 @@ public class AsnSchemaModule
                 builder.put(moduleBuilder.name, moduleBuilder);
             }
 
-            resolveTypes(builder.build());
-            final AsnSchemaModule module = new AsnSchemaModule(name, types, imports);
-            return module;
+            Resolver resolver = this.new Resolver(builder.build());
+
+            for (AsnSchemaTypeDefinition typeDefinition : types.values())
+            {
+                logger.debug("Resolving Type {} in module {}", typeDefinition.getName(), this.name);
+                typeDefinition.getType().accept(resolver);
+            }
         }
 
         /**
-         * Resolve all of the "placeholder" type definitions such that they point to actual types,
-         * even across modules.
-         *
-         * @param otherModules
-         *         the other {@link AsnSchemaModule.Builder AsnSchemaModule.Builders} within the
-         *         schema.  They will be used to resolve imports as part of the final build.
+         * Perform any AUTOMATIC tagging as needed, and if there are components with no tags then
+         * give them the appropriate UNIVERSAL tag relevant to their respective type. Should not be
+         * called until after {@link AsnSchemaModule.Builder#resolveTypes(Iterable)}
          *
          * @throws ParseException
-         *         if there are imports that cannot be resolved
+         *         should not throw - needed due to the visitor implementation
          */
-        private void resolveTypes(Map<String, AsnSchemaModule.Builder> otherModules)
-                throws ParseException
+        public void performTagging() throws ParseException
         {
             for (AsnSchemaTypeDefinition typeDefinition : types.values())
             {
-                resolveType(typeDefinition.getType(), otherModules);
+                logger.debug("Perform Tagging for TypeDef {} in module {}",
+                        typeDefinition.getName(),
+                        this.name);
+
+                typeDefinition.getType().accept(TAGGER);
             }
         }
 
         /**
-         * Recursively resolves the placeholder types definitions within the supplied {@link
-         * AsnSchemaType}
-         *
-         * @param type
-         *         the type to resolve
-         * @param otherModules
-         *         the other {@link AsnSchemaModule.Builder AsnSchemaModule.Builders} within the
-         *         schema. These should contain the {@link AsnSchemaTypeDefinition
-         *         AsnSchemaTypeDefinitions} for the types that need to be imported.
+         * Checks that the Components of a Constructed type do not have duplicate tags that would
+         * cause ambiguous decoding. Should not be called until after {@link
+         * AsnSchemaModule.Builder#performTagging()}
          *
          * @throws ParseException
-         *         if there are imports that cannot be resolved
+         *         if duplicates are found
          */
-        private void resolveType(AsnSchemaType type,
-                Map<String, AsnSchemaModule.Builder> otherModules) throws ParseException
+        public void checkForDuplicates() throws ParseException
         {
-            // At some future time when we need to perform different behaviour depending on
-            // the derived type then we will make a Visitor.  For now this will suffice
-            if (type instanceof AsnSchemaTypePlaceholder)
+            for (AsnSchemaTypeDefinition typeDefinition : types.values())
             {
-                resolvePlaceholderType((AsnSchemaTypePlaceholder) type, otherModules);
+                logger.debug("Checking Duplicates for TypeDef {} in module {}",
+                        typeDefinition.getName(),
+                        this.name);
+
+                typeDefinition.getType().accept(DUPLICATE_CHECKER);
             }
-            else if (type instanceof AsnSchemaTypeConstructed)
+
+        }
+
+        // -------------------------------------------------------------------------
+        // INTERNAL CLASS: Builder.Resolver
+        // -------------------------------------------------------------------------
+
+        /**
+         * Use a double dispatch to avoid instanceof so that we can "visit" each type in the
+         * hierarchy of types of each Type in each Type Definition in a schema.  We do this so that
+         * we can resolve the Placeholder types, linking them up from the type name that they store
+         * at the time of parsing to the actual AsnSchemaType that they are, which we need later for
+         * tagging, decoding and validation.
+         */
+        private class Resolver implements AsnSchemaTypeVisitor<Void>
+        {
+            // ---------------------------------------------------------------------
+            // INSTANCE VARIABLES
+            // ---------------------------------------------------------------------
+
+            /** the other modules within a schema, needed to resolve imports */
+            private final Map<String, AsnSchemaModule.Builder> otherModules;
+
+            // ---------------------------------------------------------------------
+            // CONSTRUCTION
+            // ---------------------------------------------------------------------
+
+            /**
+             * Default constructor
+             *
+             * @param otherModules
+             *         the other {@link AsnSchemaModule.Builder AsnSchemaModule.Builders} within the
+             *         schema.  They will be used to resolve imports as part of the final build.
+             */
+            private Resolver(Map<String, AsnSchemaModule.Builder> otherModules)
             {
-                resolveConstructedType((AsnSchemaTypeConstructed) type, otherModules);
+                this.otherModules = otherModules;
             }
-            else if (type instanceof AsnSchemaTypeCollection)
+
+            // ---------------------------------------------------------------------
+            // PUBLIC METHODS
+            // ---------------------------------------------------------------------
+
+            @Override
+            public Void visit(AsnSchemaTypeConstructed visitable) throws ParseException
             {
-                resolveType(((AsnSchemaTypeCollection) type).getElementType(), otherModules);
+                // visit all the components to resolve them
+                for (AsnSchemaComponentType componentType : visitable.getAllComponents())
+                {
+                    componentType.getType().accept(this);
+                }
+
+                return null;
+            }
+
+            @Override
+            public Void visit(BaseAsnSchemaType visitable) throws ParseException
+            {
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypeCollection visitable) throws ParseException
+            {
+                // visit the Element that we are "wrapping"
+                visitable.getElementType().accept(this);
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypeWithNamedTags visitable) throws ParseException
+            {
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypePlaceholder visitable) throws ParseException
+            {
+                // This is the real work - resolve this by finding the actual Type.
+
+                final String moduleName = visitable.getModuleName();
+                final String typeName = visitable.getTypeName();
+
+                // Assume that the type is in this module.
+                AsnSchemaTypeDefinition newTypeDefinition = types.get(typeName);
+                if (newTypeDefinition == null)
+                {
+                    // then it will come from an import.
+                    newTypeDefinition = getImportedTypeDefinition(moduleName,
+                            typeName,
+                            otherModules);
+                }
+
+                final AsnSchemaType newType = newTypeDefinition.getType();
+                if (newType == AsnSchemaType.NULL)
+                {
+                    final String errorString = String.format(
+                            "Unable to resolve placeholder.  TypeDefinition {%s} is badly formed",
+                            typeName);
+                    logger.warn(errorString);
+                    throw new ParseException(errorString, -1);
+                }
+
+                // we now have the actual type this placeholder was holding out for, so add it.
+                visitable.setIndirectType(newType);
+
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaType.Null visitable) throws ParseException
+            {
+                return null;
+            }
+
+            /**
+             * Returns an {@link AsnSchemaTypeDefinition} from either the specified module, or by
+             * looking up the appropriate module from the Imports.
+             *
+             * @param moduleName
+             *         The name of the other Module to import from.  May be null/empty.
+             * @param typeName
+             *         The name of the TypeDefinition to import
+             * @param otherModules
+             *         The other modules - ie the source of the imports
+             *
+             * @return The AsnSchemaTypeDefinition for the imported type.
+             *
+             * @throws ParseException
+             *         ParseException if there are imports that cannot be resolved
+             */
+            private AsnSchemaTypeDefinition getImportedTypeDefinition(String moduleName,
+                    String typeName, Map<String, AsnSchemaModule.Builder> otherModules)
+                    throws ParseException
+            {
+
+                // figure out which module the place holder may have specified it, if not then we need to look it up
+                if (Strings.isNullOrEmpty(moduleName))
+                {
+                    moduleName = imports.get(typeName);
+                }
+
+                if (Strings.isNullOrEmpty(moduleName))
+                {
+                    final String errorString = String.format(
+                            "Unable to resolve import of %s, it is not specified as an import",
+                            typeName);
+                    logger.warn(errorString);
+                    throw new ParseException(errorString, -1);
+                }
+
+                final Builder otherModule = otherModules.get(moduleName);
+                if (otherModule == null)
+                {
+                    final String errorString = String.format(
+                            "Unable to resolve import of %s, could not find module {%s}",
+                            typeName,
+                            moduleName);
+                    logger.warn(errorString);
+                    throw new ParseException(errorString, -1);
+                }
+
+                final AsnSchemaTypeDefinition newTypeDefinition = otherModule.types.get(typeName);
+                if (newTypeDefinition == null)
+                {
+                    final String errorString = String.format(
+                            "Unable to resolve import - could not find type %s in module %s",
+                            typeName,
+                            moduleName);
+                    logger.warn(errorString);
+                    throw new ParseException(errorString, -1);
+                }
+
+                return newTypeDefinition;
             }
         }
 
         /**
-         * Resolves the supplied {@link AsnSchemaTypePlaceholder}
-         *
-         * @param type
-         *         the type to resolve
-         * @param otherModules
-         *         the other {@link AsnSchemaModule.Builder AsnSchemaModule.Builders} within the
-         *         schema. These should contain the {@link AsnSchemaTypeDefinition
-         *         AsnSchemaTypeDefinitions} for the types that need to be imported.
-         *
-         * @throws ParseException
-         *         if there are imports that cannot be resolved
+         * Use a double dispatch to "visit" each type in the hierarchy of types, allowing us to
+         * provide functionality that is type specific. We need to visit each AsnSchemaType, in each
+         * Type Definition in a schema.  We do this so that we can calculate the tag for all
+         * components.  A Tag may have been provided in the schema otherwise it might be
+         * Automatically tagged, otherwise is has a UNIVERSAL tag, which represents the underlying
+         * ASN.1 type of the component.  We may not know the type at the time we parse the item (it
+         * is defined in terms of a Type Definition elsewhere, including another module).
          */
-        private void resolvePlaceholderType(final AsnSchemaTypePlaceholder type,
-                final Map<String, Builder> otherModules) throws ParseException
+        private static class Tagger implements AsnSchemaTypeVisitor<Void>
         {
-            final String moduleName = type.getModuleName();
-            final String typeName = type.getTypeName();
+            // ---------------------------------------------------------------------
+            // PUBLIC METHODS
+            // ---------------------------------------------------------------------
 
-            // Assume that the type is in this module.
-            AsnSchemaTypeDefinition newTypeDefinition = types.get(typeName);
-            if (newTypeDefinition == null)
+            @Override
+            public Void visit(AsnSchemaTypeConstructed visitable) throws ParseException
             {
-                // then it will come from an import.
-                newTypeDefinition = getImportedTypeDefinition(moduleName, typeName, otherModules);
+                for (AsnSchemaComponentType component : visitable.getAllComponents())
+                {
+                    component.getType().accept(this);
+                }
+
+                // because some tags are not context-specific we need to know the
+                // types of items to create Universal tags, which we may not know until all the
+                // types (including across modules) have been resolved.
+                visitable.performTagging();
+
+                return null;
             }
 
-            final AsnSchemaType newType = newTypeDefinition.getType();
-            if (newType == AsnSchemaType.NULL)
+            @Override
+            public Void visit(BaseAsnSchemaType visitable) throws ParseException
             {
-                final String errorString = String.format(
-                        "Unable to resolve placeholder.  TypeDefinition {%s} is badly formed",
-                        typeName);
-                logger.warn(errorString);
-                throw new ParseException(errorString, -1);
+                return null;
             }
 
-            // we now have the actual type this placeholder was holding out for, so add it.
-            type.setIndirectType(newType);
+            @Override
+            public Void visit(AsnSchemaTypeCollection visitable) throws ParseException
+            {
+                visitable.getElementType().accept(this);
+
+                visitable.performTagging();
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypeWithNamedTags visitable) throws ParseException
+            {
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypePlaceholder visitable) throws ParseException
+            {
+                visitable.getIndirectType().accept(this);
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaType.Null visitable) throws ParseException
+            {
+                return null;
+            }
         }
 
         /**
-         * Returns an {@link AsnSchemaTypeDefinition} from either the specified module, or by
-         * looking up the appropriate module from the Imports.
-         *
-         * @param moduleName
-         *         The name of the other Module to import from.  May be null/empty.
-         * @param typeName
-         *         The name of the TypeDefinition to import
-         * @param otherModules
-         *         The other modules - ie the source of the imports
-         *
-         * @return The AsnSchemaTypeDefinition for the imported type.
-         *
-         * @throws ParseException
-         *         ParseException if there are imports that cannot be resolved
+         * Use a double dispatch to "visit" each type in the hierarchy of types, allowing us to
+         * provide functionality that is type specific. We need to visit each AsnSchemaType, in each
+         * Type Definition in a schema.  We do this so that we can check for duplicate tags
          */
-        private AsnSchemaTypeDefinition getImportedTypeDefinition(String moduleName,
-                String typeName, Map<String, AsnSchemaModule.Builder> otherModules)
-                throws ParseException
+        private static class DuplicateChecker implements AsnSchemaTypeVisitor<Void>
         {
+            // ---------------------------------------------------------------------
+            // PUBLIC METHODS
+            // ---------------------------------------------------------------------
 
-            // figure out which module the place holder may have specified it, if not then we need to look it up
-            if (Strings.isNullOrEmpty(moduleName))
+            @Override
+            public Void visit(AsnSchemaTypeConstructed visitable) throws ParseException
             {
-                moduleName = imports.get(typeName);
+                for (AsnSchemaComponentType component : visitable.getAllComponents())
+                {
+                    component.getType().accept(this);
+                }
+
+                // because checking for duplicates involves knowing the tag of each component,
+                // which is not fully set/known until after the TAGGER visit we will set in
+                // another visit.
+                visitable.checkForDuplicates();
+                return null;
             }
 
-            if (Strings.isNullOrEmpty(moduleName))
+            @Override
+            public Void visit(BaseAsnSchemaType visitable) throws ParseException
             {
-                final String errorString = String.format(
-                        "Unable to resolve import of %s, it is not specified as an import",
-                        typeName);
-                logger.warn(errorString);
-                throw new ParseException(errorString, -1);
+                return null;
             }
 
-            final Builder otherModule = otherModules.get(moduleName);
-            if (otherModule == null)
+            @Override
+            public Void visit(AsnSchemaTypeCollection visitable) throws ParseException
             {
-                final String errorString = String.format(
-                        "Unable to resolve import of %s, could not find module {%s}",
-                        typeName,
-                        moduleName);
-                logger.warn(errorString);
-                throw new ParseException(errorString, -1);
+                visitable.getElementType().accept(this);
+                return null;
             }
 
-            final AsnSchemaTypeDefinition newTypeDefinition = otherModule.types.get(typeName);
-            if (newTypeDefinition == null)
+            @Override
+            public Void visit(AsnSchemaTypeWithNamedTags visitable) throws ParseException
             {
-                final String errorString = String.format(
-                        "Unable to resolve import - could not find type %s in module %s",
-                        typeName,
-                        moduleName);
-                logger.warn(errorString);
-                throw new ParseException(errorString, -1);
+                return null;
             }
 
-            return newTypeDefinition;
-        }
-
-        /**
-         * Resolves the placeholder types definitions within the supplied {@link
-         * AsnSchemaTypeConstructed}
-         *
-         * @param type
-         *         the type to resolve
-         * @param otherModules
-         *         the other {@link AsnSchemaModule.Builder AsnSchemaModule.Builders} within the
-         *         schema. These should contain the {@link AsnSchemaTypeDefinition
-         *         AsnSchemaTypeDefinitions} for the types that need to be imported.
-         *
-         * @throws ParseException
-         *         ParseException if there are imports that cannot be resolved
-         */
-        private void resolveConstructedType(AsnSchemaTypeConstructed type,
-                Map<String, AsnSchemaModule.Builder> otherModules) throws ParseException
-        {
-            final ImmutableMap<String, AsnSchemaComponentType> allComponents
-                    = type.getAllComponents();
-            for (AsnSchemaComponentType componentType : allComponents.values())
+            @Override
+            public Void visit(AsnSchemaTypePlaceholder visitable) throws ParseException
             {
-                resolveType(componentType.getType(), otherModules);
+                visitable.getIndirectType().accept(this);
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaType.Null visitable) throws ParseException
+            {
+                return null;
             }
         }
     }
-
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null
     // -------------------------------------------------------------------------

@@ -1,9 +1,14 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+
+import java.text.ParseException;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -16,6 +21,7 @@ import static com.google.common.base.Preconditions.*;
  */
 public class BaseAsnSchemaType implements AsnSchemaType
 {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -23,11 +29,8 @@ public class BaseAsnSchemaType implements AsnSchemaType
     /** the primitiveType of this definition */
     private final AsnPrimitiveType primitiveType;
 
-    /** the constraint on the primitiveType */
+    /** the constraints on the primitiveType */
     private final ImmutableSet<AsnSchemaConstraint> constraints;
-
-    /** the parent type if this type is defined in terms on another */
-    //private final AsnSchemaType indirectType;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -68,9 +71,9 @@ public class BaseAsnSchemaType implements AsnSchemaType
     // -------------------------------------------------------------------------
 
     @Override
-    public AsnPrimitiveType getPrimitiveType()
+    public ImmutableList<AsnSchemaComponentType> getAllComponents()
     {
-        return primitiveType;
+        return ImmutableList.of();
     }
 
     @Override
@@ -88,14 +91,21 @@ public class BaseAsnSchemaType implements AsnSchemaType
     }
 
     @Override
-    public AsnSchemaType getChildType(String tag)
+    public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
+            DecodingSession decodingSession)
     {
-        return AsnSchemaType.NULL;
+        return Optional.absent();
     }
 
     @Override
-    public String getChildName(String tag)
+    public AsnPrimitiveType getPrimitiveType()
     {
-        return "";
+        return primitiveType;
+    }
+
+    @Override
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
+    {
+        return visitor.visit(this);
     }
 }

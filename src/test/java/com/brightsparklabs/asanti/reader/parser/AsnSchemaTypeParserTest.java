@@ -1,18 +1,17 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.*;
 
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -21,7 +20,6 @@ import java.text.ParseException;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -81,7 +79,9 @@ public class AsnSchemaTypeParserTest
         // mock AsnSchemaComponentTypeParser.parse, and capture call arguments
         PowerMockito.mockStatic(AsnSchemaComponentTypeParser.class);
         componentArgument = ArgumentCaptor.forClass(String.class);
-        when(AsnSchemaComponentTypeParser.parse(componentArgument.capture())).thenReturn(
+        ArgumentCaptor<AsnModuleTaggingMode> taggingMode = ArgumentCaptor.forClass(AsnModuleTaggingMode.class);
+        when(AsnSchemaComponentTypeParser.parse(componentArgument.capture(),
+                taggingMode.capture())).thenReturn(
                 ImmutableList.<AsnSchemaComponentType>of());
     }
 
@@ -100,17 +100,26 @@ public class AsnSchemaTypeParserTest
         // null value
         try
         {
-            AsnSchemaTypeParser.parse(null);
+            AsnSchemaTypeParser.parse(null, AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
+        {
+        }
+        // null tagging mode
+        try
+        {
+            AsnSchemaTypeParser.parse("Stuff", null);
+            fail("NullPointerException not thrown");
+        }
+        catch (final NullPointerException ex)
         {
         }
 
         // only whitespace
         try
         {
-            AsnSchemaTypeParser.parse(" ");
+            AsnSchemaTypeParser.parse(" ", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -120,7 +129,7 @@ public class AsnSchemaTypeParserTest
         // blank value
         try
         {
-            AsnSchemaTypeParser.parse("");
+            AsnSchemaTypeParser.parse("", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -133,7 +142,7 @@ public class AsnSchemaTypeParserTest
     {
         try
         {
-            AsnSchemaTypeParser.parse("Fred ::= INTEGER");
+            AsnSchemaTypeParser.parse("Fred ::= INTEGER", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -144,7 +153,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseBitString() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("BIT STRING");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("BIT STRING", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.BitString, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
     }
@@ -152,28 +161,28 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseBoolean() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("BOOLEAN");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("BOOLEAN", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Boolean, result.getBuiltinType());
     }
 
     @Test
     public void testParseChoice() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("CHOICE { optA [0] SomeType }");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("CHOICE { optA [0] SomeType }", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Choice, result.getBuiltinType());
     }
 
     @Test
     public void testParseEnumerated() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("ENUMERATED { optA(0), optB(1) }");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("ENUMERATED { optA(0), optB(1) }", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Enumerated, result.getBuiltinType());
     }
 
     @Test
     public void testParseGeneralString() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("GeneralString");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("GeneralString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.GeneralString, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -181,7 +190,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseGeneralizedTime() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("GeneralizedTime");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("GeneralizedTime", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.GeneralizedTime, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -189,7 +198,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseIA5String() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("IA5String");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("IA5String", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Ia5String, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -197,7 +206,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseInteger() throws Exception
     {
-        AsnSchemaType result = AsnSchemaTypeParser.parse("INTEGER");
+        AsnSchemaType result = AsnSchemaTypeParser.parse("INTEGER", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
         // Ensure that the right text got passed to the constraints parser
@@ -206,7 +215,7 @@ public class AsnSchemaTypeParserTest
         assertEquals(1, result.getConstraints().size());
 
 
-        result = AsnSchemaTypeParser.parse("INTEGER (1..10)");
+        result = AsnSchemaTypeParser.parse("INTEGER (1..10)", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
         // Ensure that the right text got passed to the constraints parser
@@ -214,7 +223,7 @@ public class AsnSchemaTypeParserTest
         assertEquals("", distinguishedValuesArgument.getValue());
         assertEquals(1, result.getConstraints().size());
 
-        result = AsnSchemaTypeParser.parse("INTEGER (1..10, ...)");
+        result = AsnSchemaTypeParser.parse("INTEGER (1..10, ...)", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
         // Ensure that the right text got passed to the constraints parser
@@ -223,7 +232,7 @@ public class AsnSchemaTypeParserTest
         assertEquals(1, result.getConstraints().size());
 
         // check distinguished values.
-        result = AsnSchemaTypeParser.parse("INTEGER { disk-full(1), no-disk(-1), disk-not-formatted(2) }");
+        result = AsnSchemaTypeParser.parse("INTEGER { disk-full(1), no-disk(-1), disk-not-formatted(2) }", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
         // Ensure that the right text got passed to the constraints parser
@@ -235,12 +244,12 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseNumericString() throws Exception
     {
-        AsnSchemaType result = AsnSchemaTypeParser.parse("NumericString");
+        AsnSchemaType result = AsnSchemaTypeParser.parse("NumericString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
 
         //
-        result = AsnSchemaTypeParser.parse("NumericString (SIZE(1..100))");
+        result = AsnSchemaTypeParser.parse("NumericString (SIZE(1..100))", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
         // Ensure that the right text got passed to the constraints parser
@@ -250,7 +259,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseOctetString() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("OCTET STRING");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("OCTET STRING", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.OctetString, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -258,7 +267,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseOid() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("OBJECT IDENTIFIER");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("OBJECT IDENTIFIER", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Oid, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -266,7 +275,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParsePrintableString() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("PrintableString");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("PrintableString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.PrintableString, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -274,7 +283,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseRelativeOid() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("RELATIVE-OID");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("RELATIVE-OID", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.RelativeOid, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -282,12 +291,12 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseSequence() throws Exception
     {
-        AsnSchemaType result = AsnSchemaTypeParser.parse("SEQUENCE { someValue [0] UTF8String }");
+        AsnSchemaType result = AsnSchemaTypeParser.parse("SEQUENCE { someValue [0] UTF8String }", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Sequence, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypeConstructed.class));
         assertEquals(" someValue [0] UTF8String ", componentArgument.getValue());
 
-        result = AsnSchemaTypeParser.parse("SEQUENCE { someValue [0] SEQUENCE { foo [0] BAR }");
+        result = AsnSchemaTypeParser.parse("SEQUENCE { someValue [0] SEQUENCE { foo [0] BAR }", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Sequence, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypeConstructed.class));
         assertEquals(" someValue [0] SEQUENCE { foo [0] BAR ", componentArgument.getValue());
@@ -296,7 +305,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseSequenceOf() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("SEQUENCE (SIZE (1..10)) OF SEQUENCE { someValue [0] SomeType }");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("SEQUENCE (SIZE (1..10)) OF SEQUENCE { someValue [0] SomeType }", AsnModuleTaggingMode.DEFAULT);
         // TODO ASN-140
         // getPrimitiveType on a collection returns the type of the thing that we are a collection of
         // not the actual collection.
@@ -307,7 +316,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseSet() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("SET { someValue [0] SomeType }");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("SET { someValue [0] SomeType }", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Set, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypeConstructed.class));
     }
@@ -315,7 +324,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseSetOf() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("SET (SIZE (10)) OF INTEGER (1..100)");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("SET (SIZE (10)) OF INTEGER (1..100)", AsnModuleTaggingMode.DEFAULT);
         // TODO ASN-140
         // getPrimitiveType on a collection returns the type of the thing that we are a collection of
         // not the actual collection.
@@ -333,7 +342,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseUtf8String() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("UTF8String");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("UTF8String", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Utf8String, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -341,7 +350,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseVisibleString() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("VisibleString");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("VisibleString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.VisibleString, result.getBuiltinType());
         assertThat(result, instanceOf(BaseAsnSchemaType.class));
     }
@@ -349,7 +358,7 @@ public class AsnSchemaTypeParserTest
     @Test
     public void testParseNonPrimitive() throws Exception
     {
-        final AsnSchemaType result = AsnSchemaTypeParser.parse("SomeType");
+        final AsnSchemaType result = AsnSchemaTypeParser.parse("SomeType", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Null, result.getBuiltinType());
         assertThat(result, instanceOf(AsnSchemaTypePlaceholder.class));
     }

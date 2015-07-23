@@ -4,7 +4,7 @@
  */
 
 /**
- * This package contains classes for modeling types from an ASN.1 schema. There is not a one-to-one
+ * This package contains classes for modelling types from an ASN.1 schema. There is not a one-to-one
  * mapping here to the ASN.1 primitive types, rather this is modelling the abstractions.
  *
  * @author brightSPARK Labs

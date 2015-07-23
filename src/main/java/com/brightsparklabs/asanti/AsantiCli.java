@@ -13,6 +13,7 @@ import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteSource;
@@ -220,36 +221,6 @@ public class AsantiCli
         final CharSource schemaSource = Files.asCharSource(asnFile, Charsets.UTF_8);
         final AsnSchema asnSchema = AsnSchemaReader.read(schemaSource);
 
-        logger.info("Expecting PASS");
-        ImmutableList<String> rawTags = ImmutableList.of("/1/1",
-                "/2/3/2/3/0/1",
-                "/2/0/2/2/1/18/0",
-                "/2/0/2/2/1/18/0",
-                "/1/3/0/0");
-        for (final String rawTag : rawTags)
-        {
-            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
-            logger.info("\t{}:\t decode {} => {}",
-                    result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag,
-                    result.getOutput().getTag());
-        }
-
-        logger.info("Expecting FAIL");
-        rawTags = ImmutableList.of("/1/14",
-                "/1/1/5",
-                "/2/3/2/3/0/100",
-                "/2/0/2/2/1/18/90",
-                "/1/3/0/80");
-        for (final String rawTag : rawTags)
-        {
-            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
-            logger.info("\t{}:\t decode {} => {}",
-                    result.wasSuccessful() ? "PASS" : "FAIL",
-                    rawTag,
-                    result.getOutput().getTag());
-        }
-
         logger.info("User testing:");
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in,
                 Charsets.UTF_8));
@@ -257,7 +228,9 @@ public class AsantiCli
         {
             System.out.print("\tEnter raw tag: ");
             final String rawTag = reader.readLine();
-            final OperationResult<DecodedTag> result = asnSchema.getDecodedTag(rawTag, "PS-PDU");
+
+            ImmutableSet<OperationResult<DecodedTag>> results = asnSchema.getDecodedTags(ImmutableList.of(rawTag), "PS-PDU");
+            OperationResult<DecodedTag> result = results.iterator().next();
             logger.info("\t{}:\t decode {} => {}",
                     result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag,

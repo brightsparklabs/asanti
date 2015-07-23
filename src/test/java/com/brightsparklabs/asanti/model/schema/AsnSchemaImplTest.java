@@ -4,8 +4,10 @@
  */
 package com.brightsparklabs.asanti.model.schema;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -101,60 +103,88 @@ public class AsnSchemaImplTest
     @Test
     public void testGetDecodedTag() throws Exception
     {
-        // test known
-        assertEquals("/Document/header/published",
-                instance.getDecodedTag("1/0", "Document").getOutput().getTag());
-        assertEquals("/Document/body/lastModified/date",
-                instance.getDecodedTag("2/0/0", "Document").getOutput().getTag());
-        assertEquals("/Document/body/lastModified/modifiedBy/firstName",
-                instance.getDecodedTag("2/0/1/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/lastModified/modifiedBy/lastName",
-                instance.getDecodedTag("2/0/1/2", "Document").getOutput().getTag());
-        assertEquals("/Document/body/lastModified/modifiedBy/title",
-                instance.getDecodedTag("2/0/1/3", "Document").getOutput().getTag());
-        assertEquals("/Document/body/prefix/text",
-                instance.getDecodedTag("2/1/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/text",
-                instance.getDecodedTag("2/2/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs/title",
-                instance.getDecodedTag("2/2/2/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[0]/title",
-                instance.getDecodedTag("2/2/2[0]/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[1]/title",
-                instance.getDecodedTag("2/2/2[1]/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[0]/contributor/firstName",
-                instance.getDecodedTag("2/2/2[0]/2/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[0]/contributor/lastName",
-                instance.getDecodedTag("2/2/2[0]/2/2", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[0]/contributor/title",
-                instance.getDecodedTag("2/2/2[0]/2/3", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[0]/points",
-                instance.getDecodedTag("2/2/2[0]/3", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[0]/points[0]",
-                instance.getDecodedTag("2/2/2[0]/3[0]", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[99]/title",
-                instance.getDecodedTag("2/2/2[99]/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[99]/contributor/firstName",
-                instance.getDecodedTag("2/2/2[99]/2/1", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[99]/contributor/lastName",
-                instance.getDecodedTag("2/2/2[99]/2/2", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[99]/contributor/title",
-                instance.getDecodedTag("2/2/2[99]/2/3", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[99]/points",
-                instance.getDecodedTag("2/2/2[99]/3", "Document").getOutput().getTag());
-        assertEquals("/Document/body/content/paragraphs[99]/points[99]",
-                instance.getDecodedTag("2/2/2[99]/3[99]", "Document").getOutput().getTag());
-        assertEquals("/Document/body/suffix/text",
-                instance.getDecodedTag("2/3/1", "Document").getOutput().getTag());
+        final ImmutableMap<String, String> tagsGood = ImmutableMap.<String, String>builder()
+                .put("", "/Document")
+                .put("0[1]", "/Document/header")
+                .put("0[1]/0[0]", "/Document/header/published")
+                .put("0[1]/0[0]/1[1]", "/Document/header/published/date")
+                .put("0[1]/0[0]/2[2]", "/Document/header/published/country")
+                .put("1[2]", "/Document/body")
+                .put("1[2]/0[0]", "/Document/body/lastModified")
+                .put("1[2]/0[0]/0[0]", "/Document/body/lastModified/date")
+                .put("1[2]/0[0]/1[1]/0[1]", "/Document/body/lastModified/modifiedBy/firstName")
+                .put("1[2]/0[0]/1[1]/1[2]", "/Document/body/lastModified/modifiedBy/lastName")
+                .put("1[2]/0[0]/1[1]/2[3]", "/Document/body/lastModified/modifiedBy/title")
+                .put("1[2]/1[1]/0[1]", "/Document/body/prefix/text")
+                .put("1[2]/2[2]/0[1]", "/Document/body/content/text")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/0[1]",
+                        "/Document/body/content/paragraphs[0]/title")
+                .put("1[2]/2[2]/1[2]/1[UNIVERSAL 16]/0[1]",
+                        "/Document/body/content/paragraphs[1]/title")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/0[1]",
+                        "/Document/body/content/paragraphs[0]/contributor/firstName")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/1[2]",
+                        "/Document/body/content/paragraphs[0]/contributor/lastName")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/2[3]",
+                        "/Document/body/content/paragraphs[0]/contributor/title")
 
-        // test partial
-        assertEquals("/Document/header/published/99/98",
-                instance.getDecodedTag("1/0/99/98", "Document").getOutput().getTag());
-        assertEquals("/Document/body/lastModified/99/98",
-                instance.getDecodedTag("2/0/99/98", "Document").getOutput().getTag());
+                .put("1[2]/2[2]/1[2]/99[UNIVERSAL 16]/0[1]",
+                        "/Document/body/content/paragraphs[99]/title")
+                .put("1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/0[1]",
+                        "/Document/body/content/paragraphs[99]/contributor/firstName")
+                .put("1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/1[2]",
+                        "/Document/body/content/paragraphs[99]/contributor/lastName")
+                .put("1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/2[3]",
+                        "/Document/body/content/paragraphs[99]/contributor/title")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]",
+                        "/Document/body/content/paragraphs[0]/points")
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]/0[UNIVERSAL 4]",
+                        "/Document/body/content/paragraphs[0]/points[0]")
+                .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/0[1]",
+                        "/Document/body/content/paragraphs[11]/title")
+                .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/3[3]/44[UNIVERSAL 4]",
+                        "/Document/body/content/paragraphs[11]/points[44]")
 
-        // test unknown
-        assertEquals("/Document/99/98",
-                instance.getDecodedTag("/99/98", "Document").getOutput().getTag());
+                .put("1[2]/3[3]/0[1]", "/Document/body/suffix/text")
+
+                .put("2[3]", "/Document/footer")
+                .put("2[3]/0[0]", "/Document/footer/authors")
+                .put("2[3]/0[0]/0[UNIVERSAL 16]/0[1]", "/Document/footer/authors[0]/firstName")
+                .put("2[3]/0[0]/0[UNIVERSAL 16]/1[2]", "/Document/footer/authors[0]/lastName")
+                .put("3[4]", "/Document/dueDate")
+                .put("4[5]", "/Document/version")
+                .put("4[5]/0[0]", "/Document/version/majorVersion")
+                .put("4[5]/1[1]", "/Document/version/minorVersion")
+                .put("5[6]", "/Document/description")
+                .put("5[6]/0[0]", "/Document/description/numberLines")
+                .put("5[6]/1[1]", "/Document/description/summary")
+                .build();
+
+        final ImmutableSet<OperationResult<DecodedTag>> decodedTagsGood
+                = instance.getDecodedTags(tagsGood.keySet(), "Document");
+
+        for (OperationResult<DecodedTag> decodedTag : decodedTagsGood)
+        {
+            assertTrue(decodedTag.wasSuccessful());
+
+            final DecodedTag output = decodedTag.getOutput();
+            assertEquals(tagsGood.get(output.getRawTag()), output.getTag());
+        }
+
+        final ImmutableMap<String, String> tagsBad  = ImmutableMap.<String, String>builder()
+                .put("0[1]/0[0]/99[99]/98[98]", "/Document/header/published/99[99]/98[98]")
+                .put("99[99]/98[98]", "/Document/99[99]/98[98]")
+                .build();
+
+        final ImmutableSet<OperationResult<DecodedTag>> decodedTagsBad
+                = instance.getDecodedTags(tagsBad.keySet(), "Document");
+
+        for (OperationResult<DecodedTag> decodedTag : decodedTagsBad)
+        {
+            assertFalse(decodedTag.wasSuccessful());
+
+            final DecodedTag output = decodedTag.getOutput();
+            assertEquals(tagsBad.get(output.getRawTag()), output.getTag());
+        }
     }
 }

@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.reader;
 
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.AsnDataImpl;
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -23,6 +24,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
+import static com.brightsparklabs.asanti.common.ByteArrays.*;
+
 /**
  * Reads data from ASN.1 BER/DER binary files
  *
@@ -30,6 +33,7 @@ import java.util.Map;
  */
 public class AsnBerDataReader
 {
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -83,10 +87,16 @@ public class AsnBerDataReader
         DERObject asnObject = asnInputStream.readObject();
         while (asnObject != null)
         {
-            logger.debug(ASN1Dump.dumpAsString(asnObject));
+            if (logger.isTraceEnabled())
+            {
+                logger.trace(ASN1Dump.dumpAsString(asnObject));
+            }
 
-            final Map<String, byte[]> tagsToData = Maps.newHashMap();
-            processDerObject(asnObject, "", tagsToData);
+            final Map<String, byte[]> tagsToData
+                    = Maps.newLinkedHashMap();  // we want to preserve input order
+            logger.trace("processDerObject: {}", asnObject.toString());
+
+            processDerObject(asnObject, "", tagsToData, 0);
             final AsnData asnData = new AsnDataImpl(tagsToData);
             result.add(asnData);
             asnObject = asnInputStream.readObject();
@@ -121,13 +131,21 @@ public class AsnBerDataReader
      *         prefix to prepend to any tags found
      * @param tagsToData
      *         storage for the tags/data found
+     * @param index
+     *         the index of this item within the parent container
      *
      * @throws IOException
      *         if any errors occur reading from the file
      */
     private static void processDerObject(DERObject derObject, String prefix,
-            Map<String, byte[]> tagsToData) throws IOException
+            Map<String, byte[]> tagsToData, int index) throws IOException
     {
+        logger.trace("DerObject entry,  prefix {}, tagsToData.size() {} => {} : {}",
+                prefix,
+                tagsToData.size(),
+                toHexString(derObject.getDEREncoded()),
+                derObject);
+
         if (derObject instanceof ASN1Sequence)
         {
             processSequence((ASN1Sequence) derObject, prefix, tagsToData);
@@ -138,11 +156,14 @@ public class AsnBerDataReader
         }
         else if (derObject instanceof ASN1TaggedObject)
         {
-            processTaggedObject((ASN1TaggedObject) derObject, prefix, tagsToData);
+            processTaggedObject((ASN1TaggedObject) derObject, prefix, tagsToData, index);
         }
         else if (derObject instanceof DERApplicationSpecific)
         {
-            processApplicationSpecific((DERApplicationSpecific) derObject, prefix, tagsToData);
+            processApplicationSpecific((DERApplicationSpecific) derObject,
+                    prefix,
+                    tagsToData,
+                    index);
         }
         else
         {
@@ -205,19 +226,41 @@ public class AsnBerDataReader
     private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix,
             Map<String, byte[]> tagsToData) throws IOException
     {
+        logger.trace("ElementsFromSequenceOrSet prefix {}", prefix);
+
         int index = 0;
         while (elements.hasMoreElements())
         {
             final Object obj = elements.nextElement();
+
             final DERObject derObject = (obj instanceof DERObject) ?
                     (DERObject) obj :
                     ((DEREncodable) obj).getDERObject();
-            // if object is not tagged, then include index in prefix
-            final String elementPrefix = (derObject instanceof ASN1TaggedObject) ?
-                    prefix :
-                    String.format("%s[%d]", prefix, index);
-            processDerObject(derObject, elementPrefix, tagsToData);
+
+            boolean isTagged = (derObject instanceof ASN1TaggedObject);
+            String elementPrefix = prefix;
+
+            if (!isTagged)
+            {
+                // Because this type is not tagged then we need to add a universal tag
+                int tagNumber = getTagNumber(getType(derObject));
+                logger.trace("adding faux tag, not tagged {}", tagNumber);
+                elementPrefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, tagNumber);
+            }
+
+            logger.trace("elementPrefix {}, isTagged {} index {}", elementPrefix, isTagged, index);
+            processDerObject(derObject, elementPrefix, tagsToData, index);
             index++;
+        }
+
+        if (index == 0)
+        {
+            // Then there were no elements found in the Sequence or Set.  (Having an empty
+            // Sequence/Set is valid, for example all the components could be OPTIONAL)
+            // Make an empty data object against this tag so that we know we received the
+            // Constructed type as this is important for decoding and validation.
+            logger.trace("Creating an Empty tagsToData for an empty Sequence/Set {}", prefix);
+            tagsToData.put(prefix, new byte[0]);
         }
     }
 
@@ -234,11 +277,45 @@ public class AsnBerDataReader
      * @throws IOException
      *         if any errors occur reading from the file
      */
+
     private static void processTaggedObject(ASN1TaggedObject asnTaggedObject, String prefix,
-            Map<String, byte[]> tagsToData) throws IOException
+            Map<String, byte[]> tagsToData, int index) throws IOException
     {
-        prefix = prefix + "/" + asnTaggedObject.getTagNo();
-        processDerObject(asnTaggedObject.getObject(), prefix, tagsToData);
+
+        DERObject obj = asnTaggedObject.getObject();
+
+        prefix = prefix + "/" + AsnSchemaTag.createRawTag(index,
+                String.valueOf(asnTaggedObject.getTagNo()));
+
+        int containingType = getType(asnTaggedObject);
+        if (isConstructedType(containingType))
+        {
+            logger.trace("Containing type is Constructed.");
+            index = 0;
+        }
+
+        int type = getType(obj);
+
+        // We are looking for where UNIVERSAL tags are used in the encoding, so that we can insert
+        // appropriate tags.
+        // As part of extracting an object from a tagged object (asnTaggedObject.getObject() above)
+        // if it is not explicit (ie it is not a tag around a universal) then the library seems
+        // to just give it a universal type of either 16 or 4 (Sequence for constructed and
+        // Octet String otherwise)
+        // This means that we need to check for isExplicit as well as whether it is a Universal type
+        if (asnTaggedObject.isExplicit() && isUniversalType(type))
+        {
+            int number = getTagNumber(type);
+            logger.trace("adding faux tag, tagged explicit {}", number);
+            prefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, number);
+        }
+
+        logger.trace("TaggedObject entry - prefix {}, adding {}, explicit {} ",
+                prefix,
+                asnTaggedObject.getTagNo(),
+                asnTaggedObject.isExplicit());
+
+        processDerObject(asnTaggedObject.getObject(), prefix, tagsToData, index);
     }
 
     /**
@@ -255,10 +332,10 @@ public class AsnBerDataReader
      *         if any errors occur reading from the file
      */
     private static void processApplicationSpecific(DERApplicationSpecific asnApplicationSpecific,
-            String prefix, Map<String, byte[]> tagsToData) throws IOException
+            String prefix, Map<String, byte[]> tagsToData, int index) throws IOException
     {
         prefix = prefix + "/" + asnApplicationSpecific.getApplicationTag();
-        processDerObject(asnApplicationSpecific.getObject(), prefix, tagsToData);
+        processDerObject(asnApplicationSpecific.getObject(), prefix, tagsToData, index);
     }
 
     /**
@@ -299,6 +376,70 @@ public class AsnBerDataReader
             final int firstDataByteIndex = 2 + numberOfAdditionalLengthBytes;
             value = Arrays.copyOfRange(tlvData, firstDataByteIndex, tlvData.length);
         }
+
+        if (logger.isTraceEnabled())
+        {
+            // The derObject.getDEREncoded is not a cheap operation, so only call it if needed.
+            logger.trace("PrimitiveDerObject.  tagsToData.put {} : {} - object => {}",
+                    tag,
+                    toHexString(value),
+                    toHexString(derObject.getDEREncoded()));
+        }
+
         tagsToData.put(tag, value);
+    }
+
+    /**
+     * Returns the T from a TLV (Type Length Value) triplet from teh DER object
+     *
+     * @param object
+     *         the DERObject to extract the T from
+     *
+     * @return the T from the TLV
+     */
+    private static int getType(DERObject object)
+    {
+        return object.getDEREncoded()[0] & 0xff;
+    }
+
+    /**
+     * Encoding uses TLV (Type Length Value) triplets.  This function is checking whether the T is a
+     * Universal tag
+     *
+     * @param type
+     *         The T from the TLV encoding
+     *
+     * @return true if the type is Universal
+     */
+    private static boolean isUniversalType(int type)
+    {
+        return ((type & 0xC0) == 0);
+    }
+
+    /**
+     * This masks out the Tag Class and the Constructed/Primitive bits and returns just the number
+     *
+     * @param type
+     *         the T from the TLV triplet
+     *
+     * @return the number part of the tag (the lower 5 bits).
+     */
+    private static int getTagNumber(int type)
+    {
+        return type & 0x1F;
+    }
+
+    /**
+     * Encoding uses TLV (Type Length Value) triplets.  This function is checking whether the T is a
+     * Constructed type (bit 5 is 1)
+     *
+     * @param type
+     *         The T from the TLV encoding
+     *
+     * @return true if the type is Constructed
+     */
+    private static boolean isConstructedType(int type)
+    {
+        return (type & 0x20) == 0x20;
     }
 }

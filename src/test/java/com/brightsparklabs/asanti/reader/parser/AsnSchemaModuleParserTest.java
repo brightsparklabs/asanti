@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
@@ -273,46 +273,48 @@ public class AsnSchemaModuleParserTest
         // return mocked AsnSchemaTypeDefinition instances when expected inputs are received
         PowerMockito.mockStatic(AsnSchemaTypeDefinitionParser.class);
         when(AsnSchemaTypeDefinitionParser.parse("Document",
-                "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL }"))
-                .thenReturn(mockedAsnSchemaTypeDefinitions.get(0));
+                "SEQUENCE { header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(0));
 
         when(AsnSchemaTypeDefinitionParser.parse("Header",
-                "SEQUENCE { published [0] PublishedMetadata }")).thenReturn(mockedAsnSchemaTypeDefinitions.get(1));
+                "SEQUENCE { published [0] PublishedMetadata }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(1));
 
         when(AsnSchemaTypeDefinitionParser.parse("Body",
-                "SEQUENCE { lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL }"))
-                .thenReturn(mockedAsnSchemaTypeDefinitions.get(2));
+                "SEQUENCE { lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(2));
 
         when(AsnSchemaTypeDefinitionParser.parse("Footer",
-                "SEQUENCE { author [0] Person }")).thenReturn(mockedAsnSchemaTypeDefinitions.get(3));
+                "SEQUENCE { author [0] Person }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(3));
 
         when(AsnSchemaTypeDefinitionParser.parse("PublishedMetadata",
-                "SEQUENCE { date [1] GeneralizedTime, country [2] OCTET STRING OPTIONAL }")).thenReturn(
-                mockedAsnSchemaTypeDefinitions.get(4));
+                "SEQUENCE { date [1] GeneralizedTime, country [2] OCTET STRING OPTIONAL }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(4));
 
         when(AsnSchemaTypeDefinitionParser.parse("ModificationMetadata",
-                "SEQUENCE { date [0] Date, modifiedBy [1] Person }")).thenReturn(
-                mockedAsnSchemaTypeDefinitions.get(5));
+                "SEQUENCE { date [0] Date, modifiedBy [1] Person }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(5));
 
         when(AsnSchemaTypeDefinitionParser.parse("Section-Note",
-                "SEQUENCE { text [1] OCTET STRING }")).thenReturn(
-                mockedAsnSchemaTypeDefinitions.get(6));
+                "SEQUENCE { text [1] OCTET STRING }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(6));
 
         when(AsnSchemaTypeDefinitionParser.parse("Section-Main",
-                "SEQUENCE { text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph, sections [3] SET OF SET { number [1] INTEGER, text [2] OCTET STRING } }"))
-                .thenReturn(mockedAsnSchemaTypeDefinitions.get(7));
+                "SEQUENCE { text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph, sections [3] SET OF SET { number [1] INTEGER, text [2] OCTET STRING } }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(7));
 
         when(AsnSchemaTypeDefinitionParser.parse("Paragraph",
-                "SEQUENCE { title [1] OCTET STRING, contributor [2] Person OPTIONAL, points [3] SEQUENCE OF OCTET STRING }"))
-                .thenReturn(mockedAsnSchemaTypeDefinitions.get(8));
+                "SEQUENCE { title [1] OCTET STRING, contributor [2] Person OPTIONAL, points [3] SEQUENCE OF OCTET STRING }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(8));
 
         when(AsnSchemaTypeDefinitionParser.parse("References",
-                "SEQUENCE (SIZE (1..50)) OF SEQUENCE { title [1] OCTET STRING, url [2] OCTET STRING }"))
-                .thenReturn(mockedAsnSchemaTypeDefinitions.get(9));
+                "SEQUENCE (SIZE (1..50)) OF SEQUENCE { title [1] OCTET STRING, url [2] OCTET STRING }",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(9));
 
         when(AsnSchemaTypeDefinitionParser.parse("Date-Due",
-                "INTEGER { tomorrow(0), three-day(1), week(2) } DEFAULT week")).thenReturn(
-                mockedAsnSchemaTypeDefinitions.get(10));
+                "INTEGER { tomorrow(0), three-day(1), week(2) } DEFAULT week",
+                AsnModuleTaggingMode.AUTOMATIC)).thenReturn(mockedAsnSchemaTypeDefinitions.get(10));
 
         final AsnSchemaModule.Builder actualModule
                 = AsnSchemaModuleParser.parse(MockAsnSchemaModule.TEST_MODULE_DOCUMENT_PDU);

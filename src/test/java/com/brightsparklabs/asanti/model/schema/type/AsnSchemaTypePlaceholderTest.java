@@ -1,11 +1,16 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.text.ParseException;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -27,9 +32,6 @@ public class AsnSchemaTypePlaceholderTest
     /** the instance that will be used for testing */
     private AsnSchemaTypePlaceholder instance;
 
-    /** component "0" of the Sequence the placeholder will point to */
-    private AsnSchemaType sequenceComponent;
-
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
@@ -37,7 +39,6 @@ public class AsnSchemaTypePlaceholderTest
     @Before
     public void setUpBeforeTest() throws Exception
     {
-        sequenceComponent = mock(AsnSchemaType.class);
 
         indirectType = mock(AsnSchemaType.class);
         // For the sake of testing that the Collection is delegating to the element type make it
@@ -47,10 +48,14 @@ public class AsnSchemaTypePlaceholderTest
         AsnSchemaConstraint constraint2 = mock(AsnSchemaConstraint.class);
 
         when(indirectType.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
-        when(indirectType.getChildType("0")).thenReturn(sequenceComponent);
-        when(indirectType.getChildName("0")).thenReturn("foo");
-        when(indirectType.getConstraints()).thenReturn(ImmutableSet.of(
-                constraint1, constraint2));
+        when(indirectType.getAllComponents()).thenReturn(ImmutableList.of(mock(
+                AsnSchemaComponentType.class), mock(AsnSchemaComponentType.class)));
+
+        AsnSchemaComponentType component = mock(AsnSchemaComponentType.class);
+
+        when(indirectType.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
+                Optional.of(component));
+        when(indirectType.getConstraints()).thenReturn(ImmutableSet.of(constraint1, constraint2));
 
         instance = new AsnSchemaTypePlaceholder("Module", "Type", AsnSchemaConstraint.NULL);
 
@@ -159,28 +164,52 @@ public class AsnSchemaTypePlaceholderTest
     }
 
     @Test
-    public void testGetChildType() throws Exception
+    public void testGetAllComponents()
     {
         // test that if the placeholder is not resolved it does not delegate
-        assertEquals(AsnSchemaType.NULL, instance.getChildType("0"));
-        verify(indirectType, never()).getChildType("0");
+        assertEquals(0, instance.getAllComponents().size());
+        verify(indirectType, never()).getAllComponents();
         instance.setIndirectType(indirectType);
 
         // and that it does delegate after it is resolved
-        assertEquals(sequenceComponent, instance.getChildType("0"));
-        verify(indirectType).getChildType("0");
+        assertEquals(2, instance.getAllComponents().size());
+        verify(indirectType).getAllComponents();
     }
 
     @Test
-    public void testGetChildName() throws Exception
+    public void testGetIndirectType()
     {
         // test that if the placeholder is not resolved it does not delegate
-        assertEquals("", instance.getChildName("0"));
-        verify(indirectType, never()).getChildName("0");
+        assertEquals(AsnSchemaType.NULL, instance.getIndirectType());
 
         instance.setIndirectType(indirectType);
+
         // and that it does delegate after it is resolved
-        assertEquals("foo", instance.getChildName("0"));
-        verify(indirectType).getChildName("0");
+        assertEquals(indirectType, instance.getIndirectType());
+
+        verifyNoMoreInteractions(indirectType);
+    }
+
+    @Test
+    public void testGetMatchingChild()
+    {
+        // test that if the placeholder is not resolved it does not delegate
+        DecodingSession decodingSession = mock(DecodingSession.class);
+        assertFalse(instance.getMatchingChild("0[0]", decodingSession).isPresent());
+        verify(indirectType, never()).getMatchingChild(anyString(), any(DecodingSession.class));
+        instance.setIndirectType(indirectType);
+
+        // and that it does delegate after it is resolved
+        assertTrue(instance.getMatchingChild("0[0]", decodingSession).isPresent());
+        verify(indirectType).getMatchingChild("0[0]", decodingSession);
+    }
+
+    @Test
+    public void testVisitor() throws ParseException
+    {
+        AsnSchemaTypeVisitor v = BaseAsnSchemaTypeTest.getVisitor();
+
+        Object o = instance.accept(v);
+        assertEquals("Got AsnSchemaTypePlaceholder", o);
     }
 }

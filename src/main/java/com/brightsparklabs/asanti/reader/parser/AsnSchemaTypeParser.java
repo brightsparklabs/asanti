@@ -1,9 +1,9 @@
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.*;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Logic for parsing a type (either a Type Definition, or Component Type)
@@ -182,15 +184,21 @@ public class AsnSchemaTypeParser
      * @param value
      *         the string to parse.  This should be either the Type of the defined type (i.e. the
      *         text on the right hand side of the {@code ::=}), or the Type of a Component Type
+     * @param taggingMode
+     *         dictates the mode in which to handle/generate tags
      *
      * @return an {@link AsnSchemaType} object representing the parsed type
      *
      * @throws ParseException
      *         if either of the parameters are {@code null}/empty or any errors occur while parsing
      *         the type
+     * @throws NullPointerException
+     *         if taggingMode is {@code null}
      */
-    public static AsnSchemaType parse(String value) throws ParseException
+    public static AsnSchemaType parse(String value, AsnModuleTaggingMode taggingMode)
+            throws ParseException
     {
+        checkNotNull(taggingMode);
         if (value == null || value.trim().isEmpty())
         {
             throw new ParseException("A value must be supplied for a Type", -1);
@@ -202,7 +210,7 @@ public class AsnSchemaTypeParser
         Matcher matcher = PATTERN_TYPE_CONSTRUCTED.matcher(value);
         if (matcher.matches())
         {
-            return parseConstructed(matcher);
+            return parseConstructed(matcher, taggingMode);
         }
 
         matcher = PATTERN_TYPE_ENUMERATED.matcher(value);
@@ -217,7 +225,7 @@ public class AsnSchemaTypeParser
         matcher = PATTERN_TYPE_COLLECTION.matcher(value);
         if (matcher.matches())
         {
-            return parseCollection(matcher);
+            return parseCollection(matcher, taggingMode);
         }
 
         // -------------------------------------------------------------------------
@@ -288,13 +296,16 @@ public class AsnSchemaTypeParser
      *
      * @param matcher
      *         matcher which matched on a corresponding
+     * @param taggingMode
+     *         dictates the mode in which to handle/generate tags
      *
      * @return an {@link AsnSchemaTypeConstructed} representing the parsed data
      *
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeConstructed parseConstructed(Matcher matcher) throws ParseException
+    private static AsnSchemaTypeConstructed parseConstructed(Matcher matcher,
+            AsnModuleTaggingMode taggingMode) throws ParseException
     {
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, constructedTypes);
 
@@ -302,11 +313,11 @@ public class AsnSchemaTypeParser
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
 
         final ImmutableList<AsnSchemaComponentType> componentTypes
-                = AsnSchemaComponentTypeParser.parse(componentTypesText);
+                = AsnSchemaComponentTypeParser.parse(componentTypesText, taggingMode);
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        return new AsnSchemaTypeConstructed(primitiveType, constraint, componentTypes);
+        return new AsnSchemaTypeConstructed(primitiveType, constraint, componentTypes, taggingMode);
     }
 
     /**
@@ -344,7 +355,8 @@ public class AsnSchemaTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeCollection parseCollection(Matcher matcher) throws ParseException
+    private static AsnSchemaTypeCollection parseCollection(Matcher matcher,
+            AsnModuleTaggingMode taggingMode) throws ParseException
     {
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, collectionTypes);
 
@@ -353,7 +365,7 @@ public class AsnSchemaTypeParser
 
         final String rawCollectionType = Strings.nullToEmpty(matcher.group(4));
 
-        final AsnSchemaType collectionType = parse(rawCollectionType);
+        final AsnSchemaType collectionType = parse(rawCollectionType, taggingMode);
 
         return new AsnSchemaTypeCollection(primitiveType, constraint, collectionType);
     }
@@ -449,8 +461,10 @@ public class AsnSchemaTypeParser
         final String constraintText = Strings.nullToEmpty(matcher.group(10));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        logger.debug("creating placeholder - moduleName:" + moduleName + " typeName: " + typeName
-                + " constraints: " + constraintText);
+        logger.debug("Creating placeholder -{} typeName: {} constraints: {}",
+                (moduleName.isEmpty() ? "" : " moduleName: " + moduleName),
+                typeName,
+                constraintText);
         return new AsnSchemaTypePlaceholder(moduleName, typeName, constraint);
     }
 

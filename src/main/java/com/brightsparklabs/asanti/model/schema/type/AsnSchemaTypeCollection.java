@@ -1,8 +1,19 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
+
+import java.text.ParseException;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -33,6 +44,9 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
 
     /** name of the type for the elements in this collection */
     private final AsnSchemaType elementType;
+
+    /** the Universal tag we should expect */
+    private String myUniversalTag = "";
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -86,25 +100,63 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
         return elementType;
     }
 
+    /**
+     * When decoding we are expecting only certain values.  Some of those values are the Universal
+     * tag for the element type.  We may not know the element type's actual type at construction so
+     * as a post parsing step this function will be called to allow us to calculate the tags we
+     * expect to receive.
+     */
+    public void performTagging()
+    {
+        myUniversalTag = AsnSchemaTag.createUniversalPortion(elementType.getBuiltinType());
+    }
+
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BaseAsnSchemaType
     // -------------------------------------------------------------------------
 
     @Override
-    public AsnPrimitiveType getPrimitiveType()
+    public Optional<AsnSchemaComponentType> getMatchingChild(String rawTag,
+            DecodingSession decodingSession)
     {
-        return elementType.getPrimitiveType();
+        final AsnSchemaTag tag = AsnSchemaTag.create(rawTag);
+
+        if (elementType.getBuiltinType() == AsnBuiltinType.Choice)
+        {
+            // We have a collection of Choice, so we need to insert the choice option
+            // We could pre-calculate the options here like we do with Constructed, but given
+            // that we have to do work here to sort out the index there is little to be saved
+            final Optional<AsnSchemaComponentType> child = elementType.getMatchingChild(rawTag,
+                    decodingSession);
+
+            if (child.isPresent())
+            {
+                final String newTag = "[" + tag.getTagIndex() + "]/" + child.get().getName();
+                // TODO ASN-152
+                // As with the other ASN-152 "code smells" - good enough for now but if there is
+                // a refactor done later then think about this a dependency issue.
+                //  This makes it hard to test etc.  Ditto a couple of lines lower.
+                return Optional.of(new AsnSchemaComponentType(newTag,
+                        rawTag,
+                        false,
+                        child.get().getType()));
+            }
+        }
+
+        if (tag.getTagPortion().equals(myUniversalTag))
+        {
+            return Optional.of(new AsnSchemaComponentType("[" + tag.getTagIndex() + "]",
+                    rawTag,
+                    false,
+                    elementType));
+        }
+
+        return Optional.absent();
     }
 
     @Override
-    public AsnSchemaType getChildType(String tag)
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
     {
-        return elementType.getChildType(tag);
-    }
-
-    @Override
-    public String getChildName(String tag)
-    {
-        return elementType.getChildName(tag);
+        return visitor.visit(this);
     }
 }

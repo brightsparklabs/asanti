@@ -1,0 +1,9 @@
+
+
+choice-test Human ::= 
+{
+    payload {
+        name "payload"
+    }    
+}
+

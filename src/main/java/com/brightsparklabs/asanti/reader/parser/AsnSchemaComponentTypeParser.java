@@ -5,8 +5,9 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -59,28 +60,30 @@ public class AsnSchemaComponentTypeParser
      *
      * @param componentTypesText
      *         all component types contained in the construct as a string
-     *
+     * @param taggingMode
+     *          dictates the mode in which to handle/generate tags
      * @return each component type found in the construct
      *
      * @throws NullPointerException
-     *         if {@code componentTypesText} is {@code null}
+     *         if {@code componentTypesText} or {@code taggingMode} is {@code null}
      * @throws IllegalArgumentException
      *         if {@code componentTypesText} is blank
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
-    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText)
-            throws ParseException
+    public static ImmutableList<AsnSchemaComponentType> parse(String componentTypesText,
+            AsnModuleTaggingMode taggingMode) throws ParseException
     {
         checkNotNull(componentTypesText);
         checkArgument(!componentTypesText.trim().isEmpty(),
                 "Component Types Text must be specified");
+        checkNotNull(taggingMode);
 
         final List<String> componentTypeLines = splitComponentTypesText(componentTypesText);
         final ImmutableList.Builder<AsnSchemaComponentType> builder = ImmutableList.builder();
         for (final String componentTypeLine : componentTypeLines)
         {
-            final AsnSchemaComponentType componentType = parseComponentType(componentTypeLine);
+            final AsnSchemaComponentType componentType = parseComponentType(componentTypeLine, taggingMode);
             builder.add(componentType);
         }
         return builder.build();
@@ -166,8 +169,8 @@ public class AsnSchemaComponentTypeParser
      * @throws ParseException
      *         if any errors occur while parsing the data
      */
-    private static AsnSchemaComponentType parseComponentType(String componentTypeLine)
-            throws ParseException
+    private static AsnSchemaComponentType parseComponentType(String componentTypeLine,
+            AsnModuleTaggingMode taggingMode) throws ParseException
     {
         Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
         if (!matcher.matches())
@@ -190,11 +193,7 @@ public class AsnSchemaComponentTypeParser
             throw new ParseException(error, -1);
         }
 
-        final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType);
-
-        String typeName = matcher.group(7);
-        // The Regex that is used here is a little simple and will leave trailing spaces,
-        typeName = typeName.trim();
-        return new AsnSchemaComponentType(tagName, tag, typeName, isOptional, tagType);
+        final AsnSchemaType tagType = AsnSchemaTypeParser.parse(rawType, taggingMode);
+        return new AsnSchemaComponentType(tagName, tag, isOptional, tagType);
     }
 }

@@ -5,6 +5,8 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.collect.ImmutableMap;
 
+import java.text.ParseException;
+
 import static com.google.common.base.Preconditions.*;
 
 /**
@@ -58,5 +60,15 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
             tagsToNamedValuesBuilder.put(tag, namedValue);
         }
         tagsToNamedValues = tagsToNamedValuesBuilder.build();
+    }
+
+    // -------------------------------------------------------------------------
+    // IMPLEMENTATION: BaseAsnSchemaType
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
+    {
+        return visitor.visit(this);
     }
 }

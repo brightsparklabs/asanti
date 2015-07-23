@@ -1,9 +1,19 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+
+import java.text.ParseException;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -113,9 +123,26 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
         indirectType = type;
     }
 
+    /**
+     * @return the AsnSchemaType that this placeholder is pointing to, {@link AsnSchemaType#NULL} if
+     * none has yet been set.
+     */
+    public AsnSchemaType getIndirectType()
+    {
+        return indirectType == null ? AsnSchemaType.NULL : indirectType;
+    }
+
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BaseAsnSchemaType
     // -------------------------------------------------------------------------
+
+    @Override
+    public ImmutableList<AsnSchemaComponentType> getAllComponents()
+    {
+        return indirectType == null ?
+                ImmutableList.<AsnSchemaComponentType>of() :
+                indirectType.getAllComponents();
+    }
 
     @Override
     public ImmutableSet<AsnSchemaConstraint> getConstraints()
@@ -133,20 +160,23 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     }
 
     @Override
+    public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
+            DecodingSession decodingSession)
+    {
+        return indirectType == null ?
+                Optional.<AsnSchemaComponentType>absent() :
+                indirectType.getMatchingChild(tag, decodingSession);
+    }
+
+    @Override
     public AsnPrimitiveType getPrimitiveType()
     {
         return indirectType == null ? AsnPrimitiveType.NULL : indirectType.getPrimitiveType();
     }
 
     @Override
-    public AsnSchemaType getChildType(String tag)
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
     {
-        return indirectType == null ? AsnSchemaType.NULL : indirectType.getChildType(tag);
-    }
-
-    @Override
-    public String getChildName(String tag)
-    {
-        return indirectType == null ? "" : indirectType.getChildName(tag);
+        return visitor.visit(this);
     }
 }

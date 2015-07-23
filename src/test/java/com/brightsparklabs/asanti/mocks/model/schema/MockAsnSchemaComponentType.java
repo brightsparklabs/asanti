@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.google.common.collect.ImmutableList;
 
 import static org.mockito.Mockito.*;
@@ -35,27 +35,39 @@ public class MockAsnSchemaComponentType
      * Creates a mock {@link AsnSchemaComponentType} instance
      *
      * @param tagName
-     *         value to return for {@link AsnSchemaComponentType#getTagName()}
+     *         value to return for {@link AsnSchemaComponentType#getName()}
      * @param tag
      *         value to return for {@link AsnSchemaComponentType#getTag()}
-     * @param typeName
-     *         value to return for {@link AsnSchemaComponentType#getTypeName()}
      * @param isOptional
      *         value to return for {@link AsnSchemaComponentType#isOptional()}
      * @param type
-     *          value to return for {@link AsnSchemaComponentType#getType()}
+     *          an AsnSchemaType is mocked around this primitive type
      *
      * @return mock instance which returns the supplied values
      */
     public static AsnSchemaComponentType createMockedComponentType(String tagName, String tag,
-            String typeName, boolean isOptional, AsnSchemaType type)
+            boolean isOptional, AsnSchemaType type)
     {
         final AsnSchemaComponentType mockedInstance = mock(AsnSchemaComponentType.class);
-        when(mockedInstance.getTagName()).thenReturn(tagName);
+        when(mockedInstance.getName()).thenReturn(tagName);
         when(mockedInstance.getTag()).thenReturn(tag);
-        when(mockedInstance.getTypeName()).thenReturn(typeName);
         when(mockedInstance.isOptional()).thenReturn(isOptional);
         when(mockedInstance.getType()).thenReturn(type);
+        return mockedInstance;
+    }
+
+    public static AsnSchemaComponentType createMockedComponentType(String tagName, String tag,
+            boolean isOptional, AsnPrimitiveType type)
+    {
+        final AsnSchemaComponentType mockedInstance = mock(AsnSchemaComponentType.class);
+        when(mockedInstance.getName()).thenReturn(tagName);
+        when(mockedInstance.getTag()).thenReturn(tag);
+        when(mockedInstance.isOptional()).thenReturn(isOptional);
+
+        AsnSchemaType schemaType = mock(AsnSchemaType.class);
+        when(schemaType.getPrimitiveType()).thenReturn(type);
+        when(schemaType.getBuiltinType()).thenReturn(type.getBuiltinType());
+        when(mockedInstance.getType()).thenReturn(schemaType);
         return mockedInstance;
     }
 
@@ -69,12 +81,12 @@ public class MockAsnSchemaComponentType
     {
         final ImmutableList.Builder<AsnSchemaComponentType> listBuilder = ImmutableList.builder();
 
-        listBuilder.add(createMockedComponentType("header", "1", "Header", false, MockAsnSchemaType.getDocumentHeader()));
-        listBuilder.add(createMockedComponentType("body", "2", "Body", false, MockAsnSchemaType.getDocumentBody()));
-        listBuilder.add(createMockedComponentType("footer", "3", "Footer", false, MockAsnSchemaType.getDocumentFooter()));
-        listBuilder.add(createMockedComponentType("dueDate", "4", "Date-Due", false, MockAsnSchemaType.getDocumentDueDate()));
-        listBuilder.add(createMockedComponentType("version", "5", "SEQUENCE", false, MockAsnSchemaType.getDocumentVersion()));
-        listBuilder.add(createMockedComponentType("description", "6", "SET", true, MockAsnSchemaType.getDocumentDescription()));
+        listBuilder.add(createMockedComponentType("header", "1", false, MockAsnSchemaType.getDocumentHeader()));
+        listBuilder.add(createMockedComponentType("body", "2", false, MockAsnSchemaType.getDocumentBody()));
+        listBuilder.add(createMockedComponentType("footer", "3", false, MockAsnSchemaType.getDocumentFooter()));
+        listBuilder.add(createMockedComponentType("dueDate", "4", false, MockAsnSchemaType.getDocumentDueDate()));
+        listBuilder.add(createMockedComponentType("version", "5", false, MockAsnSchemaType.getDocumentVersion()));
+        listBuilder.add(createMockedComponentType("description", "6", true, MockAsnSchemaType.getDocumentDescription()));
 
         return listBuilder.build();
     }
@@ -90,22 +102,18 @@ public class MockAsnSchemaComponentType
         final ImmutableList.Builder<AsnSchemaComponentType> listBuilder = ImmutableList.builder();
         listBuilder.add(createMockedComponentType("lastModified",
                 "0",
-                "ModificationMetadata",
                 false,
                 MockAsnSchemaType.getDocumentModificationMetadataLinked()));
         listBuilder.add(createMockedComponentType("prefix",
                 "1",
-                "Section-Note",
                 true,
                 MockAsnSchemaType.getDocumentSectionNote()));
         listBuilder.add(createMockedComponentType("content",
                 "2",
-                "Section-Main",
                 false,
                 MockAsnSchemaType.getDocumentSectionMain()));
         listBuilder.add(createMockedComponentType("suffix",
                 "3",
-                "Section-Note",
                 true,
                 MockAsnSchemaType.getDocumentSectionNote()));
         return listBuilder.build();
@@ -123,19 +131,16 @@ public class MockAsnSchemaComponentType
 
         listBuilder.add(createMockedComponentType("text",
                 "1",
-                "OCTET STRING",
                 true,
                 MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING)));
         listBuilder.add(createMockedComponentType("paragraphs",
                 "2",
-                "Paragraph",
                 false,
                 MockAsnSchemaType.builder(AsnPrimitiveType.SEQUENCE_OF)
                     .setCollectionType(MockAsnSchemaType.getDocumentParagraph())
                 .build()));
         listBuilder.add(createMockedComponentType("sections",
                 "3",
-                "SET",
                 false,
                 MockAsnSchemaType.builder(AsnPrimitiveType.SET_OF)
                     .setCollectionType(MockAsnSchemaType.

@@ -1,0 +1,15 @@
+M DEFINITIONS IMPLICIT TAGS ::= 
+BEGIN 
+Human ::= SEQUENCE 
+{
+    a [0] Foo,
+    b [0] Foo
+}
+
+Foo ::= SEQUENCE    
+{
+    a [0] INTEGER OPTIONAL,
+    b [1] UTF8String,
+    c [1] UTF8String
+} 
+END

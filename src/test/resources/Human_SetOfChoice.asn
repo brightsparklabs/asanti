@@ -1,0 +1,61 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+IMPORTS
+;
+
+Human ::= SEQUENCE
+{
+    payload [0] Payload
+}
+
+Payload ::= SEQUENCE
+{
+    name [0] UTF8String,
+    supplementary-Services-Information  [3] Supplementary-Services OPTIONAL
+}
+
+Supplementary-Services ::= SEQUENCE
+{
+  standard-Supplementary-Services   [1] SomeSequence OPTIONAL,
+  non-Standard-Supplementary-Services [2] Non-Standard-Supplementary-Services OPTIONAL,
+  other-Services            [3] Other-Services OPTIONAL,
+  ...
+}
+
+SomeSequence ::= SEQUENCE
+{
+   foo [0] INTEGER
+}
+Non-Standard-Supplementary-Services ::= SET SIZE (1..20) OF CHOICE
+{
+  simpleIndication    [1] SimpleIndication,
+  sciData         [2] SciDataMode,
+  ...
+}
+
+Other-Services ::= SET SIZE (1..50) OF OCTET STRING (SIZE (1..256))
+SimpleIndication ::= ENUMERATED
+{
+  call-Waiting-Indication(0),
+    -- The target has received a call waiting indication for this call
+  add-conf-Indication(1),
+    -- this call has been added to a conference
+  call-on-hold-Indication(2),
+    -- indication that this call is on hold
+  retrieve-Indication(3),
+    -- indication that this call has been retrieved
+  suspend-Indication(4),
+    -- indication that this call has been suspended
+  resume-Indication(5),
+    -- indication that this call has been resumed
+  answer-Indication(6),
+    -- indication that this call has been answered
+  ...
+}
+SciDataMode ::= OCTET STRING (SIZE (1..256))
+
+
+END

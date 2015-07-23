@@ -106,10 +106,23 @@ public class AsnSchemaParser
             throw new ParseException(ERROR_MISSING_END_KEYWORD, -1);
         }
 
-        // do the final build, which will resolve all the placeholders and imports.
+        // resolve all the placeholders and imports.
         for (AsnSchemaModule.Builder builder : moduleBuilders)
         {
-            final AsnSchemaModule module = builder.build(moduleBuilders);
+            builder.resolveTypes(moduleBuilders);
+        }
+
+        for (AsnSchemaModule.Builder builder : moduleBuilders)
+        {
+            builder.performTagging();
+        }
+
+        // do the final build, which will also calculate all the tags, which can't be done until
+        // all the types are known (even across module boundaries), which is not until the above loop
+        for (AsnSchemaModule.Builder builder : moduleBuilders)
+        {
+            builder.checkForDuplicates();
+            final AsnSchemaModule module = builder.build();
             modules.put(module.getName(), module);
 
             if (primaryModule == null)

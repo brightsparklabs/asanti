@@ -3,15 +3,12 @@
  * www.brightsparklabs.com
  */
 
-package com.brightsparklabs.asanti.model.schema.typedefinition;
-
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+package com.brightsparklabs.asanti.model.schema.type;
 
 import static com.google.common.base.Preconditions.*;
 
 /**
- * An item within a 'constructed' (SET, SEQUENCE, SET OF, SEQUENCE OF, CHOICE or ENUMERATED) type
- * definition
+ * An item within a 'constructed' (SET, SEQUENCE, CHOICE) type definition
  *
  * @author brightSPARK Labs
  */
@@ -22,13 +19,11 @@ public class AsnSchemaComponentType
     // -------------------------------------------------------------------------
 
     /** name of this component type (i.e. tag name) */
-    private final String tagName;
+    private final String name;
 
     /** tag of this component type */
-    private final String tag;
-
-    /** type of this component type */
-    private final String typeName;
+    //private final String tag;
+    private String tag;
 
     /** whether this component type is optional */
     private final boolean isOptional;
@@ -43,34 +38,28 @@ public class AsnSchemaComponentType
     /**
      * Default constructor.
      *
-     * @param tagName
+     * @param name
      *         name of this component type (i.e. tag name)
      * @param tag
      *         tag of this component type. Will default to an empty string if {@code null}
-     * @param typeName
-     *         type of this component type
      * @param isOptional
      *         whether this component type is optional
      * @param type
      *         the underlying {@link AsnSchemaType} for this component
      *
      * @throws NullPointerException
-     *         if {@code tagName}, {@code typeName} or {@code type} are {@code null}
+     *         if {@code name}, {@code typeName} or {@code type} are {@code null}
      * @throws IllegalArgumentException
-     *         if {@code tagName} or {@code typeName} are blank
+     *         if {@code name} or {@code typeName} are blank
      */
-    public AsnSchemaComponentType(String tagName, String tag, String typeName, boolean isOptional,
-            AsnSchemaType type)
+    public AsnSchemaComponentType(String name, String tag, boolean isOptional, AsnSchemaType type)
     {
-        checkNotNull(tagName);
-        checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
-        checkNotNull(typeName);
-        checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");
+        checkNotNull(name);
+        checkArgument(!name.trim().isEmpty(), "Tag name must be specified");
         checkNotNull(type);
 
-        this.tagName = tagName;
+        this.name = name;
         this.tag = (tag == null) ? "" : tag;
-        this.typeName = typeName;
         this.isOptional = isOptional;
         this.type = type;
     }
@@ -78,14 +67,6 @@ public class AsnSchemaComponentType
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
-
-    /**
-     * @return the name of the component type (i.e. tag name)
-     */
-    public String getTagName()
-    {
-        return tagName;
-    }
 
     /**
      * @return the tag of this component type
@@ -96,11 +77,12 @@ public class AsnSchemaComponentType
     }
 
     /**
-     * @return the type of this component type
+     * @param tag
+     *         set the tag of this component type.  Will default to an empty string if {@code null}
      */
-    public String getTypeName()
+    public void setTag(String tag)
     {
-        return typeName;
+        this.tag = (tag == null) ? "" : tag;
     }
 
     /**
@@ -112,7 +94,15 @@ public class AsnSchemaComponentType
     }
 
     /**
-     * @return the type for this component type
+     * @return the {@link AsnSchemaType} of this component
      */
     public AsnSchemaType getType() { return type; }
+
+    /**
+     * @return the name of this component
+     */
+    public String getName()
+    {
+        return name;
+    }
 }

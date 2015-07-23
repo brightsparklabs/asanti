@@ -2,7 +2,6 @@ package com.brightsparklabs.asanti.model.schema.primitive;
 
 import com.brightsparklabs.asanti.common.Visitable;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.AsnPrimitiveTypeVisitor;
 
 /**
  * A base type used to represent the primitive builtin types within ASN.1 This class is used as a
@@ -112,7 +111,7 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
         }
 
         @Override
-        public Object visit(AsnPrimitiveTypeVisitor<?> visitor)
+        public Object accept(AsnPrimitiveTypeVisitor<?> visitor)
         {
             return visitor.visit(this);
         }

@@ -1,9 +1,20 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
 package com.brightsparklabs.asanti.model.schema.type;
 
+import com.brightsparklabs.asanti.common.VisitableThrowing;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+
+import java.text.ParseException;
 
 /**
  * A base type used to model the types for objects within ASN.1 schema. These objects can be either
@@ -12,7 +23,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public interface AsnSchemaType
+public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>, ParseException>
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -22,11 +33,13 @@ public interface AsnSchemaType
     public static final AsnSchemaType.Null NULL = new AsnSchemaType.Null();
 
     /**
-     * Returns the AsnPrimitiveType of this type definition
+     * Returns all the {@code AsnSchemaComponentType} objects owned by this object, or an empty list
+     * if there are none
      *
-     * @return the AsnPrimitiveType of this type definition
+     * @return all the {@code AsnSchemaComponentType} objects owned by this object, or an empty list
+     * if there are none
      */
-    AsnPrimitiveType getPrimitiveType();
+    ImmutableList<AsnSchemaComponentType> getAllComponents();
 
     /**
      * Returns the {@code AsnBuiltinType} enum for this type. This is simply a shortcut for
@@ -45,24 +58,25 @@ public interface AsnSchemaType
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
     /**
-     * Returns the {@link AsnSchemaType} of any component type matching tag
+     * Returns the {@code AsnSchemaComponentType} for the tag, or {@link Optional#absent()} if none
+     * found
      *
      * @param tag
      *         a tag within this construct
+     * @param decodingSession
+     *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
      *
-     * @return the {@link AsnSchemaType} of any component type matching tag
+     * @return the {@code AsnSchemaComponentType} for the tag, or {@link Optional#absent()} if none
+     * found
      */
-    AsnSchemaType getChildType(String tag);
+    Optional<AsnSchemaComponentType> getMatchingChild(String tag, DecodingSession decodingSession);
 
     /**
-     * Returns the name of the component associated with the specified tag
+     * Returns the AsnPrimitiveType of this type definition
      *
-     * @param tag
-     *         a tag within this construct
-     *
-     * @return name of the specified tag; or an empty string if tag is not recognised.
+     * @return the AsnPrimitiveType of this type definition
      */
-    String getChildName(String tag);
+    AsnPrimitiveType getPrimitiveType();
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null
@@ -92,9 +106,9 @@ public interface AsnSchemaType
         // ---------------------------------------------------------------------
 
         @Override
-        public AsnPrimitiveType getPrimitiveType()
+        public ImmutableList<AsnSchemaComponentType> getAllComponents()
         {
-            return AsnPrimitiveType.NULL;
+            return ImmutableList.of();
         }
 
         @Override
@@ -110,15 +124,23 @@ public interface AsnSchemaType
         }
 
         @Override
-        public AsnSchemaType getChildType(String tag)
+        public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
+                DecodingSession decodingSession)
         {
-            return AsnSchemaType.NULL;
+            return Optional.absent();
         }
 
         @Override
-        public String getChildName(String tag)
+        public AsnPrimitiveType getPrimitiveType()
         {
-            return "";
+            return AsnPrimitiveType.NULL;
+        }
+
+
+        @Override
+        public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
+        {
+            return visitor.visit(this);
         }
     }
 }

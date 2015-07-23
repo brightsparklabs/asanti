@@ -1,0 +1,8 @@
+first Human ::= 
+{
+    payload 
+    {
+        name "Adam", 
+        open milliSeconds: 100        
+    }
+}

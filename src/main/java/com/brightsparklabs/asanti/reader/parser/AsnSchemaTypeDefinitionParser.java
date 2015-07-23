@@ -5,13 +5,15 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.*;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinitionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
-
+import static com.google.common.base.Preconditions.*;
 /**
  * Logic for parsing a Type Definition from a module within an ASN.1 schema
  *
@@ -53,16 +55,21 @@ public final class AsnSchemaTypeDefinitionParser
      * @param value
      *         the value of the defined type (i.e. the text on the right hand side of the {@code
      *         ::=})
+     * @param taggingMode
+     *         dictates the mode in which to handle/generate tags
      *
      * @return an {@link AsnSchemaTypeDefinition} object representing the parsed type definition
      *
      * @throws ParseException
      *         if either of the parameters are {@code null}/empty or any errors occur while parsing
      *         the type
+     * @throws NullPointerException
+     *          if taggingMode is {@code null}
      */
-    public static AsnSchemaTypeDefinition parse(String name, String value)
-            throws ParseException
+    public static AsnSchemaTypeDefinition parse(String name, String value,
+            AsnModuleTaggingMode taggingMode) throws ParseException
     {
+        checkNotNull(taggingMode);
         logger.debug("Found type definition: {} = {}", name, value);
         if (name == null || name.trim().isEmpty())
         {
@@ -74,7 +81,7 @@ public final class AsnSchemaTypeDefinitionParser
         }
 
         // Get the underlying type
-        AsnSchemaType type = AsnSchemaTypeParser.parse(value);
+        AsnSchemaType type = AsnSchemaTypeParser.parse(value, taggingMode);
         logger.debug("\t{} is type {}", name, type.getBuiltinType());
         // wrap it with the typedefinition name.
         return new AsnSchemaTypeDefinitionImpl(name, type);
