@@ -28,6 +28,8 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'org.bouncycastle:bcprov-jdk16:1.45'
     compile 'org.slf4j:slf4j-api:1.7.10'
+    compile 'joda-time:joda-time:2.8.1'
+
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.powermock:powermock-api-mockito:1.6.1'
@@ -53,7 +55,7 @@ project.version = getVersion()
 String getVersion() {
     def stdout = new ByteArrayOutputStream()
     exec {
-        commandLine "git", "describe", "--dirty", "--always" 
+        commandLine "git", "describe", "--dirty", "--always"
         standardOutput = stdout
     }
     return stdout.toString().trim()
@@ -85,7 +87,7 @@ tasks.withType(FindBugs) {
         xml.enabled = false
         html.enabled = true
     }
- }
+}
 
 // -----------------------------------------------------------------------------
 // GENERATE CODE COVERAGE REPORT (via jacoco)
