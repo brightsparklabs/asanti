@@ -2199,9 +2199,9 @@ public class AsnSchemaParserTest
         long duration = end - start;
         logger.error("Duration {}ms", duration);
 
-        // On a Michael's dev machine this takes less than 1000ms with logging set to INFO
-        // and less than 2000ms set to DEBUG, but the whole test take 30+ seconds set at debug!!
-        int threshold = 3000;
+        // On a Michael's dev machine this takes less than 1500ms with logging set to INFO
+        // and less than 2000ms set to DEBUG.
+        int threshold = 5000;
         if (logger.isDebugEnabled())
         {
             threshold *= 2;
