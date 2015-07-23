@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -2201,13 +2202,13 @@ public class AsnSchemaParserTest
 
         // On a Michael's dev machine this takes less than 1500ms with logging set to INFO
         // and less than 2000ms set to DEBUG.
-        int threshold = 5000;
+        long threshold = 5000;
         if (logger.isDebugEnabled())
         {
             threshold *= 2;
         }
 
-        assertTrue(duration < threshold);
+        assertThat(duration, lessThan(threshold));
     }
 
     /**
