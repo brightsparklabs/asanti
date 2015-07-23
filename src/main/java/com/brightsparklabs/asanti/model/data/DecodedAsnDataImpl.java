@@ -58,6 +58,9 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     /** visitor used to determine which decoder to use for decoding data */
     private final DecoderVisitor decoderVisitor = new DecoderVisitor();
 
+    /** the schema used to decode */
+    private final AsnSchema asnSchema;
+
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -107,6 +110,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
             }
         }
 
+        this.asnSchema = asnSchema;
         this.decodedTags = ImmutableMap.copyOf(decodedToRawTags);
         this.unmappedTags = ImmutableMap.copyOf(unmappedTags);
         this.allTags = ImmutableMap.<String, DecodedTag>builder()
@@ -118,6 +122,12 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: DecodedAsnData
     // -------------------------------------------------------------------------
+
+    @Override
+    public AsnSchema getSchema()
+    {
+        return asnSchema;
+    }
 
     @Override
     public ImmutableSet<String> getTags()

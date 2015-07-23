@@ -6,6 +6,7 @@
 package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Optional;
@@ -31,6 +32,11 @@ public interface DecodedAsnData
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
+
+
+    // TODO MJF
+    public AsnSchema getSchema();
+
 
     /**
      * Returns all tags found in the ASN data as a set of XPath like strings. E.g.
@@ -185,6 +191,13 @@ public interface DecodedAsnData
         // ---------------------------------------------------------------------
         // IMPLEMENTATION: DecodedAsnData
         // ---------------------------------------------------------------------
+
+        // TODO MJF
+        @Override
+        public AsnSchema getSchema()
+        {
+            return null;
+        }
 
         @Override
         public ImmutableSet<String> getTags()

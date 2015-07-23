@@ -6,6 +6,8 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -37,4 +39,7 @@ public interface AsnSchema
     public ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(Iterable<String> rawTags,
             String topLevelTypeName);
 
+
+    // TODO MJF
+    Optional<AsnSchemaType> getType(String tag);
 }
