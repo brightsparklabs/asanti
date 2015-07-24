@@ -1,0 +1,34 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS
+AUTOMATIC TAGS ::=
+BEGIN
+Human ::= SEQUENCE
+{
+    person Person,
+    faveMovies SEQUENCE OF Movie
+}
+
+Movie ::= SEQUENCE
+{
+    name UTF8String,
+    stars SEQUENCE (SIZE(1..5)) OF Person    
+}
+
+People ::= SEQUENCE OF Person
+
+Person ::= SEQUENCE 
+{
+    name Name,
+    age INTEGER
+    
+}
+
+Name ::= SEQUENCE
+{
+    first UTF8String,
+    last UTF8String
+}
+
+END

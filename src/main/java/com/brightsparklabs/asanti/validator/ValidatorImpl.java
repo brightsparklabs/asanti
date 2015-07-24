@@ -16,17 +16,18 @@ import com.brightsparklabs.asanti.validator.result.DecodedAsnDataValidationResul
 import com.brightsparklabs.asanti.validator.result.ValidationResult;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.TreeTraverser;
+import com.google.common.collect.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Default implementation of {@link Validator}.
@@ -63,12 +64,12 @@ public class ValidatorImpl implements Validator
                 = DecodedAsnDataValidationResult.builder();
         for (final String tag : decodedAsnData.getTags())
         {
-//            final AsnPrimitiveType type = decodedAsnData.getType(tag).getPrimitiveType();
-//            final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
-//                    validationVisitor);
-//            final ImmutableSet<DecodedTagValidationFailure> failures = tagValidator.validate(tag,
-//                    decodedAsnData);
-//            builder.addAll(failures);
+            //            final AsnPrimitiveType type = decodedAsnData.getType(tag).getPrimitiveType();
+            //            final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
+            //                    validationVisitor);
+            //            final ImmutableSet<DecodedTagValidationFailure> failures = tagValidator.validate(tag,
+            //                    decodedAsnData);
+            //            builder.addAll(failures);
         }
 
         // add a failure for each unmapped tag
@@ -80,55 +81,101 @@ public class ValidatorImpl implements Validator
             builder.add(failure);
         }
 
-        // In order to see if there is anything missing, and to check constraints of Set/Sequence OF
-        // it is probably easiest to build a Tree.
-        // For each node in the tree we check whether it got all its non-optional components.
-        // for each SET/SEQUENCE OF we check its constraints.
-        TreeNode<ZZZ> root = buildTree(decodedAsnData);
+        // TODO MJF - tree seems good, but does not align with the DecodedAsnData
 
-        TreeTraverser<TreeNode<ZZZ>> traverser = new TreeTraverser<TreeNode<ZZZ>>() {
-            @Override
-            public Iterable<TreeNode<ZZZ>> children(final TreeNode<ZZZ> root)
-            {
-                return root.getChildren();
-            }
-        };
+        ImmutableSet<String> tags = buildTags(decodedAsnData);
+        AsnSchema schema = decodedAsnData.getSchema();
 
-        AsnSchemaTypeValidationVisitor asnSchemaTypeValidationVisitor
-                = new AsnSchemaTypeValidationVisitor();
-
-        for(TreeNode<ZZZ> node : traverser.breadthFirstTraversal(root))
+        for (String tag : tags)
         {
-            ZZZ zzz = node.getPayload();
-            logger.debug("Node {} is {}", zzz.name, zzz.type.getBuiltinType());
+            logger.debug(tag);
 
-            try
-            {
-                AsnSchemaTypeValidator validator = (AsnSchemaTypeValidator)zzz.type.accept(
-                        asnSchemaTypeValidationVisitor);
-                if (validator != null)
-                {
-                    final ImmutableSet<DecodedTagValidationFailure> failures = validator.validate(node.getChildren());
-                    builder.addAll(failures);
-                }
 
-                final AsnPrimitiveType type = zzz.type.getPrimitiveType();
-                final String tag = getFullyQualifiedTag(node, root);
-                final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
-                        validationVisitor);
-                if (tagValidator != null)
-                {
-                    final ImmutableSet<DecodedTagValidationFailure> failures = tagValidator.validate(tag,
-                            decodedAsnData);
-                    builder.addAll(failures);
-                }
-            }
-            catch (ParseException e)
+            final AsnPrimitiveType type = schema.getType(tag).get().getPrimitiveType();
+            final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
+                    validationVisitor);
+            if (tagValidator != null)
             {
+                final ImmutableSet<DecodedTagValidationFailure> failures
+                        = tagValidator.validate(tag, decodedAsnData);
+                builder.addAll(failures);
             }
         }
 
+        //        // In order to see if there is anything missing, and to check constraints of Set/Sequence OF
+        //        // it is probably easiest to build a Tree.
+        //        // For each node in the tree we check whether it got all its non-optional components.
+        //        // for each SET/SEQUENCE OF we check its constraints.
+        //        TreeNode<ZZZ> root = buildTree(decodedAsnData);
+        //
+        //        TreeTraverser<TreeNode<ZZZ>> traverser = new TreeTraverser<TreeNode<ZZZ>>() {
+        //            @Override
+        //            public Iterable<TreeNode<ZZZ>> children(final TreeNode<ZZZ> root)
+        //            {
+        //                return root.getChildren();
+        //            }
+        //        };
+        //
+        //        AsnSchemaTypeValidationVisitor asnSchemaTypeValidationVisitor
+        //                = new AsnSchemaTypeValidationVisitor();
+        //
+        //        for(TreeNode<ZZZ> node : traverser.breadthFirstTraversal(root))
+        //        {
+        //            ZZZ zzz = node.getPayload();
+        //            logger.debug("Node {} is {}", zzz.name, zzz.type.getBuiltinType());
+        //
+        //            try
+        //            {
+        //                AsnSchemaTypeValidator validator = (AsnSchemaTypeValidator)zzz.type.accept(
+        //                        asnSchemaTypeValidationVisitor);
+        //                if (validator != null)
+        //                {
+        //                    final ImmutableSet<DecodedTagValidationFailure> failures = validator.validate(node.getChildren());
+        //                    builder.addAll(failures);
+        //                }
+        //
+        //                final AsnPrimitiveType type = zzz.type.getPrimitiveType();
+        //                final String tag = getFullyQualifiedTag(node, root);
+        //                final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
+        //                        validationVisitor);
+        //                if (tagValidator != null)
+        //                {
+        //                    final ImmutableSet<DecodedTagValidationFailure> failures = tagValidator.validate(tag,
+        //                            decodedAsnData);
+        //                    builder.addAll(failures);
+        //                }
+        //            }
+        //            catch (ParseException e)
+        //            {
+        //            }
+        //        }
+
         return builder.build();
+    }
+
+    private static class MyPredicate implements Predicate<String>
+    {
+        private final String tag;
+
+        MyPredicate(String tag)
+        {
+            this.tag = tag;
+        }
+
+        @Override
+        public boolean apply(final String input)
+        {
+
+            if (!input.startsWith(tag) || input.equals(tag))
+            {
+                return false;
+            }
+
+            // only true for the next level child, not all its children too
+            String s = input.substring(tag.length()+1);
+
+            return !s.contains("/");
+        }
     }
 
     private String getFullyQualifiedTag(TreeNode<ZZZ> node, TreeNode<ZZZ> root)
@@ -138,6 +185,30 @@ public class ValidatorImpl implements Validator
             return getFullyQualifiedTag(node.getParent(), root) + "/" + node.getPayload().name;
         }
         return "";
+    }
+
+    private ImmutableSet<String> buildTags(DecodedAsnData decodedAsnData)
+    {
+        Set<String> result = Sets.newHashSet();
+
+        // TODO MJF - we are going to have to work through all tags (even unmapped), because the
+        // unmapped tags MAY be the only ones with some of the path in them.
+        // Obviously we need to understand where to stop (ie don't get to the unmapped part)
+        for (final String tag : decodedAsnData.getTags())
+        {
+            final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
+
+            // we ignore the first one because it is the Module name.
+            String reconstructed = "";
+            for (int i = 0; i < tags.size(); i++)
+            {
+                final String tagName = tags.get(i);
+                reconstructed += "/" + tagName;
+                result.add(reconstructed);
+            }
+        }
+        return ImmutableSortedSet.copyOf(result); // Don't really need it sorted, just makes it easier to work with while debugging
+        //return ImmutableSet.copyOf(result);
     }
 
     private TreeNode<ZZZ> buildTree(DecodedAsnData decodedAsnData)
@@ -154,11 +225,17 @@ public class ValidatorImpl implements Validator
             final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
 
             // we ignore the first one because it is the Module name.
-            String reconstructed = "/" + tags.get(0);
+            String reconstructed = "";// "/" + tags.get(0);
             TreeNode<ZZZ> currentNode = root;
-            for (int i = 1; i < tags.size(); i++)
+            for (int i = 0; i < tags.size(); i++)
             {
                 final String tagName = tags.get(i);
+
+                if (tagName.contains("["))
+                {
+
+                }
+
                 reconstructed += "/" + tagName;
                 Optional<AsnSchemaType> type = schema.getType(reconstructed);
                 ZZZ newChild = new ZZZ(tagName, type.get());
@@ -199,9 +276,40 @@ public class ValidatorImpl implements Validator
             // We want to make sure that all of the non-optional components of this Constructed
             // type are present in the elements, otherwise we have a validation failure.
 
+            ImmutableSet.Builder<String> receivedBuilder = ImmutableSet.builder();
+            for (TreeNode<ZZZ> node : elements)
+            {
+                ZZZ zzz = node.getPayload();
+                receivedBuilder.add(zzz.name);
+            }
+
+            ImmutableSet<String> receivedComponents = receivedBuilder.build();
+
+            final Set<DecodedTagValidationFailure> failures = Sets.newHashSet();
+
+            final ImmutableList<AsnSchemaComponentType> allComponents = type.getAllComponents();
+            for (AsnSchemaComponentType component : allComponents)
+            {
+                if (!component.isOptional())
+                {
+                    if (!receivedComponents.contains(component.getName()))
+                    {
+                        // TODO MJF - get the fully qualified tag that is missing noting that we
+                        // may have an empty iterable so may not know how to get to the parents
+                        // so we may need a slight interface change
+                        // for now just put anything...
+                        final DecodedTagValidationFailure failure = new DecodedTagValidationFailure(
+                                component.getName(),
+                                FailureType.MandatoryFieldMissing,
+                                "Mandatory field was not found in the data");
+                        failures.add(failure);
+                    }
+                }
+            }
+
             int breakpoint = 0;
 
-            return ImmutableSet.of();
+            return ImmutableSet.copyOf(failures);
         }
     }
 
@@ -223,14 +331,13 @@ public class ValidatorImpl implements Validator
 
             // Really this can probably be part of the normal Validator mechanism?
 
-
-
             return ImmutableSet.of();
         }
     }
 
     //private static class AsnSchemaTypeValidationVisitor implements AsnSchemaTypeVisitor<Optional<? extends AsnSchemaTypeValidator>>
-    private static class AsnSchemaTypeValidationVisitor implements AsnSchemaTypeVisitor<AsnSchemaTypeValidator>
+    private static class AsnSchemaTypeValidationVisitor
+            implements AsnSchemaTypeVisitor<AsnSchemaTypeValidator>
     {
         // ---------------------------------------------------------------------
         // PUBLIC METHODS
@@ -238,7 +345,8 @@ public class ValidatorImpl implements Validator
 
         @Override
         //public Optional<? extends AsnSchemaTypeValidator> visit(AsnSchemaTypeConstructed visitable) throws ParseException
-        public AsnSchemaTypeValidator visit(AsnSchemaTypeConstructed visitable) throws ParseException
+        public AsnSchemaTypeValidator visit(AsnSchemaTypeConstructed visitable)
+                throws ParseException
         {
             //return Optional.of(new ConstructedValidator(visitable));
             return new ConstructedValidator(visitable);
@@ -257,13 +365,15 @@ public class ValidatorImpl implements Validator
         }
 
         @Override
-        public AsnSchemaTypeValidator visit(AsnSchemaTypeWithNamedTags visitable) throws ParseException
+        public AsnSchemaTypeValidator visit(AsnSchemaTypeWithNamedTags visitable)
+                throws ParseException
         {
             return null;
         }
 
         @Override
-        public AsnSchemaTypeValidator visit(AsnSchemaTypePlaceholder visitable) throws ParseException
+        public AsnSchemaTypeValidator visit(AsnSchemaTypePlaceholder visitable)
+                throws ParseException
         {
             return null;
         }
@@ -278,6 +388,7 @@ public class ValidatorImpl implements Validator
     private static class ZZZ
     {
         String name;
+
         AsnSchemaType type;
 
         ZZZ(String name, AsnSchemaType type)
@@ -296,7 +407,7 @@ public class ValidatorImpl implements Validator
             {
                 return false;
             }
-            ZZZ other = (ZZZ)o;
+            ZZZ other = (ZZZ) o;
             return (other.name.equals(this.name) && (other.type.equals(type)));
         }
 

@@ -112,14 +112,16 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     public BuiltinTypeValidator visit(AsnPrimitiveTypeSequence visitable)
     {
         // TODO ASN-113
-        return null;
+        //return null;
+        return ConstructedBuiltinTypeValidator.getInstance(); // TODO MJF
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnPrimitiveTypeSequenceOf visitable)
     {
         // TODO ASN-113
-        return null;
+        //return null;
+        return CollectionBuiltinTypeValidator.getInstance(); // TODO MJF
     }
 
     @Override

@@ -115,6 +115,15 @@ public class AsnSchemaImpl implements AsnSchema
         while (it.hasNext())
         {
             String nextTag = it.next();
+
+            // TODO MJF - where should this go???
+            int index = nextTag.indexOf("[");
+            if (index >= 0)
+            {
+                nextTag = nextTag.substring(0, index);
+            }
+
+
             Optional<AsnSchemaType> next = getNext(type, nextTag);
             if (!next.isPresent())
             {
@@ -126,7 +135,7 @@ public class AsnSchemaImpl implements AsnSchema
     }
 
     // TODO MJF
-    Optional<AsnSchemaType> getNext(AsnSchemaType type, String tag)
+    private Optional<AsnSchemaType> getNext(AsnSchemaType type, String tag)
     {
         final ImmutableList<AsnSchemaComponentType> allComponents = type.getAllComponents();
         for(AsnSchemaComponentType component : allComponents)

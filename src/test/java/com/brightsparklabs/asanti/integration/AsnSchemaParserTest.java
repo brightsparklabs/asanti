@@ -1913,6 +1913,11 @@ public class AsnSchemaParserTest
             assertEquals(0, pdus.get(1).getUnmappedTags().size());
             assertEquals(0, pdus.get(2).getUnmappedTags().size());
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
+
+
             String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
 
             BigInteger number = pdus.get(0).<BigInteger>getDecodedObject(tag).get();
@@ -1980,9 +1985,19 @@ public class AsnSchemaParserTest
             assertEquals("3030", octetToString);
 
             assertEquals(15, pdus.size());
+
+            final ValidatorImpl validator = new ValidatorImpl();
             for (int i = 0; i < 14; i++)
             {
                 assertEquals(0, pdus.get(i).getUnmappedTags().size());
+                final ValidationResult validationresult = validator.validate(pdus.get(i));
+                if (validationresult.hasFailures())
+                {
+                    final ImmutableSet<DecodedTagValidationFailure> failures
+                            = validationresult.getFailures();
+                    int breakpoint = 0;
+                }
+                assertFalse(validationresult.hasFailures());
             }
         }
 

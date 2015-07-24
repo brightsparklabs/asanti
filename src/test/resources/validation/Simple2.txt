@@ -1,0 +1,14 @@
+s Human ::=
+{
+    person 
+    {
+        name { first "Adam", last "Smith" },
+        age 32
+    },
+    faveMovies
+    {
+        { name "Drunken Master 2", stars { { name { first "Jackie", last "Chan" }, age 30 } } }
+    }
+    
+}
+

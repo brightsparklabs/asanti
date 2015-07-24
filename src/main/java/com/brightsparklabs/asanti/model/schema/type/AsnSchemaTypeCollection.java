@@ -11,6 +11,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
@@ -114,6 +115,12 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BaseAsnSchemaType
     // -------------------------------------------------------------------------
+
+    @Override
+    public ImmutableList<AsnSchemaComponentType> getAllComponents()
+    {
+        return elementType.getAllComponents();
+    }
 
     @Override
     public Optional<AsnSchemaComponentType> getMatchingChild(String rawTag,
