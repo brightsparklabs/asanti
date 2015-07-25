@@ -48,7 +48,6 @@ public class Validation
         tag = "/Human/name/last";
         assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
 
-
         final ValidatorImpl validator = new ValidatorImpl();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertTrue(validationresult.hasFailures());
@@ -85,11 +84,6 @@ public class Validation
 
         final ValidatorImpl validator = new ValidatorImpl();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
-//        assertTrue(validationresult.hasFailures());
-//
-//        final ImmutableSet<DecodedTagValidationFailure> failures = validationresult.getFailures();
-//        assertEquals(1, failures.size());
-//
-//        assertEquals(FailureType.MandatoryFieldMissing, failures.asList().get(0).getFailureType());
+        assertFalse(validationresult.hasFailures());
     }
 }

@@ -314,8 +314,7 @@ public class AsnSchemaParserTest
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
             "       faveNumbers FaveNumbers,\n" +
-            "       name PersonName,\n" +
-            "       bitString BIT STRING (SIZE (4))" +
+            "       name PersonName\n" +
             "   }\n" +
             "   PersonName ::= SEQUENCE\n" +
             "   {\n" +

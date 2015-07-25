@@ -33,10 +33,12 @@ public interface DecodedAsnData
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-
-    // TODO MJF
+    /**
+     * Returns the {@link AsnSchema} that was used to decode the {@link AsnData}
+     *
+     * @return the {@link AsnSchema} that was used to decode the {@link AsnData}
+     */
     public AsnSchema getSchema();
-
 
     /**
      * Returns all tags found in the ASN data as a set of XPath like strings. E.g.
@@ -144,9 +146,6 @@ public interface DecodedAsnData
      * @return the ASN.1 Type Definition of the specified tag or {@link AsnPrimitiveType#NULL} if
      * the tag does not exist
      */
-    // TODO MJF - currently this gets type from the data, so it only works on the leaf (end) tags,
-    // not all the constructed types that get it there.  Should this delegate through to the schema?
-    // or even not exist and use the one I added to the schema - this is a schema issue really.
     public AsnSchemaType getType(String tag);
 
     /**
@@ -195,7 +194,6 @@ public interface DecodedAsnData
         // IMPLEMENTATION: DecodedAsnData
         // ---------------------------------------------------------------------
 
-        // TODO MJF
         @Override
         public AsnSchema getSchema()
         {

@@ -7,18 +7,20 @@ package com.brightsparklabs.asanti.validator.builtin;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Class implementing {@link BuiltinTypeValidator} for Constructed types, ie{@link
@@ -32,11 +34,33 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** splitter for separating tag strings */
-    private static final Splitter tagSplitter = Splitter.on("/").omitEmptyStrings();
+    /** class logger */
+    private static final Logger logger
+            = LoggerFactory.getLogger(ConstructedBuiltinTypeValidator.class);
 
     private static ConstructedBuiltinTypeValidator instance;
 
+    private static final Pattern PATTERN_HAS_INDEX = Pattern.compile("^(.+)(\\[[0-9]+\\])$");
+
+    // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+
+    /**
+     * Default constructor.
+     *
+     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     */
+    private ConstructedBuiltinTypeValidator()
+    {
+
+    }
+
+    /**
+     * Returns a singleton instance of this class
+     *
+     * @return a singleton instance of this class
+     */
     public static ConstructedBuiltinTypeValidator getInstance()
     {
         if (instance == null)
@@ -44,11 +68,6 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
             instance = new ConstructedBuiltinTypeValidator();
         }
         return instance;
-    }
-
-    private ConstructedBuiltinTypeValidator()
-    {
-
     }
 
     // -------------------------------------------------------------------------
@@ -59,25 +78,14 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
     public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
             DecodedAsnData decodedAsnData)
     {
-
-        ImmutableSet<String> tags = buildTags(decodedAsnData);
-        final Collection<String> filter = Collections2.filter(tags, new MyPredicate(tag));
-
-        Set<String> childTags = Sets.newHashSet();
-        int index = tag.length() + 1;
-        for (String childTag : filter)
-        {
-            String cleanTag = childTag.substring(index);
-            int indexOf = cleanTag.indexOf("[");
-            if (indexOf >= 0)
-            {
-                cleanTag = cleanTag.substring(0, indexOf);
-            }
-            childTags.add(cleanTag);
-        }
+        final ImmutableSet<String> childTags
+                = DecodedTagsHelpers.getImmediateChildren(decodedAsnData, tag);
 
         final AsnSchema schema = decodedAsnData.getSchema();
-        final AsnSchemaType type = schema.getType(tag).get();// TODO MJF - protect
+        // to have gotten a mapped tag the schema look up must have previously worked,
+        // so it is safe to assume it will work here.  If it fails then throwing is the right thing
+        // to do.  (noting the .get() at the end of the Optional)
+        final AsnSchemaType type = schema.getType(tag).get();
 
         final Set<DecodedTagValidationFailure> failures = Sets.newHashSet();
 
@@ -88,14 +96,12 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
             {
                 if (!childTags.contains(component.getName()))
                 {
-                    // TODO MJF - get the fully qualified tag that is missing noting that we
-                    // may have an empty iterable so may not know how to get to the parents
-                    // so we may need a slight interface change
-                    // for now just put anything...
+                    final String fullyQualifiedTag = tag + "/" + component.getName();
                     final DecodedTagValidationFailure failure = new DecodedTagValidationFailure(
-                            component.getName(),
+                            fullyQualifiedTag,
                             FailureType.MandatoryFieldMissing,
                             "Mandatory field was not found in the data");
+                    logger.warn("Mandatory field {} was not found in the data", fullyQualifiedTag);
                     failures.add(failure);
                 }
             }
@@ -108,63 +114,5 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
     public ImmutableSet<ByteValidationFailure> validate(final byte[] bytes)
     {
         return ImmutableSet.of();
-    }
-
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
-
-    // TODO MJF
-    // If this concpet works then it should probably go in the DecodedAsnData class
-    // so that it only needs to be called once.
-    private ImmutableSet<String> buildTags(DecodedAsnData decodedAsnData)
-    {
-        AsnSchema schema = decodedAsnData.getSchema();
-
-        Set<String> result = Sets.newHashSet();
-
-        // TODO MJF - we are going to have to work through all tags (even unmapped), because the
-        // unmapped tags MAY be the only ones with some of the path in them.
-        // Obviously we need to understand where to stop (ie don't get to the unmapped part)
-        for (final String tag : decodedAsnData.getTags())
-        {
-            final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
-
-            // we ignore the first one because it is the Module name.
-            String reconstructed = "";
-            for (int i = 0; i < tags.size(); i++)
-            {
-                final String tagName = tags.get(i);
-
-                reconstructed += "/" + tagName;
-                result.add(reconstructed);
-            }
-        }
-        return ImmutableSet.copyOf(result);
-    }
-
-    private static class MyPredicate implements Predicate<String>
-    {
-        private final String tag;
-
-        MyPredicate(String tag)
-        {
-            this.tag = tag;
-        }
-
-        @Override
-        public boolean apply(final String input)
-        {
-
-            if (!input.startsWith(tag) || input.equals(tag))
-            {
-                return false;
-            }
-
-            // only true for the next level child, not all its children too
-            String s = input.substring(tag.length() + 1);
-
-            return !s.contains("/");
-        }
     }
 }

@@ -410,7 +410,8 @@ public class DecodedAsnDataImplTest
         assertEquals(AsnBuiltinType.Null, emptyInstance.getType("").getBuiltinType());
         assertEquals(AsnBuiltinType.Null,
                 emptyInstance.getType("/Document/0/0/0").getBuiltinType());
-        assertEquals(AsnBuiltinType.Null,
+
+        assertEquals(AsnBuiltinType.Date,
                 emptyInstance.getType("/Document/header/published/date").getBuiltinType());
     }
 

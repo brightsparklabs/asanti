@@ -6,7 +6,6 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.model.schema.primitive.*;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeVisitor;
 import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 
@@ -111,24 +110,20 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     @Override
     public BuiltinTypeValidator visit(AsnPrimitiveTypeSequence visitable)
     {
-        // TODO ASN-113
-        //return null;
-        return ConstructedBuiltinTypeValidator.getInstance(); // TODO MJF
+        return ConstructedBuiltinTypeValidator.getInstance();
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnPrimitiveTypeSequenceOf visitable)
     {
         // TODO ASN-113
-        //return null;
-        return CollectionBuiltinTypeValidator.getInstance(); // TODO MJF
+        return null;
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnPrimitiveTypeSet visitable)
     {
-        // TODO ASN-113
-        return null;
+        return ConstructedBuiltinTypeValidator.getInstance();
     }
 
     @Override

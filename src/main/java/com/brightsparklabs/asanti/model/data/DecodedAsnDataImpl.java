@@ -244,8 +244,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     @Override
     public AsnSchemaType getType(String tag)
     {
-        final DecodedTag decodedTag = allTags.get(tag);
-        return (decodedTag == null) ? AsnSchemaType.NULL : decodedTag.getType();
+        return asnSchema.getType(tag).or(AsnSchemaType.NULL);
     }
 
     @Override
