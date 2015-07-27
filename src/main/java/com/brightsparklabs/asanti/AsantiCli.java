@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti;
 
+import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
@@ -133,10 +134,22 @@ public class AsantiCli
                 final DecodedAsnData pdu = pdus.get(i);
                 for (String tag : pdu.getTags())
                 {
-                    logger.info("\t{} => {} as {}",
-                            tag,
-                            pdu.getHexString(tag),
-                            pdu.getType(tag).getPrimitiveType());
+                    try
+                    {
+                        logger.info("\t{} => {} as {}",
+                                tag,
+                                //pdu.getHexString(tag),
+                                pdu.getPrintableString(tag).get(),
+                                pdu.getType(tag).getBuiltinType());
+                    }
+                    catch (DecodeException e)
+                    {
+                        logger.info("\t{} => {} as {} (as HexString because {})",
+                                tag,
+                                pdu.getHexString(tag).get(),
+                                pdu.getType(tag).getBuiltinType(),
+                                e.getMessage());
+                    }
                 }
                 for (String tag : pdu.getUnmappedTags())
                 {
@@ -229,7 +242,9 @@ public class AsantiCli
             System.out.print("\tEnter raw tag: ");
             final String rawTag = reader.readLine();
 
-            ImmutableSet<OperationResult<DecodedTag>> results = asnSchema.getDecodedTags(ImmutableList.of(rawTag), "PS-PDU");
+            ImmutableSet<OperationResult<DecodedTag>> results = asnSchema.getDecodedTags(
+                    ImmutableList.of(rawTag),
+                    "PS-PDU");
             OperationResult<DecodedTag> result = results.iterator().next();
             logger.info("\t{}:\t decode {} => {}",
                     result.wasSuccessful() ? "PASS" : "FAIL",
