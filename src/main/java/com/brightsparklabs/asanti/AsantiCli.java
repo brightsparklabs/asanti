@@ -138,7 +138,6 @@ public class AsantiCli
                     {
                         logger.info("\t{} => {} as {}",
                                 tag,
-                                //pdu.getHexString(tag),
                                 pdu.getPrintableString(tag).get(),
                                 pdu.getType(tag).getBuiltinType());
                     }

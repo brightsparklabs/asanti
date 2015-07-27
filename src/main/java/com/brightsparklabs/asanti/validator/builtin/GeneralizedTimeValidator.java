@@ -101,14 +101,11 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
     @Override
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
-        final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        Timestamp timestamp = GeneralizedTimeDecoder.validateAndDecode(bytes);
 
-        if (timestamp == null)
-        {
-            failures.addAll(GeneralizedTimeDecoder.failures);
-        }
+        final GeneralizedTimeDecoder.OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>>
+                result = GeneralizedTimeDecoder.validateAndDecode(
+                bytes);
 
-        return ImmutableSet.copyOf(failures);
+        return result.getFailureReason().or(ImmutableSet.<ByteValidationFailure>of());
     }
 }

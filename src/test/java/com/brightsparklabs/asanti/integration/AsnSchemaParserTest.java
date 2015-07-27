@@ -1906,7 +1906,7 @@ public class AsnSchemaParserTest
 
             logger.debug("Results of /test.ber");
 
-            debugPdus(pdus);
+            debugPdus(pdus, false);
 
             assertEquals(3, pdus.size());
             assertEquals(0, pdus.get(0).getUnmappedTags().size());
@@ -1949,7 +1949,7 @@ public class AsnSchemaParserTest
 
             logger.debug("Results of /test5.ber");
 
-            debugPdus(pdus);
+            debugPdus(pdus, false);
 
             String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
 
