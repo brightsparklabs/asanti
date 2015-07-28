@@ -47,7 +47,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         }
 
         // validate against the tag's constraint
-        final AsnSchemaType type = decodedAsnData.getType(tag);
+        final AsnSchemaType type = decodedAsnData.getType(tag).or(AsnSchemaType.NULL);
         final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
         final Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
         for (AsnSchemaConstraint constraint : constraints)

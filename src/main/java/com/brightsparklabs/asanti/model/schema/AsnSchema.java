@@ -6,6 +6,8 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -21,10 +23,10 @@ public interface AsnSchema
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the decoded tags for the supplied raw tags. E.g. {@code getDecodedTag("/0[1]/0[0]/0[1]",
-     * "Document")} =&gt; {@code "/Document/header/published/date"} Decoding needs to be done on a
-     * whole data file at once time, as the ordering of the data can impact the (validity of the)
-     * decoding, as ASN.1 SEQUENCE objects are order dependent.
+     * Returns the decoded tags for the supplied raw tags. E.g. {@code
+     * getDecodedTag("/0[1]/0[0]/0[1]", "Document")} =&gt; {@code "/Document/header/published/date"}
+     * Decoding needs to be done on a whole data file at once time, as the ordering of the data can
+     * impact the (validity of the) decoding, as ASN.1 SEQUENCE objects are order dependent.
      *
      * @param rawTags
      *         raw tags to decode
@@ -37,4 +39,13 @@ public interface AsnSchema
     public ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(Iterable<String> rawTags,
             String topLevelTypeName);
 
+    /**
+     * Returns the AsnSchemaType of the supplied decoded tag.
+     *
+     * @param tag
+     *         fully qualified decoded tag
+     *
+     * @return the AsnSchemaType of the tag, {@link Optional#absent()} if no match
+     */
+    Optional<AsnSchemaType> getType(String tag);
 }

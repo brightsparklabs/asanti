@@ -135,10 +135,12 @@ public interface DecodedAsnData
      * @param tag
      *         tag to retrieve the type of
      *
-     * @return the ASN.1 Type Definition of the specified tag or {@link AsnPrimitiveType#NULL} if
-     * the tag does not exist
+     * @return the {@link AsnSchemaType} of the specified tag or {@link Optional#absent()} if the
+     * tag does not exist. To use this without caring if there was a match, and to get a {@link
+     * AsnPrimitiveType#NULL} if the tag does not exist the use {@code
+     * getType(tag).or(AsnPrimitiveType.NULL)}
      */
-    public AsnSchemaType getType(String tag);
+    public Optional<AsnSchemaType> getType(String tag);
 
     /**
      * Gets the data (bytes) associated with the specified tag as the decoded Java object most
@@ -146,14 +148,18 @@ public interface DecodedAsnData
      *
      * @param tag
      *         tag associated with the data
+     * @param <T>
+     *         the type of data that will be returned in the {@link Optional}
      *
      * @return data associated with the specified tag or an empty byte array if the tag does not
      * exist
      *
      * @throws DecodeException
      *         if any errors occur decoding the data associated with the tag
+     * @throws ClassCastException
+     *         if the decoded object can't be cast to T
      */
-    public <T> Optional<T> getDecodedObject(String tag) throws DecodeException;
+    public <T> Optional<T> getDecodedObject(String tag) throws DecodeException, ClassCastException;
 
     /**
      * Gets the data (bytes) from all tags matching the supplied regular expression as the decoded
@@ -241,13 +247,13 @@ public interface DecodedAsnData
         }
 
         @Override
-        public AsnSchemaType getType(String tag)
+        public Optional<AsnSchemaType> getType(String tag)
         {
-            return AsnSchemaType.NULL;
+            return Optional.absent();
         }
 
         @Override
-        public Optional<byte[]> getDecodedObject(String tag)
+        public <T> Optional<T> getDecodedObject(String tag)
         {
             return Optional.absent();
         }

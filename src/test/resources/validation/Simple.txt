@@ -1,0 +1,5 @@
+s Human ::=
+{
+    name { first "Adam", last "Smith" }
+}
+

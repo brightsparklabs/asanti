@@ -170,36 +170,45 @@ public class MockAsnSchema
 
         instance = mock(AsnSchema.class);
 
+        when(instance.getType(anyString())).thenReturn(Optional.<AsnSchemaType>absent());
+
         ImmutableSet<OperationResult<DecodedTag, String>> results
                 = ImmutableSet.<OperationResult<DecodedTag, String>>builder()
                 .add(configureGetDecodedTag("/1/0/1",
                         "/Document/header/published/date",
                         true,
-                        AsnBuiltinType.Date))
+                        AsnBuiltinType.Date,
+                        instance))
                 .add(configureGetDecodedTag("/2/0/0",
                         "/Document/body/lastModified/date",
                         true,
-                        AsnBuiltinType.Date))
+                        AsnBuiltinType.Date,
+                        instance))
                 .add(configureGetDecodedTag("/2/1/1",
                         "/Document/body/prefix/text",
                         true,
-                        AsnBuiltinType.OctetString))
+                        AsnBuiltinType.OctetString,
+                        instance))
                 .add(configureGetDecodedTag("/2/2/1",
                         "/Document/body/content/text",
                         true,
-                        AsnBuiltinType.OctetString))
+                        AsnBuiltinType.OctetString,
+                        instance))
                 .add(configureGetDecodedTag("/3/0/1",
                         "/Document/footer/author/firstName",
                         true,
-                        AsnBuiltinType.OctetString))
+                        AsnBuiltinType.OctetString,
+                        instance))
                 .add(configureGetDecodedTag("/2/2/99",
                         "/Document/body/content/99",
                         false,
-                        AsnBuiltinType.Null))
+                        AsnBuiltinType.Null,
+                        instance))
                 .add(configureGetDecodedTag("/99/1/1",
                         "/Document/99/1/1",
                         false,
-                        AsnBuiltinType.Null))
+                        AsnBuiltinType.Null,
+                        instance))
                 .build();
 
         String topLevelTypeName = "Document";
@@ -232,7 +241,8 @@ public class MockAsnSchema
      *         the value to return for {@link AsnSchemaType#getBuiltinType()}
      */
     private static OperationResult<DecodedTag, String> configureGetDecodedTag(String rawTag,
-            String decodedTagPath, boolean isFullyDecoded, AsnBuiltinType builtinType)
+            String decodedTagPath, boolean isFullyDecoded, AsnBuiltinType builtinType,
+            AsnSchema schema)
     {
         final DecodedTag decodedTag = mock(DecodedTag.class);
 
@@ -251,6 +261,9 @@ public class MockAsnSchema
         when(result.getOutput()).thenReturn(decodedTag);
         when(result.wasSuccessful()).thenReturn(isFullyDecoded);
         when(result.getFailureReason()).thenReturn(Optional.of("mock failure reason"));
+
+
+        when(schema.getType(eq(decodedTagPath))).thenReturn(Optional.of(type));
 
         rawTags.add(rawTag);
 

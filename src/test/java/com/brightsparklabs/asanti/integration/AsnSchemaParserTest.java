@@ -3,7 +3,9 @@ package com.brightsparklabs.asanti.integration;
 import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.DecodedAsnDataImpl;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
@@ -314,8 +316,7 @@ public class AsnSchemaParserTest
             "   Human ::= SEQUENCE\n" +
             "   {\n" +
             "       faveNumbers FaveNumbers,\n" +
-            "       name PersonName,\n" +
-            "       bitString BIT STRING (SIZE (4))" +
+            "       name PersonName\n" +
             "   }\n" +
             "   PersonName ::= SEQUENCE\n" +
             "   {\n" +
@@ -642,7 +643,7 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         String tag = "/Human/pickOne";
-        assertEquals(AsnPrimitiveType.ENUMERATED, pdu.getType(tag).getPrimitiveType());
+        assertEquals(AsnPrimitiveType.ENUMERATED, pdu.getType(tag).get().getPrimitiveType());
 
         byte[] bytes = pdu.getBytes(tag).get();
         assertEquals(1, bytes[0]);
@@ -832,7 +833,7 @@ public class AsnSchemaParserTest
 
         String tag = "/Human/age";
 
-        AsnBuiltinType builtinType = pdu.getType(tag).getBuiltinType();
+        AsnBuiltinType builtinType = pdu.getType(tag).get().getBuiltinType();
         assertEquals(AsnBuiltinType.Integer, builtinType);
 
         BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
@@ -1913,6 +1914,11 @@ public class AsnSchemaParserTest
             assertEquals(0, pdus.get(1).getUnmappedTags().size());
             assertEquals(0, pdus.get(2).getUnmappedTags().size());
 
+            final ValidatorImpl validator = new ValidatorImpl();
+            final ValidationResult validationresult = validator.validate(pdus.get(0));
+            assertFalse(validationresult.hasFailures());
+
+
             String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
 
             BigInteger number = pdus.get(0).<BigInteger>getDecodedObject(tag).get();
@@ -1980,9 +1986,19 @@ public class AsnSchemaParserTest
             assertEquals("3030", octetToString);
 
             assertEquals(15, pdus.size());
+
+            final ValidatorImpl validator = new ValidatorImpl();
             for (int i = 0; i < 14; i++)
             {
                 assertEquals(0, pdus.get(i).getUnmappedTags().size());
+                final ValidationResult validationresult = validator.validate(pdus.get(i));
+                if (validationresult.hasFailures())
+                {
+                    final ImmutableSet<DecodedTagValidationFailure> failures
+                            = validationresult.getFailures();
+                    int breakpoint = 0;
+                }
+                assertFalse(validationresult.hasFailures());
             }
         }
 
@@ -2130,6 +2146,57 @@ public class AsnSchemaParserTest
     }
 
     @Test
+    public void testCastExceptions() throws Exception
+    {
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE);
+
+        final ByteSource berData
+                = Resources.asByteSource(getClass().getResource("/Human_Simple.ber"));
+
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
+                schema,
+                topLevelType);
+
+        DecodedAsnData pdu = pdus.get(0);
+        String tag = "/Human/age";
+        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        logger.info(tag + " : " + age);
+        assertEquals(new BigInteger("32"), age);
+
+        tag = "/Human/name";
+        String name = pdu.<String>getDecodedObject(tag).get();
+        logger.info("{} : {}", tag, name);
+        assertEquals("Adam", name);
+
+        try
+        {
+            tag = "/Human/name";
+            // There is no casting issue here, only validation, so this will work
+            BigInteger bigInt = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag).get());
+            // this is castign from String to BigInteger, which will throw
+            bigInt = pdu.<BigInteger>getDecodedObject(tag).get();
+            fail("Should have thrown ClassCastException");
+        }
+        catch (ClassCastException e)
+        {
+        }
+
+        try
+        {
+            tag = "/Human/age";
+            AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag).get());
+            String s = pdu.<String>getDecodedObject(tag).get();
+            fail("Should have thrown ClassCastException");
+        }
+        catch (ClassCastException e)
+        {
+        }
+
+    }
+
+    @Test
     public void testParse_HumanUsingTypeDefBroken() throws Exception
     {
         try
@@ -2245,7 +2312,7 @@ public class AsnSchemaParserTest
                             (printHexString ?
                                     pdu.getHexString(t).get() :
                                     pdu.getPrintableString(t).get()),
-                            pdu.getType(t).getBuiltinType());
+                            pdu.getType(t).get().getBuiltinType());
                 }
                 catch (DecodeException e)
                 {

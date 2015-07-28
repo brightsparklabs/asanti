@@ -6,12 +6,14 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -101,9 +103,58 @@ public class AsnSchemaImpl implements AsnSchema
         return ImmutableSet.copyOf(results);
     }
 
+    @Override
+    public Optional<AsnSchemaType> getType(String tag)
+    {
+        final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
+        final Iterator<String> it = tags.iterator();
+
+        final AsnSchemaTypeDefinition typeDefinition = primaryModule.getType(it.next());
+
+        AsnSchemaType type = typeDefinition.getType();
+        while (it.hasNext())
+        {
+            final String nextTag = DecodedTagsHelpers.stripIndex(it.next());
+
+            Optional<AsnSchemaType> next = getNext(type, nextTag);
+            if (!next.isPresent())
+            {
+                return Optional.absent();
+            }
+            type = next.get();
+        }
+        return Optional.of(type);
+    }
+
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
+
+    /**
+     * For a given AsnSchemaType get the child component that matches tag.  This differs from {@link
+     * AsnSchemaType#getMatchingChild(String, DecodingSession)} in that it does not needs a
+     * DecodingSession, it does not care about ordering of components, and it returns the component
+     * type rather than the component
+     *
+     * @param type
+     *         type to get the matching child type from
+     * @param tag
+     *         tag of the child to match
+     *
+     * @return the child component that matches the tag, {@link Optional#absent()} if no match
+     */
+    private Optional<AsnSchemaType> getNext(AsnSchemaType type, String tag)
+    {
+        final ImmutableList<AsnSchemaComponentType> allComponents = type.getAllComponents();
+        for (AsnSchemaComponentType component : allComponents)
+        {
+            if (component.getName().equals(tag))
+            {
+                return Optional.of(component.getType());
+            }
+        }
+        return Optional.absent();
+    }
 
     /**
      * Returns the decoded tag for the supplied raw tag. E.g. {@code getDecodedTag("/0[1]/0[0]/0[1]",

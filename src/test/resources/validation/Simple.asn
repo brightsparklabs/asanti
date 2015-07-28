@@ -1,0 +1,17 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS
+AUTOMATIC TAGS ::=
+BEGIN
+Human ::= SEQUENCE
+{
+    name SEQUENCE
+    {
+        first UTF8String,
+        last UTF8String
+    },
+    age INTEGER
+}
+
+END

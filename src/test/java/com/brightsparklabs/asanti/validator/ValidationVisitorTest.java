@@ -109,9 +109,8 @@ public class ValidationVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionSequence()
     {
-        // TODO: ASN-113
         final Object result = instance.visit(AsnPrimitiveType.SEQUENCE);
-        assertNull(result);
+        assertNotNull(result);
     }
 
     @Test
@@ -125,9 +124,8 @@ public class ValidationVisitorTest
     public void testVisitAsnSchemaTypeDefinitionSet()
     {
 
-        // TODO: ASN-113
         final Object result = instance.visit(AsnPrimitiveType.SET);
-        assertNull(result);
+        assertNotNull(result);
     }
 
     @Test
