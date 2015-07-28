@@ -5,13 +5,13 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.decoder.builtin.GeneralizedTimeDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
-import java.util.Set;
+import java.sql.Timestamp;
 
 /**
  * Validator for data of type {@link AsnBuiltinType#GeneralizedTime}
@@ -59,8 +59,10 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
     @Override
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
-        final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        // TODO: ASN-105 implement validation logic
-        return ImmutableSet.copyOf(failures);
+
+        final OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> result
+                = GeneralizedTimeDecoder.validateAndDecode(bytes);
+
+        return result.getFailureReason().or(ImmutableSet.<ByteValidationFailure>of());
     }
 }

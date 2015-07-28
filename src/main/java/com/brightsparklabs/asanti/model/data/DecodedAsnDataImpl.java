@@ -91,9 +91,9 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final Map<String, DecodedTag> decodedToRawTags = Maps.newHashMap();
         final Map<String, DecodedTag> unmappedTags = Maps.newHashMap();
 
-        ImmutableSet<OperationResult<DecodedTag>> results
+        ImmutableSet<OperationResult<DecodedTag, String>> results
                 = asnSchema.getDecodedTags(asnData.getRawTags(), topLevelTypeName);
-        for (OperationResult<DecodedTag> decodeResult : results)
+        for (OperationResult<DecodedTag, String> decodeResult : results)
         {
             final DecodedTag decodedTag = decodeResult.getOutput();
             if (decodeResult.wasSuccessful())

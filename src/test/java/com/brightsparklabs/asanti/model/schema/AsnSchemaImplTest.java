@@ -160,10 +160,10 @@ public class AsnSchemaImplTest
                 .put("5[6]/1[1]", "/Document/description/summary")
                 .build();
 
-        final ImmutableSet<OperationResult<DecodedTag>> decodedTagsGood
+        final ImmutableSet<OperationResult<DecodedTag, String>> decodedTagsGood
                 = instance.getDecodedTags(tagsGood.keySet(), "Document");
 
-        for (OperationResult<DecodedTag> decodedTag : decodedTagsGood)
+        for (OperationResult<DecodedTag, String> decodedTag : decodedTagsGood)
         {
             assertTrue(decodedTag.wasSuccessful());
 
@@ -176,10 +176,10 @@ public class AsnSchemaImplTest
                 .put("99[99]/98[98]", "/Document/99[99]/98[98]")
                 .build();
 
-        final ImmutableSet<OperationResult<DecodedTag>> decodedTagsBad
+        final ImmutableSet<OperationResult<DecodedTag, String>> decodedTagsBad
                 = instance.getDecodedTags(tagsBad.keySet(), "Document");
 
-        for (OperationResult<DecodedTag> decodedTag : decodedTagsBad)
+        for (OperationResult<DecodedTag, String> decodedTag : decodedTagsBad)
         {
             assertFalse(decodedTag.wasSuccessful());
 

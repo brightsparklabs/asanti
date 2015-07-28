@@ -6,8 +6,8 @@
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -82,15 +82,15 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(final Iterable<String> rawTags,
-            String topLevelTypeName)
+    public ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(
+            final Iterable<String> rawTags, String topLevelTypeName)
     {
         DecodingSession session = new DecodingSessionImpl();
 
-        final Set<OperationResult<DecodedTag>> results = Sets.newHashSet();
+        final Set<OperationResult<DecodedTag, String>> results = Sets.newHashSet();
         for (String rawTag : rawTags)
         {
-            final OperationResult<DecodedTag> decodeResult = getDecodedTag(rawTag,
+            final OperationResult<DecodedTag, String> decodeResult = getDecodedTag(rawTag,
                     topLevelTypeName,
                     session);
 
@@ -120,8 +120,8 @@ public class AsnSchemaImpl implements AsnSchema
      *
      * @return the result of the decode attempt containing the decoded tag
      */
-    private OperationResult<DecodedTag> getDecodedTag(String rawTag, String topLevelTypeName,
-            DecodingSession session)
+    private OperationResult<DecodedTag, String> getDecodedTag(String rawTag,
+            String topLevelTypeName, DecodingSession session)
     {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final AsnSchemaTypeDefinition typeDefinition = primaryModule.getType(topLevelTypeName);
@@ -158,11 +158,11 @@ public class AsnSchemaImpl implements AsnSchema
                 rawTag,
                 decodedTagsAndType.type,
                 decodeSuccessful);
-        final OperationResult<DecodedTag> result = decodeSuccessful ?
-                OperationResult.createSuccessfulInstance(decodedTag) :
+
+        return decodeSuccessful ?
+                OperationResult.<DecodedTag, String>createSuccessfulInstance(decodedTag) :
                 OperationResult.createUnsuccessfulInstance(decodedTag,
                         "The supplied raw tag does not map to a type in this schema");
-        return result;
     }
 
     /**
@@ -170,7 +170,8 @@ public class AsnSchemaImpl implements AsnSchema
      *
      * @param rawTags
      *         raw tags to decode. This should be an iterable in the order of the tags. E.g. The raw
-     *         tag {code "/1[0]/0[1]/1[2]"} should be provided as an iterator of {code ["1[0]", "0[1]", "1[2]"]}
+     *         tag {code "/1[0]/0[1]/1[2]"} should be provided as an iterator of {code ["1[0]",
+     *         "0[1]", "1[2]"]}
      * @param containingType
      *         the {@link AsnSchemaType} that is the parent of the chain to be decoded
      *

@@ -24,7 +24,7 @@ public class OperationResultTest
     @Test
     public void testWasSuccessful() throws Exception
     {
-        OperationResult<String> instance = OperationResult.createSuccessfulInstance("TEST");
+        OperationResult<String, String> instance = OperationResult.createSuccessfulInstance("TEST");
         assertEquals(true, instance.wasSuccessful());
         instance = OperationResult.createUnsuccessfulInstance("TEST", "Failed");
         assertEquals(false, instance.wasSuccessful());
@@ -33,12 +33,12 @@ public class OperationResultTest
     @Test
     public void testGetDecodedData() throws Exception
     {
-        OperationResult<String> instanceString = OperationResult.createSuccessfulInstance("TEST");
+        OperationResult<String, String> instanceString = OperationResult.createSuccessfulInstance("TEST");
         assertEquals("TEST", instanceString.getOutput());
         instanceString = OperationResult.createUnsuccessfulInstance("TEST", "Failed");
         assertEquals("TEST", instanceString.getOutput());
 
-        OperationResult<Integer> instanceInteger = OperationResult.createSuccessfulInstance(Integer.MIN_VALUE);
+        OperationResult<Integer, String> instanceInteger = OperationResult.createSuccessfulInstance(Integer.MIN_VALUE);
         assertEquals((Integer) Integer.MIN_VALUE, instanceInteger.getOutput());
         instanceInteger = OperationResult.createSuccessfulInstance(Integer.MAX_VALUE);
         assertEquals((Integer) Integer.MAX_VALUE, instanceInteger.getOutput());
@@ -46,16 +46,16 @@ public class OperationResultTest
         assertEquals((Integer) 0, instanceInteger.getOutput());
 
         final Timestamp expected = new Timestamp(1000);
-        final OperationResult<Timestamp> instanceTimestamp = OperationResult.createSuccessfulInstance(expected);
+        final OperationResult<Timestamp, String> instanceTimestamp = OperationResult.createSuccessfulInstance(expected);
         assertEquals(expected, instanceTimestamp.getOutput());
     }
 
     @Test
     public void testGetFailureReason() throws Exception
     {
-        OperationResult<String> instance = OperationResult.createSuccessfulInstance("TEST");
-        assertEquals("", instance.getFailureReason());
+        OperationResult<String, String> instance = OperationResult.createSuccessfulInstance("TEST");
+        assertEquals("", instance.getFailureReason().or(""));
         instance = OperationResult.createUnsuccessfulInstance("TEST", "Failed");
-        assertEquals("Failed", instance.getFailureReason());
+        assertEquals("Failed", instance.getFailureReason().or(""));
     }
 }
