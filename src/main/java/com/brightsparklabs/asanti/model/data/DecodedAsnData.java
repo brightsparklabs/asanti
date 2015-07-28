@@ -156,8 +156,10 @@ public interface DecodedAsnData
      *
      * @throws DecodeException
      *         if any errors occur decoding the data associated with the tag
+     * @throws ClassCastException
+     *         if the decoded object can't be cast to T
      */
-    public <T> Optional<T> getDecodedObject(String tag) throws DecodeException;
+    public <T> Optional<T> getDecodedObject(String tag) throws DecodeException, ClassCastException;
 
     /**
      * Gets the data (bytes) from all tags matching the supplied regular expression as the decoded
@@ -251,7 +253,7 @@ public interface DecodedAsnData
         }
 
         @Override
-        public Optional<byte[]> getDecodedObject(String tag)
+        public <T> Optional<T> getDecodedObject(String tag)
         {
             return Optional.absent();
         }

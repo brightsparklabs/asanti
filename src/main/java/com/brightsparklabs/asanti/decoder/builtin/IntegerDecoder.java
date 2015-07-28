@@ -18,7 +18,7 @@ import java.math.BigInteger;
  *
  * @author brightSPARK Labs
  */
-public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger>
+public class IntegerDecoder extends AbstractBuiltinTypeDecoder//<BigInteger>
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES

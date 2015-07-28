@@ -3,7 +3,9 @@ package com.brightsparklabs.asanti.integration;
 import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
+import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.DecodedAsnDataImpl;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
@@ -2138,6 +2140,57 @@ public class AsnSchemaParserTest
             fail("Should have thrown parse exception");
         }
         catch (ParseException e)
+        {
+        }
+
+    }
+
+    @Test
+    public void testCastExceptions() throws Exception
+    {
+        AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE);
+
+        final ByteSource berData
+                = Resources.asByteSource(getClass().getResource("/Human_Simple.ber"));
+
+        String topLevelType = "Human";
+
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
+                schema,
+                topLevelType);
+
+        DecodedAsnData pdu = pdus.get(0);
+        String tag = "/Human/age";
+        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        logger.info(tag + " : " + age);
+        assertEquals(new BigInteger("32"), age);
+
+        tag = "/Human/name";
+        String name = pdu.<String>getDecodedObject(tag).get();
+        logger.info("{} : {}", tag, name);
+        assertEquals("Adam", name);
+
+        try
+        {
+            tag = "/Human/name";
+            // There is no casting issue here, only validation, so this will work
+            BigInteger bigInt = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag).get());
+            // this is castign from String to BigInteger, which will throw
+            bigInt = pdu.<BigInteger>getDecodedObject(tag).get();
+            fail("Should have thrown ClassCastException");
+        }
+        catch (ClassCastException e)
+        {
+        }
+
+        try
+        {
+            tag = "/Human/age";
+            AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag).get());
+            String s = pdu.<String>getDecodedObject(tag).get();
+            fail("Should have thrown ClassCastException");
+        }
+        catch (ClassCastException e)
         {
         }
 

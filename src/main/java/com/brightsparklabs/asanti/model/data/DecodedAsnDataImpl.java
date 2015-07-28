@@ -242,7 +242,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public Optional getDecodedObject(String tag) throws DecodeException
+    public <T> Optional<T> getDecodedObject(String tag) throws DecodeException, ClassCastException
     {
         final DecodedTag decodedTag = decodedTags.get(tag);
         if (decodedTag == null)
@@ -260,8 +260,22 @@ public class DecodedAsnDataImpl implements DecodedAsnData
 
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
+
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
-        return Optional.of(decoder.decode(bytes.get()));
+
+        // The implementation is getting an object from our decoder, based on a text tag, that is
+        // of a type unknowable at compile-time.  This essentially means that somewhere along the
+        // chain, no matter what we do we can't prevent type mismatches.  For example if a user
+        // asks for tag "x/y/z" then we need to return something.  When we decode "x/y/z", at
+        // run-time, we can know its ASN.1 type, and therefore even the type it will decode to.
+        // What we can't do is stop the client software from asking for "/x/y/z" as a String when
+        // at run-time we know it is a BigInteger or Timestamp.  All we can do is provide the best
+        // documentation we can, and ensure that we throw.
+        // So, even though this goes against best practice, we will suppress the compiler warning
+        // here as it is something we already know about.
+        @SuppressWarnings("unchecked")
+        final T temp = (T) decoder.decode(bytes.get());
+        return Optional.of(temp);
     }
 
     @Override
@@ -271,10 +285,10 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final Map<String, Object> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            final Optional<String> decodedeObject = getDecodedObject(tag);
-            if (decodedeObject.isPresent())
+            final Optional<String> decodedObject = getDecodedObject(tag);
+            if (decodedObject.isPresent())
             {
-                result.put(tag, decodedeObject.get());
+                result.put(tag, decodedObject.get());
             }
         }
 
