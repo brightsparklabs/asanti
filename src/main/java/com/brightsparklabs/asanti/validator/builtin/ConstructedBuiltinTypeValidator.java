@@ -79,7 +79,6 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
                 decodedAsnData,
                 tag);
 
-        //final AsnSchema schema = decodedAsnData.getSchema();
         // to have gotten a mapped tag the schema look up must have previously worked,
         // so it is safe to assume it will work here.  If it fails then throwing is the right thing
         // to do.  (noting the .get() at the end of the Optional)
