@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * Class implementing {@link BuiltinTypeValidator} for Constructed types, ie{@link
@@ -38,9 +37,8 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
     private static final Logger logger
             = LoggerFactory.getLogger(ConstructedBuiltinTypeValidator.class);
 
+    /** singleton instance */
     private static ConstructedBuiltinTypeValidator instance;
-
-    private static final Pattern PATTERN_HAS_INDEX = Pattern.compile("^(.+)(\\[[0-9]+\\])$");
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -53,7 +51,6 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
      */
     private ConstructedBuiltinTypeValidator()
     {
-
     }
 
     /**
@@ -78,14 +75,15 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
     public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
             DecodedAsnData decodedAsnData)
     {
-        final ImmutableSet<String> childTags
-                = DecodedTagsHelpers.getImmediateChildren(decodedAsnData, tag);
+        final ImmutableSet<String> childTags = DecodedTagsHelpers.getImmediateChildren(
+                decodedAsnData,
+                tag);
 
-        final AsnSchema schema = decodedAsnData.getSchema();
+        //final AsnSchema schema = decodedAsnData.getSchema();
         // to have gotten a mapped tag the schema look up must have previously worked,
         // so it is safe to assume it will work here.  If it fails then throwing is the right thing
         // to do.  (noting the .get() at the end of the Optional)
-        final AsnSchemaType type = schema.getType(tag).get();
+        final AsnSchemaType type = decodedAsnData.getType(tag).get();
 
         final Set<DecodedTagValidationFailure> failures = Sets.newHashSet();
 

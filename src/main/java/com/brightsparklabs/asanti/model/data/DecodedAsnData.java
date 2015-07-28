@@ -6,7 +6,6 @@
 package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Optional;
@@ -32,13 +31,6 @@ public interface DecodedAsnData
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
-
-    /**
-     * Returns the {@link AsnSchema} that was used to decode the {@link AsnData}
-     *
-     * @return the {@link AsnSchema} that was used to decode the {@link AsnData}
-     */
-    public AsnSchema getSchema();
 
     /**
      * Returns all tags found in the ASN data as a set of XPath like strings. E.g.
@@ -143,10 +135,12 @@ public interface DecodedAsnData
      * @param tag
      *         tag to retrieve the type of
      *
-     * @return the ASN.1 Type Definition of the specified tag or {@link AsnPrimitiveType#NULL} if
-     * the tag does not exist
+     * @return the {@link AsnSchemaType} of the specified tag or {@link Optional#absent()} if the
+     * tag does not exist. To use this without caring if there was a match, and to get a {@link
+     * AsnPrimitiveType#NULL} if the tag does not exist the use {@code
+     * getType(tag).or(AsnPrimitiveType.NULL)}
      */
-    public AsnSchemaType getType(String tag);
+    public Optional<AsnSchemaType> getType(String tag);
 
     /**
      * Gets the data (bytes) associated with the specified tag as the decoded Java object most
@@ -154,6 +148,8 @@ public interface DecodedAsnData
      *
      * @param tag
      *         tag associated with the data
+     * @param <T>
+     *         the type of data that will be returned in the {@link Optional}
      *
      * @return data associated with the specified tag or an empty byte array if the tag does not
      * exist
@@ -193,12 +189,6 @@ public interface DecodedAsnData
         // ---------------------------------------------------------------------
         // IMPLEMENTATION: DecodedAsnData
         // ---------------------------------------------------------------------
-
-        @Override
-        public AsnSchema getSchema()
-        {
-            return null;
-        }
 
         @Override
         public ImmutableSet<String> getTags()
@@ -255,9 +245,9 @@ public interface DecodedAsnData
         }
 
         @Override
-        public AsnSchemaType getType(String tag)
+        public Optional<AsnSchemaType> getType(String tag)
         {
-            return AsnSchemaType.NULL;
+            return Optional.absent();
         }
 
         @Override

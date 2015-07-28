@@ -124,12 +124,6 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     // -------------------------------------------------------------------------
 
     @Override
-    public AsnSchema getSchema()
-    {
-        return asnSchema;
-    }
-
-    @Override
     public ImmutableSet<String> getTags()
     {
         return ImmutableSet.copyOf(decodedTags.keySet());
@@ -242,9 +236,9 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public AsnSchemaType getType(String tag)
+    public Optional<AsnSchemaType> getType(String tag)
     {
-        return asnSchema.getType(tag).or(AsnSchemaType.NULL);
+        return asnSchema.getType(tag);
     }
 
     @Override

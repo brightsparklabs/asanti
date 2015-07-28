@@ -139,14 +139,14 @@ public class AsantiCli
                         logger.info("\t{} => {} as {}",
                                 tag,
                                 pdu.getPrintableString(tag).get(),
-                                pdu.getType(tag).getBuiltinType());
+                                pdu.getType(tag).get().getBuiltinType());
                     }
                     catch (DecodeException e)
                     {
                         logger.info("\t{} => {} as {} (as HexString because {})",
                                 tag,
                                 pdu.getHexString(tag).get(),
-                                pdu.getType(tag).getBuiltinType(),
+                                pdu.getType(tag).get().getBuiltinType(),
                                 e.getMessage());
                     }
                 }

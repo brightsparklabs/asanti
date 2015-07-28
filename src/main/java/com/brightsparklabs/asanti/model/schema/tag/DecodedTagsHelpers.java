@@ -32,8 +32,9 @@ public class DecodedTagsHelpers
     private static final Pattern PATTERN_STARTS_WITH_DIGIT = Pattern.compile("^(\\d+.*)");
 
     /** regex to determine if the tag has index component */
-    private static final Pattern PATTERN_HAS_INDEX = Pattern.compile("^(.+)(\\[[0-9]+\\])$");
+    private static final Pattern PATTERN_HAS_INDEX = Pattern.compile("^(.+?)(\\[[0-9]+\\])+$");
 
+    /** predicate used for collection filtering (remove entries that start with a digit */
     private static final DoesNotStartWithDigit filterOutDigits = new DoesNotStartWithDigit();
 
     // ---------------------------------------------------------------------
@@ -166,6 +167,34 @@ public class DecodedTagsHelpers
     /**
      * Predicate to filter the tags so that only the tags starting with the parent are returned.
      */
+    private static class DoesNotStartWithDigit implements Predicate<String>
+    {
+
+        // -------------------------------------------------------------------------
+        // CONSTRUCTION
+        // -------------------------------------------------------------------------
+
+        /**
+         * Default Constructor
+         */
+        DoesNotStartWithDigit()
+        {
+        }
+
+        // ---------------------------------------------------------------------
+        // IMPLEMENTATION: Predicate
+        // ---------------------------------------------------------------------
+        @Override
+        public boolean apply(final String input)
+        {
+            final Matcher matcher = PATTERN_STARTS_WITH_DIGIT.matcher(input);
+            return !matcher.matches();
+        }
+    }
+
+    /**
+     * Predicate to filter the tags so that only the tags starting with the parent are returned.
+     */
     private static class OnlyStartsWith implements Predicate<String>
     {
         private final String parentTag;
@@ -196,34 +225,6 @@ public class DecodedTagsHelpers
     }
 
     /**
-     * Predicate to filter the tags so that only the tags starting with the parent are returned.
-     */
-    private static class DoesNotStartWithDigit implements Predicate<String>
-    {
-
-        // -------------------------------------------------------------------------
-        // CONSTRUCTION
-        // -------------------------------------------------------------------------
-
-        /**
-         * Default Constructor
-         */
-        DoesNotStartWithDigit()
-        {
-        }
-
-        // ---------------------------------------------------------------------
-        // IMPLEMENTATION: Predicate
-        // ---------------------------------------------------------------------
-        @Override
-        public boolean apply(final String input)
-        {
-            final Matcher matcher = PATTERN_STARTS_WITH_DIGIT.matcher(input);
-            return !matcher.matches();
-        }
-    }
-
-    /**
      * get just the child name, and get rid of any 'indexes', ie if parentTag is "/Parent/blah" then
      * /Parent/blah/someTag[0] turns in to someTag if parentTag is "/Parent" then
      * /Parent/blah/someTag[0] turns in to blah.
@@ -245,6 +246,9 @@ public class DecodedTagsHelpers
             index = parentTag.length();
         }
 
+        // ---------------------------------------------------------------------
+        // IMPLEMENTATION: Function
+        // ---------------------------------------------------------------------
         @Override
         public String apply(final String input)
         {

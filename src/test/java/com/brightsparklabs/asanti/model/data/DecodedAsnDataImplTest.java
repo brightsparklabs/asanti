@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.data;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -384,35 +385,37 @@ public class DecodedAsnDataImplTest
     public void testGetType() throws Exception
     {
         assertEquals(AsnBuiltinType.Date,
-                instance.getType("/Document/header/published/date").getBuiltinType());
+                instance.getType("/Document/header/published/date").get().getBuiltinType());
         assertEquals(AsnBuiltinType.Date,
-                instance.getType("/Document/body/lastModified/date").getBuiltinType());
+                instance.getType("/Document/body/lastModified/date").get().getBuiltinType());
         assertEquals(AsnBuiltinType.OctetString,
-                instance.getType("/Document/body/prefix/text").getBuiltinType());
+                instance.getType("/Document/body/prefix/text").get().getBuiltinType());
         assertEquals(AsnBuiltinType.OctetString,
-                instance.getType("/Document/body/content/text").getBuiltinType());
+                instance.getType("/Document/body/content/text").get().getBuiltinType());
         assertEquals(AsnBuiltinType.OctetString,
-                instance.getType("/Document/footer/author/firstName").getBuiltinType());
+                instance.getType("/Document/footer/author/firstName").get().getBuiltinType());
 
         // test unmapped tags
         assertEquals(AsnBuiltinType.Null,
-                instance.getType("/Document/body/content/99").getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/99/1/1").getBuiltinType());
+                instance.getType("/Document/body/content/99").get().getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/99/1/1").or(AsnSchemaType.NULL).getBuiltinType());
 
         // test raw tags
-        assertEquals(AsnBuiltinType.Null, instance.getType("/2/2/99").getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/99/1/1").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null,
+                instance.getType("/2/2/99").or(AsnSchemaType.NULL).getBuiltinType());
+        assertEquals(AsnBuiltinType.Null,
+                instance.getType("/99/1/1").or(AsnSchemaType.NULL).getBuiltinType());
 
         // test unknown tags
-        assertEquals(AsnBuiltinType.Null, instance.getType("").getBuiltinType());
-        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/0/0/0").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("").or(AsnSchemaType.NULL).getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, instance.getType("/Document/0/0/0").or(AsnSchemaType.NULL).getBuiltinType());
 
-        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("").getBuiltinType());
+        assertEquals(AsnBuiltinType.Null, emptyInstance.getType("").or(AsnSchemaType.NULL).getBuiltinType());
         assertEquals(AsnBuiltinType.Null,
-                emptyInstance.getType("/Document/0/0/0").getBuiltinType());
+                emptyInstance.getType("/Document/0/0/0").or(AsnSchemaType.NULL).getBuiltinType());
 
         assertEquals(AsnBuiltinType.Date,
-                emptyInstance.getType("/Document/header/published/date").getBuiltinType());
+                emptyInstance.getType("/Document/header/published/date").or(AsnSchemaType.NULL).getBuiltinType());
     }
 
     @Test

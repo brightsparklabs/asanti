@@ -641,7 +641,7 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         String tag = "/Human/pickOne";
-        assertEquals(AsnPrimitiveType.ENUMERATED, pdu.getType(tag).getPrimitiveType());
+        assertEquals(AsnPrimitiveType.ENUMERATED, pdu.getType(tag).get().getPrimitiveType());
 
         byte[] bytes = pdu.getBytes(tag).get();
         assertEquals(1, bytes[0]);
@@ -831,7 +831,7 @@ public class AsnSchemaParserTest
 
         String tag = "/Human/age";
 
-        AsnBuiltinType builtinType = pdu.getType(tag).getBuiltinType();
+        AsnBuiltinType builtinType = pdu.getType(tag).get().getBuiltinType();
         assertEquals(AsnBuiltinType.Integer, builtinType);
 
         BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
@@ -2259,7 +2259,7 @@ public class AsnSchemaParserTest
                             (printHexString ?
                                     pdu.getHexString(t).get() :
                                     pdu.getPrintableString(t).get()),
-                            pdu.getType(t).getBuiltinType());
+                            pdu.getType(t).get().getBuiltinType());
                 }
                 catch (DecodeException e)
                 {
