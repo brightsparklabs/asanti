@@ -9,6 +9,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -169,8 +170,8 @@ public class MockAsnSchema
 
         instance = mock(AsnSchema.class);
 
-        ImmutableSet<OperationResult<DecodedTag>> results
-                = ImmutableSet.<OperationResult<DecodedTag>>builder()
+        ImmutableSet<OperationResult<DecodedTag, String>> results
+                = ImmutableSet.<OperationResult<DecodedTag, String>>builder()
                 .add(configureGetDecodedTag("/1/0/1",
                         "/Document/header/published/date",
                         true,
@@ -206,7 +207,7 @@ public class MockAsnSchema
                 results);
 
         ImmutableSet<String> emptyTags = ImmutableSet.of();
-        ImmutableSet<OperationResult<DecodedTag>> emptyResults = ImmutableSet.of();
+        ImmutableSet<OperationResult<DecodedTag, String>> emptyResults = ImmutableSet.of();
 
         when(instance.getDecodedTags(emptyTags, topLevelTypeName)).thenReturn(emptyResults);
 
@@ -230,7 +231,7 @@ public class MockAsnSchema
      * @param builtinType
      *         the value to return for {@link AsnSchemaType#getBuiltinType()}
      */
-    private static OperationResult<DecodedTag> configureGetDecodedTag(String rawTag,
+    private static OperationResult<DecodedTag, String> configureGetDecodedTag(String rawTag,
             String decodedTagPath, boolean isFullyDecoded, AsnBuiltinType builtinType)
     {
         final DecodedTag decodedTag = mock(DecodedTag.class);
@@ -245,11 +246,11 @@ public class MockAsnSchema
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
 
         @SuppressWarnings("unchecked")
-        OperationResult<DecodedTag> result = mock(OperationResult.class);
+        OperationResult<DecodedTag, String> result = mock(OperationResult.class);
 
         when(result.getOutput()).thenReturn(decodedTag);
         when(result.wasSuccessful()).thenReturn(isFullyDecoded);
-        when(result.getFailureReason()).thenReturn("mock failure reason");
+        when(result.getFailureReason()).thenReturn(Optional.of("mock failure reason"));
 
         rawTags.add(rawTag);
 

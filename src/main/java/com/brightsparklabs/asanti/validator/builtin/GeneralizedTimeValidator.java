@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.builtin.GeneralizedTimeDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -59,8 +60,8 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
 
-        final GeneralizedTimeDecoder.OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>>
-                result = GeneralizedTimeDecoder.validateAndDecode(bytes);
+        final OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> result
+                = GeneralizedTimeDecoder.validateAndDecode(bytes);
 
         return result.getFailureReason().or(ImmutableSet.<ByteValidationFailure>of());
     }

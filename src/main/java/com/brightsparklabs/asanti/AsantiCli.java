@@ -241,10 +241,10 @@ public class AsantiCli
             System.out.print("\tEnter raw tag: ");
             final String rawTag = reader.readLine();
 
-            ImmutableSet<OperationResult<DecodedTag>> results = asnSchema.getDecodedTags(
+            ImmutableSet<OperationResult<DecodedTag, String>> results = asnSchema.getDecodedTags(
                     ImmutableList.of(rawTag),
                     "PS-PDU");
-            OperationResult<DecodedTag> result = results.iterator().next();
+            OperationResult<DecodedTag, String> result = results.iterator().next();
             logger.info("\t{}:\t decode {} => {}",
                     result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag,

@@ -34,7 +34,7 @@ public interface AsnSchema
      *
      * @return the result of the decode attempt containing the decoded tags for each of the rawTags
      */
-    public ImmutableSet<OperationResult<DecodedTag>> getDecodedTags(Iterable<String> rawTags,
+    public ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(Iterable<String> rawTags,
             String topLevelTypeName);
 
 }

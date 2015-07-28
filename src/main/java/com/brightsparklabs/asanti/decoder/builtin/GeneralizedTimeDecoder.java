@@ -6,13 +6,13 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.builtin.GeneralizedTimeValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
@@ -298,129 +298,6 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
                     ImmutableSet.of(new ByteValidationFailure(bytes.length,
                             FailureType.DataIncorrectlyFormatted,
                             error)));
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // INTERNAL CLASS: OperationResult
-    // -------------------------------------------------------------------------
-
-    public static class OperationResult<T, FailureType>
-    {
-        // -------------------------------------------------------------------------
-        // INSTANCE VARIABLES
-        // -------------------------------------------------------------------------
-
-        /** whether the operation was successful */
-        private final boolean wasSuccessful;
-
-        /** the resulting output from the operation */
-        private final T output;
-
-        /** the reason the operation failed (or an empty string if it did not fail) */
-        private final Optional<FailureType> failureReason;
-
-        // -------------------------------------------------------------------------
-        // CONSTRUCTION
-        // -------------------------------------------------------------------------
-
-        /**
-         * Default constructor
-         *
-         * @param wasSuccessful
-         *         {@code true} if the operation was successful
-         * @param output
-         *         the resulting output from the operation
-         * @param failureReason
-         *         the reason the operation failed (or an empty string if it did not fail)
-         */
-        private OperationResult(boolean wasSuccessful, T output, FailureType failureReason)
-        {
-            this.wasSuccessful = wasSuccessful;
-            this.output = output;
-            this.failureReason = Optional.fromNullable(failureReason);
-        }
-
-        /**
-         * Convenience method to create a result indicating the operation was successful. Results
-         * can be created via:<br> {@code OperationResult<String> result =
-         * createSuccessfulInstance(outputString);}
-         *
-         * <p>Which is more concise than:<br> {@code OperationResult<String> result = new
-         * OperationResult<String>(true, outputString, "");}
-         *
-         * @param output
-         *         the resulting output from the operation
-         * @param <T>
-         *         the type of the result
-         * @param <FailureType>
-         *         specifies the type of failure object (return in getFailureReason)
-         *
-         * @return a 'successful' result instance containing the supplied data
-         */
-        public static <T, FailureType> OperationResult<T, FailureType> createSuccessfulInstance(
-                T output)
-        {
-            return new OperationResult<>(true, output, null);
-        }
-
-        /**
-         * Convenience method to create a result indicating the operation was unsuccessful. Results
-         * can be created via:<br> {@code OperationResult<String> result =
-         * createUnsuccessfulInstance(outputString);}
-         *
-         * <p>Which is more concise than:<br> {@code OperationResult<String> result = new
-         * OperationResult<String>(false, outputString, reason);}
-         *
-         * @param output
-         *         the resulting output from the operation
-         * @param failureReason
-         *         the reason the operation failed
-         * @param <T>
-         *         the type of the result
-         * @param <FailureType>
-         *         specifies the type of failure object (return in getFailureReason)
-         *
-         * @return an 'unsuccessful' result instance containing the supplied data
-         */
-        public static <T, FailureType> OperationResult<T, FailureType> createUnsuccessfulInstance(
-                T output, FailureType failureReason)
-        {
-            return new OperationResult<>(false, output, failureReason);
-        }
-
-        // -------------------------------------------------------------------------
-        // PUBLIC METHODS
-        // -------------------------------------------------------------------------
-
-        /**
-         * Returns {@code true} if the operation was successful
-         *
-         * @return {@code true} if the operation was successful
-         */
-        public boolean wasSuccessful()
-        {
-            return wasSuccessful;
-        }
-
-        /**
-         * Returns the resulting output from the operation
-         *
-         * @return the resulting output from the operation
-         */
-        public T getOutput()
-        {
-            return output;
-        }
-
-        /**
-         * Returns the reason the operation failed
-         *
-         * @return the reason the operation failed (or an empty string if it did not fail)
-         */
-        public Optional<FailureType> getFailureReason()
-        {
-            return failureReason;
         }
     }
 }
