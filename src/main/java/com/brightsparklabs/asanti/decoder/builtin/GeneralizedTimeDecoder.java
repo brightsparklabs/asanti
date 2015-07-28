@@ -9,6 +9,7 @@ import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.builtin.GeneralizedTimeValidator;
@@ -19,6 +20,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.DateTimeParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -35,6 +38,9 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
+
+    /** class logger */
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaModule.class);
 
     /** singleton instance */
     private static GeneralizedTimeDecoder instance;
@@ -209,12 +215,23 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
 
             // There are a few things that Joda-Time is not handling that we need to.
 
+            // Joda doesn't seem to understand that "Z" is not "z" (it seems to be case insensitive)
+            if (rawDateTime.endsWith("z"))
+            {
+                final String error = GeneralizedTimeValidator.GENERALIZEDTIME_VALIDATION_ERROR
+                        + "Invalid format: \"" + rawDateTime + "\" is malformed at \"z\"";
+                return OperationResult.createUnsuccessfulInstance(null,
+                        ImmutableSet.of(new ByteValidationFailure(bytes.length,
+                                FailureType.DataIncorrectlyFormatted,
+                                error)));
+            }
+
             // It can't handle smaller than milliseconds, and we need to go to nano
             // So we'll parse out the sub-milliseconds ourselves (only for the seconds precision)
-            final Matcher matcher = PATTERN_SUB_MILLI_SECONDS.matcher(rawDateTime);
             String replacement = rawDateTime;
             int nanos = 0;
             boolean setNanos = false;
+            final Matcher matcher = PATTERN_SUB_MILLI_SECONDS.matcher(rawDateTime);
             if (matcher.matches())
             {
                 // The decimal places represent sub seconds
@@ -224,8 +241,13 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
                 if (!subMilliSeconds.isEmpty())
                 {
                     // We can only handle up to 6 digits (giving 9 total, ie down to Nano seconds)
+                    final int length = subMilliSeconds.length();
                     final String trimmedSubMilliSeconds = subMilliSeconds.substring(0,
-                            Math.min(subMilliSeconds.length(), 6));
+                            Math.min(length, 6));
+
+                    // because the Timestamp setNanos function seems to actually set all the subseconds
+                    // and not just the nano seconds, we track all subseconds and only call setNanos
+                    // if we need to
                     BigDecimal bd = new BigDecimal("0." + milliSeconds + trimmedSubMilliSeconds);
                     bd = bd.multiply(BigDecimal.valueOf(1000000000L));
                     nanos = bd.intValue();
@@ -236,6 +258,16 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
                     // By replacing here we are protecting against more than 18 decimal places
                     // which would cause Joda to throw an exception
                     replacement = matcher.replaceAll("$1$3$5$7");
+
+                    if (length > 6)
+                    {
+                        logger.warn(
+                                "Loss of precision - discarding decimal places. For the GeneralizedTime {}, the sub-millisecond component {} is now {}",
+                                rawDateTime,
+                                subMilliSeconds,
+                                trimmedSubMilliSeconds);
+                    }
+
                 }
             }
             else
@@ -254,20 +286,12 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
                         // We can only handle up to 18 decimal places (Joda will throw with more,
                         // not that we can parse them)
                         replacement = matcherLong.replaceAll("$1$3$5$7");
+
+                        logger.warn("Discarding decimal places.  {} is now {}",
+                                rawDateTime,
+                                replacement);
                     }
                 }
-            }
-
-            // Joda doesn't seem to understand that "Z" is not "z" (it seems to be case insensitive)
-            // fake it.
-            if (replacement.endsWith("z"))
-            {
-                final String error = GeneralizedTimeValidator.GENERALIZEDTIME_VALIDATION_ERROR
-                        + "Invalid format: \"" + rawDateTime + "\" is malformed at \"z\"";
-                return OperationResult.createUnsuccessfulInstance(null,
-                        ImmutableSet.of(new ByteValidationFailure(bytes.length,
-                                FailureType.DataIncorrectlyFormatted,
-                                error)));
             }
 
             // use the Joda-Time parser
