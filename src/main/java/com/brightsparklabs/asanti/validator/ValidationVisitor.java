@@ -18,7 +18,7 @@ import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeValidator>
 {
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: Validator
+    // IMPLEMENTATION: AsnPrimitiveTypeVisitor
     // -------------------------------------------------------------------------
 
     @Override
@@ -47,10 +47,9 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnPrimitiveTypeEnumerated visitable)
+    public EnumeratedValidator visit(AsnPrimitiveTypeEnumerated visitable)
     {
-        // TODO ASN-113
-        return BuiltinTypeValidator.NULL;
+        return EnumeratedValidator.getInstance();
     }
 
     @Override

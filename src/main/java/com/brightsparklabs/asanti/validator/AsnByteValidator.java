@@ -151,6 +151,19 @@ public class AsnByteValidator
     }
 
     /**
+     * Validates the supplied bytes as an {@link AsnBuiltinType#Enumerated}
+     *
+     * @param bytes
+     *         bytes to validate
+     *
+     * @return any failures which occurred while validating the supplied byte
+     */
+    public static ImmutableSet<ByteValidationFailure> validateAsEnumerated(byte[] bytes)
+    {
+        return EnumeratedValidator.getInstance().validate(bytes);
+    }
+
+    /**
      * Validates the supplied bytes as an {@link AsnBuiltinType#External}
      *
      * @param bytes

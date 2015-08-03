@@ -11,6 +11,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 
 /**
  * Used to decode bytes based on the kind of ASN.1 Built-in Type they came from
@@ -41,6 +42,22 @@ public interface BuiltinTypeDecoder<T>
     public T decode(byte[] bytes) throws DecodeException;
 
     /**
+     * Decodes the bytes from the supplied tag and DecodedAsnData based on the kind of ASN.1
+     * Built-in Type represented by this decoder, and applying any transformations from the schema
+     *
+     * @param tag
+     *         the tag to use to get the bytes from the data
+     * @param decodedAsnData
+     *         the data to use.
+     *
+     * @return the results from decoding
+     *
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied tag/data
+     */
+    public T decode(String tag, DecodedAsnData decodedAsnData) throws DecodeException;
+
+    /**
      * Decodes the supplied bytes as a string based on the the kind of ASN.1 Built-in Type
      * represented by this validator
      *
@@ -53,6 +70,22 @@ public interface BuiltinTypeDecoder<T>
      *         if any errors occur while decoding the supplied bytes
      */
     public String decodeAsString(byte[] bytes) throws DecodeException;
+
+    /**
+     * Decodes the supplied bytes as a string based on the the kind of ASN.1 Built-in Type
+     * represented by this validator
+     *
+     * @param tag
+     *         the tag to use to get the bytes from the data
+     * @param decodedAsnData
+     *         the data to use.
+     *
+     * @return the results from decoding the bytes
+     *
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied bytes
+     */
+    public String decodeAsString(String tag, DecodedAsnData decodedAsnData) throws DecodeException;
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: NULL
@@ -105,9 +138,22 @@ public interface BuiltinTypeDecoder<T>
         }
 
         @Override
+        public Object decode(String tag, DecodedAsnData decodedAsnData) throws DecodeException
+        {
+            throw new DecodeException(errorMessage);
+        }
+
+        @Override
         public String decodeAsString(final byte[] bytes) throws DecodeException
         {
             throw new DecodeException(errorMessage);
         }
+
+        @Override
+        public String decodeAsString(String tag, DecodedAsnData decodedAsnData) throws DecodeException
+        {
+            throw new DecodeException(errorMessage);
+        }
+
     }
 }

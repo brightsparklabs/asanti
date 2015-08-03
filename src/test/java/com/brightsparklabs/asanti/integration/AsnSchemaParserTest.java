@@ -4,8 +4,8 @@ import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
+import com.brightsparklabs.asanti.decoder.builtin.EnumeratedDecoder;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.data.DecodedAsnDataImpl;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
@@ -524,9 +524,8 @@ public class AsnSchemaParserTest
                 .put("99[99]/98[98]", "/Document/99[99]/98[98]")
                 .build();
 
-        final ImmutableSet<OperationResult<DecodedTag, String>> decodedTagsBad = instance.getDecodedTags(
-                tagsBad.keySet(),
-                "Document");
+        final ImmutableSet<OperationResult<DecodedTag, String>> decodedTagsBad
+                = instance.getDecodedTags(tagsBad.keySet(), "Document");
 
         for (OperationResult<DecodedTag, String> decodedTag : decodedTagsBad)
         {
@@ -647,6 +646,28 @@ public class AsnSchemaParserTest
 
         byte[] bytes = pdu.getBytes(tag).get();
         assertEquals(1, bytes[0]);
+
+        String enumValue = EnumeratedDecoder.getInstance().decode(tag, pdu);
+        assertEquals("optB", enumValue);
+        enumValue = pdu.<String>getDecodedObject(tag).get();
+        assertEquals("optB", enumValue);
+
+        enumValue = EnumeratedDecoder.getInstance().decodeAsString(tag, pdu);
+        assertEquals("optB", enumValue);
+
+        Optional<byte []> bytes1 = pdu.getBytes(tag);
+        bytes1 = pdu.getBytes("/Human/123");
+
+        String rawValue = EnumeratedDecoder.getInstance().decode(pdu.getBytes(tag).get());
+        assertEquals("1", rawValue);
+        rawValue = EnumeratedDecoder.getInstance().decodeAsString(pdu.getBytes(tag).get());
+        assertEquals("1", rawValue);
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdu);
+
+        assertFalse(validationresult.hasFailures());
+
     }
 
     @Test
@@ -1917,7 +1938,6 @@ public class AsnSchemaParserTest
             final ValidatorImpl validator = new ValidatorImpl();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
-
 
             String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
 

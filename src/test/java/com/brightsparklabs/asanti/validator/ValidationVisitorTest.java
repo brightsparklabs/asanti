@@ -57,10 +57,8 @@ public class ValidationVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionEnumerated()
     {
-        // TODO: ASN-113
-        final Object result = instance.visit(AsnPrimitiveType.ENUMERATED);
-        assertEquals(BuiltinTypeValidator.NULL, result);
-        //assertNull(result);
+        final EnumeratedValidator result = instance.visit(AsnPrimitiveType.ENUMERATED);
+        assertNotNull(result);
     }
 
     @Test
