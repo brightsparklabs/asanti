@@ -655,9 +655,6 @@ public class AsnSchemaParserTest
         enumValue = EnumeratedDecoder.getInstance().decodeAsString(tag, pdu);
         assertEquals("optB", enumValue);
 
-        Optional<byte []> bytes1 = pdu.getBytes(tag);
-        bytes1 = pdu.getBytes("/Human/123");
-
         String rawValue = EnumeratedDecoder.getInstance().decode(pdu.getBytes(tag).get());
         assertEquals("1", rawValue);
         rawValue = EnumeratedDecoder.getInstance().decodeAsString(pdu.getBytes(tag).get());
