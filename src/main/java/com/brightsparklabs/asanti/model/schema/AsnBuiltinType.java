@@ -35,6 +35,7 @@ public enum AsnBuiltinType
     Null,
     NumericString,
     ObjectClassField,
+    ObjectDescriptor,
     OctetString,
     /** Object Identifier */
     Oid,

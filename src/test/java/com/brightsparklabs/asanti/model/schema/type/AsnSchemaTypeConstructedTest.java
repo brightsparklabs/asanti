@@ -560,7 +560,7 @@ public class AsnSchemaTypeConstructedTest
      */
     private AsnSchemaComponentType mockedComponent(String name, String tag, boolean isOptional)
     {
-        return mockedComponent(name, tag, isOptional, AsnPrimitiveType.NULL);
+        return mockedComponent(name, tag, isOptional, AsnPrimitiveType.INVALID);
     }
 
     /**

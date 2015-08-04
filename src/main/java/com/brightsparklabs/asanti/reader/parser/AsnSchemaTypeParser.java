@@ -3,6 +3,7 @@ package com.brightsparklabs.asanti.reader.parser;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeNull;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.base.Strings;

@@ -39,8 +39,8 @@ public class BaseAsnSchemaTypeTest
         {
         }
 
-        BaseAsnSchemaType type = new BaseAsnSchemaType(AsnPrimitiveType.NULL, AsnSchemaConstraint.NULL);
-        assertEquals(AsnPrimitiveType.NULL, type.getPrimitiveType());
+        BaseAsnSchemaType type = new BaseAsnSchemaType(AsnPrimitiveType.INVALID, AsnSchemaConstraint.NULL);
+        assertEquals(AsnPrimitiveType.INVALID, type.getPrimitiveType());
 
         type = new BaseAsnSchemaType(AsnPrimitiveType.INTEGER, AsnSchemaConstraint.NULL);
         assertEquals(AsnPrimitiveType.INTEGER, type.getPrimitiveType());

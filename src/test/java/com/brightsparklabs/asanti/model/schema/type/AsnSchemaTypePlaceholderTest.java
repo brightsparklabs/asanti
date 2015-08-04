@@ -141,7 +141,7 @@ public class AsnSchemaTypePlaceholderTest
     public void testSetIndirectType() throws Exception
     {
         // test that if the placeholder is not resolved it does not delegate
-        assertEquals(AsnPrimitiveType.NULL, instance.getPrimitiveType());
+        assertEquals(AsnPrimitiveType.INVALID, instance.getPrimitiveType());
         verify(indirectType, never()).getPrimitiveType();
         instance.setIndirectType(indirectType);
 

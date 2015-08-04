@@ -72,7 +72,7 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     public AsnSchemaTypePlaceholder(String moduleName, String typeName,
             AsnSchemaConstraint constraint)
     {
-        super(AsnPrimitiveType.NULL, constraint);
+        super(AsnPrimitiveType.INVALID, constraint);
 
         checkNotNull(typeName);
         checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");
@@ -171,7 +171,7 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     @Override
     public AsnPrimitiveType getPrimitiveType()
     {
-        return indirectType == null ? AsnPrimitiveType.NULL : indirectType.getPrimitiveType();
+        return indirectType == null ? AsnPrimitiveType.INVALID : indirectType.getPrimitiveType();
     }
 
     @Override

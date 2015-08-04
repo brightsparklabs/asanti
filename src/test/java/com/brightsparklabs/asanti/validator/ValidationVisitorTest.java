@@ -4,11 +4,8 @@
  */
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.typedefinition.*;
 import com.brightsparklabs.asanti.validator.builtin.*;
-import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -32,9 +29,9 @@ public class ValidationVisitorTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testVisitAsnSchemaTypeDefinitionNull()
+    public void testVisitAsnSchemaTypeDefinitionInvalid()
     {
-        final BuiltinTypeValidator.Null result = instance.visit(AsnPrimitiveType.NULL);
+        final BuiltinTypeValidator.Null result = instance.visit(AsnPrimitiveType.INVALID);
         assertNotNull(result);
     }
 
@@ -46,12 +43,41 @@ public class ValidationVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionBmpString()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.BMP_STRING);
+        assertEquals(BuiltinTypeValidator.NULL, result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionBoolean()
+    {
+        final BooleanValidator result = instance.visit(AsnPrimitiveType.BOOLEAN);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionCharacterString()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.CHARACTER_STRING);
+        // TODO - ASN-105
+        assertEquals(BuiltinTypeValidator.NULL, result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionChoice()
     {
         // TODO: ASN-113
         final Object result = instance.visit(AsnPrimitiveType.CHOICE);
         assertEquals(BuiltinTypeValidator.NULL, result);
-        //assertNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionEmbeddedPdv()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.EMBEDDED_PDV);
+        // TODO - ASN-105
+        assertEquals(BuiltinTypeValidator.NULL, result);
     }
 
     @Test
@@ -76,6 +102,14 @@ public class ValidationVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionGraphicString()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.GRAPHIC_STRING);
+        // TODO - ASN-105
+        assertEquals(BuiltinTypeValidator.NULL, result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionIA5String()
     {
         final Ia5StringValidator result = instance.visit(AsnPrimitiveType.IA5_STRING);
@@ -90,6 +124,13 @@ public class ValidationVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionNull()
+    {
+        final NullValidator result = instance.visit(AsnPrimitiveType.NULL);
+        assertNotNull(result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionNumericString()
     {
         final NumericStringValidator result = instance.visit(AsnPrimitiveType.NUMERIC_STRING);
@@ -97,40 +138,84 @@ public class ValidationVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionObjectIdentifier()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.OBJECT_DESCRIPTOR);
+        // TODO - ASN-105
+        assertEquals(BuiltinTypeValidator.NULL, result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionOctetString()
     {
-
         final OctetStringValidator result = instance.visit(AsnPrimitiveType.OCTET_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionOid()
+    {
+        final OidValidator result = instance.visit(AsnPrimitiveType.OID);
+        // TODO - ASN-105
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionPrintableString()
+    {
+        final PrintableStringValidator result = instance.visit(AsnPrimitiveType.PRINTABLE_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionReal()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.REAL);
+        // TODO - ASN-105
+        assertEquals(BuiltinTypeValidator.NULL, result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionRelativeOid()
+    {
+        final OidValidator result = instance.visit(AsnPrimitiveType.RELATIVE_OID);
         assertNotNull(result);
     }
 
     @Test
     public void testVisitAsnSchemaTypeDefinitionSequence()
     {
-        final Object result = instance.visit(AsnPrimitiveType.SEQUENCE);
+        final ConstructedBuiltinTypeValidator result = instance.visit(AsnPrimitiveType.SEQUENCE);
         assertNotNull(result);
     }
 
     @Test
     public void testVisitAsnSchemaTypeDefinitionSequenceOf()
     {
-
-        assertEquals(null, instance.visit(AsnPrimitiveType.SEQUENCE_OF));
+        // TODO - ASN-113
+        assertEquals(BuiltinTypeValidator.NULL, instance.visit(AsnPrimitiveType.SEQUENCE_OF));
     }
 
     @Test
     public void testVisitAsnSchemaTypeDefinitionSet()
     {
-
-        final Object result = instance.visit(AsnPrimitiveType.SET);
+        final ConstructedBuiltinTypeValidator result = instance.visit(AsnPrimitiveType.SET);
         assertNotNull(result);
     }
 
     @Test
     public void testVisitAsnSchemaTypeDefinitionSetOf()
     {
+        // TODO - ASN-113
+        assertEquals(BuiltinTypeValidator.NULL, instance.visit(AsnPrimitiveType.SET_OF));
+    }
 
-        assertEquals(null, instance.visit(AsnPrimitiveType.SET_OF));
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionUtcTime()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.UTC_TIME);
+        // TODO - ASN-105
+        assertEquals(BuiltinTypeValidator.NULL, result);
     }
 
     @Test
@@ -138,6 +223,29 @@ public class ValidationVisitorTest
     {
         final Utf8StringValidator result = instance.visit(AsnPrimitiveType.UTF8_STRING);
         assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionTeletexString()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.TELETEX_STRING);
+        // TODO - ASN-105
+        assertEquals(BuiltinTypeValidator.NULL, result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionUniversalString()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.UNIVERSAL_STRING);
+        // TODO - ASN-105
+        assertEquals(BuiltinTypeValidator.NULL, result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionVideotexString()
+    {
+        final BuiltinTypeValidator result = instance.visit(AsnPrimitiveType.VIDEOTEX_STRING);
+        assertEquals(BuiltinTypeValidator.NULL, result);
     }
 
     @Test
