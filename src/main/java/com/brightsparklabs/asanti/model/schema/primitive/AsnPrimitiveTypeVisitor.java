@@ -30,7 +30,7 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(AsnPrimitiveType.Null visitable);
+    public T visit(AsnPrimitiveType.Invalid visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -50,6 +50,16 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
+    public T visit(AsnPrimitiveTypeBmpString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnPrimitiveTypeBoolean visitable);
 
     /**
@@ -60,7 +70,27 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
+    public T visit(AsnPrimitiveTypeCharacterString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnPrimitiveTypeChoice visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnPrimitiveTypeEmbeddedPdv visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -100,7 +130,7 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
-    public T visit(AsnPrimitiveTypePrintableString visitable);
+    public T visit(AsnPrimitiveTypeGraphicString visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -130,6 +160,16 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
+    public T visit(AsnPrimitiveTypeNull visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnPrimitiveTypeNumericString visitable);
 
     /**
@@ -140,7 +180,57 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
+    public T visit(AsnPrimitiveTypeObjectDescriptor visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnPrimitiveTypeOctetString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnPrimitiveTypeOid visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnPrimitiveTypePrintableString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnPrimitiveTypeReal visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnPrimitiveTypeRelativeOid visitable);
 
     /**
      * Processes the supplied object with this visitor
@@ -190,6 +280,26 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
+    public T visit(AsnPrimitiveTypeTeletexString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
+    public T visit(AsnPrimitiveTypeUniversalString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnPrimitiveTypeUtcTime visitable);
 
     /**
@@ -210,25 +320,15 @@ public interface AsnPrimitiveTypeVisitor<T> extends Visitor
      *
      * @return the results from processing the supplied object
      */
+    public T visit(AsnPrimitiveTypeVideotexString visitable);
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable
+     *         the object to process
+     *
+     * @return the results from processing the supplied object
+     */
     public T visit(AsnPrimitiveTypeVisibleString visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *         the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnPrimitiveTypeOid visitable);
-
-    /**
-     * Processes the supplied object with this visitor
-     *
-     * @param visitable
-     *         the object to process
-     *
-     * @return the results from processing the supplied object
-     */
-    public T visit(AsnPrimitiveTypeRelativeOid visitable);
 }

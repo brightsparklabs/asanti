@@ -22,7 +22,7 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     // -------------------------------------------------------------------------
 
     @Override
-    public BuiltinTypeValidator.Null visit(AsnPrimitiveType.Null visitable)
+    public BuiltinTypeValidator.Null visit(AsnPrimitiveType.Invalid visitable)
     {
         return BuiltinTypeValidator.NULL;
     }
@@ -34,15 +34,36 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeBmpString visitable)
+    {
+        // TODO - ASN-105
+        return BuiltinTypeValidator.NULL;
+    }
+
+    @Override
     public BooleanValidator visit(AsnPrimitiveTypeBoolean visitable)
     {
         return BooleanValidator.getInstance();
     }
 
     @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeCharacterString visitable)
+    {
+        // TODO - ASN-105
+        return BuiltinTypeValidator.NULL;
+    }
+
+    @Override
     public BuiltinTypeValidator visit(AsnPrimitiveTypeChoice visitable)
     {
         // TODO ASN-113
+        return BuiltinTypeValidator.NULL;
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeEmbeddedPdv visitable)
+    {
+        // TODO - ASN-105
         return BuiltinTypeValidator.NULL;
     }
 
@@ -65,6 +86,13 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public BuiltinTypeValidator.Null visit(AsnPrimitiveTypeGraphicString visitable)
+    {
+        // TODO ASN-105
+        return BuiltinTypeValidator.NULL;
+    }
+
+    @Override
     public Ia5StringValidator visit(AsnPrimitiveTypeIA5String visitable)
     {
         return Ia5StringValidator.getInstance();
@@ -77,9 +105,22 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public NullValidator visit(AsnPrimitiveTypeNull visitable)
+    {
+        return NullValidator.getInstance();
+    }
+
+    @Override
     public NumericStringValidator visit(AsnPrimitiveTypeNumericString visitable)
     {
         return NumericStringValidator.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeObjectDescriptor visitable)
+    {
+        // TODO ASN-105
+        return BuiltinTypeValidator.NULL;
     }
 
     @Override
@@ -101,13 +142,22 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     }
 
     @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeReal visitable)
+    {
+        // TODO - ASN-105
+        return BuiltinTypeValidator.NULL;
+    }
+
+    @Override
     public OidValidator visit(AsnPrimitiveTypeRelativeOid visitable)
     {
+        // TODO - ASN-105 - if OidValidator is the right thing to return here then
+        // does the RelativeOidValidator need to exist?
         return OidValidator.getInstance();
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnPrimitiveTypeSequence visitable)
+    public ConstructedBuiltinTypeValidator visit(AsnPrimitiveTypeSequence visitable)
     {
         return ConstructedBuiltinTypeValidator.getInstance();
     }
@@ -116,11 +166,11 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     public BuiltinTypeValidator visit(AsnPrimitiveTypeSequenceOf visitable)
     {
         // TODO ASN-113
-        return null;
+        return BuiltinTypeValidator.NULL;
     }
 
     @Override
-    public BuiltinTypeValidator visit(AsnPrimitiveTypeSet visitable)
+    public ConstructedBuiltinTypeValidator visit(AsnPrimitiveTypeSet visitable)
     {
         return ConstructedBuiltinTypeValidator.getInstance();
     }
@@ -129,20 +179,41 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     public BuiltinTypeValidator visit(AsnPrimitiveTypeSetOf visitable)
     {
         // TODO ASN-113
-        return null;
+        return BuiltinTypeValidator.NULL;
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeTeletexString visitable)
+    {
+        // TODO - ASN-105
+        return BuiltinTypeValidator.NULL;
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeUniversalString visitable)
+    {
+        // TODO - ASN-105
+        return BuiltinTypeValidator.NULL;
     }
 
     @Override
     public BuiltinTypeValidator visit(AsnPrimitiveTypeUtcTime visitable)
     {
         // TODO ASN-105
-        return null;
+        return BuiltinTypeValidator.NULL;
     }
 
     @Override
     public Utf8StringValidator visit(AsnPrimitiveTypeUtf8String visitable)
     {
         return Utf8StringValidator.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeValidator visit(AsnPrimitiveTypeVideotexString visitable)
+    {
+        // TODO - ASN-105
+        return BuiltinTypeValidator.NULL;
     }
 
     @Override

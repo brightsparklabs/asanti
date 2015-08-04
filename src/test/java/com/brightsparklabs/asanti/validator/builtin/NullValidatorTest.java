@@ -43,7 +43,7 @@ public class NullValidatorTest
         // TODO ASN-136 - use mock Constraints, not real.
 
         // setup mock
-        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.NULL,
+        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.INVALID,
                 AsnSchemaConstraint.NULL);
 
         final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)

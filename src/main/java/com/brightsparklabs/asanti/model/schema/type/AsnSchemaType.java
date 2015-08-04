@@ -133,7 +133,7 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
         @Override
         public AsnPrimitiveType getPrimitiveType()
         {
-            return AsnPrimitiveType.NULL;
+            return AsnPrimitiveType.INVALID;
         }
 
 

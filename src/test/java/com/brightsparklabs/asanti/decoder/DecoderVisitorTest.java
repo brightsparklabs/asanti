@@ -6,6 +6,7 @@ package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import org.ietf.jgss.Oid;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,9 +30,9 @@ public class DecoderVisitorTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testVisitAsnSchemaTypeDefinitionNullInstance()
+    public void testVisitAsnSchemaTypeDefinitionInvalidInstance()
     {
-        final Object result = instance.visit(AsnPrimitiveType.NULL);
+        final Object result = instance.visit(AsnPrimitiveType.INVALID);
         assertNotNull(result);
     }
 
@@ -43,9 +44,40 @@ public class DecoderVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionBmpString()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.BMP_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionBoolean()
+    {
+        final BooleanDecoder result = instance.visit(AsnPrimitiveType.BOOLEAN);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionCharacterString()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.CHARACTER_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionChoice()
     {
         final Object result = instance.visit(AsnPrimitiveType.CHOICE);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionEmbeddedPdv()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.EMBEDDED_PDV);
         assertNotNull(result);
     }
 
@@ -71,6 +103,14 @@ public class DecoderVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionGraphicString()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.GRAPHIC_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionIA5String()
     {
         final Ia5StringDecoder result = instance.visit(AsnPrimitiveType.IA5_STRING);
@@ -85,6 +125,13 @@ public class DecoderVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionNull()
+    {
+        final NullDecoder result = instance.visit(AsnPrimitiveType.NULL);
+        assertNotNull(result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionNumericString()
     {
         final NumericStringDecoder result = instance.visit(AsnPrimitiveType.NUMERIC_STRING);
@@ -92,9 +139,46 @@ public class DecoderVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionObjectDescriptor()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.OBJECT_DESCRIPTOR);
+        assertNotNull(result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionOctetString()
     {
         final OctetStringDecoder result = instance.visit(AsnPrimitiveType.OCTET_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionOid()
+    {
+        final OidDecoder result = instance.visit(AsnPrimitiveType.OID);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionPrintableString()
+    {
+        final PrintableStringDecoder result = instance.visit(AsnPrimitiveType.PRINTABLE_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionReal()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.REAL);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionRelativeOid()
+    {
+        final OidDecoder result = instance.visit(AsnPrimitiveType.RELATIVE_OID);
         assertNotNull(result);
     }
 
@@ -127,9 +211,41 @@ public class DecoderVisitorTest
     }
 
     @Test
+    public void testVisitAsnSchemaTypeDefinitionTeletexString()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.TELETEX_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionUniversalString()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.UNIVERSAL_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionUtcTime()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.UTC_TIME);
+        assertNotNull(result);
+    }
+
+    @Test
     public void testVisitAsnSchemaTypeDefinitionUtf8String()
     {
         final Utf8StringDecoder result = instance.visit(AsnPrimitiveType.UTF8_STRING);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testVisitAsnSchemaTypeDefinitionVideotexString()
+    {
+        // TODO - ASN-107
+        final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveType.VIDEOTEX_STRING);
         assertNotNull(result);
     }
 

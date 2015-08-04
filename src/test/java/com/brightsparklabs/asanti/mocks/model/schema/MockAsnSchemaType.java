@@ -173,7 +173,7 @@ public class MockAsnSchemaType
                         "lastName",
                         createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING)).addComponent("3",
                         "title",
-                        createMockedAsnSchemaType(AsnPrimitiveType.NULL))// TODO ASN-138 - enumerated
+                        createMockedAsnSchemaType(AsnPrimitiveType.ENUMERATED))
                 .addComponent("4", "gender", gender).addComponent("5",
                         "maritalStatus",
                         createMockedAsnSchemaType(AsnPrimitiveType.CHOICE)) // TODO ASN-138 - choice

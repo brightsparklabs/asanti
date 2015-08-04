@@ -26,9 +26,9 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     // -------------------------------------------------------------------------
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveType.Null visitable)
+    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveType.Invalid visitable)
     {
-        return new BuiltinTypeDecoder.Null("null instances of AsnPrimitiveType cannot be decoded");
+        return new BuiltinTypeDecoder.Null("invalid instances of AsnPrimitiveType cannot be decoded");
     }
 
     @Override
@@ -38,15 +38,36 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeBmpString visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 BMPString decoder not yet implemented");
+    }
+
+    @Override
     public BooleanDecoder visit(final AsnPrimitiveTypeBoolean visitable)
     {
         return BooleanDecoder.getInstance();
     }
 
     @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeCharacterString visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 CharacterString decoder not yet implemented");
+    }
+
+    @Override
     public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeChoice visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 CHOICE types cannot be decoded");
+    }
+
+    @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeEmbeddedPdv visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 EmbeddedPDV decoder not yet implemented");
     }
 
     @Override
@@ -68,6 +89,13 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeGraphicString visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 GraphicString decoder not yet implemented");
+    }
+
+    @Override
     public Ia5StringDecoder visit(final AsnPrimitiveTypeIA5String visitable)
     {
         return Ia5StringDecoder.getInstance();
@@ -80,9 +108,22 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public NullDecoder visit(final AsnPrimitiveTypeNull visitable)
+    {
+        return NullDecoder.getInstance();
+    }
+
+    @Override
     public NumericStringDecoder visit(final AsnPrimitiveTypeNumericString visitable)
     {
         return NumericStringDecoder.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeObjectDescriptor visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 ObjectDescriptor decoder not yet implemented");
     }
 
     @Override
@@ -110,6 +151,13 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeReal visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 Real decoder not yet implemented");
+    }
+
+    @Override
     public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeSequence visitable)
     {
         return new BuiltinTypeDecoder.Null("ASN.1 SEQUENCE types cannot be decoded");
@@ -134,6 +182,20 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeUniversalString visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 UniversalString decoder not yet implemented");
+    }
+
+    @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeTeletexString visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 TeletexString decoder not yet implemented");
+    }
+
+    @Override
     public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeUtcTime visitable)
     {
         // TODO ASN-107
@@ -144,6 +206,13 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     public Utf8StringDecoder visit(final AsnPrimitiveTypeUtf8String visitable)
     {
         return Utf8StringDecoder.getInstance();
+    }
+
+    @Override
+    public BuiltinTypeDecoder visit(final AsnPrimitiveTypeVideotexString visitable)
+    {
+        // TODO - ASN-107
+        return new BuiltinTypeDecoder.Null("ASN.1 VideotexString decoder not yet implemented");
     }
 
     @Override

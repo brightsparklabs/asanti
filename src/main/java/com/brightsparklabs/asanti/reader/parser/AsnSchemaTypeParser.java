@@ -3,6 +3,7 @@ package com.brightsparklabs.asanti.reader.parser;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeNull;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.base.Strings;
@@ -106,22 +107,30 @@ public class AsnSchemaTypeParser
 
     /** pattern to match a type with constraints */
     private static final Pattern PATTERN_TYPE_WITH_CONSTRAINTS = Pattern.compile(
-            "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String|RELATIVE-OID|BOOLEAN|UTCTime|NULL) ?(\\((.+)\\))?$");
+            "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String|RELATIVE-OID|BOOLEAN|UTCTime|NULL|REAL|ObjectDescriptor|TeletexString|VideotexString|GraphicString|UniversalString|CHARACTER STRING|BMPString) ?(\\((.+)\\))?$");
 
     /** all valid 'constrained' types */
     private static final ImmutableMap<String, AsnPrimitiveType> constrainedTypes
             = ImmutableMap.<String, AsnPrimitiveType>builder()
+            .put("BMPString", AsnPrimitiveType.BMP_STRING)
             .put("BOOLEAN", AsnPrimitiveType.BOOLEAN)
+            .put("CHARACTER STRING", AsnPrimitiveType.CHARACTER_STRING)
             .put("IA5String", AsnPrimitiveType.IA5_STRING)
             .put("GeneralString", AsnPrimitiveType.GENERAL_STRING)
+            .put("GraphicString", AsnPrimitiveType.GRAPHIC_STRING)
             .put("NULL", AsnPrimitiveType.NULL)
             .put("NumericString", AsnPrimitiveType.NUMERIC_STRING)
             .put("OBJECT IDENTIFIER", AsnPrimitiveType.OID)
+            .put("ObjectDescriptor", AsnPrimitiveType.OBJECT_DESCRIPTOR)
             .put("OCTET STRING", AsnPrimitiveType.OCTET_STRING)
             .put("PrintableString", AsnPrimitiveType.PRINTABLE_STRING)
+            .put("REAL", AsnPrimitiveType.REAL)
             .put("RELATIVE-OID", AsnPrimitiveType.RELATIVE_OID)
+            .put("TeletexString", AsnPrimitiveType.TELETEX_STRING)
+            .put("UniversalString", AsnPrimitiveType.UNIVERSAL_STRING)
             .put("UTCTime", AsnPrimitiveType.UTC_TIME)
             .put("UTF8String", AsnPrimitiveType.UTF8_STRING)
+            .put("VideotexString", AsnPrimitiveType.VIDEOTEX_STRING)
             .put("VisibleString", AsnPrimitiveType.VISIBLE_STRING)
             .build();
 

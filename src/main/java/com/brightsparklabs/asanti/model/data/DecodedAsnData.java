@@ -137,8 +137,8 @@ public interface DecodedAsnData
      *
      * @return the {@link AsnSchemaType} of the specified tag or {@link Optional#absent()} if the
      * tag does not exist. To use this without caring if there was a match, and to get a {@link
-     * AsnPrimitiveType#NULL} if the tag does not exist the use {@code
-     * getType(tag).or(AsnPrimitiveType.NULL)}
+     * AsnPrimitiveType#INVALID} if the tag does not exist the use {@code
+     * getType(tag).or(AsnPrimitiveType.INVALID)}
      */
     public Optional<AsnSchemaType> getType(String tag);
 
