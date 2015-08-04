@@ -62,6 +62,19 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
         tagsToNamedValues = tagsToNamedValuesBuilder.build();
     }
 
+    // ---------------------------------------------------------------------
+    // PUBLIC METHODS
+    // ---------------------------------------------------------------------
+
+    /**
+     * Returns the map of all the "named values" for this type.
+     * @return the map of all the "named values" for this type.
+     */
+    public ImmutableMap<String, AsnSchemaNamedTag> getTagsToNamedValues()
+    {
+        return tagsToNamedValues;
+    }
+
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BaseAsnSchemaType
     // -------------------------------------------------------------------------
@@ -71,4 +84,5 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
     {
         return visitor.visit(this);
     }
+
 }

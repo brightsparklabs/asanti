@@ -211,10 +211,11 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         {
             return Optional.absent();
         }
+
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
-        final String result = decoder.decodeAsString(bytes.get());
+        final String result = decoder.decodeAsString(tag, this);
         return Optional.of(result);
     }
 
@@ -274,7 +275,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         // So, even though this goes against best practice, we will suppress the compiler warning
         // here as it is something we already know about.
         @SuppressWarnings("unchecked")
-        final T temp = (T) decoder.decode(bytes.get());
+        final T temp = (T) decoder.decode(tag, this);
         return Optional.of(temp);
     }
 

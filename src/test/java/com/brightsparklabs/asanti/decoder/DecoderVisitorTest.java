@@ -5,11 +5,7 @@
 package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeBitString;
-import com.brightsparklabs.asanti.model.schema.typedefinition.*;
-import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -56,7 +52,7 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionEnumerated()
     {
-        final Object result = instance.visit(AsnPrimitiveType.ENUMERATED);
+        final EnumeratedDecoder result = instance.visit(AsnPrimitiveType.ENUMERATED);
         assertNotNull(result);
     }
 

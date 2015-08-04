@@ -12,7 +12,6 @@ package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
 import com.brightsparklabs.asanti.model.schema.primitive.*;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeVisitor;
 
 /**
  * Visitor that visits {@link AsnPrimitiveType} objects and returns the most appropriate {@link
@@ -23,7 +22,7 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeVisitor
 public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecoder<?>>
 {
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: Validator
+    // IMPLEMENTATION: AsnPrimitiveTypeVisitor
     // -------------------------------------------------------------------------
 
     @Override
@@ -51,9 +50,9 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
-    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveTypeEnumerated visitable)
+    public EnumeratedDecoder visit(final AsnPrimitiveTypeEnumerated visitable)
     {
-        return new BuiltinTypeDecoder.Null("ASN.1 ENUMERATED types cannot be decoded");
+        return EnumeratedDecoder.getInstance();
     }
 
     @Override

@@ -40,7 +40,7 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaModule.class);
+    private static final Logger logger = LoggerFactory.getLogger(GeneralizedTimeDecoder.class);
 
     /** singleton instance */
     private static GeneralizedTimeDecoder instance;
