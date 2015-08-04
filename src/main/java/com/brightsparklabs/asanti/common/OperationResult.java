@@ -15,7 +15,7 @@ import com.google.common.base.Optional;
  * @param <T>
  *         the type of output produced by the operation
  * @param <FailureType>
- *         specifies the type of failure object (return in getFailureReason)
+ *         specifies the type of failure object (returned in getFailureReason)
  *
  * @author brightSPARK Labs
  */
@@ -31,7 +31,7 @@ public class OperationResult<T, FailureType>
     /** the resulting output from the operation */
     private final T output;
 
-    /** the reason the operation failed (or an empty string if it did not fail) */
+    /** the reason the operation failed (or Option.absent() if it did not fail) */
     private final Optional<FailureType> failureReason;
 
     // -------------------------------------------------------------------------
@@ -57,10 +57,11 @@ public class OperationResult<T, FailureType>
 
     /**
      * Convenience method to create a result indicating the operation was successful. Results can be
-     * created via:<br> {@code OperationResult<String> result = createSuccessfulInstance(outputString);}
+     * created via:<br> {@code OperationResult<String, String> result =
+     * createSuccessfulInstance(outputString);}
      *
      * <p>Which is more concise than:<br> {@code OperationResult<String> result = new
-     * OperationResult<String>(true, outputString, "");}
+     * OperationResult<String, String>(true, outputString, null);}
      *
      * @param output
      *         the resulting output from the operation
@@ -79,10 +80,11 @@ public class OperationResult<T, FailureType>
 
     /**
      * Convenience method to create a result indicating the operation was unsuccessful. Results can
-     * be created via:<br> {@code OperationResult<String> result = createUnsuccessfulInstance(outputString);}
+     * be created via:<br> {@code OperationResult result = createUnsuccessfulInstance(outputString,
+     * reason);}
      *
-     * <p>Which is more concise than:<br> {@code OperationResult<String> result = new
-     * OperationResult<String>(false, outputString, reason);}
+     * <p>Which is more concise than:<br> {@code OperationResult<String, String> result = new
+     * OperationResult<String, String>(false, outputString, reason);}
      *
      * @param output
      *         the resulting output from the operation
@@ -91,7 +93,7 @@ public class OperationResult<T, FailureType>
      * @param <T>
      *         the type of the result
      * @param <FailureType>
-     *         specifies the type of failure object (return in getFailureReason)
+     *         specifies the type of failure object (returned in getFailureReason)
      *
      * @return an 'unsuccessful' result instance containing the supplied data
      */
@@ -126,10 +128,9 @@ public class OperationResult<T, FailureType>
     }
 
     /**
-     * Returns the reason the operation failed, wrapped in {@link Optional}.
-     * An example use might be that FailureType is a String, to get the failure reason,
-     * or an empty string if none was supplied then use
-     * {@code result.getFailureReason().or(""); }
+     * Returns the reason the operation failed, wrapped in {@link Optional}. An example use might be
+     * that FailureType is a String, to get the failure reason, or an empty string if none was
+     * supplied then use {@code result.getFailureReason().or(""); }
      *
      * @return the reason the operation failed.
      */
