@@ -94,7 +94,7 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
     /** static instance {@link AsnPrimitiveTypeSequenceOf} */
     public static final AsnPrimitiveTypeSequenceOf SEQUENCE_OF = new AsnPrimitiveTypeSequenceOf();
 
-    /** static instance {@link AsnPrimitiveTypeSet SET =} */
+    /** static instance {@link AsnPrimitiveTypeSet SET} */
     public static final AsnPrimitiveTypeSet SET = new AsnPrimitiveTypeSet();
 
     /** static instance {@link AsnPrimitiveTypeSetOf} */
@@ -133,8 +133,10 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
     // INTERNAL CLASS: Null
     // -------------------------------------------------------------------------
 
+    // TODO ASN-162 - we should consider getting rid of the "Null" classes.
+
     /**
-     * Null instance of {@link AsnPrimitiveType}.
+     * Invalid instance of {@link AsnPrimitiveType}.
      *
      * <p> NOTE: This is not named {@code AsnSchemaPrimitiveTypeNull} because that is the name used
      * to model an actual ASN.1 {@code NULL} Type.
