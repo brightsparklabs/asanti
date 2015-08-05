@@ -65,12 +65,12 @@ public class AsantiTest
         // expecting two tags.
         assertEquals(2, asnData.getRawTags().size());
 
-        byte [] b0 = asnData.getBytes("/0[0]");
+        byte [] b0 = asnData.getBytes("/0[0]").get();
         // we 'know' that this is a UTF8String
         String s = AsnByteDecoder.decodeAsUtf8String(b0);
         assertEquals("Adam", s);
 
-        byte [] b1 = asnData.getBytes("/1[1]");
+        byte [] b1 = asnData.getBytes("/1[1]").get();
         // we 'know' that this is an integer
         BigInteger big = AsnByteDecoder.decodeAsInteger(b1);
         assertEquals(32, big.intValue());
@@ -119,10 +119,6 @@ public class AsantiTest
 
         String name = pdu.<String>getDecodedObject(tag).get();
         assertEquals("Adam", name);
-
-        b = pdu.getBytes("/Human").get();
-        logger.info("/Human is {}", b);
-
     }
 
     @Test

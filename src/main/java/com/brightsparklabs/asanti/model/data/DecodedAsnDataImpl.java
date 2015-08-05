@@ -147,8 +147,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final DecodedTag decodedTag = allTags.get(tag);
         // if no decoded tag, assume supplied tag is is already raw tag
         final String rawTag = (decodedTag == null) ? tag : decodedTag.getRawTag();
-        final byte[] result = asnData.getBytes(rawTag);
-        return Optional.of(result);
+        return asnData.getBytes(rawTag);
     }
 
     @Override
@@ -163,6 +162,9 @@ public class DecodedAsnDataImpl implements DecodedAsnData
                 result.put(tag, bytes.get());
             }
         }
+
+        // check against the raw tags too
+        result.putAll(asnData.getBytesMatching(regex));
 
         return ImmutableMap.copyOf(result);
     }
@@ -192,6 +194,14 @@ public class DecodedAsnDataImpl implements DecodedAsnData
             }
         }
 
+        // Add any matched to raw tags
+        final Map<String, byte []> raw = asnData.getBytesMatching(regex);
+        for(Map.Entry<String, byte []> entry : raw.entrySet())
+        {
+            final String hexString = "0x" + BaseEncoding.base16().encode(entry.getValue());
+            result.put(entry.getKey(), hexString);
+        }
+
         return ImmutableMap.copyOf(result);
     }
 
@@ -200,14 +210,6 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     {
         final DecodedTag decodedTag = decodedTags.get(tag);
         if (decodedTag == null)
-        {
-            final String error = String.format("Could not resolve tag '%s' against the schema",
-                    tag);
-            throw new DecodeException(error);
-        }
-
-        final Optional<byte[]> bytes = getBytes(tag);
-        if (!bytes.isPresent())
         {
             return Optional.absent();
         }
@@ -243,25 +245,16 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     }
 
     @Override
-    public <T> Optional<T> getDecodedObject(String tag) throws DecodeException, ClassCastException
+    public <T> Optional<T> getDecodedObject(String tag) throws DecodeException
     {
         final DecodedTag decodedTag = decodedTags.get(tag);
         if (decodedTag == null)
-        {
-            final String error = String.format("Could not resolve tag '%s' against the schema",
-                    tag);
-            throw new DecodeException(error);
-        }
-
-        final Optional<byte[]> bytes = getBytes(tag);
-        if (!bytes.isPresent())
         {
             return Optional.absent();
         }
 
         final AsnSchemaType schemaType = decodedTag.getType();
         final AsnPrimitiveType type = schemaType.getPrimitiveType();
-
         final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
 
         // The implementation is getting an object from our decoder, based on a text tag, that is
@@ -275,8 +268,8 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         // So, even though this goes against best practice, we will suppress the compiler warning
         // here as it is something we already know about.
         @SuppressWarnings("unchecked")
-        final T temp = (T) decoder.decode(tag, this);
-        return Optional.of(temp);
+        final T result = (T) decoder.decode(tag, this);
+        return Optional.of(result);
     }
 
     @Override

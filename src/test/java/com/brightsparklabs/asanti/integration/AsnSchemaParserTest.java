@@ -486,11 +486,11 @@ public class AsnSchemaParserTest
                         "/Document/body/content/paragraphs[99]/contributor/title")
                 .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]",
                         "/Document/body/content/paragraphs[0]/points")
-                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]/0[UNIVERSAL 4]",
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]/0[UNIVERSAL 12]",
                         "/Document/body/content/paragraphs[0]/points[0]")
                 .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/0[1]",
                         "/Document/body/content/paragraphs[11]/title")
-                .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/3[3]/44[UNIVERSAL 4]",
+                .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/3[3]/44[UNIVERSAL 12]",
                         "/Document/body/content/paragraphs[11]/points[44]")
 
                 .put("1[2]/3[3]/0[1]", "/Document/body/suffix/text")
@@ -513,6 +513,7 @@ public class AsnSchemaParserTest
 
         for (OperationResult<DecodedTag, String> decodedTag : decodedTags)
         {
+            logger.debug("{} -  {} => {}", decodedTag.wasSuccessful(), decodedTag.getOutput().getRawTag(), decodedTag.getOutput().getTag());
             assertTrue(decodedTag.wasSuccessful());
 
             final DecodedTag output = decodedTag.getOutput();

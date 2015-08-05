@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.model.data;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -82,10 +83,10 @@ public class AsnDataImpl implements AsnData
     }
 
     @Override
-    public byte[] getBytes(String rawTag)
+    public Optional<byte[]> getBytes(String rawTag)
     {
         final byte[] result = tagsToData.get(rawTag);
-        return (result == null) ? new byte[0] : result;
+        return Optional.fromNullable(result);
     }
 
     @Override
