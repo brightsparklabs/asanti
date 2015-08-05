@@ -23,13 +23,6 @@ import java.util.regex.Pattern;
 public interface DecodedAsnData
 {
     // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    /** null instance */
-    public static final DecodedAsnData.Null NULL = new DecodedAsnData.Null();
-
-    // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
@@ -44,7 +37,7 @@ public interface DecodedAsnData
 
     /**
      * Returns the tags from the data which could not be mapped using the schema. E.g.
-     * "/Document/body/content/99", "/Document/99/1/1"
+     * "/Document/body/content/99", "/Document/0[99]/0[1]/0[1]"
      *
      * @return all unmapped tags in the data
      */
@@ -189,93 +182,4 @@ public interface DecodedAsnData
      */
     public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex)
             throws DecodeException;
-
-    // -------------------------------------------------------------------------
-    // INTERNAL CLASS: Null
-    // -------------------------------------------------------------------------
-
-    /**
-     * Null instance of {@link DecodedAsnData}
-     *
-     * @author brightSPARK Labs
-     */
-
-    public static class Null implements DecodedAsnData
-    {
-        // ---------------------------------------------------------------------
-        // IMPLEMENTATION: DecodedAsnData
-        // ---------------------------------------------------------------------
-
-        @Override
-        public ImmutableSet<String> getTags()
-        {
-            return ImmutableSet.<String>of();
-        }
-
-        @Override
-        public ImmutableSet<String> getUnmappedTags()
-        {
-            return ImmutableSet.<String>of();
-        }
-
-        @Override
-        public boolean contains(String tag)
-        {
-            return false;
-        }
-
-        @Override
-        public Optional<byte[]> getBytes(String tag)
-        {
-            return Optional.absent();
-        }
-
-        @Override
-        public ImmutableMap<String, byte[]> getBytesMatching(Pattern regex)
-        {
-            return ImmutableMap.<String, byte[]>of();
-        }
-
-        @Override
-        public Optional<String> getHexString(String tag)
-        {
-            return Optional.absent();
-        }
-
-        @Override
-        public ImmutableMap<String, String> getHexStringsMatching(Pattern regex)
-        {
-            return ImmutableMap.<String, String>of();
-        }
-
-        @Override
-        public Optional<String> getPrintableString(String tag)
-        {
-            return Optional.absent();
-        }
-
-        @Override
-        public ImmutableMap<String, String> getPrintableStringsMatching(Pattern regex)
-        {
-            return ImmutableMap.<String, String>of();
-        }
-
-        @Override
-        public Optional<AsnSchemaType> getType(String tag)
-        {
-            return Optional.absent();
-        }
-
-        @Override
-        public <T> Optional<T> getDecodedObject(String tag)
-        {
-            return Optional.absent();
-        }
-
-        @Override
-        public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex)
-        {
-            return ImmutableMap.<String, Object>of();
-        }
-    }
 }
