@@ -1,0 +1,12 @@
+s Types ::=
+  {
+    integer 10,
+    null NULL,
+    real { mantissa 314159, base 10, exponent -5 },
+    teletexString "TeletexString",
+    videotexString "VideotexString",
+    graphicString "GraphicString",
+    universalString {0,0,0,65},
+    bmpString "BMPString"
+  }
+END

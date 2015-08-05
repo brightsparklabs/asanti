@@ -486,11 +486,11 @@ public class AsnSchemaParserTest
                         "/Document/body/content/paragraphs[99]/contributor/title")
                 .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]",
                         "/Document/body/content/paragraphs[0]/points")
-                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]/0[UNIVERSAL 4]",
+                .put("1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]/0[UNIVERSAL 12]",
                         "/Document/body/content/paragraphs[0]/points[0]")
                 .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/0[1]",
                         "/Document/body/content/paragraphs[11]/title")
-                .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/3[3]/44[UNIVERSAL 4]",
+                .put("1[2]/2[2]/1[2]/11[UNIVERSAL 16]/3[3]/44[UNIVERSAL 12]",
                         "/Document/body/content/paragraphs[11]/points[44]")
 
                 .put("1[2]/3[3]/0[1]", "/Document/body/suffix/text")
@@ -513,6 +513,10 @@ public class AsnSchemaParserTest
 
         for (OperationResult<DecodedTag, String> decodedTag : decodedTags)
         {
+            logger.debug("{} -  {} => {}",
+                    decodedTag.wasSuccessful(),
+                    decodedTag.getOutput().getRawTag(),
+                    decodedTag.getOutput().getTag());
             assertTrue(decodedTag.wasSuccessful());
 
             final DecodedTag output = decodedTag.getOutput();
@@ -1895,6 +1899,32 @@ public class AsnSchemaParserTest
     }
 
     @Test
+    public void testUntestedTypes() throws Exception
+    {
+        final CharSource schemaData = Resources.asCharSource(getClass().getResource(
+                "/UnusualTypes.asn"), Charsets.UTF_8);
+        AsnSchema schema = AsnSchemaReader.read(schemaData);
+
+        final ByteSource berData
+                = Resources.asByteSource(getClass().getResource("/UnusualTypes.ber"));
+
+        String topLevelType = "Types";
+
+        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
+                schema,
+                topLevelType);
+        debugPdus(pdus);
+
+        DecodedAsnData pdu = pdus.get(0);
+        String tag = "/Types/null";
+        assertEquals("", pdu.<String>getDecodedObject(tag).get());
+
+        final ValidatorImpl validator = new ValidatorImpl();
+        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        assertFalse(validationresult.hasFailures());
+    }
+
+    @Test
     public void testParse_EtsiV122() throws Exception
     {
         //fail("for quick runs");
@@ -1925,7 +1955,7 @@ public class AsnSchemaParserTest
 
             logger.debug("Results of /test.ber");
 
-            debugPdus(pdus, false);
+            debugPdus(pdus);
 
             assertEquals(3, pdus.size());
             assertEquals(0, pdus.get(0).getUnmappedTags().size());
@@ -1972,7 +2002,7 @@ public class AsnSchemaParserTest
 
             logger.debug("Results of /test5.ber");
 
-            debugPdus(pdus, false);
+            debugPdus(pdus);
 
             String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
 
@@ -2296,25 +2326,14 @@ public class AsnSchemaParserTest
     }
 
     /**
-     * Do a dump of all the data, both Mapped and Unmapped in all DecodedAsnData Defaults to using
-     * {@link DecodedAsnData#getHexString} format.
+     * Do a dump of all the data, both Mapped and Unmapped in all DecodedAsnData Defaults to using.
+     * Tries using {@link DecodedAsnData#getPrintableString} for mapped tags, and if that throws it
+     * will default to {@link DecodedAsnData#getHexString}
      *
      * @param pdus
      *         the input DecodedAsnData objects
      */
     public static void debugPdus(Iterable<DecodedAsnData> pdus)
-    {
-        debugPdus(pdus, true);
-    }
-
-    /**
-     * @param pdus
-     *         the input DecodedAsnData objects
-     * @param printHexString
-     *         determines whether to use {@link DecodedAsnData#getHexString} (if true) or {@link
-     *         DecodedAsnData#getPrintableString} (if false)
-     */
-    public static void debugPdus(Iterable<DecodedAsnData> pdus, boolean printHexString)
     {
         int i = 0;
         for (DecodedAsnData pdu : pdus)
@@ -2326,14 +2345,16 @@ public class AsnSchemaParserTest
                 {
                     logger.info("\t{} => {} as {}",
                             t,
-                            (printHexString ?
-                                    pdu.getHexString(t).get() :
-                                    pdu.getPrintableString(t).get()),
+                            pdu.getPrintableString(t).get(),
                             pdu.getType(t).get().getBuiltinType());
                 }
                 catch (DecodeException e)
                 {
-                    logger.info("\t\tDecodeException {}", e.getMessage());
+                    logger.info("\t{} => {} as {} (as hexString because {})",
+                            t,
+                            pdu.getHexString(t).get(),
+                            pdu.getType(t).get().getBuiltinType(),
+                            e.getMessage());
                 }
             }
 

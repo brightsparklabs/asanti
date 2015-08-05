@@ -94,36 +94,36 @@ public class AsnBerDataReaderTest
         {
             assertEquals(16, pdu.getRawTags().size());
             assertArrayEquals("201501020000Z".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/0[1]/0[0]/0[1]"));
-            assertArrayEquals("20150101".getBytes(Charsets.UTF_8), pdu.getBytes("/1[2]/0[0]/0[0]"));
+                    pdu.getBytes("/0[1]/0[0]/0[1]").get());
+            assertArrayEquals("20150101".getBytes(Charsets.UTF_8), pdu.getBytes("/1[2]/0[0]/0[0]").get());
             assertArrayEquals("Donald".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/0[0]/1[1]/0[1]"));
+                    pdu.getBytes("/1[2]/0[0]/1[1]/0[1]").get());
             assertArrayEquals("Duck".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/0[0]/1[1]/1[2]"));
+                    pdu.getBytes("/1[2]/0[0]/1[1]/1[2]").get());
             assertArrayEquals("Paragraph 1".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/1[2]/0[2]/0[UNIVERSAL 16]/0[1]"));
+                    pdu.getBytes("/1[2]/1[2]/0[2]/0[UNIVERSAL 16]/0[1]").get());
             assertArrayEquals("Point 1.1".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/1[2]/0[2]/0[UNIVERSAL 16]/1[3]/0[UNIVERSAL 4]"));
+                    pdu.getBytes("/1[2]/1[2]/0[2]/0[UNIVERSAL 16]/1[3]/0[UNIVERSAL 4]").get());
             assertArrayEquals("Point 1.2".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/1[2]/0[2]/0[UNIVERSAL 16]/1[3]/1[UNIVERSAL 4]"));
+                    pdu.getBytes("/1[2]/1[2]/0[2]/0[UNIVERSAL 16]/1[3]/1[UNIVERSAL 4]").get());
             assertArrayEquals("Point 1.3".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/1[2]/0[2]/0[UNIVERSAL 16]/1[3]/2[UNIVERSAL 4]"));
+                    pdu.getBytes("/1[2]/1[2]/0[2]/0[UNIVERSAL 16]/1[3]/2[UNIVERSAL 4]").get());
             assertArrayEquals("Paragraph 2".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/1[2]/0[2]/1[UNIVERSAL 16]/0[1]"));
+                    pdu.getBytes("/1[2]/1[2]/0[2]/1[UNIVERSAL 16]/0[1]").get());
             assertArrayEquals("Point 2.1".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/1[2]/0[2]/1[UNIVERSAL 16]/1[3]/0[UNIVERSAL 4]"));
+                    pdu.getBytes("/1[2]/1[2]/0[2]/1[UNIVERSAL 16]/1[3]/0[UNIVERSAL 4]").get());
             assertArrayEquals("Point 2.2".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/1[2]/0[2]/1[UNIVERSAL 16]/1[3]/1[UNIVERSAL 4]"));
+                    pdu.getBytes("/1[2]/1[2]/0[2]/1[UNIVERSAL 16]/1[3]/1[UNIVERSAL 4]").get());
             assertArrayEquals("Point 2.3".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/1[2]/1[2]/0[2]/1[UNIVERSAL 16]/1[3]/2[UNIVERSAL 4]"));
+                    pdu.getBytes("/1[2]/1[2]/0[2]/1[UNIVERSAL 16]/1[3]/2[UNIVERSAL 4]").get());
             assertArrayEquals("Mickey".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/2[3]/0[0]/0[UNIVERSAL 16]/0[1]"));
+                    pdu.getBytes("/2[3]/0[0]/0[UNIVERSAL 16]/0[1]").get());
             assertArrayEquals("Mouse".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/2[3]/0[0]/0[UNIVERSAL 16]/1[2]"));
+                    pdu.getBytes("/2[3]/0[0]/0[UNIVERSAL 16]/1[2]").get());
             assertArrayEquals("Donald".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/2[3]/0[0]/1[UNIVERSAL 16]/0[1]"));
+                    pdu.getBytes("/2[3]/0[0]/1[UNIVERSAL 16]/0[1]").get());
             assertArrayEquals("Duck".getBytes(Charsets.UTF_8),
-                    pdu.getBytes("/2[3]/0[0]/1[UNIVERSAL 16]/1[2]"));
+                    pdu.getBytes("/2[3]/0[0]/1[UNIVERSAL 16]/1[2]").get());
         }
     }
 
@@ -137,8 +137,8 @@ public class AsnBerDataReaderTest
 
         final AsnData pdu = result.get(0);
         assertArrayEquals(hexEncoding.decode(HEXSTRING_1000_HYPHENS),
-                pdu.getBytes("/0[UNIVERSAL 16]/0[1]"));
+                pdu.getBytes("/0[UNIVERSAL 16]/0[1]").get());
         assertArrayEquals("First name is 1000 octets long".getBytes(Charsets.UTF_8),
-                pdu.getBytes("/0[UNIVERSAL 16]/1[2]"));
+                pdu.getBytes("/0[UNIVERSAL 16]/1[2]").get());
     }
 }
