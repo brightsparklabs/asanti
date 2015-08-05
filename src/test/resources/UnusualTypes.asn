@@ -1,0 +1,14 @@
+World-Schema DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN
+  Types ::= SEQUENCE
+  {
+    integer INTEGER,
+    null NULL,
+    real REAL,
+    teletexString TeletexString,
+    videotexString VideotexString,
+    graphicString GraphicString,
+    universalString UniversalString,
+    bmpString BMPString
+  }
+END
