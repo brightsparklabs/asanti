@@ -6,11 +6,15 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import java.math.BigInteger;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link IntegerDecoder}
@@ -33,13 +37,20 @@ public class IntegerDecoderTest
     @Test
     public void testDecode() throws Exception
     {
+        DecodedAsnData data = mock(DecodedAsnData.class);
+
         // run through all the one byte values.
         byte[] bytes = new byte[1];
         for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--)
         {
             bytes[0] = (byte)b;
             BigInteger big = instance.decode(bytes);
-            assertEquals(big.longValue(), b);
+            assertEquals(b, big.longValue());
+
+            // test other overload
+            final String tag = "tag"+b;
+            when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
+            assertEquals(b, instance.decode(tag, data).longValue());
         }
 
 
@@ -85,6 +96,11 @@ public class IntegerDecoderTest
             assertEquals(-1, big8.longValue());
 
             assertEquals(-1, big16.longValue());
+            assertEquals(-1, big17.longValue());
+
+            // test other overload
+            final String tag = "tag";
+            when(data.getBytes(eq(tag))).thenReturn(Optional.of(b17));
             assertEquals(-1, big17.longValue());
         }
 
@@ -199,10 +215,16 @@ public class IntegerDecoderTest
     public void testDecodeAsString() throws Exception
     {
         byte[] bytes = new byte[1];
+        DecodedAsnData data = mock(DecodedAsnData.class);
         for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--) {
             bytes[0] = (byte) b;
             String big = instance.decodeAsString(bytes);
-            assertEquals(big, Long.toString((long) b));
+            assertEquals(Long.toString((long) b), big);
+
+            // test other overload
+            final String tag = "tag"+b;
+            when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
+            assertEquals(Long.toString((long) b), instance.decodeAsString(tag, data));
         }
 
         {

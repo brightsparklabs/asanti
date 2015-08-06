@@ -54,6 +54,8 @@ public interface BuiltinTypeDecoder<T>
      *
      * @throws DecodeException
      *         if any errors occur while decoding the supplied tag/data
+     * @throws NullPointerException
+     *         if either tag or decodedAsnData are null
      */
     public T decode(String tag, DecodedAsnData decodedAsnData) throws DecodeException;
 
@@ -84,6 +86,8 @@ public interface BuiltinTypeDecoder<T>
      *
      * @throws DecodeException
      *         if any errors occur while decoding the supplied bytes
+     * @throws NullPointerException
+     *         if either tag or decodedAsnData are null
      */
     public String decodeAsString(String tag, DecodedAsnData decodedAsnData) throws DecodeException;
 
@@ -150,7 +154,8 @@ public interface BuiltinTypeDecoder<T>
         }
 
         @Override
-        public String decodeAsString(String tag, DecodedAsnData decodedAsnData) throws DecodeException
+        public String decodeAsString(String tag, DecodedAsnData decodedAsnData)
+                throws DecodeException
         {
             throw new DecodeException(errorMessage);
         }

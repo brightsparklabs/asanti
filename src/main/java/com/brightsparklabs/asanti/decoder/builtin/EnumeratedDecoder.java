@@ -18,6 +18,8 @@ import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Decoder for data of type {@link AsnBuiltinType#Enumerated}
  *
@@ -77,6 +79,8 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
     @Override
     public String decode(final String tag, final DecodedAsnData decodedAsnData) throws DecodeException
     {
+        checkNotNull(tag);
+        checkNotNull(decodedAsnData);
         final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result
                 = EnumeratedValidator.getInstance().validateAndDecode(tag, decodedAsnData);
         if (!result.wasSuccessful())
@@ -86,5 +90,11 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
         }
 
         return result.getOutput();
+    }
+
+    @Override
+    public String decodeAsString(final String tag, final DecodedAsnData decodedAsnData) throws DecodeException
+    {
+        return decode(tag, decodedAsnData);
     }
 }

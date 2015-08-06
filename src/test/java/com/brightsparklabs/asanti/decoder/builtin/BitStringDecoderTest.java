@@ -6,9 +6,13 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link BitStringDecoder}
@@ -34,6 +38,13 @@ public class BitStringDecoderTest
         // test valid values of unused bits with single byte bit string
         byte[] bytes = { (byte) 0x05, (byte) 0xE0 };
         assertEquals("111", instance.decode(bytes));
+
+        // test other overload
+        DecodedAsnData data = mock(DecodedAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
+
+        assertEquals("111", instance.decode(tag, data));
 
         bytes = new byte[] { (byte) 0x04, (byte) 0xE0 };
         assertEquals("1110", instance.decode(bytes));
@@ -100,5 +111,13 @@ public class BitStringDecoderTest
         // test that decodeAsString produces the same value as decode
         byte[] bytes = { (byte) 0x05, (byte) 0xE0 };
         assertEquals(instance.decode(bytes), instance.decodeAsString(bytes));
+
+        // test other overload
+        DecodedAsnData data = mock(DecodedAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
+
+        assertEquals(instance.decode(tag, data), instance.decodeAsString(tag, data));
+
     }
 }
