@@ -6,9 +6,12 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link BooleanDecoder}
@@ -84,6 +87,13 @@ public class BooleanDecoderTest
         catch (DecodeException ex)
         {
         }
+
+        // test other overload
+        DecodedAsnData data = mock(DecodedAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte [] { 1 }));
+
+        assertTrue(instance.decode(tag, data));
     }
 
     @Test
@@ -124,5 +134,12 @@ public class BooleanDecoderTest
         catch (DecodeException ex)
         {
         }
+
+
+        DecodedAsnData data = mock(DecodedAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte [] { 1 }));
+
+        assertEquals("true", instance.decodeAsString(tag, data));
     }
 }

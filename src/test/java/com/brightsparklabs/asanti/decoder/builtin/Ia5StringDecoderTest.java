@@ -6,10 +6,14 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link Ia5StringDecoder}
@@ -37,7 +41,15 @@ public class Ia5StringDecoderTest
         for (byte b = Byte.MAX_VALUE; b >= 0; b--)
         {
             bytes[0] = b;
-            assertEquals(new String(bytes, Charsets.UTF_8), instance.decode(bytes));
+            final String expected = new String(bytes, Charsets.UTF_8);
+            assertEquals(expected, instance.decode(bytes));
+
+            // test other overload
+            DecodedAsnData data = mock(DecodedAsnData.class);
+            final String tag = "tag";
+            when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
+
+            assertEquals(expected, instance.decode(bytes));
         }
 
         // test invalid
@@ -70,6 +82,12 @@ public class Ia5StringDecoderTest
     {
         // test valid
         byte[] bytes = "TEST".getBytes(Charsets.UTF_8);
+        assertEquals("TEST", instance.decodeAsString(bytes));
+
+        // test other overload
+        DecodedAsnData data = mock(DecodedAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
         assertEquals("TEST", instance.decodeAsString(bytes));
 
         // test invalid

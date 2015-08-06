@@ -14,6 +14,8 @@ import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.data.DecodedAsnData;
 import com.google.common.base.Optional;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * Convenience class to simplify implementing the {@link BuiltinTypeDecoder} interface.
  *
@@ -35,9 +37,11 @@ public abstract class AbstractBuiltinTypeDecoder<T> implements BuiltinTypeDecode
     @Override
     public T decode(final String tag, final DecodedAsnData decodedAsnData) throws DecodeException
     {
+        checkNotNull(tag);
+        checkNotNull(decodedAsnData);
         final Optional<byte[]> bytes = decodedAsnData.getBytes(tag);
 
-        return decode(bytes.get());
+        return decode(bytes.orNull());
     }
 
     @Override
@@ -50,6 +54,10 @@ public abstract class AbstractBuiltinTypeDecoder<T> implements BuiltinTypeDecode
     public String decodeAsString(final String tag, final DecodedAsnData decodedAsnData)
             throws DecodeException
     {
-        return decode(tag, decodedAsnData).toString();
+        checkNotNull(tag);
+        checkNotNull(decodedAsnData);
+        final Optional<byte[]> bytes = decodedAsnData.getBytes(tag);
+
+        return decodeAsString(bytes.orNull());
     }
 }

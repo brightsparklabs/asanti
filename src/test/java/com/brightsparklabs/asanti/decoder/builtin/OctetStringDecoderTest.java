@@ -6,9 +6,12 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link OctetStringDecoder}
@@ -76,5 +79,55 @@ public class OctetStringDecoderTest
         // test empty
         bytes = new byte[0];
         assertEquals("", instance.decodeAsString(bytes));
+    }
+
+    @Test
+    public void testDecodeAsStringOverload() throws Exception
+    {
+        DecodedAsnData data = mock(DecodedAsnData.class);
+        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
+
+        final String tagIsAscii = "IsAscii";
+        final byte[] bytesIsAscii = new byte[] { 0x54, 0x45, 0x53, 0x54 };
+        when(data.getBytes(eq(tagIsAscii))).thenReturn(Optional.of(bytesIsAscii));
+        final String tagNotAscii = "NotAscii";
+        final byte[] bytesNotAscii = new byte[] { 0x00, 0x54, 0x45, 0x53, 0x54, 0x00 };
+        when(data.getBytes(eq(tagNotAscii))).thenReturn(Optional.of(bytesNotAscii));
+        final String tagEmpty = "Empty";
+        final byte[] bytesEmpty = new byte[0];
+        when(data.getBytes(eq(tagEmpty))).thenReturn(Optional.of(bytesEmpty));
+
+        // test valid
+        assertEquals("0x54455354 (\"TEST\")", instance.decodeAsString(tagIsAscii, data));
+        assertEquals("0x005445535400", instance.decodeAsString(tagNotAscii, data));
+
+        assertEquals("", instance.decodeAsString(tagEmpty, data));
+        // test null
+        try
+        {
+            instance.decodeAsString(null, data);
+            fail("NullPointerException not thrown");
+        }
+        catch (NullPointerException ex)
+        {
+        }
+        try
+        {
+            instance.decodeAsString("someTag", null);
+            fail("NullPointerException not thrown");
+        }
+        catch (NullPointerException ex)
+        {
+        }
+
+        try
+        {
+            // this will produce a null for getBytes
+            assertEquals("", instance.decodeAsString("badTag", data));
+            fail("DecodeException not thrown");
+        }
+        catch (DecodeException e)
+        {
+        }
     }
 }
