@@ -4,6 +4,9 @@
  */
 package com.brightsparklabs.asanti.reader.parser;
 
+import com.brightsparklabs.asanti.model.schema.constraint.*;
+import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -11,13 +14,6 @@ import static org.junit.Assert.*;
  *
  * @author brightSPARK Labs
  */
-import org.junit.Test;
-
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactNumericValueConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
 
 public class AsnSchemaConstraintParserTest
 {
@@ -95,6 +91,12 @@ public class AsnSchemaConstraintParserTest
         result = AsnSchemaConstraintParser.parse("\r\n\t\t\n\t  (1  ..\t256\n ) \t  \n");
         assertTrue(result instanceof AsnSchemaNumericValueConstraint);
 
+        // negative numbers
+        result = AsnSchemaConstraintParser.parse("(-2147483648..2147483647)");
+        assertTrue(result instanceof AsnSchemaNumericValueConstraint);
+        result = AsnSchemaConstraintParser.parse("(-2147483648..-1)");
+        assertTrue(result instanceof AsnSchemaNumericValueConstraint);
+
         // missing minimum
         result = AsnSchemaConstraintParser.parse("(1..)");
         assertEquals(AsnSchemaConstraint.NULL, result);
@@ -116,6 +118,9 @@ public class AsnSchemaConstraintParserTest
         result = AsnSchemaConstraintParser.parse("\r\n\t\t\r\n\t\t1 \r\n\t\t\r\n\t\t");
         assertTrue(result instanceof AsnSchemaExactNumericValueConstraint);
         result = AsnSchemaConstraintParser.parse("\r\n\t\t\n\t  (1  \t\n ) \t  \n");
+        assertTrue(result instanceof AsnSchemaExactNumericValueConstraint);
+        // negative number
+        result = AsnSchemaConstraintParser.parse("(-2147483648)");
         assertTrue(result instanceof AsnSchemaExactNumericValueConstraint);
     }
 }
