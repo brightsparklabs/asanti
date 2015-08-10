@@ -7,9 +7,9 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -44,10 +44,10 @@ public class NumericStringValidatorTest
         // TODO ASN-136 - use mock Constraints, not real.
 
         // setup mock
-        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.NUMERIC_STRING,
+        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveTypes.NUMERIC_STRING,
                 new AsnSchemaSizeConstraint(0, 4));
 
-        final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
+        final AsantiAsnData mockAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { '1', '2', '3', '4' })
                 .addBytes("/invalid/bytes", new byte[] { 'x' })
                 .addBytes("/invalid/constraint", new byte[] { '1', '2', '3', '4', '5' })
@@ -55,11 +55,11 @@ public class NumericStringValidatorTest
 
         // test valid
         ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",
-                mockDecodedAsnData);
+                mockAsnData);
         assertEquals(0, failures.size());
 
         // test invalid - bytes
-        failures = instance.validate("/invalid/bytes", mockDecodedAsnData);
+        failures = instance.validate("/invalid/bytes", mockAsnData);
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
@@ -67,18 +67,18 @@ public class NumericStringValidatorTest
                 failure.getFailureReason());
 
         // test invalid - constraint
-        failures = instance.validate("/invalid/constraint", mockDecodedAsnData);
+        failures = instance.validate("/invalid/constraint", mockAsnData);
         assertEquals(1, failures.size());
         failure = failures.iterator().next();
         assertEquals(FailureType.SchemaConstraint, failure.getFailureType());
         assertEquals("Expected a value between 0 and 4, but found: 5", failure.getFailureReason());
 
         // test empty
-        failures = instance.validate("/empty", mockDecodedAsnData);
+        failures = instance.validate("/empty", mockAsnData);
         assertEquals(0, failures.size());
 
         // test null
-        failures = instance.validate("/null", mockDecodedAsnData);
+        failures = instance.validate("/null", mockAsnData);
         assertEquals(2, failures.size());
         boolean byteErrorPresent = false;
         boolean constraintErrorPresent = false;

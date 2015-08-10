@@ -5,13 +5,13 @@
 
 package com.brightsparklabs.asanti;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -124,14 +124,14 @@ public class AsantiCli
             logger.info("Loading file: " + berFile.getCanonicalPath());
 
             final ByteSource byteSource = Files.asByteSource(berFile);
-            final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(byteSource,
+            final ImmutableList<AsantiAsnData> pdus = Asanti.decodeAsnData(byteSource,
                     asnSchema,
                     topLevelType);
             for (int i = 0; i < pdus.size(); i++)
             {
 
                 logger.info("Parsing PDU[{}]", i);
-                final DecodedAsnData pdu = pdus.get(i);
+                final AsantiAsnData pdu = pdus.get(i);
                 for (String tag : pdu.getTags())
                 {
                     try
@@ -264,12 +264,12 @@ public class AsantiCli
     private static void testReadingBerFile(File berFile) throws IOException
     {
         final ByteSource byteSource = Files.asByteSource(berFile);
-        final ImmutableList<AsnData> data = Asanti.readAsnBerData(byteSource);
+        final ImmutableList<RawAsnData> data = Asanti.readAsnBerData(byteSource);
         int count = 0;
-        for (final AsnData asnData : data)
+        for (final RawAsnData rawAsnData : data)
         {
             logger.info("PDU[" + count + "]");
-            final Map<String, byte[]> tagsData = asnData.getBytes();
+            final Map<String, byte[]> tagsData = rawAsnData.getBytes();
 
             for (final String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
             {

@@ -1,6 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.*;
 import static com.google.common.collect.Collections2.*;
 
 /**
- * Helper functions to deal with decoded tags, ie what you get out of {@link DecodedAsnData}
+ * Helper functions to deal with decoded tags, ie what you get out of {@link AsantiAsnData}
  *
  * @author brightSPARK Labs
  */
@@ -59,24 +59,24 @@ public class DecodedTagsHelpers
      * filter data is /X/Y, if the tag is /X/Y then the filter data is /X/Y/Z, /X/Y/A In "tree"
      * terms we are going from only leaf nodes to all nodes.
      *
-     * @param decodedAsnData
-     *         the DecodedAsnData that we want to extract the tags from
+     * @param asnData
+     *         the AsantiAsnData that we want to extract the tags from
      *
      * @return the set of all tags with each item representing a node that may or may not be a leaf
      * node
      *
      * @throws NullPointerException
-     *         if decodedAsnData is null
+     *         if asnData is null
      */
-    public static ImmutableSet<String> buildTags(DecodedAsnData decodedAsnData)
+    public static ImmutableSet<String> buildTags(AsantiAsnData asnData)
     {
-        checkNotNull(decodedAsnData);
+        checkNotNull(asnData);
 
         Set<String> result = Sets.newHashSet();
 
         // we have to work through all tags (even unmapped), because the
         // unmapped tags MAY be the only ones with some of the (decoded) path in them.
-        for (final String tag : decodedAsnData.getTags())
+        for (final String tag : asnData.getTags())
         {
             final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
 
@@ -88,7 +88,7 @@ public class DecodedTagsHelpers
             }
         }
 
-        for (final String tag : decodedAsnData.getUnmappedTags())
+        for (final String tag : asnData.getUnmappedTags())
         {
             final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
             StringBuilder reconstructed = new StringBuilder("");
@@ -107,8 +107,8 @@ public class DecodedTagsHelpers
     /**
      * get the name of the immediate children of the provided parent tag
      *
-     * @param decodedAsnData
-     *         the DecodedAsnData that we want to extract the tags from
+     * @param asnData
+     *         the AsantiAsnData that we want to extract the tags from
      * @param parentTag
      *         the tag to get the children of
      *
@@ -117,20 +117,18 @@ public class DecodedTagsHelpers
      * parentTag is "/Parent" then /Parent/blah/someTag[0] turns in to blah
      *
      * @throws NullPointerException
-     *         if decodedAsnData or parentTag are null
+     *         if asnData or parentTag are null
      */
-    public static ImmutableSet<String> getImmediateChildren(DecodedAsnData decodedAsnData,
-            String parentTag)
+    public static ImmutableSet<String> getImmediateChildren(AsantiAsnData asnData, String parentTag)
     {
-        checkNotNull(decodedAsnData);
+        checkNotNull(asnData);
         checkNotNull(parentTag);
         // Instead of building out out all the tags, first filter by things that have at least our tag
         // in them.
         final String tag = parentTag.endsWith("/") ? parentTag : parentTag + "/";
         final ImmutableSet<String> filtered = ImmutableSet.<String>builder()
-                .addAll(Collections2.filter(decodedAsnData.getTags(), new OnlyStartsWith(tag)))
-                .addAll(Collections2.filter(decodedAsnData.getUnmappedTags(),
-                        new OnlyStartsWith(tag)))
+                .addAll(Collections2.filter(asnData.getTags(), new OnlyStartsWith(tag)))
+                .addAll(Collections2.filter(asnData.getUnmappedTags(), new OnlyStartsWith(tag)))
                 .build();
 
         return ImmutableSet.copyOf(Collections2.filter(transform(filtered,

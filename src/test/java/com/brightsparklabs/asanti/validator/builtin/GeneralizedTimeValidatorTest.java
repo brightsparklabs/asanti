@@ -7,9 +7,9 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -44,34 +44,34 @@ public class GeneralizedTimeValidatorTest
     {
         // setup mock
         final AsnSchemaType type
-                = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.GENERALIZED_TIME,
+                = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveTypes.GENERALIZED_TIME,
                 AsnSchemaConstraint.NULL);
 
         String validTime = "19181111110000.0123456789";
         String invalidTime = "19450508230112.123Z+2400";
 
-        final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
+        final AsantiAsnData mockAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", validTime.getBytes(Charsets.UTF_8))
                 .addBytes("/invalid/bytes", invalidTime.getBytes(Charsets.UTF_8))
                 .build();
 
         // test valid
         ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",
-                mockDecodedAsnData);
+                mockAsnData);
         assertEquals(0, failures.size());
 
         // test invalid - bytes
-        failures = instance.validate("/invalid/bytes", mockDecodedAsnData);
+        failures = instance.validate("/invalid/bytes", mockAsnData);
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
 
         // test empty
-        failures = instance.validate("/empty", mockDecodedAsnData);
+        failures = instance.validate("/empty", mockAsnData);
         assertEquals(1, failures.size());
 
         // test null
-        failures = instance.validate("/null", mockDecodedAsnData);
+        failures = instance.validate("/null", mockAsnData);
         assertEquals(1, failures.size());
         boolean byteErrorPresent = false;
         for (DecodedTagValidationFailure nullFailure : failures)

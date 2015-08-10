@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * Default implementation of {@link AsnData}
+ * Default implementation of {@link RawAsnData}
  *
  * @author brightSPARK Labs
  */
-public class AsnDataImpl implements AsnData
+public class RawAsnDataImpl implements RawAsnData
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -42,14 +42,14 @@ public class AsnDataImpl implements AsnData
      * @throws NullPointerException
      *         if parameters are {@code null}
      */
-    public AsnDataImpl(Map<String, byte[]> tagsToData)
+    public RawAsnDataImpl(Map<String, byte[]> tagsToData)
     {
         checkNotNull(tagsToData);
         this.tagsToData = ImmutableMap.copyOf(tagsToData);
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: AsnData
+    // IMPLEMENTATION: RawAsnData
     // -------------------------------------------------------------------------
 
     @Override

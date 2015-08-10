@@ -4,12 +4,12 @@
  */
 package com.brightsparklabs.asanti.validator.rule;
 
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Represents a rule to validate {@link DecodedAsnData} against.
+ * Represents a rule to validate {@link AsantiAsnData} against.
  *
  * @author brightSPARK Labs
  */
@@ -32,12 +32,12 @@ public interface ValidationRule
      * @param tag
      *            tag to validate in the data
      *
-     * @param decodedAsnData
+     * @param asnData
      *            data to validate
      *
      * @return the results of validation
      */
-    public ImmutableSet<ValidationFailure> validate(String tag, DecodedAsnData decodedAsnData);
+    public ImmutableSet<ValidationFailure> validate(String tag, AsantiAsnData asnData);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: NULL
@@ -67,7 +67,7 @@ public interface ValidationRule
         // ---------------------------------------------------------------------
 
         @Override
-        public ImmutableSet<ValidationFailure> validate(String tag, DecodedAsnData decodedAsnData)
+        public ImmutableSet<ValidationFailure> validate(String tag, AsantiAsnData asnData)
         {
             return ImmutableSet.<ValidationFailure>of();
         }

@@ -5,11 +5,12 @@
 
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -36,8 +37,8 @@ public class AsnSchemaTypeCollection extends BaseAsnSchemaType
      * built-in types which are considered 'collection'. Currently: SET OF and SEQUENCE OF
      */
     private static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(
-            AsnPrimitiveType.SET_OF,
-            AsnPrimitiveType.SEQUENCE_OF);
+            AsnPrimitiveTypes.SET_OF,
+            AsnPrimitiveTypes.SEQUENCE_OF);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES

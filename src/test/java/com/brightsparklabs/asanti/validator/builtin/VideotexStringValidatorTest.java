@@ -33,7 +33,7 @@ public class VideotexStringValidatorTest
     @Test
     public void testValidateTag() throws Exception
     {
-        // TODO: ASN-105 need to mock DecodedAsnData
+        // TODO: ASN-105 need to mock AsantiAsnData
     }
 
     @Test

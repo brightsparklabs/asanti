@@ -5,8 +5,8 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Optional;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class IntegerDecoderTest
     @Test
     public void testDecode() throws Exception
     {
-        DecodedAsnData data = mock(DecodedAsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
 
         // run through all the one byte values.
         byte[] bytes = new byte[1];
@@ -194,7 +194,7 @@ public class IntegerDecoderTest
 
             byte [] b1 = { };
             instance.decode(b1);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -204,7 +204,7 @@ public class IntegerDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -215,7 +215,7 @@ public class IntegerDecoderTest
     public void testDecodeAsString() throws Exception
     {
         byte[] bytes = new byte[1];
-        DecodedAsnData data = mock(DecodedAsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--) {
             bytes[0] = (byte) b;
             String big = instance.decodeAsString(bytes);
@@ -349,7 +349,7 @@ public class IntegerDecoderTest
 
             byte[] b1 = {};
             instance.decodeAsString(b1);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -359,7 +359,7 @@ public class IntegerDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {

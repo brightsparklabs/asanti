@@ -5,8 +5,8 @@
 
 package com.brightsparklabs.asanti.reader;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.data.AsnDataImpl;
+import com.brightsparklabs.asanti.model.data.RawAsnData;
+import com.brightsparklabs.asanti.model.data.RawAsnDataImpl;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -33,7 +33,6 @@ import static com.brightsparklabs.asanti.common.ByteArrays.*;
  */
 public class AsnBerDataReader
 {
-
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -51,12 +50,12 @@ public class AsnBerDataReader
      * @param source
      *         data to decode
      *
-     * @return list of {@link AsnData} objects found in the data
+     * @return list of {@link RawAsnData} objects found in the data
      *
      * @throws IOException
      *         if any errors occur reading the data
      */
-    public static ImmutableList<AsnData> read(ByteSource source) throws IOException
+    public static ImmutableList<RawAsnData> read(ByteSource source) throws IOException
     {
         return read(source, 0);
     }
@@ -72,17 +71,17 @@ public class AsnBerDataReader
      *         this value. Set to {@code 0} for no maximum (or use {@link #read(ByteSource)}
      *         instead).
      *
-     * @return list of {@link AsnData} objects found in the data
+     * @return list of {@link RawAsnData} objects found in the data
      *
      * @throws IOException
      *         if any errors occur reading the data
      */
-    public static ImmutableList<AsnData> read(ByteSource source, int maxPDUs) throws IOException
+    public static ImmutableList<RawAsnData> read(ByteSource source, int maxPDUs) throws IOException
     {
         final InputStream inputStream = source.openStream();
         final ASN1InputStream asnInputStream = new ASN1InputStream(inputStream);
 
-        final List<AsnData> result = Lists.newArrayList();
+        final List<RawAsnData> result = Lists.newArrayList();
 
         DERObject asnObject = asnInputStream.readObject();
         while (asnObject != null)
@@ -97,8 +96,8 @@ public class AsnBerDataReader
             logger.trace("processDerObject: {}", asnObject.toString());
 
             processDerObject(asnObject, "", tagsToData, 0);
-            final AsnData asnData = new AsnDataImpl(tagsToData);
-            result.add(asnData);
+            final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
+            result.add(rawAsnData);
             asnObject = asnInputStream.readObject();
 
             /*

@@ -5,12 +5,13 @@
 
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -42,9 +43,9 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
      * built-in types which are considered 'constructed'. Currently: SEQUENCE, SET and CHOICE.
      */
     private static final ImmutableSet<AsnPrimitiveType> validTypes = ImmutableSet.of(
-            AsnPrimitiveType.SET,
-            AsnPrimitiveType.SEQUENCE,
-            AsnPrimitiveType.CHOICE);
+            AsnPrimitiveTypes.SET,
+            AsnPrimitiveTypes.SEQUENCE,
+            AsnPrimitiveTypes.CHOICE);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -273,7 +274,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
             checkNotNull(type);
             checkNotNull(taggingMode);
 
-            return (type == AsnPrimitiveType.SEQUENCE) ?
+            return (type == AsnPrimitiveTypes.SEQUENCE) ?
                     ((taggingMode == AsnModuleTaggingMode.AUTOMATIC) ?
                             TAG_CREATION_SEQUENCE_AUTOMATED :
                             TAG_CREATION_SEQUENCE_FALSE) :

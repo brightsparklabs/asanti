@@ -5,7 +5,7 @@
 package com.brightsparklabs.asanti.reader;
 
 import com.brightsparklabs.asanti.mocks.MockAsnBerFile;
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -60,7 +60,7 @@ public class AsnBerDataReaderTest
         final ByteSource berData = MockAsnBerFile.createAsnBerDataContainingPeoplePdus(5);
 
         // test minimum
-        ImmutableList<AsnData> result = AsnBerDataReader.read(berData, 1);
+        ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData, 1);
         assertEquals(1, result.size());
 
         // test middle
@@ -88,9 +88,9 @@ public class AsnBerDataReaderTest
     public void testReadFile() throws Exception
     {
         final ByteSource berData = MockAsnBerFile.createAsnBerDataContainingDocumentPdus(5);
-        final ImmutableList<AsnData> result = AsnBerDataReader.read(berData);
+        final ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData);
         assertEquals(5, result.size());
-        for (final AsnData pdu : result)
+        for (final RawAsnData pdu : result)
         {
             assertEquals(16, pdu.getRawTags().size());
             assertArrayEquals("201501020000Z".getBytes(Charsets.UTF_8),
@@ -132,10 +132,10 @@ public class AsnBerDataReaderTest
     {
         final ByteSource berData = MockAsnBerFile.createAsnBerData(5,
                 EXAMPLE_SCHEMA_PEOPLE_PDU_LARGE_OCTET_STRING_BER);
-        final ImmutableList<AsnData> result = AsnBerDataReader.read(berData);
+        final ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData);
         assertEquals(5, result.size());
 
-        final AsnData pdu = result.get(0);
+        final RawAsnData pdu = result.get(0);
         assertArrayEquals(hexEncoding.decode(HEXSTRING_1000_HYPHENS),
                 pdu.getBytes("/0[UNIVERSAL 16]/0[1]").get());
         assertArrayEquals("First name is 1000 octets long".getBytes(Charsets.UTF_8),

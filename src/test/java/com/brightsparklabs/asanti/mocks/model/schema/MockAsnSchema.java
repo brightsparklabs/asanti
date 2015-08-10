@@ -4,16 +4,16 @@
  */
 package com.brightsparklabs.asanti.mocks.model.schema;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeVisitor;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchema} which conform to the test ASN.1
- * schema defined in the {@linkplain README.md} file
+ * schema defined in the {@code README.md} file
  *
  * @author brightSPARK Labs
  */
@@ -35,7 +35,7 @@ public class MockAsnSchema
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** the example schema defined in the {@linkplain README.md} file */
+    /** the example schema defined in the {@code README.md} file */
     public static final String TEST_SCHEMA_TEXT = new StringBuilder().append("Document-PDU\n")
             .append("    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n")
             .append("DEFINITIONS")
@@ -241,10 +241,10 @@ public class MockAsnSchema
 
     /**
      * Returns (a copy) the timestamps that the mocked "/Document/header/published/date" will
-     * provide with calls to {@link DecodedAsnData#getDecodedObject}
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
      *
      * @return (a copy) the timestamps that the mocked "/Document/header/published/date" will
-     * provide with calls to {@link DecodedAsnData#getDecodedObject}
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
      */
     public static Timestamp getPublishDate()
     {
@@ -253,10 +253,10 @@ public class MockAsnSchema
 
     /**
      * Returns (a copy) the timestamps that the mocked "/Document/body/lastModified/date" will
-     * provide with calls to {@link DecodedAsnData#getDecodedObject}
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
      *
      * @return (a copy) the timestamps that the mocked "/Document/body/lastModified/date" will
-     * provide with calls to {@link DecodedAsnData#getDecodedObject}
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
      */
     public static Timestamp getLastModifiedDate()
     {
@@ -292,9 +292,9 @@ public class MockAsnSchema
 
         final AsnPrimitiveType primitiveType = mock(AsnPrimitiveType.class);
         final BuiltinTypeDecoder decoder = mock(BuiltinTypeDecoder.class);
-        when(decoder.decodeAsString(anyString(), any(DecodedAsnData.class))).thenReturn(decodedValue
-                .toString());
-        when(decoder.decode(anyString(), any(DecodedAsnData.class))).thenReturn(decodedValue);
+        when(decoder.decodeAsString(anyString(),
+                any(AsantiAsnData.class))).thenReturn(decodedValue.toString());
+        when(decoder.decode(anyString(), any(AsantiAsnData.class))).thenReturn(decodedValue);
 
         when(primitiveType.accept(any(AsnPrimitiveTypeVisitor.class))).thenReturn(decoder);
 

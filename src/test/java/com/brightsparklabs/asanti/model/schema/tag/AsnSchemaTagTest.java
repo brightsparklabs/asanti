@@ -1,7 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

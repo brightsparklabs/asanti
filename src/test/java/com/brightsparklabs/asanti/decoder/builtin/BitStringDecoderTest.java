@@ -5,8 +5,8 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Optional;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class BitStringDecoderTest
         assertEquals("111", instance.decode(bytes));
 
         // test other overload
-        DecodedAsnData data = mock(DecodedAsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         final String tag = "tag";
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
 
@@ -76,7 +76,7 @@ public class BitStringDecoderTest
         {
             bytes = new byte[] { (byte) 0x08, (byte) 0xFF };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException e)
         {
@@ -87,7 +87,7 @@ public class BitStringDecoderTest
         {
             bytes = new byte[] { (byte) 0x0F, (byte) 0xFF, (byte) 0xE0 };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException e)
         {
@@ -98,7 +98,7 @@ public class BitStringDecoderTest
         {
             bytes = new byte[] { };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException e)
         {
@@ -113,7 +113,7 @@ public class BitStringDecoderTest
         assertEquals(instance.decode(bytes), instance.decodeAsString(bytes));
 
         // test other overload
-        DecodedAsnData data = mock(DecodedAsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         final String tag = "tag";
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
 

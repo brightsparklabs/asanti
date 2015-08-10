@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * @author brightSPARK Labs
  */
-public interface AsnData
+public interface RawAsnData
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS

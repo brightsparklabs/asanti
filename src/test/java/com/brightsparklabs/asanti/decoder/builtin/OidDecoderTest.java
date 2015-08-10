@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.assam.exception.DecodeException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -68,7 +68,7 @@ public class OidDecoderTest
         {
             bytes = new byte[] { (byte) 0x80 };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -80,7 +80,7 @@ public class OidDecoderTest
         {
             bytes = new byte[] { (byte) 0x2B, (byte) 0xFF, (byte) 0xFF };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -90,7 +90,7 @@ public class OidDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -137,7 +137,7 @@ public class OidDecoderTest
         {
             bytes = new byte[] { (byte) 0x80 };
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -149,7 +149,7 @@ public class OidDecoderTest
         {
             bytes = new byte[] { (byte) 0x2b, (byte) 0x80 };
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -161,7 +161,7 @@ public class OidDecoderTest
         {
             bytes = new byte[] { (byte) 0x2B, (byte) 0xFF, (byte) 0xFF };
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -173,7 +173,7 @@ public class OidDecoderTest
         {
             bytes = new byte[0];
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -183,7 +183,7 @@ public class OidDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {

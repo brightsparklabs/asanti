@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
 import org.junit.Test;
 
@@ -68,7 +68,7 @@ public class Utf8StringDecoderTest
             try
             {
                 instance.decode(bytes);
-                fail("DecodeException not thrown");
+                fail("DecodeExceptions not thrown");
             }
             catch (DecodeException ex)
             {
@@ -80,7 +80,7 @@ public class Utf8StringDecoderTest
         {
             bytes[0] = (byte) 0b11000000;
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -91,7 +91,7 @@ public class Utf8StringDecoderTest
         {
             bytes[0] = (byte) 0b11100000;
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -102,7 +102,7 @@ public class Utf8StringDecoderTest
         {
             bytes[0] = (byte) 0b11110000;
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -112,7 +112,7 @@ public class Utf8StringDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -158,7 +158,7 @@ public class Utf8StringDecoderTest
             try
             {
                 instance.decodeAsString(bytes);
-                fail("DecodeException not thrown");
+                fail("DecodeExceptions not thrown");
             }
             catch (DecodeException ex)
             {
@@ -170,7 +170,7 @@ public class Utf8StringDecoderTest
         {
             bytes[0] = (byte) 0b11000000;
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -181,7 +181,7 @@ public class Utf8StringDecoderTest
         {
             bytes[0] = (byte) 0b11100000;
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -192,7 +192,7 @@ public class Utf8StringDecoderTest
         {
             bytes[0] = (byte) 0b11110000;
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -202,7 +202,7 @@ public class Utf8StringDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {

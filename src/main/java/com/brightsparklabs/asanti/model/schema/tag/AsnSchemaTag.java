@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -206,9 +206,9 @@ public class AsnSchemaTag
     }
 
     /**
-     * Returns the raw tag (that came from the AsnData)
+     * Returns the raw tag (that came from the AsantiAsnData)
      *
-     * @return the raw tag (that came from the AsnData)
+     * @return the raw tag (that came from the AsantiAsnData)
      */
     public String getRawTag()
     {

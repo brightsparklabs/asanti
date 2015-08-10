@@ -5,11 +5,10 @@
 package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -23,21 +22,21 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for public class {@link DecodedAsnDataImpl}
+ * Unit tests for public class {@link AsantiAsnDataImpl}
  *
  * @author brightSPARK Labs
  */
-public class DecodedAsnDataImplTest
+public class AsantiAsnDataImplTest
 {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
 
     /** default instance to test */
-    private static DecodedAsnData instance;
+    private static AsantiAsnData instance;
 
     /** empty instance to test */
-    private static DecodedAsnData emptyInstance;
+    private static AsantiAsnData emptyInstance;
 
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
@@ -46,7 +45,7 @@ public class DecodedAsnDataImplTest
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
-        /** data to construct asnData from */
+        /** data to construct rawAsnData from */
         final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]>builder()
                 .put("0[1]/0[0]/1[1]", "/1/0/1".getBytes(Charsets.UTF_8))
                 .put("1[2]/0[0]/0[0]", "/2/0/0".getBytes(Charsets.UTF_8))
@@ -58,13 +57,13 @@ public class DecodedAsnDataImplTest
                 .build();
 
         // create instance
-        final AsnData asnData = new AsnDataImpl(tagsToData);
+        final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
         final AsnSchema asnSchema = MockAsnSchema.getInstance();
-        instance = new DecodedAsnDataImpl(asnData, asnSchema, "Document");
+        instance = new AsantiAsnDataImpl(rawAsnData, asnSchema, "Document");
 
         // create empty instance
-        final AsnData emptyAsnData = new AsnDataImpl(Maps.<String, byte[]>newHashMap());
-        emptyInstance = new DecodedAsnDataImpl(emptyAsnData, asnSchema, "Document");
+        final RawAsnData emptyAsnData = new RawAsnDataImpl(Maps.<String, byte[]>newHashMap());
+        emptyInstance = new AsantiAsnDataImpl(emptyAsnData, asnSchema, "Document");
     }
 
     // -------------------------------------------------------------------------
@@ -74,12 +73,12 @@ public class DecodedAsnDataImplTest
     @Test
     public void testDecodedAsnDataDefault() throws Exception
     {
-        final AsnData mockData = mock(AsnData.class);
+        final RawAsnData mockData = mock(RawAsnData.class);
         final AsnSchema mockSchema = mock(AsnSchema.class);
 
         try
         {
-            new DecodedAsnDataImpl(null, null, null);
+            new AsantiAsnDataImpl(null, null, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -87,7 +86,7 @@ public class DecodedAsnDataImplTest
         }
         try
         {
-            new DecodedAsnDataImpl(null, null, "Test");
+            new AsantiAsnDataImpl(null, null, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -95,7 +94,7 @@ public class DecodedAsnDataImplTest
         }
         try
         {
-            new DecodedAsnDataImpl(null, mockSchema, null);
+            new AsantiAsnDataImpl(null, mockSchema, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -103,7 +102,7 @@ public class DecodedAsnDataImplTest
         }
         try
         {
-            new DecodedAsnDataImpl(null, mockSchema, "Test");
+            new AsantiAsnDataImpl(null, mockSchema, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -111,7 +110,7 @@ public class DecodedAsnDataImplTest
         }
         try
         {
-            new DecodedAsnDataImpl(mockData, null, null);
+            new AsantiAsnDataImpl(mockData, null, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -119,7 +118,7 @@ public class DecodedAsnDataImplTest
         }
         try
         {
-            new DecodedAsnDataImpl(mockData, null, "Test");
+            new AsantiAsnDataImpl(mockData, null, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -127,7 +126,7 @@ public class DecodedAsnDataImplTest
         }
         try
         {
-            new DecodedAsnDataImpl(mockData, mockSchema, null);
+            new AsantiAsnDataImpl(mockData, mockSchema, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -135,7 +134,7 @@ public class DecodedAsnDataImplTest
         }
         try
         {
-            new DecodedAsnDataImpl(mockData, mockSchema, "");
+            new AsantiAsnDataImpl(mockData, mockSchema, "");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)

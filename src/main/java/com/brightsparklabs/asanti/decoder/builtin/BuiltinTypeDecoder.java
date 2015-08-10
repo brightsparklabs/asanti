@@ -10,8 +10,8 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
 
 /**
  * Used to decode bytes based on the kind of ASN.1 Built-in Type they came from
@@ -42,12 +42,12 @@ public interface BuiltinTypeDecoder<T>
     public T decode(byte[] bytes) throws DecodeException;
 
     /**
-     * Decodes the bytes from the supplied tag and DecodedAsnData based on the kind of ASN.1
-     * Built-in Type represented by this decoder, and applying any transformations from the schema
+     * Decodes the bytes from the supplied tag and AsnData based on the kind of ASN.1 Built-in Type
+     * represented by this decoder, and applying any transformations from the schema
      *
      * @param tag
      *         the tag to use to get the bytes from the data
-     * @param decodedAsnData
+     * @param asnData
      *         the data to use.
      *
      * @return the results from decoding
@@ -55,9 +55,9 @@ public interface BuiltinTypeDecoder<T>
      * @throws DecodeException
      *         if any errors occur while decoding the supplied tag/data
      * @throws NullPointerException
-     *         if either tag or decodedAsnData are null
+     *         if either tag or asnData are null
      */
-    public T decode(String tag, DecodedAsnData decodedAsnData) throws DecodeException;
+    public T decode(String tag, AsantiAsnData asnData) throws DecodeException;
 
     /**
      * Decodes the supplied bytes as a string based on the the kind of ASN.1 Built-in Type
@@ -79,7 +79,7 @@ public interface BuiltinTypeDecoder<T>
      *
      * @param tag
      *         the tag to use to get the bytes from the data
-     * @param decodedAsnData
+     * @param asnData
      *         the data to use.
      *
      * @return the results from decoding the bytes
@@ -87,9 +87,9 @@ public interface BuiltinTypeDecoder<T>
      * @throws DecodeException
      *         if any errors occur while decoding the supplied bytes
      * @throws NullPointerException
-     *         if either tag or decodedAsnData are null
+     *         if either tag or asnData are null
      */
-    public String decodeAsString(String tag, DecodedAsnData decodedAsnData) throws DecodeException;
+    public String decodeAsString(String tag, AsantiAsnData asnData) throws DecodeException;
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: NULL
@@ -142,7 +142,7 @@ public interface BuiltinTypeDecoder<T>
         }
 
         @Override
-        public Object decode(String tag, DecodedAsnData decodedAsnData) throws DecodeException
+        public Object decode(String tag, AsantiAsnData asnData) throws DecodeException
         {
             throw new DecodeException(errorMessage);
         }
@@ -154,8 +154,7 @@ public interface BuiltinTypeDecoder<T>
         }
 
         @Override
-        public String decodeAsString(String tag, DecodedAsnData decodedAsnData)
-                throws DecodeException
+        public String decodeAsString(String tag, AsantiAsnData asnData) throws DecodeException
         {
             throw new DecodeException(errorMessage);
         }

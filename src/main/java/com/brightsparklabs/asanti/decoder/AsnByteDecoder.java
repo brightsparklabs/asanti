@@ -5,9 +5,9 @@
 
 package com.brightsparklabs.asanti.decoder;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.decoder.builtin.*;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;

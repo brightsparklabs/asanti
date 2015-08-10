@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.assam.exception.DecodeException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -48,7 +48,7 @@ public class DurationDecoderTest
             try
             {
                 instance.decode(bytes);
-                fail("DecodeException not thrown");
+                fail("DecodeExceptions not thrown");
             }
             catch (DecodeException ex)
             {
@@ -60,7 +60,7 @@ public class DurationDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -83,7 +83,7 @@ public class DurationDecoderTest
             try
             {
                 instance.decodeAsString(bytes);
-                fail("DecodeException not thrown");
+                fail("DecodeExceptions not thrown");
             }
             catch (DecodeException ex)
             {
@@ -95,7 +95,7 @@ public class DurationDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {

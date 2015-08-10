@@ -4,14 +4,14 @@
  */
 package com.brightsparklabs.asanti.model.data;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -26,18 +26,18 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * Default implementation of {@link DecodedAsnData}
+ * Default implementation of {@link AsantiAsnData}
  *
  * @author brightSPARK Labs
  */
-public class DecodedAsnDataImpl implements DecodedAsnData
+public class AsantiAsnDataImpl implements AsantiAsnData
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
     /** ASN data to decode */
-    private final AsnData asnData;
+    private final RawAsnData rawAsnData;
 
     /**
      * all tags which could be decoded. Map is of form: { decodedTagString => decodedTag }
@@ -68,7 +68,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
     /**
      * Default constructor
      *
-     * @param asnData
+     * @param rawAsnData
      *         data to decode
      * @param asnSchema
      *         schema to use to decode data
@@ -81,21 +81,22 @@ public class DecodedAsnDataImpl implements DecodedAsnData
      * @throws IllegalArgumentException
      *         if topLevelTypeName is blank
      */
-    public DecodedAsnDataImpl(AsnData asnData, AsnSchema asnSchema, String topLevelTypeName)
+    public AsantiAsnDataImpl(RawAsnData rawAsnData, AsnSchema asnSchema, String topLevelTypeName)
     {
-        checkNotNull(asnData);
+        checkNotNull(rawAsnData);
         checkNotNull(asnSchema);
         checkNotNull(topLevelTypeName);
         checkArgument(!topLevelTypeName.trim().isEmpty(), "Top level type name must be specified");
 
-        this.asnData = asnData;
+        this.rawAsnData = rawAsnData;
 
         // decode the tags in the data
         final Map<String, DecodedTag> decodedToRawTags = Maps.newHashMap();
         final Map<String, DecodedTag> unmappedTags = Maps.newHashMap();
 
-        ImmutableSet<OperationResult<DecodedTag, String>> results
-                = asnSchema.getDecodedTags(asnData.getRawTags(), topLevelTypeName);
+        ImmutableSet<OperationResult<DecodedTag, String>> results = asnSchema.getDecodedTags(
+                rawAsnData.getRawTags(),
+                topLevelTypeName);
         for (OperationResult<DecodedTag, String> decodeResult : results)
         {
             final DecodedTag decodedTag = decodeResult.getOutput();
@@ -147,7 +148,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         final DecodedTag decodedTag = allTags.get(tag);
         // if no decoded tag, assume supplied tag is is already raw tag
         final String rawTag = (decodedTag == null) ? tag : decodedTag.getRawTag();
-        return asnData.getBytes(rawTag);
+        return rawAsnData.getBytes(rawTag);
     }
 
     @Override
@@ -164,7 +165,7 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
 
         // check against the raw tags too
-        result.putAll(asnData.getBytesMatching(regex));
+        result.putAll(rawAsnData.getBytesMatching(regex));
 
         return ImmutableMap.copyOf(result);
     }
@@ -195,8 +196,8 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
 
         // Add any matched to raw tags
-        final Map<String, byte []> raw = asnData.getBytesMatching(regex);
-        for(Map.Entry<String, byte []> entry : raw.entrySet())
+        final Map<String, byte[]> raw = rawAsnData.getBytesMatching(regex);
+        for (Map.Entry<String, byte[]> entry : raw.entrySet())
         {
             final String hexString = "0x" + BaseEncoding.base16().encode(entry.getValue());
             result.put(entry.getKey(), hexString);
@@ -236,12 +237,6 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
 
         return ImmutableMap.copyOf(result);
-    }
-
-    @Override
-    public Optional<AsnSchemaType> getType(String tag)
-    {
-        return asnSchema.getType(tag);
     }
 
     @Override
@@ -289,10 +284,6 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         return ImmutableMap.copyOf(result);
     }
 
-    // -------------------------------------------------------------------------
-    // PRIVATE
-    // -------------------------------------------------------------------------
-
     /**
      * Returns all tags which match the supplied regular expression
      *
@@ -318,5 +309,15 @@ public class DecodedAsnDataImpl implements DecodedAsnData
         }
 
         return ImmutableSet.copyOf(tags);
+    }
+
+    // -------------------------------------------------------------------------
+    // PRIVATE
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Optional<AsnSchemaType> getType(String tag)
+    {
+        return asnSchema.getType(tag);
     }
 }

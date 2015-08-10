@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class VisibleStringDecoderTest
             try
             {
                 instance.decode(bytes);
-                fail("DecodeException not thrown");
+                fail("DecodeExceptions not thrown");
             }
             catch (DecodeException ex)
             {
@@ -58,7 +58,7 @@ public class VisibleStringDecoderTest
         try
         {
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -68,7 +68,7 @@ public class VisibleStringDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -89,7 +89,7 @@ public class VisibleStringDecoderTest
             try
             {
                 instance.decodeAsString(bytes);
-                fail("DecodeException not thrown");
+                fail("DecodeExceptions not thrown");
             }
             catch (DecodeException ex)
             {
@@ -100,7 +100,7 @@ public class VisibleStringDecoderTest
         try
         {
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -110,7 +110,7 @@ public class VisibleStringDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {

@@ -5,16 +5,16 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -67,10 +67,10 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator
 
     @Override
     public ImmutableSet<DecodedTagValidationFailure> validate(final String tag,
-            final DecodedAsnData decodedAsnData)
+            final AsantiAsnData asnData)
     {
         final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result
-                = validateAndDecode(tag, decodedAsnData);
+                = validateAndDecode(tag, asnData);
 
         return result.getFailureReason().or(ImmutableSet.<DecodedTagValidationFailure>of());
     }
@@ -103,28 +103,27 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator
      *
      * @param tag
      *         tag to validate
-     * @param decodedAsnData
+     * @param asnData
      *         data to retrieve tag from
      *
      * @return the matching tag if successful, otherwise an appropriate DecodedTagValidationFailure
      */
     public OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> validateAndDecode(
-            final String tag, final DecodedAsnData decodedAsnData)
+            final String tag, final AsantiAsnData asnData)
     {
         final Set<DecodedTagValidationFailure> tagFailures = Sets.newHashSet();
 
         // Validation of the enumerated type requires that the bytes are valid (they decode
         // to an integer), that it meets its constraints (all can be done through the parent
         // validate)
-        tagFailures.addAll(super.validate(tag, decodedAsnData));
+        tagFailures.addAll(super.validate(tag, asnData));
 
         try
         {
             // AND that the decoded integer aligns with a named tag for the
             // Enumerated type as defined by its schema.
-            final BigInteger value = AsnByteDecoder.decodeAsInteger(decodedAsnData.getBytes(tag)
-                    .get());
-            final AsnSchemaType type = decodedAsnData.getType(tag).get();
+            final BigInteger value = AsnByteDecoder.decodeAsInteger(asnData.getBytes(tag).get());
+            final AsnSchemaType type = asnData.getType(tag).get();
             final String tagName = (String) type.accept(getNamedTagVisitor(value.toString()));
 
             if (tagName.isEmpty())

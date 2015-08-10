@@ -1,8 +1,9 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.collect.ImmutableMap;
 
 import java.text.ParseException;
@@ -33,7 +34,7 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
      * Default constructor.
      *
      * @param primitiveType
-     *         The {@link AsnPrimitiveType} for this type
+     *         The {@link AsnPrimitiveTypes} for this type
      * @param constraint
      *         The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no constraint.
      *
@@ -68,6 +69,7 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType
 
     /**
      * Returns the map of all the "named values" for this type.
+     *
      * @return the map of all the "named values" for this type.
      */
     public ImmutableMap<String, AsnSchemaNamedTag> getTagsToNamedValues()

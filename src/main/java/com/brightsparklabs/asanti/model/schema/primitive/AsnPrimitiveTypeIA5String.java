@@ -1,6 +1,8 @@
 package com.brightsparklabs.asanti.model.schema.primitive;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
 
 /**
  * A type used to represent the primitive builtin type IA5String within ASN.1 This class is used as
@@ -8,7 +10,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
  *
  * @author brightSPARK Labs
  */
-public class AsnPrimitiveTypeIA5String implements AsnPrimitiveType
+public class AsnPrimitiveTypeIA5String implements AsnPrimitiveType.IA5String
 {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnPrimitiveType

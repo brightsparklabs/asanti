@@ -1,12 +1,12 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeVisitor;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeWithNamedTags;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -51,7 +51,7 @@ public class EnumeratedDecoderTest
         try
         {
             instance.decode(bytes);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -59,7 +59,7 @@ public class EnumeratedDecoderTest
         try
         {
             instance.decodeAsString(bytes);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -90,21 +90,21 @@ public class EnumeratedDecoderTest
         when(type.getTagsToNamedValues()).thenReturn(namedTags);
 
         String tag = "/Foo";
-        DecodedAsnData data = mock(DecodedAsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         when(data.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 1 }));
 
         assertEquals("enumValue", instance.decode(tag, data));
         assertEquals("enumValue", instance.decodeAsString(tag, data));
 
-        DecodedAsnData dataBad = mock(DecodedAsnData.class);
+        AsantiAsnData dataBad = mock(AsantiAsnData.class);
         when(dataBad.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
         when(dataBad.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 2 }));
 
         try
         {
             instance.decode(tag, dataBad);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -117,7 +117,7 @@ public class EnumeratedDecoderTest
         try
         {
             instance.decode(tagEmpty, data);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {

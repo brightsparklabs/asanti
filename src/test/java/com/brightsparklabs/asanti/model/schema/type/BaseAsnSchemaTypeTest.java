@@ -1,17 +1,13 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
-import com.brightsparklabs.asanti.model.schema.DecodedTag;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
 import java.text.ParseException;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -39,11 +35,11 @@ public class BaseAsnSchemaTypeTest
         {
         }
 
-        BaseAsnSchemaType type = new BaseAsnSchemaType(AsnPrimitiveType.INVALID, AsnSchemaConstraint.NULL);
-        assertEquals(AsnPrimitiveType.INVALID, type.getPrimitiveType());
+        BaseAsnSchemaType type = new BaseAsnSchemaType(AsnPrimitiveTypes.INVALID, AsnSchemaConstraint.NULL);
+        assertEquals(AsnPrimitiveTypes.INVALID, type.getPrimitiveType());
 
-        type = new BaseAsnSchemaType(AsnPrimitiveType.INTEGER, AsnSchemaConstraint.NULL);
-        assertEquals(AsnPrimitiveType.INTEGER, type.getPrimitiveType());
+        type = new BaseAsnSchemaType(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
+        assertEquals(AsnPrimitiveTypes.INTEGER, type.getPrimitiveType());
         assertEquals(AsnBuiltinType.Integer, type.getBuiltinType());
 
         DecodingSession decodingSession = mock(DecodingSession.class);
@@ -54,7 +50,7 @@ public class BaseAsnSchemaTypeTest
     @Test
     public void testGetAllComponents()
     {
-        BaseAsnSchemaType type = new BaseAsnSchemaType(AsnPrimitiveType.INTEGER, AsnSchemaConstraint.NULL);
+        BaseAsnSchemaType type = new BaseAsnSchemaType(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
 
         assertEquals(0, type.getAllComponents().size());
     }
@@ -64,7 +60,7 @@ public class BaseAsnSchemaTypeTest
     {
         AsnSchemaTypeVisitor v = getVisitor();
 
-        BaseAsnSchemaType instance = new BaseAsnSchemaType(AsnPrimitiveType.INTEGER, AsnSchemaConstraint.NULL);
+        BaseAsnSchemaType instance = new BaseAsnSchemaType(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
 
         Object o = instance.accept(v);
         assertEquals("Got BaseAsnSchemaType", o);
