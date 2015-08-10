@@ -18,7 +18,7 @@ import com.google.common.collect.Iterables;
  *
  * @author brightSPARK Labs
  */
-public class DecodeException extends Exception
+public class DecodeException extends com.brightsparklabs.assam.exception.DecodeException
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION
