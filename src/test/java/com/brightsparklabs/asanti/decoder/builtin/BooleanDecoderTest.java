@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Optional;
 import org.junit.Test;
@@ -89,7 +89,7 @@ public class BooleanDecoderTest
         }
 
         // test other overload
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         final String tag = "tag";
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte [] { 1 }));
 
@@ -136,7 +136,7 @@ public class BooleanDecoderTest
         }
 
 
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         final String tag = "tag";
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte [] { 1 }));
 

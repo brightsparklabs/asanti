@@ -26,11 +26,11 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * Default implementation of {@link AsnData}
+ * Default implementation of {@link AsantiAsnData}
  *
  * @author brightSPARK Labs
  */
-public class AsnDataImpl implements AsnData
+public class AsantiAsnDataImpl implements AsantiAsnData
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -81,7 +81,7 @@ public class AsnDataImpl implements AsnData
      * @throws IllegalArgumentException
      *         if topLevelTypeName is blank
      */
-    public AsnDataImpl(RawAsnData rawAsnData, AsnSchema asnSchema, String topLevelTypeName)
+    public AsantiAsnDataImpl(RawAsnData rawAsnData, AsnSchema asnSchema, String topLevelTypeName)
     {
         checkNotNull(rawAsnData);
         checkNotNull(asnSchema);

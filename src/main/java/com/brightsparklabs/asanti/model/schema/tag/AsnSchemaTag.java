@@ -206,9 +206,9 @@ public class AsnSchemaTag
     }
 
     /**
-     * Returns the raw tag (that came from the AsnData)
+     * Returns the raw tag (that came from the AsantiAsnData)
      *
-     * @return the raw tag (that came from the AsnData)
+     * @return the raw tag (that came from the AsantiAsnData)
      */
     public String getRawTag()
     {

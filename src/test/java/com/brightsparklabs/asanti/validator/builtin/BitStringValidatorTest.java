@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
@@ -44,7 +44,7 @@ public class BitStringValidatorTest
         final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveTypes.BIT_STRING,
                 AsnSchemaConstraint.NULL);
 
-        final AsnData mockAsnData = MockDecodedAsnData.builder(type)
+        final AsantiAsnData mockAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { (byte) 0x05, (byte) 0xE0 })
                 .addBytes("/invalid", new byte[] { (byte) 0x08, (byte) 0xFF })
                 .build();

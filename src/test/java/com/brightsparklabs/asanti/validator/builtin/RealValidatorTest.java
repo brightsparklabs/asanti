@@ -33,7 +33,7 @@ public class RealValidatorTest
     @Test
     public void testValidateTag() throws Exception
     {
-        // TODO: ASN-105 need to mock AsnData
+        // TODO: ASN-105 need to mock AsantiAsnData
     }
 
     @Test

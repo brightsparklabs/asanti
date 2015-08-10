@@ -4,13 +4,13 @@
  */
 package com.brightsparklabs.asanti.validator.result;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.validator.Validator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Contains the results from running a {@link Validator} over {@link AsnData}.
+ * Contains the results from running a {@link Validator} over {@link AsantiAsnData}.
  *
  * @author brightSPARK Labs
  */

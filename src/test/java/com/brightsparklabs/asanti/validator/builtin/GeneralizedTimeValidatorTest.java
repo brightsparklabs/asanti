@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
@@ -50,7 +50,7 @@ public class GeneralizedTimeValidatorTest
         String validTime = "19181111110000.0123456789";
         String invalidTime = "19450508230112.123Z+2400";
 
-        final AsnData mockAsnData = MockDecodedAsnData.builder(type)
+        final AsantiAsnData mockAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", validTime.getBytes(Charsets.UTF_8))
                 .addBytes("/invalid/bytes", invalidTime.getBytes(Charsets.UTF_8))
                 .build();

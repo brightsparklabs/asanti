@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
@@ -95,10 +95,10 @@ public class GeneralizedTimeDecoderTest
         }
 
 
-        // null for tag and AsnData
+        // null for tag and AsantiAsnData
         try
         {
-            AsnData data = mock(AsnData.class);
+            AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decode(null, data);
             fail("Should have thrown NullPointerException");
         }
@@ -107,7 +107,7 @@ public class GeneralizedTimeDecoderTest
         }
         try
         {
-            AsnData data = mock(AsnData.class);
+            AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decode("someTag", null);
             fail("Should have thrown NullPointerException");
         }
@@ -116,7 +116,7 @@ public class GeneralizedTimeDecoderTest
         }
         try
         {
-            AsnData data = mock(AsnData.class);
+            AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decodeAsString(null, data);
             fail("Should have thrown NullPointerException");
         }
@@ -125,7 +125,7 @@ public class GeneralizedTimeDecoderTest
         }
         try
         {
-            AsnData data = mock(AsnData.class);
+            AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decodeAsString("someTag", null);
             fail("Should have thrown NullPointerException");
         }
@@ -152,7 +152,7 @@ public class GeneralizedTimeDecoderTest
         assertEquals(expectedTime, instance.decode(bytes));
 
         // check that the other overload works
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
         final String tag = "tag";
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(time.getBytes(Charsets.UTF_8)));
@@ -363,7 +363,7 @@ public class GeneralizedTimeDecoderTest
     @Test
     public void testDecodeAsStringOverload() throws Exception
     {
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
 
         final String tag1 = "tag1";

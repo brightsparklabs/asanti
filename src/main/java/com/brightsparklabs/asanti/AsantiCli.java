@@ -6,7 +6,7 @@
 package com.brightsparklabs.asanti;
 
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
@@ -124,14 +124,14 @@ public class AsantiCli
             logger.info("Loading file: " + berFile.getCanonicalPath());
 
             final ByteSource byteSource = Files.asByteSource(berFile);
-            final ImmutableList<AsnData> pdus = Asanti.decodeAsnData(byteSource,
+            final ImmutableList<AsantiAsnData> pdus = Asanti.decodeAsnData(byteSource,
                     asnSchema,
                     topLevelType);
             for (int i = 0; i < pdus.size(); i++)
             {
 
                 logger.info("Parsing PDU[{}]", i);
-                final AsnData pdu = pdus.get(i);
+                final AsantiAsnData pdu = pdus.get(i);
                 for (String tag : pdu.getTags())
                 {
                     try

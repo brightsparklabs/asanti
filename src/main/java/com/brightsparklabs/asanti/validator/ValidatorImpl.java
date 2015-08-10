@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
 import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
@@ -43,7 +43,7 @@ public class ValidatorImpl implements Validator
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationResult validate(AsnData asnData)
+    public ValidationResult validate(AsantiAsnData asnData)
     {
         final DecodedAsnDataValidationResult.Builder builder
                 = DecodedAsnDataValidationResult.builder();

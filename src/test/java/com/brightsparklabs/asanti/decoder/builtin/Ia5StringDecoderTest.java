@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
@@ -45,7 +45,7 @@ public class Ia5StringDecoderTest
             assertEquals(expected, instance.decode(bytes));
 
             // test other overload
-            AsnData data = mock(AsnData.class);
+            AsantiAsnData data = mock(AsantiAsnData.class);
             final String tag = "tag";
             when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
 
@@ -85,7 +85,7 @@ public class Ia5StringDecoderTest
         assertEquals("TEST", instance.decodeAsString(bytes));
 
         // test other overload
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         final String tag = "tag";
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
         assertEquals("TEST", instance.decodeAsString(bytes));

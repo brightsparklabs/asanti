@@ -22,21 +22,21 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for public class {@link AsnDataImpl}
+ * Unit tests for public class {@link AsantiAsnDataImpl}
  *
  * @author brightSPARK Labs
  */
-public class AsnDataImplTest
+public class AsantiAsnDataImplTest
 {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
 
     /** default instance to test */
-    private static AsnData instance;
+    private static AsantiAsnData instance;
 
     /** empty instance to test */
-    private static AsnData emptyInstance;
+    private static AsantiAsnData emptyInstance;
 
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
@@ -59,11 +59,11 @@ public class AsnDataImplTest
         // create instance
         final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
         final AsnSchema asnSchema = MockAsnSchema.getInstance();
-        instance = new AsnDataImpl(rawAsnData, asnSchema, "Document");
+        instance = new AsantiAsnDataImpl(rawAsnData, asnSchema, "Document");
 
         // create empty instance
         final RawAsnData emptyAsnData = new RawAsnDataImpl(Maps.<String, byte[]>newHashMap());
-        emptyInstance = new AsnDataImpl(emptyAsnData, asnSchema, "Document");
+        emptyInstance = new AsantiAsnDataImpl(emptyAsnData, asnSchema, "Document");
     }
 
     // -------------------------------------------------------------------------
@@ -78,7 +78,7 @@ public class AsnDataImplTest
 
         try
         {
-            new AsnDataImpl(null, null, null);
+            new AsantiAsnDataImpl(null, null, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -86,7 +86,7 @@ public class AsnDataImplTest
         }
         try
         {
-            new AsnDataImpl(null, null, "Test");
+            new AsantiAsnDataImpl(null, null, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -94,7 +94,7 @@ public class AsnDataImplTest
         }
         try
         {
-            new AsnDataImpl(null, mockSchema, null);
+            new AsantiAsnDataImpl(null, mockSchema, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -102,7 +102,7 @@ public class AsnDataImplTest
         }
         try
         {
-            new AsnDataImpl(null, mockSchema, "Test");
+            new AsantiAsnDataImpl(null, mockSchema, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -110,7 +110,7 @@ public class AsnDataImplTest
         }
         try
         {
-            new AsnDataImpl(mockData, null, null);
+            new AsantiAsnDataImpl(mockData, null, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -118,7 +118,7 @@ public class AsnDataImplTest
         }
         try
         {
-            new AsnDataImpl(mockData, null, "Test");
+            new AsantiAsnDataImpl(mockData, null, "Test");
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -126,7 +126,7 @@ public class AsnDataImplTest
         }
         try
         {
-            new AsnDataImpl(mockData, mockSchema, null);
+            new AsantiAsnDataImpl(mockData, mockSchema, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -134,7 +134,7 @@ public class AsnDataImplTest
         }
         try
         {
-            new AsnDataImpl(mockData, mockSchema, "");
+            new AsantiAsnDataImpl(mockData, mockSchema, "");
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)

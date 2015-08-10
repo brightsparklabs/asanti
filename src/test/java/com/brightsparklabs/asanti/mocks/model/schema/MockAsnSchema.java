@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
@@ -241,10 +241,10 @@ public class MockAsnSchema
 
     /**
      * Returns (a copy) the timestamps that the mocked "/Document/header/published/date" will
-     * provide with calls to {@link AsnData#getDecodedObject}
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
      *
      * @return (a copy) the timestamps that the mocked "/Document/header/published/date" will
-     * provide with calls to {@link AsnData#getDecodedObject}
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
      */
     public static Timestamp getPublishDate()
     {
@@ -253,10 +253,10 @@ public class MockAsnSchema
 
     /**
      * Returns (a copy) the timestamps that the mocked "/Document/body/lastModified/date" will
-     * provide with calls to {@link AsnData#getDecodedObject}
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
      *
      * @return (a copy) the timestamps that the mocked "/Document/body/lastModified/date" will
-     * provide with calls to {@link AsnData#getDecodedObject}
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
      */
     public static Timestamp getLastModifiedDate()
     {
@@ -293,8 +293,8 @@ public class MockAsnSchema
         final AsnPrimitiveType primitiveType = mock(AsnPrimitiveType.class);
         final BuiltinTypeDecoder decoder = mock(BuiltinTypeDecoder.class);
         when(decoder.decodeAsString(anyString(),
-                any(AsnData.class))).thenReturn(decodedValue.toString());
-        when(decoder.decode(anyString(), any(AsnData.class))).thenReturn(decodedValue);
+                any(AsantiAsnData.class))).thenReturn(decodedValue.toString());
+        when(decoder.decode(anyString(), any(AsantiAsnData.class))).thenReturn(decodedValue);
 
         when(primitiveType.accept(any(AsnPrimitiveTypeVisitor.class))).thenReturn(decoder);
 

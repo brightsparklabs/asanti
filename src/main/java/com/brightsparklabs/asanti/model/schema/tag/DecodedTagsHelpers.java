@@ -1,6 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.*;
 import static com.google.common.collect.Collections2.*;
 
 /**
- * Helper functions to deal with decoded tags, ie what you get out of {@link AsnData}
+ * Helper functions to deal with decoded tags, ie what you get out of {@link AsantiAsnData}
  *
  * @author brightSPARK Labs
  */
@@ -60,7 +60,7 @@ public class DecodedTagsHelpers
      * terms we are going from only leaf nodes to all nodes.
      *
      * @param asnData
-     *         the AsnData that we want to extract the tags from
+     *         the AsantiAsnData that we want to extract the tags from
      *
      * @return the set of all tags with each item representing a node that may or may not be a leaf
      * node
@@ -68,7 +68,7 @@ public class DecodedTagsHelpers
      * @throws NullPointerException
      *         if asnData is null
      */
-    public static ImmutableSet<String> buildTags(AsnData asnData)
+    public static ImmutableSet<String> buildTags(AsantiAsnData asnData)
     {
         checkNotNull(asnData);
 
@@ -108,7 +108,7 @@ public class DecodedTagsHelpers
      * get the name of the immediate children of the provided parent tag
      *
      * @param asnData
-     *         the AsnData that we want to extract the tags from
+     *         the AsantiAsnData that we want to extract the tags from
      * @param parentTag
      *         the tag to get the children of
      *
@@ -119,7 +119,7 @@ public class DecodedTagsHelpers
      * @throws NullPointerException
      *         if asnData or parentTag are null
      */
-    public static ImmutableSet<String> getImmediateChildren(AsnData asnData, String parentTag)
+    public static ImmutableSet<String> getImmediateChildren(AsantiAsnData asnData, String parentTag)
     {
         checkNotNull(asnData);
         checkNotNull(parentTag);

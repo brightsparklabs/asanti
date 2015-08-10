@@ -3,7 +3,7 @@ package com.brightsparklabs.asanti.model.schema;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 
 /**
- * An object to store state during the decoding of all the tags in an AsnData object. This is needed
+ * An object to store state during the decoding of all the tags in an AsantiAsnData object. This is needed
  * because the ability to map the "raw" tags received from the BER data is dependent on what other
  * data has been received (notably OPTIONAL components of a SEQUENCE)
  */

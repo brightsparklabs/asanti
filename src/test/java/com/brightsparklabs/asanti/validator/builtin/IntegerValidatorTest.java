@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
@@ -50,7 +50,7 @@ public class IntegerValidatorTest
                 new AsnSchemaNumericValueConstraint(BigInteger.valueOf(1), BigInteger.valueOf(32639)),
                 null);
 
-        final AsnData mockAsnData = MockDecodedAsnData.builder(type)
+        final AsantiAsnData mockAsnData = MockDecodedAsnData.builder(type)
                 // 32639 within constraint
                 .addBytes("/valid", new byte[] { (byte) 0b01111111, (byte) 0b01111111 })
                         // 32640 outside constraint (1..32639)

@@ -10,7 +10,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 
 /**
@@ -57,7 +57,7 @@ public interface BuiltinTypeDecoder<T>
      * @throws NullPointerException
      *         if either tag or asnData are null
      */
-    public T decode(String tag, AsnData asnData) throws DecodeException;
+    public T decode(String tag, AsantiAsnData asnData) throws DecodeException;
 
     /**
      * Decodes the supplied bytes as a string based on the the kind of ASN.1 Built-in Type
@@ -89,7 +89,7 @@ public interface BuiltinTypeDecoder<T>
      * @throws NullPointerException
      *         if either tag or asnData are null
      */
-    public String decodeAsString(String tag, AsnData asnData) throws DecodeException;
+    public String decodeAsString(String tag, AsantiAsnData asnData) throws DecodeException;
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: NULL
@@ -142,7 +142,7 @@ public interface BuiltinTypeDecoder<T>
         }
 
         @Override
-        public Object decode(String tag, AsnData asnData) throws DecodeException
+        public Object decode(String tag, AsantiAsnData asnData) throws DecodeException
         {
             throw new DecodeException(errorMessage);
         }
@@ -154,7 +154,7 @@ public interface BuiltinTypeDecoder<T>
         }
 
         @Override
-        public String decodeAsString(String tag, AsnData asnData) throws DecodeException
+        public String decodeAsString(String tag, AsantiAsnData asnData) throws DecodeException
         {
             throw new DecodeException(errorMessage);
         }

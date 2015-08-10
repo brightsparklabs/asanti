@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.validator.FailureType;
@@ -67,7 +67,7 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator
 
     @Override
     public ImmutableSet<DecodedTagValidationFailure> validate(final String tag,
-            final AsnData asnData)
+            final AsantiAsnData asnData)
     {
         final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result
                 = validateAndDecode(tag, asnData);
@@ -109,7 +109,7 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator
      * @return the matching tag if successful, otherwise an appropriate DecodedTagValidationFailure
      */
     public OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> validateAndDecode(
-            final String tag, final AsnData asnData)
+            final String tag, final AsantiAsnData asnData)
     {
         final Set<DecodedTagValidationFailure> tagFailures = Sets.newHashSet();
 

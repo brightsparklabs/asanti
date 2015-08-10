@@ -4,7 +4,7 @@
  */
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
@@ -72,7 +72,7 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
 
     @Override
     public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
-            AsnData asnData)
+            AsantiAsnData asnData)
     {
         final ImmutableSet<String> childTags = DecodedTagsHelpers.getImmediateChildren(asnData,
                 tag);

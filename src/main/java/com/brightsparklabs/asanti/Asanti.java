@@ -5,8 +5,8 @@
 
 package com.brightsparklabs.asanti;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.data.AsnDataImpl;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnDataImpl;
 import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnBerDataReader;
@@ -46,7 +46,7 @@ public class Asanti
      * @throws IOException
      *         if any errors occur reading from the file
      */
-    public static ImmutableList<AsnData> decodeAsnData(ByteSource source, CharSource schema,
+    public static ImmutableList<AsantiAsnData> decodeAsnData(ByteSource source, CharSource schema,
             String topLevelType) throws IOException
     {
         // TODO: ASN-78 - cache schema
@@ -70,14 +70,14 @@ public class Asanti
      * @throws IOException
      *         if any errors occur reading the data
      */
-    public static ImmutableList<AsnData> decodeAsnData(ByteSource source,
+    public static ImmutableList<AsantiAsnData> decodeAsnData(ByteSource source,
             AsnSchema asnSchema, String topLevelType) throws IOException
     {
         final ImmutableList<RawAsnData> allRawAsnData = readAsnBerData(source);
-        final List<AsnData> allAsnData = Lists.newArrayList();
+        final List<AsantiAsnData> allAsnData = Lists.newArrayList();
         for (final RawAsnData rawAsnData : allRawAsnData)
         {
-            final AsnData asnData = decodeAsnData(rawAsnData, asnSchema, topLevelType);
+            final AsantiAsnData asnData = decodeAsnData(rawAsnData, asnSchema, topLevelType);
             allAsnData.add(asnData);
         }
         return ImmutableList.copyOf(allAsnData);
@@ -99,10 +99,10 @@ public class Asanti
      * @throws IOException
      *         if any errors occur reading from the file
      */
-    public static AsnData decodeAsnData(RawAsnData rawAsnData, AsnSchema asnSchema,
+    public static AsantiAsnData decodeAsnData(RawAsnData rawAsnData, AsnSchema asnSchema,
             String topLevelType) throws IOException
     {
-        return new AsnDataImpl(rawAsnData, asnSchema, topLevelType);
+        return new AsantiAsnDataImpl(rawAsnData, asnSchema, topLevelType);
     }
 
     /**

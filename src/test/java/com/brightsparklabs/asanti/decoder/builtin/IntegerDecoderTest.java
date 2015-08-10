@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Optional;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class IntegerDecoderTest
     @Test
     public void testDecode() throws Exception
     {
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
 
         // run through all the one byte values.
         byte[] bytes = new byte[1];
@@ -215,7 +215,7 @@ public class IntegerDecoderTest
     public void testDecodeAsString() throws Exception
     {
         byte[] bytes = new byte[1];
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--) {
             bytes[0] = (byte) b;
             String big = instance.decodeAsString(bytes);

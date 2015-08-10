@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+    compile 'com.brightsparklabs:assam:0.1.0'
     compile 'com.google.guava:guava:18.0'
     compile 'org.bouncycastle:bcprov-jdk16:1.45'
     compile 'org.slf4j:slf4j-api:1.7.10'

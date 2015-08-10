@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Optional;
 import org.junit.Test;
@@ -84,7 +84,7 @@ public class OctetStringDecoderTest
     @Test
     public void testDecodeAsStringOverload() throws Exception
     {
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
 
         final String tagIsAscii = "IsAscii";

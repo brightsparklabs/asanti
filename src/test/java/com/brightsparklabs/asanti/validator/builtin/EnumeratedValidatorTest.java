@@ -1,7 +1,7 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeVisitor;
@@ -89,13 +89,13 @@ public class EnumeratedValidatorTest
         when(type.getTagsToNamedValues()).thenReturn(namedTags);
 
         String tag = "/Foo";
-        AsnData data = mock(AsnData.class);
+        AsantiAsnData data = mock(AsantiAsnData.class);
         when(data.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 1 }));
 
         assertTrue(instance.validateAndDecode(tag, data).wasSuccessful());
 
-        AsnData dataBad = mock(AsnData.class);
+        AsantiAsnData dataBad = mock(AsantiAsnData.class);
         when(dataBad.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
         when(dataBad.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 2 }));
 

@@ -14,7 +14,7 @@ import com.google.common.base.Optional;
  *
  * @author brightSPARK Labs
  */
-public interface AsnData extends com.brightsparklabs.assam.data.AsnData
+public interface AsantiAsnData extends com.brightsparklabs.assam.data.AsnData
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
