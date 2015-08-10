@@ -1,7 +1,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeVisitor;
@@ -90,14 +90,14 @@ public class EnumeratedDecoderTest
         when(type.getTagsToNamedValues()).thenReturn(namedTags);
 
         String tag = "/Foo";
-        DecodedAsnData data = mock(DecodedAsnData.class);
+        AsnData data = mock(AsnData.class);
         when(data.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 1 }));
 
         assertEquals("enumValue", instance.decode(tag, data));
         assertEquals("enumValue", instance.decodeAsString(tag, data));
 
-        DecodedAsnData dataBad = mock(DecodedAsnData.class);
+        AsnData dataBad = mock(AsnData.class);
         when(dataBad.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
         when(dataBad.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 2 }));
 

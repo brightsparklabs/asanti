@@ -11,7 +11,7 @@
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
@@ -85,13 +85,13 @@ public interface BuiltinTypeValidator
      *
      * @param tag
      *         tag to validate
-     * @param decodedAsnData
+     * @param asnData
      *         data to retrieve tag from
      *
      * @return any failures encountered while validating the tag
      */
     public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
-            DecodedAsnData decodedAsnData);
+            AsnData asnData);
 
     /**
      * Validates the supplied bytes based on the the kind of ASN.1 Built-in Type represented by this
@@ -135,7 +135,7 @@ public interface BuiltinTypeValidator
 
         @Override
         public ImmutableSet<DecodedTagValidationFailure> validate(final String tag,
-                final DecodedAsnData decodedAsnData)
+                final AsnData asnData)
         {
             return ImmutableSet.of();
         }

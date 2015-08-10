@@ -5,11 +5,11 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.validator.result.ValidationResult;
 
 /**
- * Used to validate {@link DecodedAsnData} against its associated schema or a
+ * Used to validate {@link AsnData} against its associated schema or a
  * custom validation rule.
  *
  * @author brightSPARK Labs
@@ -23,10 +23,10 @@ public interface Validator
     /**
      * Validates the supplied data using the rules in this validator
      *
-     * @param decodedAsnData
+     * @param asnData
      *            data to validate
      *
      * @return the results from validating the data
      */
-    public ValidationResult validate(DecodedAsnData decodedAsnData);
+    public ValidationResult validate(AsnData asnData);
 }

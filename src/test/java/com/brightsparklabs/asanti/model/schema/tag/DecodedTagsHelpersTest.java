@@ -1,6 +1,6 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import org.junit.BeforeClass;
@@ -23,10 +23,10 @@ public class DecodedTagsHelpersTest
     // -------------------------------------------------------------------------
 
     /** default instance to test */
-    private static DecodedAsnData instance;
+    private static AsnData instance;
 
     /** empty instance to test */
-    private static DecodedAsnData emptyInstance;
+    private static AsnData emptyInstance;
 
     private static final ImmutableSet<String> decodedTags = ImmutableSet.<String>builder()
             .add("/Document/header/published")
@@ -50,12 +50,12 @@ public class DecodedTagsHelpersTest
     {
         /** data to construct asnData from */
 
-        instance = mock(DecodedAsnData.class);
+        instance = mock(AsnData.class);
 
         when(instance.getTags()).thenReturn(decodedTags);
         when(instance.getUnmappedTags()).thenReturn((unmappedTags));
 
-        emptyInstance = mock(DecodedAsnData.class);
+        emptyInstance = mock(AsnData.class);
         when(emptyInstance.getTags()).thenReturn(ImmutableSet.<String>of());
         when(emptyInstance.getUnmappedTags()).thenReturn(ImmutableSet.<String>of());
 

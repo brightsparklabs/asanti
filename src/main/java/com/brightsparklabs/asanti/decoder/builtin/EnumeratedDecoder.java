@@ -8,7 +8,7 @@ package com.brightsparklabs.asanti.decoder.builtin;
 import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.builtin.EnumeratedValidator;
@@ -77,12 +77,12 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
     }
 
     @Override
-    public String decode(final String tag, final DecodedAsnData decodedAsnData) throws DecodeException
+    public String decode(final String tag, final AsnData asnData) throws DecodeException
     {
         checkNotNull(tag);
-        checkNotNull(decodedAsnData);
+        checkNotNull(asnData);
         final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result
-                = EnumeratedValidator.getInstance().validateAndDecode(tag, decodedAsnData);
+                = EnumeratedValidator.getInstance().validateAndDecode(tag, asnData);
         if (!result.wasSuccessful())
         {
             DecodeException.throwIfHasFailures(result.getFailureReason()
@@ -93,8 +93,8 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
     }
 
     @Override
-    public String decodeAsString(final String tag, final DecodedAsnData decodedAsnData) throws DecodeException
+    public String decodeAsString(final String tag, final AsnData asnData) throws DecodeException
     {
-        return decode(tag, decodedAsnData);
+        return decode(tag, asnData);
     }
 }

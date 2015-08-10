@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaExactSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
@@ -46,7 +46,7 @@ public class Ia5StringValidatorTest
         final AsnSchemaType type
                 = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.IA5_STRING,
                 new AsnSchemaExactSizeConstraint(5));
-        final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
+        final AsnData mockAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { '0', '1', '2', '3', '4' })
                 .addBytes("/invalid/bytes", new byte[] { '0', '1', '2', '3', (byte) 0xFF })
                 .addBytes("/invalid/constraint", new byte[] { '0', '1', '2', '3', '4', '5' })
@@ -54,11 +54,11 @@ public class Ia5StringValidatorTest
 
         // test valid
         ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",
-                mockDecodedAsnData);
+                mockAsnData);
         assertEquals(0, failures.size());
 
         // test invalid - bytes
-        failures = instance.validate("/invalid/bytes", mockDecodedAsnData);
+        failures = instance.validate("/invalid/bytes", mockAsnData);
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
@@ -66,21 +66,21 @@ public class Ia5StringValidatorTest
                 failure.getFailureReason());
 
         // test invalid - constraint
-        failures = instance.validate("/invalid/constraint", mockDecodedAsnData);
+        failures = instance.validate("/invalid/constraint", mockAsnData);
         assertEquals(1, failures.size());
         failure = failures.iterator().next();
         assertEquals(FailureType.SchemaConstraint, failure.getFailureType());
         assertEquals("Expected a value of 5, but found: 6", failure.getFailureReason());
 
         // test empty
-        failures = instance.validate("/empty", mockDecodedAsnData);
+        failures = instance.validate("/empty", mockAsnData);
         assertEquals(1, failures.size());
         failure = failures.iterator().next();
         assertEquals(FailureType.SchemaConstraint, failure.getFailureType());
         assertEquals("Expected a value of 5, but found: 0", failure.getFailureReason());
 
         // test null
-        failures = instance.validate("/null", mockDecodedAsnData);
+        failures = instance.validate("/null", mockAsnData);
         assertEquals(2, failures.size());
         boolean byteErrorPresent = false;
         boolean constraintErrorPresent = false;

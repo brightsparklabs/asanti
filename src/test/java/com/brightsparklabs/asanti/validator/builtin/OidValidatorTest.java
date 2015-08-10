@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
@@ -46,18 +46,18 @@ public class OidValidatorTest
         final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.OID,
                 AsnSchemaConstraint.NULL);
 
-        final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
+        final AsnData mockAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { (byte) 0x2B, (byte) 0xFF, (byte) 0x7F })
                 .addBytes("/invalid/bytes", new byte[] { (byte) 0x2B, (byte) 0xFF, (byte) 0xFF })
                 .build();
 
         // test valid
         ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",
-                mockDecodedAsnData);
+                mockAsnData);
         assertEquals(0, failures.size());
 
         // test invalid - bytes
-        failures = instance.validate("/invalid/bytes", mockDecodedAsnData);
+        failures = instance.validate("/invalid/bytes", mockAsnData);
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
@@ -65,11 +65,11 @@ public class OidValidatorTest
                 failure.getFailureReason());
 
         // test empty
-        failures = instance.validate("/empty", mockDecodedAsnData);
+        failures = instance.validate("/empty", mockAsnData);
         assertEquals(1, failures.size());
 
         // test null
-        failures = instance.validate("/null", mockDecodedAsnData);
+        failures = instance.validate("/null", mockAsnData);
         assertEquals(1, failures.size());
         boolean byteErrorPresent = false;
         for (DecodedTagValidationFailure nullFailure : failures)

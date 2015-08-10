@@ -8,7 +8,7 @@ package com.brightsparklabs.asanti.integration;
 import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
@@ -46,13 +46,13 @@ public class AsantiTest
         final File berFile = new File(berFilename);
 
         final ByteSource byteSource = Files.asByteSource(berFile);
-        final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerData(byteSource);
+        final ImmutableList<RawAsnData> allRawAsnData = Asanti.readAsnBerData(byteSource);
 
         int count = 0;
-        for (final AsnData asnData : allAsnData)
+        for (final RawAsnData rawAsnData : allRawAsnData)
         {
             logger.info("PDU[" + count + "]");
-            final Map<String, byte[]> tagsData = asnData.getBytes();
+            final Map<String, byte[]> tagsData = rawAsnData.getBytes();
 
             for (final String tag : Ordering.natural().immutableSortedCopy(tagsData.keySet()))
             {
@@ -61,16 +61,16 @@ public class AsantiTest
             count++;
         }
 
-        AsnData asnData = allAsnData.get(0);
+        RawAsnData rawAsnData = allRawAsnData.get(0);
         // expecting two tags.
-        assertEquals(2, asnData.getRawTags().size());
+        assertEquals(2, rawAsnData.getRawTags().size());
 
-        byte [] b0 = asnData.getBytes("/0[0]").get();
+        byte [] b0 = rawAsnData.getBytes("/0[0]").get();
         // we 'know' that this is a UTF8String
         String s = AsnByteDecoder.decodeAsUtf8String(b0);
         assertEquals("Adam", s);
 
-        byte [] b1 = asnData.getBytes("/1[1]").get();
+        byte [] b1 = rawAsnData.getBytes("/1[1]").get();
         // we 'know' that this is an integer
         BigInteger big = AsnByteDecoder.decodeAsInteger(b1);
         assertEquals(32, big.intValue());
@@ -88,14 +88,14 @@ public class AsantiTest
         final ByteSource berSource = Resources.asByteSource(getClass().getResource(
                 "/TestMostSimple.ber"));
 
-        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berSource,
+        final ImmutableList<AsnData> allDecodedData = Asanti.decodeAsnData(berSource,
                 schemaSource,
                 "Human");
 
         for (int i = 0; i < allDecodedData.size(); i++)
         {
             logger.info("Parsing PDU[{}]", i);
-            final DecodedAsnData pdu = allDecodedData.get(i);
+            final AsnData pdu = allDecodedData.get(i);
             for (String tag : pdu.getTags())
             {
                 logger.info("\t{} => {}", tag, pdu.getHexString(tag).get());
@@ -110,7 +110,7 @@ public class AsantiTest
             }
         }
 
-        final DecodedAsnData pdu = allDecodedData.get(0);
+        final AsnData pdu = allDecodedData.get(0);
         String tag = "/Human/name";
         byte[] b = pdu.getBytes(tag).get();
         String s = new String(b, Charsets.UTF_8);
@@ -130,14 +130,14 @@ public class AsantiTest
                 "/barTypeDef.asn"), Charsets.UTF_8);
         final ByteSource berSource = Resources.asByteSource(getClass().getResource("/bar.ber"));
 
-        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berSource,
+        final ImmutableList<AsnData> allDecodedData = Asanti.decodeAsnData(berSource,
                 schemaSource,
                 "Bar");
 
         for (int i = 0; i < allDecodedData.size(); i++)
         {
             logger.info("Parsing PDU[{}]", i);
-            final DecodedAsnData pdu = allDecodedData.get(i);
+            final AsnData pdu = allDecodedData.get(i);
             for (String tag : pdu.getTags())
             {
                 logger.info("\t{} => {}", tag, pdu.getHexString(tag).get());
@@ -161,13 +161,13 @@ public class AsantiTest
         final ByteSource berSource = Resources.asByteSource(getClass().getResource(
                 "/TestMostSimple.ber"));
 
-        final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berSource,
+        final ImmutableList<AsnData> allDecodedData = Asanti.decodeAsnData(berSource,
                 schemaSource,
                 "Human");
         for (int i = 0; i < allDecodedData.size(); i++)
         {
             logger.info("Parsing PDU[{}]", i);
-            final DecodedAsnData pdu = allDecodedData.get(i);
+            final AsnData pdu = allDecodedData.get(i);
             for (String tag : pdu.getTags())
             {
                 logger.info("\t{} => {}", tag, pdu.getHexString(tag).get());
@@ -182,7 +182,7 @@ public class AsantiTest
             }
         }
 
-        final DecodedAsnData pdu = allDecodedData.get(0);
+        final AsnData pdu = allDecodedData.get(0);
         String tag = "/Human/name";
         // we 'know' that this is a UTF8String
         String s = AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag).get());

@@ -1,7 +1,7 @@
 package com.brightsparklabs.asanti.integration;
 
 import com.brightsparklabs.asanti.Asanti;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.brightsparklabs.asanti.validator.FailureType;
@@ -15,8 +15,6 @@ import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Resources;
 import org.junit.Test;
-
-import java.math.BigInteger;
 
 import static org.junit.Assert.*;
 
@@ -37,11 +35,11 @@ public class Validation
 
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
+        final ImmutableList<AsnData> pdus = Asanti.decodeAsnData(berData,
                 schema,
                 topLevelType);
 
-        DecodedAsnData pdu = pdus.get(0);
+        AsnData pdu = pdus.get(0);
         String tag = "/Human/name/first";
         assertEquals("Adam", pdu.<String>getDecodedObject(tag).get());
 
@@ -70,11 +68,11 @@ public class Validation
 
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
+        final ImmutableList<AsnData> pdus = Asanti.decodeAsnData(berData,
                 schema,
                 topLevelType);
 
-        DecodedAsnData pdu = pdus.get(0);
+        AsnData pdu = pdus.get(0);
         String tag = "/Human/person/name/first";
         assertEquals("Adam", pdu.<String>getDecodedObject(tag).get());
 
