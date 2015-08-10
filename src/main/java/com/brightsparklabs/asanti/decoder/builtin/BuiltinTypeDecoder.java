@@ -10,8 +10,8 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
 
 /**
  * Used to decode bytes based on the kind of ASN.1 Built-in Type they came from
@@ -42,8 +42,8 @@ public interface BuiltinTypeDecoder<T>
     public T decode(byte[] bytes) throws DecodeException;
 
     /**
-     * Decodes the bytes from the supplied tag and AsnData based on the kind of ASN.1
-     * Built-in Type represented by this decoder, and applying any transformations from the schema
+     * Decodes the bytes from the supplied tag and AsnData based on the kind of ASN.1 Built-in Type
+     * represented by this decoder, and applying any transformations from the schema
      *
      * @param tag
      *         the tag to use to get the bytes from the data
@@ -154,8 +154,7 @@ public interface BuiltinTypeDecoder<T>
         }
 
         @Override
-        public String decodeAsString(String tag, AsnData asnData)
-                throws DecodeException
+        public String decodeAsString(String tag, AsnData asnData) throws DecodeException
         {
             throw new DecodeException(errorMessage);
         }

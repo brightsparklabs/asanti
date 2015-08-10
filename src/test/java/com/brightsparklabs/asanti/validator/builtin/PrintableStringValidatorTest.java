@@ -9,7 +9,7 @@ import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -42,7 +42,7 @@ public class PrintableStringValidatorTest
     {
         // setup mock
         final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(
-                AsnPrimitiveType.PRINTABLE_STRING,
+                AsnPrimitiveTypes.PRINTABLE_STRING,
                 new AsnSchemaSizeConstraint(1, 4));
         final AsnData mockAsnData = MockDecodedAsnData.builder(type)
                 .addBytes("/valid", new byte[] { '1', '2', '3', '4' })

@@ -5,7 +5,7 @@
 package com.brightsparklabs.asanti.model.data;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Charsets;

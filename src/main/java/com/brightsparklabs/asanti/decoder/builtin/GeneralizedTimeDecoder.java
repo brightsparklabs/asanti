@@ -5,15 +5,15 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.common.DecodeExceptions;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.builtin.GeneralizedTimeValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
@@ -153,7 +153,7 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
                 bytes);
         if (!result.wasSuccessful())
         {
-            DecodeException.throwIfHasFailures(result.getFailureReason()
+            DecodeExceptions.throwIfHasFailures(result.getFailureReason()
                     .or(ImmutableSet.<ByteValidationFailure>of()));
         }
 
@@ -172,7 +172,7 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp
                 bytes);
         if (!result.wasSuccessful())
         {
-            DecodeException.throwIfHasFailures(result.getFailureReason()
+            DecodeExceptions.throwIfHasFailures(result.getFailureReason()
                     .or(ImmutableSet.<ByteValidationFailure>of()));
         }
 

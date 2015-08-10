@@ -1,20 +1,20 @@
 package com.brightsparklabs.asanti.integration;
 
 import com.brightsparklabs.asanti.Asanti;
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.decoder.builtin.EnumeratedDecoder;
 import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
 import com.brightsparklabs.asanti.validator.ValidatorImpl;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResult;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -646,7 +646,7 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         String tag = "/Human/pickOne";
-        assertEquals(AsnPrimitiveType.ENUMERATED, pdu.getType(tag).get().getPrimitiveType());
+        assertEquals(AsnPrimitiveTypes.ENUMERATED, pdu.getType(tag).get().getPrimitiveType());
 
         byte[] bytes = pdu.getBytes(tag).get();
         assertEquals(1, bytes[0]);

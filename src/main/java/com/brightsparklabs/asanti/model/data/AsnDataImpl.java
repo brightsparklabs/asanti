@@ -4,14 +4,14 @@
  */
 package com.brightsparklabs.asanti.model.data;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -94,8 +94,9 @@ public class AsnDataImpl implements AsnData
         final Map<String, DecodedTag> decodedToRawTags = Maps.newHashMap();
         final Map<String, DecodedTag> unmappedTags = Maps.newHashMap();
 
-        ImmutableSet<OperationResult<DecodedTag, String>> results
-                = asnSchema.getDecodedTags(rawAsnData.getRawTags(), topLevelTypeName);
+        ImmutableSet<OperationResult<DecodedTag, String>> results = asnSchema.getDecodedTags(
+                rawAsnData.getRawTags(),
+                topLevelTypeName);
         for (OperationResult<DecodedTag, String> decodeResult : results)
         {
             final DecodedTag decodedTag = decodeResult.getOutput();
@@ -195,8 +196,8 @@ public class AsnDataImpl implements AsnData
         }
 
         // Add any matched to raw tags
-        final Map<String, byte []> raw = rawAsnData.getBytesMatching(regex);
-        for(Map.Entry<String, byte []> entry : raw.entrySet())
+        final Map<String, byte[]> raw = rawAsnData.getBytesMatching(regex);
+        for (Map.Entry<String, byte[]> entry : raw.entrySet())
         {
             final String hexString = "0x" + BaseEncoding.base16().encode(entry.getValue());
             result.put(entry.getKey(), hexString);
@@ -236,12 +237,6 @@ public class AsnDataImpl implements AsnData
         }
 
         return ImmutableMap.copyOf(result);
-    }
-
-    @Override
-    public Optional<AsnSchemaType> getType(String tag)
-    {
-        return asnSchema.getType(tag);
     }
 
     @Override
@@ -289,10 +284,6 @@ public class AsnDataImpl implements AsnData
         return ImmutableMap.copyOf(result);
     }
 
-    // -------------------------------------------------------------------------
-    // PRIVATE
-    // -------------------------------------------------------------------------
-
     /**
      * Returns all tags which match the supplied regular expression
      *
@@ -318,5 +309,15 @@ public class AsnDataImpl implements AsnData
         }
 
         return ImmutableSet.copyOf(tags);
+    }
+
+    // -------------------------------------------------------------------------
+    // PRIVATE
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Optional<AsnSchemaType> getType(String tag)
+    {
+        return asnSchema.getType(tag);
     }
 }

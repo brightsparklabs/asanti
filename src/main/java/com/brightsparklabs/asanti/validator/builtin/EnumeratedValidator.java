@@ -5,16 +5,16 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -122,8 +122,7 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator
         {
             // AND that the decoded integer aligns with a named tag for the
             // Enumerated type as defined by its schema.
-            final BigInteger value = AsnByteDecoder.decodeAsInteger(asnData.getBytes(tag)
-                    .get());
+            final BigInteger value = AsnByteDecoder.decodeAsInteger(asnData.getBytes(tag).get());
             final AsnSchemaType type = asnData.getType(tag).get();
             final String tagName = (String) type.accept(getNamedTagVisitor(value.toString()));
 

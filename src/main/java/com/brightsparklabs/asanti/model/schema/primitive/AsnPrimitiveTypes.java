@@ -1,7 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.primitive;
 
-import com.brightsparklabs.asanti.common.Visitable;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
 
 /**
  * A base type used to represent the primitive builtin types within ASN.1 This class is used as a
@@ -9,14 +9,14 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
  *
  * @author brightSPARK Labs
  */
-public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
+public interface AsnPrimitiveTypes
 {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
     /** Invalid Null instance */
-    public static final AsnPrimitiveType.Invalid INVALID = new AsnPrimitiveType.Invalid();
+    public static final AsnPrimitiveTypes.Invalid INVALID = new AsnPrimitiveTypes.Invalid();
 
     /** static instance {@link AsnPrimitiveTypeBitString} */
     public static final AsnPrimitiveTypeBitString BIT_STRING = new AsnPrimitiveTypeBitString();
@@ -122,13 +122,6 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
     public static final AsnPrimitiveTypeVisibleString VISIBLE_STRING
             = new AsnPrimitiveTypeVisibleString();
 
-    /**
-     * Returns the ASN.1 built-in type for this type
-     *
-     * @return the ASN.1 built-in type for this type
-     */
-    public AsnBuiltinType getBuiltinType();
-
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null
     // -------------------------------------------------------------------------
@@ -136,12 +129,12 @@ public interface AsnPrimitiveType extends Visitable<AsnPrimitiveTypeVisitor<?>>
     // TODO ASN-162 - we should consider getting rid of the "Null" classes.
 
     /**
-     * Invalid instance of {@link AsnPrimitiveType}.
+     * Invalid instance of {@link AsnPrimitiveTypes}.
      *
      * <p> NOTE: This is not named {@code AsnSchemaPrimitiveTypeNull} because that is the name used
      * to model an actual ASN.1 {@code NULL} Type.
      */
-    public static class Invalid implements AsnPrimitiveType
+    class Invalid implements com.brightsparklabs.assam.schema.AsnPrimitiveType.Invalid
     {
         @Override
         public AsnBuiltinType getBuiltinType()

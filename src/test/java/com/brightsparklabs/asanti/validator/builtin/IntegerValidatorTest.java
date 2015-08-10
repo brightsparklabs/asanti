@@ -9,7 +9,7 @@ import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
@@ -46,7 +46,7 @@ public class IntegerValidatorTest
 
         // setup mock
         final AsnSchemaType type = MockAsnSchemaType.createMockedInstanceWithNamedValues(
-                AsnPrimitiveType.INTEGER,
+                AsnPrimitiveTypes.INTEGER,
                 new AsnSchemaNumericValueConstraint(BigInteger.valueOf(1), BigInteger.valueOf(32639)),
                 null);
 

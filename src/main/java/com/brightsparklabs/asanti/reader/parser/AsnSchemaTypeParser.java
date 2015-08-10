@@ -2,10 +2,10 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeNull;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -46,9 +46,9 @@ public class AsnSchemaTypeParser
     /** all valid 'collection' types */
     private static final ImmutableMap<String, AsnPrimitiveType> collectionTypes = ImmutableMap.of(
             "SEQUENCE",
-            AsnPrimitiveType.SEQUENCE_OF,
+            AsnPrimitiveTypes.SEQUENCE_OF,
             "SET",
-            AsnPrimitiveType.SET_OF);
+            AsnPrimitiveTypes.SET_OF);
 
     // -------------------------------------------------------------------------
     // CONSTRUCTED TYPES (SEQUENCE, SET, CHOICE)
@@ -65,11 +65,11 @@ public class AsnSchemaTypeParser
     /** all valid 'constructed' types */
     private static final ImmutableMap<String, AsnPrimitiveType> constructedTypes = ImmutableMap.of(
             "SEQUENCE",
-            AsnPrimitiveType.SEQUENCE,
+            AsnPrimitiveTypes.SEQUENCE,
             "SET",
-            AsnPrimitiveType.SET,
+            AsnPrimitiveTypes.SET,
             "CHOICE",
-            AsnPrimitiveType.CHOICE);
+            AsnPrimitiveTypes.CHOICE);
 
     /** pattern to match a ENUMERATED type definition */
     private static final Pattern PATTERN_TYPE_ENUMERATED = Pattern.compile(
@@ -97,9 +97,9 @@ public class AsnSchemaTypeParser
     /** all valid 'distinguished value' types */
     private static final ImmutableMap<String, AsnPrimitiveType> distinguishedValuesTypes
             = ImmutableMap.of("BIT STRING",
-            AsnPrimitiveType.BIT_STRING,
+            AsnPrimitiveTypes.BIT_STRING,
             "INTEGER",
-            AsnPrimitiveType.INTEGER);
+            AsnPrimitiveTypes.INTEGER);
 
     // -------------------------------------------------------------------------
     // TYPES WITH CONSTRAINTS
@@ -112,26 +112,26 @@ public class AsnSchemaTypeParser
     /** all valid 'constrained' types */
     private static final ImmutableMap<String, AsnPrimitiveType> constrainedTypes
             = ImmutableMap.<String, AsnPrimitiveType>builder()
-            .put("BMPString", AsnPrimitiveType.BMP_STRING)
-            .put("BOOLEAN", AsnPrimitiveType.BOOLEAN)
-            .put("CHARACTER STRING", AsnPrimitiveType.CHARACTER_STRING)
-            .put("IA5String", AsnPrimitiveType.IA5_STRING)
-            .put("GeneralString", AsnPrimitiveType.GENERAL_STRING)
-            .put("GraphicString", AsnPrimitiveType.GRAPHIC_STRING)
-            .put("NULL", AsnPrimitiveType.NULL)
-            .put("NumericString", AsnPrimitiveType.NUMERIC_STRING)
-            .put("OBJECT IDENTIFIER", AsnPrimitiveType.OID)
-            .put("ObjectDescriptor", AsnPrimitiveType.OBJECT_DESCRIPTOR)
-            .put("OCTET STRING", AsnPrimitiveType.OCTET_STRING)
-            .put("PrintableString", AsnPrimitiveType.PRINTABLE_STRING)
-            .put("REAL", AsnPrimitiveType.REAL)
-            .put("RELATIVE-OID", AsnPrimitiveType.RELATIVE_OID)
-            .put("TeletexString", AsnPrimitiveType.TELETEX_STRING)
-            .put("UniversalString", AsnPrimitiveType.UNIVERSAL_STRING)
-            .put("UTCTime", AsnPrimitiveType.UTC_TIME)
-            .put("UTF8String", AsnPrimitiveType.UTF8_STRING)
-            .put("VideotexString", AsnPrimitiveType.VIDEOTEX_STRING)
-            .put("VisibleString", AsnPrimitiveType.VISIBLE_STRING)
+            .put("BMPString", AsnPrimitiveTypes.BMP_STRING)
+            .put("BOOLEAN", AsnPrimitiveTypes.BOOLEAN)
+            .put("CHARACTER STRING", AsnPrimitiveTypes.CHARACTER_STRING)
+            .put("IA5String", AsnPrimitiveTypes.IA5_STRING)
+            .put("GeneralString", AsnPrimitiveTypes.GENERAL_STRING)
+            .put("GraphicString", AsnPrimitiveTypes.GRAPHIC_STRING)
+            .put("NULL", AsnPrimitiveTypes.NULL)
+            .put("NumericString", AsnPrimitiveTypes.NUMERIC_STRING)
+            .put("OBJECT IDENTIFIER", AsnPrimitiveTypes.OID)
+            .put("ObjectDescriptor", AsnPrimitiveTypes.OBJECT_DESCRIPTOR)
+            .put("OCTET STRING", AsnPrimitiveTypes.OCTET_STRING)
+            .put("PrintableString", AsnPrimitiveTypes.PRINTABLE_STRING)
+            .put("REAL", AsnPrimitiveTypes.REAL)
+            .put("RELATIVE-OID", AsnPrimitiveTypes.RELATIVE_OID)
+            .put("TeletexString", AsnPrimitiveTypes.TELETEX_STRING)
+            .put("UniversalString", AsnPrimitiveTypes.UNIVERSAL_STRING)
+            .put("UTCTime", AsnPrimitiveTypes.UTC_TIME)
+            .put("UTF8String", AsnPrimitiveTypes.UTF8_STRING)
+            .put("VideotexString", AsnPrimitiveTypes.VIDEOTEX_STRING)
+            .put("VisibleString", AsnPrimitiveTypes.VISIBLE_STRING)
             .build();
 
     // -------------------------------------------------------------------------
@@ -145,7 +145,7 @@ public class AsnSchemaTypeParser
     /** all valid 'unconstrained' types */
     private static final ImmutableMap<String, AsnPrimitiveType> noConstraintsTypes
             = ImmutableMap.<String, AsnPrimitiveType>builder()
-            .put("GeneralizedTime", AsnPrimitiveType.GENERALIZED_TIME)
+            .put("GeneralizedTime", AsnPrimitiveTypes.GENERALIZED_TIME)
             .build();
 
     // TODO ASN-25 remove this once ASN-25 is completed
@@ -348,7 +348,7 @@ public class AsnSchemaTypeParser
         final ImmutableList<AsnSchemaNamedTag> namedValues
                 = AsnSchemaNamedTagParser.parseEnumeratedOptions(namedValuesText);
 
-        return new AsnSchemaTypeWithNamedTags(AsnPrimitiveType.ENUMERATED,
+        return new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.ENUMERATED,
                 AsnSchemaConstraint.NULL,
                 namedValues);
     }
@@ -485,7 +485,7 @@ public class AsnSchemaTypeParser
      * @param sourceTypes
      *         Map of ASN.1 primitive types to AsnPrimitiveType
      *
-     * @return a {@link AsnPrimitiveType} as extracted from the matcher
+     * @return a {@link AsnPrimitiveTypes} as extracted from the matcher
      *
      * @throws ParseException
      *         if the type is not in the sourceTypes

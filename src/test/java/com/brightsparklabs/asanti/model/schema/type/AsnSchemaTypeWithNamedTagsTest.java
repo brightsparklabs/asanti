@@ -1,7 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class AsnSchemaTypeWithNamedTagsTest
         // null named tags
         try
         {
-            new AsnSchemaTypeWithNamedTags(AsnPrimitiveType.INTEGER, AsnSchemaConstraint.NULL, null);
+            new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL, null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -66,11 +66,11 @@ public class AsnSchemaTypeWithNamedTagsTest
         when(mockTag1.getTag()).thenReturn("1");
 
         AsnSchemaTypeWithNamedTags withTags
-                = new AsnSchemaTypeWithNamedTags(AsnPrimitiveType.INTEGER,
+                = new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.INTEGER,
                 AsnSchemaConstraint.NULL,
                 ImmutableList.of(mockTag0, mockTag1));
 
-        assertEquals(AsnPrimitiveType.INTEGER, withTags.getPrimitiveType());
+        assertEquals(AsnPrimitiveTypes.INTEGER, withTags.getPrimitiveType());
         verify(mockTag0).getTag();
         verify(mockTag1).getTag();
     }
@@ -80,7 +80,7 @@ public class AsnSchemaTypeWithNamedTagsTest
     {
         AsnSchemaTypeVisitor v = BaseAsnSchemaTypeTest.getVisitor();
 
-        AsnSchemaTypeWithNamedTags instance = new AsnSchemaTypeWithNamedTags(AsnPrimitiveType.INTEGER,
+        AsnSchemaTypeWithNamedTags instance = new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.INTEGER,
                 AsnSchemaConstraint.NULL,
                 ImmutableList.<AsnSchemaNamedTag>of());
 

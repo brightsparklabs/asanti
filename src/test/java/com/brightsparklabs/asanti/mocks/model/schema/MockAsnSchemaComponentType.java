@@ -4,16 +4,17 @@
  */
 package com.brightsparklabs.asanti.mocks.model.schema;
 
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.collect.ImmutableList;
 
 import static org.mockito.Mockito.*;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchemaComponentType} which conform to
- * the test ASN.1 schema defined in the {@linkplain README.md} file
+ * the test ASN.1 schema defined in the {@code README.md} file
  *
  * @author brightSPARK Labs
  */
@@ -41,7 +42,7 @@ public class MockAsnSchemaComponentType
      * @param isOptional
      *         value to return for {@link AsnSchemaComponentType#isOptional()}
      * @param type
-     *          an AsnSchemaType is mocked around this primitive type
+     *         an AsnSchemaType is mocked around this primitive type
      *
      * @return mock instance which returns the supplied values
      */
@@ -73,7 +74,7 @@ public class MockAsnSchemaComponentType
 
     /**
      * Creates mock {@link AsnSchemaComponentType} instances conforming to the {@code Document} type
-     * definition in the test ASN.1 schema defined in the {@linkplain README.md} file
+     * definition in the test ASN.1 schema defined in the {@code README.md} file
      *
      * @return mock instances conforming to schema
      */
@@ -81,19 +82,37 @@ public class MockAsnSchemaComponentType
     {
         final ImmutableList.Builder<AsnSchemaComponentType> listBuilder = ImmutableList.builder();
 
-        listBuilder.add(createMockedComponentType("header", "1", false, MockAsnSchemaType.getDocumentHeader()));
-        listBuilder.add(createMockedComponentType("body", "2", false, MockAsnSchemaType.getDocumentBody()));
-        listBuilder.add(createMockedComponentType("footer", "3", false, MockAsnSchemaType.getDocumentFooter()));
-        listBuilder.add(createMockedComponentType("dueDate", "4", false, MockAsnSchemaType.getDocumentDueDate()));
-        listBuilder.add(createMockedComponentType("version", "5", false, MockAsnSchemaType.getDocumentVersion()));
-        listBuilder.add(createMockedComponentType("description", "6", true, MockAsnSchemaType.getDocumentDescription()));
+        listBuilder.add(createMockedComponentType("header",
+                "1",
+                false,
+                MockAsnSchemaType.getDocumentHeader()));
+        listBuilder.add(createMockedComponentType("body",
+                "2",
+                false,
+                MockAsnSchemaType.getDocumentBody()));
+        listBuilder.add(createMockedComponentType("footer",
+                "3",
+                false,
+                MockAsnSchemaType.getDocumentFooter()));
+        listBuilder.add(createMockedComponentType("dueDate",
+                "4",
+                false,
+                MockAsnSchemaType.getDocumentDueDate()));
+        listBuilder.add(createMockedComponentType("version",
+                "5",
+                false,
+                MockAsnSchemaType.getDocumentVersion()));
+        listBuilder.add(createMockedComponentType("description",
+                "6",
+                true,
+                MockAsnSchemaType.getDocumentDescription()));
 
         return listBuilder.build();
     }
 
     /**
      * Creates mock {@link AsnSchemaComponentType} instances conforming to the {@code Body} type
-     * definition in the test ASN.1 schema defined in the {@linkplain README.md} file
+     * definition in the test ASN.1 schema defined in the {@code README.md} file
      *
      * @return mock instances conforming to schema
      */
@@ -121,7 +140,7 @@ public class MockAsnSchemaComponentType
 
     /**
      * Creates mock {@link AsnSchemaComponentType} instances conforming to the {@code Section-Main}
-     * type definition in the test ASN.1 schema defined in the {@linkplain README.md} file
+     * type definition in the test ASN.1 schema defined in the {@code README.md} file
      *
      * @return mock instances conforming to schema
      */
@@ -132,35 +151,38 @@ public class MockAsnSchemaComponentType
         listBuilder.add(createMockedComponentType("text",
                 "1",
                 true,
-                MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING)));
+                MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING)));
         listBuilder.add(createMockedComponentType("paragraphs",
                 "2",
                 false,
-                MockAsnSchemaType.builder(AsnPrimitiveType.SEQUENCE_OF)
-                    .setCollectionType(MockAsnSchemaType.getDocumentParagraph())
-                .build()));
+                MockAsnSchemaType.builder(AsnPrimitiveTypes.SEQUENCE_OF)
+                        .setCollectionType(MockAsnSchemaType.getDocumentParagraph())
+                        .build()));
         listBuilder.add(createMockedComponentType("sections",
                 "3",
                 false,
-                MockAsnSchemaType.builder(AsnPrimitiveType.SET_OF)
-                    .setCollectionType(MockAsnSchemaType.
-                            builder(AsnPrimitiveType.SET)
-                            .addComponent("1",
-                                    "number",
-                                    false,
-                                    MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.INTEGER))
-                            .addComponent("2",
-                                    "text",
-                                    false,
-                                    MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
-                            .build()).build()));
+                MockAsnSchemaType.builder(AsnPrimitiveTypes.SET_OF)
+                        .setCollectionType(MockAsnSchemaType.
+                                builder(AsnPrimitiveTypes.SET)
+                                .addComponent("1",
+                                        "number",
+                                        false,
+                                        MockAsnSchemaType.createMockedAsnSchemaType(
+                                                AsnPrimitiveTypes.INTEGER))
+                                .addComponent("2",
+                                        "text",
+                                        false,
+                                        MockAsnSchemaType.createMockedAsnSchemaType(
+                                                AsnPrimitiveTypes.OCTET_STRING))
+                                .build())
+                        .build()));
 
-         return listBuilder.build();
+        return listBuilder.build();
     }
 
     /**
      * Creates mock {@link AsnSchemaComponentType} instances conforming to the {@code Person} type
-     * definition in the test ASN.1 schema defined in the {@linkplain README.md} file
+     * definition in the test ASN.1 schema defined in the {@code README.md} file
      *
      * @return mock instances conforming to schema
      */

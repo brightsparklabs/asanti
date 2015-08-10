@@ -6,10 +6,11 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.common.ByteArrays;
-import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.common.DecodeExceptions;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -67,7 +68,7 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
     {
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsOctetString(
                 bytes);
-        DecodeException.throwIfHasFailures(failures);
+        DecodeExceptions.throwIfHasFailures(failures);
         return bytes;
     }
 }

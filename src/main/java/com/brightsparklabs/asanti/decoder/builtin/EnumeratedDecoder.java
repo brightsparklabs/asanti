@@ -5,20 +5,21 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.common.DecodeExceptions;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.data.AsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.builtin.EnumeratedValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Decoder for data of type {@link AsnBuiltinType#Enumerated}
@@ -71,7 +72,7 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
     {
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsEnumerated(
                 bytes);
-        DecodeException.throwIfHasFailures(failures);
+        DecodeExceptions.throwIfHasFailures(failures);
 
         return AsnByteDecoder.decodeAsInteger(bytes).toString();
     }
@@ -85,7 +86,7 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
                 = EnumeratedValidator.getInstance().validateAndDecode(tag, asnData);
         if (!result.wasSuccessful())
         {
-            DecodeException.throwIfHasFailures(result.getFailureReason()
+            DecodeExceptions.throwIfHasFailures(result.getFailureReason()
                     .or(ImmutableSet.<DecodedTagValidationFailure>of()));
         }
 

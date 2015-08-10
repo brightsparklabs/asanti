@@ -5,8 +5,8 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import org.junit.Test;
@@ -15,7 +15,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -48,7 +49,7 @@ public class GeneralizedTimeDecoderTest
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decode(bytes);
 
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -59,7 +60,7 @@ public class GeneralizedTimeDecoderTest
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decodeAsString(bytes);
 
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -70,7 +71,7 @@ public class GeneralizedTimeDecoderTest
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decode(bytes);
 
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -79,7 +80,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decode(null);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -87,7 +88,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -268,7 +269,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -278,7 +279,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decode("1900010100z".getBytes(Charsets.UTF_8)); // should be upper case
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -289,7 +290,7 @@ public class GeneralizedTimeDecoderTest
             bytes = new byte[] { 0x1F, '9', '1', '8', '1', '1', '1', '1', '1', '1', '0', '0', '0',
                                  '0', '.', '1', '1' };
             instance.decode(bytes); // not a valid VisibleString
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -342,7 +343,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decodeAsString("19271111".getBytes(Charsets.UTF_8));    // Too short
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -352,7 +353,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -394,7 +395,7 @@ public class GeneralizedTimeDecoderTest
             final byte[] bytesEmpty = new byte[0];
             when(data.getBytes(eq(tagEmpty))).thenReturn(Optional.of(bytesEmpty));
             instance.decodeAsString(tagEmpty, data);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException e)
         {

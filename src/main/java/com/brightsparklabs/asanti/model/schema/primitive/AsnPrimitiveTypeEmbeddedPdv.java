@@ -1,14 +1,16 @@
 package com.brightsparklabs.asanti.model.schema.primitive;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
 
 /**
- * A type used to represent the primitive builtin type EmbeddedPDV within ASN.1 This class is
- * used as a 'key' for the Visitor.
+ * A type used to represent the primitive builtin type EmbeddedPDV within ASN.1 This class is used
+ * as a 'key' for the Visitor.
  *
  * @author brightSPARK Labs
  */
-public class AsnPrimitiveTypeEmbeddedPdv implements AsnPrimitiveType
+public class AsnPrimitiveTypeEmbeddedPdv implements AsnPrimitiveType.EmbeddedPdv
 {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnPrimitiveType

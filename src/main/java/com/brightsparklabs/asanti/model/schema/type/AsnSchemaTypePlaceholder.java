@@ -8,7 +8,8 @@ package com.brightsparklabs.asanti.model.schema.type;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -72,7 +73,7 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     public AsnSchemaTypePlaceholder(String moduleName, String typeName,
             AsnSchemaConstraint constraint)
     {
-        super(AsnPrimitiveType.INVALID, constraint);
+        super(AsnPrimitiveTypes.INVALID, constraint);
 
         checkNotNull(typeName);
         checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");
@@ -171,7 +172,7 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     @Override
     public AsnPrimitiveType getPrimitiveType()
     {
-        return indirectType == null ? AsnPrimitiveType.INVALID : indirectType.getPrimitiveType();
+        return indirectType == null ? AsnPrimitiveTypes.INVALID : indirectType.getPrimitiveType();
     }
 
     @Override

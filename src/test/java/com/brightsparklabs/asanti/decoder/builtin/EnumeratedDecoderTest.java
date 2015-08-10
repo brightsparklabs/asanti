@@ -1,12 +1,12 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeVisitor;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeWithNamedTags;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -51,7 +51,7 @@ public class EnumeratedDecoderTest
         try
         {
             instance.decode(bytes);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -59,7 +59,7 @@ public class EnumeratedDecoderTest
         try
         {
             instance.decodeAsString(bytes);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -104,7 +104,7 @@ public class EnumeratedDecoderTest
         try
         {
             instance.decode(tag, dataBad);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -117,7 +117,7 @@ public class EnumeratedDecoderTest
         try
         {
             instance.decode(tagEmpty, data);
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {

@@ -5,11 +5,12 @@
 
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.common.VisitableThrowing;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.assam.visitor.VisitableThrowing;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -87,7 +88,7 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
      * AsnSchemaTypeDefinitionNull} because that is the name used to model an actual ASN.1 {@code
      * NULL} Type Definition.
      */
-    public static class Null implements AsnSchemaType
+    class Null implements AsnSchemaType
     {
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -133,9 +134,8 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
         @Override
         public AsnPrimitiveType getPrimitiveType()
         {
-            return AsnPrimitiveType.INVALID;
+            return AsnPrimitiveTypes.INVALID;
         }
-
 
         @Override
         public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException

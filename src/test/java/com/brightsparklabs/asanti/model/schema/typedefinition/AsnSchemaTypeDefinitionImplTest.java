@@ -9,9 +9,6 @@ import static org.junit.Assert.*;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import org.junit.Test;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-
 /**
  * Unit tests for {@link AsnSchemaTypeDefinitionImpl}
  *

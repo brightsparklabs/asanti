@@ -5,10 +5,11 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.common.DecodeExceptions;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 
 import java.math.BigInteger;
@@ -61,7 +62,7 @@ public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger>
     {
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsInteger(
                 bytes);
-        DecodeException.throwIfHasFailures(failures);
+        DecodeExceptions.throwIfHasFailures(failures);
         // The Java BigInteger aligns with the ASN.1 concept of Integer, in that
         // it can be arbitrarily many bytes, and is by default signed.
         return new BigInteger(bytes);
