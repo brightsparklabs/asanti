@@ -7,7 +7,7 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeVisitor;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeWithNamedTags;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.base.Optional;

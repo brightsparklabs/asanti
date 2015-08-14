@@ -12,9 +12,9 @@ import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
 import com.brightsparklabs.asanti.validator.ValidatorImpl;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.brightsparklabs.asanti.validator.result.ValidationResult;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.validator.ValidationResult;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -779,7 +779,8 @@ public class AsnSchemaParserTest
         assertEquals(new BigInteger("32"), age);
 
         final ValidatorImpl validator = new ValidatorImpl();
-        final ValidationResult validationresult = validator.validate(pdu);
+        final ValidationResult<DecodedTagValidationFailure> validationresult = validator.validate(
+                pdu);
 
         assertTrue(validationresult.hasFailures());
 
@@ -821,7 +822,8 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + age);
 
         final ValidatorImpl validator = new ValidatorImpl();
-        final ValidationResult validationresult = validator.validate(pdu);
+        final ValidationResult<DecodedTagValidationFailure> validationresult = validator.validate(
+                pdu);
 
         // dump any failures so we can see what went wrong
         for (DecodedTagValidationFailure fail : validationresult.getFailures())

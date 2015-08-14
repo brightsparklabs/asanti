@@ -4,18 +4,17 @@
  */
 package com.brightsparklabs.asanti.validator.result;
 
-import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.asanti.validator.Validator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationResult;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 
 /**
- * Contains the results from running a {@link Validator} over {@link AsantiAsnData}.
+ * Implementation of {@link ValidationResult}.
  *
  * @author brightSPARK Labs
  */
-public class DecodedAsnDataValidationResult implements ValidationResult
+public class ValidationResultImpl implements ValidationResult<DecodedTagValidationFailure>
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -36,7 +35,7 @@ public class DecodedAsnDataValidationResult implements ValidationResult
      * @param failures
      *         failures to include in this result set
      */
-    private DecodedAsnDataValidationResult(Iterable<DecodedTagValidationFailure> failures)
+    private ValidationResultImpl(Iterable<DecodedTagValidationFailure> failures)
     {
         final ImmutableSetMultimap.Builder<String, DecodedTagValidationFailure> builder
                 = ImmutableSetMultimap.builder();
@@ -49,9 +48,9 @@ public class DecodedAsnDataValidationResult implements ValidationResult
     }
 
     /**
-     * Returns a builder for creating instances of {@link DecodedAsnDataValidationResult}
+     * Returns a builder for creating instances of {@link ValidationResultImpl}
      *
-     * @return a builder for creating instances of {@link DecodedAsnDataValidationResult}
+     * @return a builder for creating instances of {@link ValidationResultImpl}
      */
     public static Builder builder()
     {
@@ -91,7 +90,7 @@ public class DecodedAsnDataValidationResult implements ValidationResult
     // -------------------------------------------------------------------------
 
     /**
-     * Builder for creating instances of {@link DecodedAsnDataValidationResult}
+     * Builder for creating instances of {@link ValidationResultImpl}
      */
     public static class Builder
     {
@@ -108,8 +107,8 @@ public class DecodedAsnDataValidationResult implements ValidationResult
         // ---------------------------------------------------------------------
 
         /**
-         * Default constructor. This is private, use {@link DecodedAsnDataValidationResult#builder()}
-         * to create an instance.
+         * Default constructor. This is private, use {@link ValidationResultImpl#builder()} to
+         * create an instance.
          */
         private Builder() {}
 
@@ -146,16 +145,16 @@ public class DecodedAsnDataValidationResult implements ValidationResult
         }
 
         /**
-         * Creates a new instance of {@link DecodedAsnDataValidationResult} containing all the
-         * results which have been added to this builder
+         * Creates a new instance of {@link ValidationResultImpl} containing all the results which
+         * have been added to this builder
          *
-         * @return a new instance of {@link DecodedAsnDataValidationResult} containing all the
-         * results which have been added to this builder
+         * @return a new instance of {@link ValidationResultImpl} containing all the results which
+         * have been added to this builder
          */
-        public DecodedAsnDataValidationResult build()
+        public ValidationResultImpl build()
         {
             final ImmutableSet<DecodedTagValidationFailure> failures = failuresBuilder.build();
-            return new DecodedAsnDataValidationResult(failures);
+            return new ValidationResultImpl(failures);
         }
     }
 }

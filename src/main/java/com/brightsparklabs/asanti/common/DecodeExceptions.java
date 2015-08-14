@@ -10,7 +10,7 @@
 
 package com.brightsparklabs.asanti.common;
 
-import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationFailure;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.collect.Iterables;
 

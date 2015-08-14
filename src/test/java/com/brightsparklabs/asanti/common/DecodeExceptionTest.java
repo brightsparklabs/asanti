@@ -6,7 +6,7 @@
 package com.brightsparklabs.asanti.common;
 
 import com.brightsparklabs.asanti.mocks.validator.MockDecodedTagValidationFailure;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.collect.ImmutableSet;

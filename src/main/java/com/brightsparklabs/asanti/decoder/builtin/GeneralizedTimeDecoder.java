@@ -9,7 +9,7 @@ import com.brightsparklabs.asanti.common.DecodeExceptions;
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.builtin.GeneralizedTimeValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.exception.DecodeException;

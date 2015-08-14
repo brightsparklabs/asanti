@@ -4,9 +4,9 @@
  */
 package com.brightsparklabs.asanti.mocks.validator;
 
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationFailure;
 
 import static org.mockito.Mockito.*;
 

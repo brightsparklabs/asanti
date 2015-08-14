@@ -1,6 +1,7 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.data.AsnData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -68,7 +69,7 @@ public class DecodedTagsHelpers
      * @throws NullPointerException
      *         if asnData is null
      */
-    public static ImmutableSet<String> buildTags(AsantiAsnData asnData)
+    public static ImmutableSet<String> buildTags(AsnData asnData)
     {
         checkNotNull(asnData);
 
@@ -119,7 +120,7 @@ public class DecodedTagsHelpers
      * @throws NullPointerException
      *         if asnData or parentTag are null
      */
-    public static ImmutableSet<String> getImmediateChildren(AsantiAsnData asnData, String parentTag)
+    public static ImmutableSet<String> getImmediateChildren(AsnData asnData, String parentTag)
     {
         checkNotNull(asnData);
         checkNotNull(parentTag);

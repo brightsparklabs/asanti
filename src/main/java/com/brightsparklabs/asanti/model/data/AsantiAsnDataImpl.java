@@ -121,8 +121,19 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     }
 
     // -------------------------------------------------------------------------
-    // IMPLEMENTATION: DecodedAsnData
+    // IMPLEMENTATION: AsnData
     // -------------------------------------------------------------------------
+
+    @Override
+    public Optional<AsnPrimitiveType> getPrimitiveType(String tag)
+    {
+        final Optional<AsnSchemaType> type = getType(tag);
+        if (type.isPresent())
+        {
+            return Optional.of(type.get().getPrimitiveType());
+        }
+        return Optional.absent();
+    }
 
     @Override
     public ImmutableSet<String> getTags()
@@ -296,7 +307,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     {
         if (regex == null)
         {
-            return ImmutableSet.<String>of();
+            return ImmutableSet.of();
         }
 
         final Set<String> tags = Sets.newHashSet();

@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.validator.failure;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 
 import static com.google.common.base.Preconditions.*;
 
