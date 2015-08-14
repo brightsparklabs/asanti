@@ -13,13 +13,12 @@ import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
 import com.brightsparklabs.assam.data.AsnData;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.assam.validator.ValidationResult;
-import com.brightsparklabs.assam.validator.ValidationRule;
-import com.brightsparklabs.assam.validator.Validator;
-import com.google.common.collect.ImmutableSet;
+import com.brightsparklabs.assam.validator.*;
+import com.google.common.collect.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Set;
 
 /**
  * Default implementation of {@link Validator}.
@@ -39,55 +38,65 @@ public class ValidatorImpl implements Validator
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
+    /** custom validation rules */
+    ImmutableSetMultimap<String, ValidationRule> customRules;
+
     /** visitor to determine which {@link ValidationRule} to apply to a tag */
     private final ValidationVisitor validationVisitor = new ValidationVisitor();
+
+    // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+
+    /**
+     * Private constructor. Use @link{Builder} instead.
+     *
+     * @param customRules
+     *         custom validation rules to apply to various tags
+     */
+    public ValidatorImpl(Multimap<String, ValidationRule> customRules)
+    {
+        this.customRules = ImmutableSetMultimap.copyOf(customRules);
+    }
+
+    /**
+     * Returns a builder for creating instances of this class.
+     *
+     * @return a builder for creating instances of this class.
+     */
+    public static Builder builder()
+    {
+        return new Builder();
+    }
 
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: Validator
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationResult<DecodedTagValidationFailure> validate(AsnData asnData)
-    {
-        if (asnData instanceof AsantiAsnData)
-        {
-            return validate((AsantiAsnData) asnData);
-        }
-
-        // TODO: ASN-167 we wouldn't need to handle the instance of if we could just use AsnData directly
-        logger.warn("Asanti cannot be used to validate AsnData produced by another library");
-        return ValidationResultImpl.builder().build();
-    }
-
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
-
-    /**
-     * Validates
-     *
-     * @param asnData
-     *
-     * @return
-     */
-    private ValidationResult<DecodedTagValidationFailure> validate(AsantiAsnData asnData)
+    public ValidationResult validate(AsnData asnData)
     {
         final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
 
-        final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
-
-        for (final String tag : tags)
+        // validate each mapped tag
+        if (asnData instanceof AsantiAsnData)
         {
-            final AsnPrimitiveType type = asnData.getPrimitiveType(tag)
-                    .or(AsnPrimitiveTypes.INVALID);
-            final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
-                    validationVisitor);
-            if (tagValidator != null)
+            final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
+            for (final String tag : tags)
             {
-                final ImmutableSet<DecodedTagValidationFailure> failures
-                        = tagValidator.validate(tag, asnData);
+                // default validation
+                Set<ValidationFailure> failures = validateDefault(tag, (AsantiAsnData) asnData);
+                builder.addAll(failures);
+
+                // custom validation
+                failures = validateCustom(tag, asnData);
                 builder.addAll(failures);
             }
+        }
+        else
+        {
+            // TODO: ASN-167 we wouldn't need to handle the instance of if we could just use AsnData directly
+            logger.warn("Asanti cannot be used to validate AsnData produced by another library");
         }
 
         // add a failure for each unmapped tag
@@ -100,5 +109,80 @@ public class ValidatorImpl implements Validator
         }
 
         return builder.build();
+    }
+
+    // -------------------------------------------------------------------------
+    // PRIVATE METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Validates the supplied data using the default ASN.1 schema rules
+     *
+     * @param asnData
+     *         data to validate
+     *
+     * @return the results from validating the data
+     */
+    private Set<ValidationFailure> validateDefault(String tag, AsantiAsnData asnData)
+    {
+        final Set<ValidationFailure> failures = Sets.newHashSet();
+        final AsnPrimitiveType type = asnData.getPrimitiveType(tag).or(AsnPrimitiveTypes.INVALID);
+        final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
+                validationVisitor);
+        if (tagValidator != null)
+        {
+            failures.addAll(tagValidator.validate(tag, asnData));
+        }
+        return failures;
+    }
+
+    /**
+     * Validates the supplied tag using any custom rules in this decoder
+     *
+     * @param asnData
+     *         data to validate
+     *
+     * @return the results from validating the data
+     */
+    private Set<ValidationFailure> validateCustom(String tag, AsnData asnData)
+    {
+        final Set<ValidationFailure> failures = Sets.newHashSet();
+        final ImmutableSet<ValidationRule> rules = customRules.get(tag);
+        for (ValidationRule rule : rules)
+        {
+            failures.addAll(rule.validate(tag, asnData));
+        }
+        return failures;
+    }
+
+    // -------------------------------------------------------------------------
+    // INTERNAL CLASSES
+    // -------------------------------------------------------------------------
+
+    /**
+     * Builder for creating instances of this class
+     */
+    public static class Builder
+    {
+        // ---------------------------------------------------------------------
+        // INSTANCE VARIABLES
+        // ---------------------------------------------------------------------
+
+        /** custom validation rules */
+        private final HashMultimap<String, ValidationRule> customRules = HashMultimap.create();
+
+        // ---------------------------------------------------------------------
+        // PUBLIC METHODS
+        // ---------------------------------------------------------------------
+
+        public Validator build()
+        {
+            return new ValidatorImpl(customRules);
+        }
+
+        public void withValidationRule(ValidationRule rule, String tag)
+        {
+            customRules.put(tag, rule);
+        }
     }
 }

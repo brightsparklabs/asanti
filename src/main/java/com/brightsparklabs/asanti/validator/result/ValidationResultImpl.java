@@ -4,7 +4,7 @@
  */
 package com.brightsparklabs.asanti.validator.result;
 
-import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationFailure;
 import com.brightsparklabs.assam.validator.ValidationResult;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSetMultimap;
  *
  * @author brightSPARK Labs
  */
-public class ValidationResultImpl implements ValidationResult<DecodedTagValidationFailure>
+public class ValidationResultImpl implements ValidationResult
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -23,7 +23,7 @@ public class ValidationResultImpl implements ValidationResult<DecodedTagValidati
     /**
      * all failures that occurred during validation. Map is of form {tag => failure}
      */
-    private final ImmutableSetMultimap<String, DecodedTagValidationFailure> tagsToFailures;
+    private final ImmutableSetMultimap<String, ValidationFailure> tagsToFailures;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -35,13 +35,13 @@ public class ValidationResultImpl implements ValidationResult<DecodedTagValidati
      * @param failures
      *         failures to include in this result set
      */
-    private ValidationResultImpl(Iterable<DecodedTagValidationFailure> failures)
+    private ValidationResultImpl(Iterable<ValidationFailure> failures)
     {
-        final ImmutableSetMultimap.Builder<String, DecodedTagValidationFailure> builder
-                = ImmutableSetMultimap.builder();
-        for (final DecodedTagValidationFailure failure : failures)
+        final ImmutableSetMultimap.Builder<String, ValidationFailure> builder = ImmutableSetMultimap
+                .builder();
+        for (final ValidationFailure failure : failures)
         {
-            final String tag = failure.getTag();
+            final String tag = failure.getFailureTag();
             builder.put(tag, failure);
         }
         this.tagsToFailures = builder.build();
@@ -68,7 +68,7 @@ public class ValidationResultImpl implements ValidationResult<DecodedTagValidati
     }
 
     @Override
-    public ImmutableSet<DecodedTagValidationFailure> getFailures()
+    public ImmutableSet<ValidationFailure> getFailures()
     {
         return ImmutableSet.copyOf(tagsToFailures.values());
     }
@@ -80,7 +80,7 @@ public class ValidationResultImpl implements ValidationResult<DecodedTagValidati
     }
 
     @Override
-    public ImmutableSet<DecodedTagValidationFailure> getFailures(String tag)
+    public ImmutableSet<ValidationFailure> getFailures(String tag)
     {
         return tagsToFailures.get(tag);
     }
@@ -99,7 +99,7 @@ public class ValidationResultImpl implements ValidationResult<DecodedTagValidati
         // ---------------------------------------------------------------------
 
         /** the results to include in the result set */
-        private final ImmutableSet.Builder<DecodedTagValidationFailure> failuresBuilder
+        private final ImmutableSet.Builder<ValidationFailure> failuresBuilder
                 = ImmutableSet.builder();
 
         // ---------------------------------------------------------------------
@@ -124,7 +124,7 @@ public class ValidationResultImpl implements ValidationResult<DecodedTagValidati
          *
          * @return this builder
          */
-        public Builder add(DecodedTagValidationFailure failures)
+        public Builder add(ValidationFailure failures)
         {
             failuresBuilder.add(failures);
             return this;
@@ -138,7 +138,7 @@ public class ValidationResultImpl implements ValidationResult<DecodedTagValidati
          *
          * @return this builder
          */
-        public Builder addAll(Iterable<DecodedTagValidationFailure> failures)
+        public Builder addAll(Iterable<? extends ValidationFailure> failures)
         {
             failuresBuilder.addAll(failures);
             return this;
@@ -153,7 +153,7 @@ public class ValidationResultImpl implements ValidationResult<DecodedTagValidati
          */
         public ValidationResultImpl build()
         {
-            final ImmutableSet<DecodedTagValidationFailure> failures = failuresBuilder.build();
+            final ImmutableSet<ValidationFailure> failures = failuresBuilder.build();
             return new ValidationResultImpl(failures);
         }
     }

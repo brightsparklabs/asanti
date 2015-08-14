@@ -53,15 +53,11 @@ public class DecodedTagValidationFailure extends AbstractValidationFailure
     }
 
     // -------------------------------------------------------------------------
-    // PUBLIC METHODS
+    // IMPLEMENTATION: AbstractValidationFailure
     // -------------------------------------------------------------------------
 
-    /**
-     * Returns the name of the tag the validation failure occurred on
-     *
-     * @return the name of the tag the validation failure occurred to
-     */
-    public String getTag()
+    @Override
+    public String getFailureTag()
     {
         return tag;
     }

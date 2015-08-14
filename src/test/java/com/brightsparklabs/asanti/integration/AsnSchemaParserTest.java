@@ -10,11 +10,12 @@ import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
-import com.brightsparklabs.asanti.validator.ValidatorImpl;
-import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.asanti.validator.Validators;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.validator.ValidationFailure;
 import com.brightsparklabs.assam.validator.ValidationResult;
+import com.brightsparklabs.assam.validator.Validator;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -664,7 +665,7 @@ public class AsnSchemaParserTest
         rawValue = EnumeratedDecoder.getInstance().decodeAsString(pdu.getBytes(tag).get());
         assertEquals("1", rawValue);
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdu);
 
         assertFalse(validationresult.hasFailures());
@@ -751,7 +752,7 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + age);
         assertEquals(new BigInteger("32"), age);
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdu);
 
         assertFalse(validationresult.hasFailures());
@@ -778,20 +779,19 @@ public class AsnSchemaParserTest
         logger.info(tag + " : " + age);
         assertEquals(new BigInteger("32"), age);
 
-        final ValidatorImpl validator = new ValidatorImpl();
-        final ValidationResult<DecodedTagValidationFailure> validationresult = validator.validate(
-                pdu);
+        final Validator validator = Validators.getDefault();
+        final ValidationResult validationresult = validator.validate(pdu);
 
         assertTrue(validationresult.hasFailures());
 
-        ImmutableSet<DecodedTagValidationFailure> failures = validationresult.getFailures();
+        ImmutableSet<ValidationFailure> failures = validationresult.getFailures();
         assertEquals(1, failures.size());
 
-        for (DecodedTagValidationFailure fail : failures)
+        for (ValidationFailure fail : failures)
         {
-            assertEquals("/Human/age", fail.getTag());
+            assertEquals("/Human/age", fail.getFailureTag());
 
-            logger.info("Tag: " + fail.getTag() +
+            logger.info("Tag: " + fail.getFailureTag() +
                     " reason: " + fail.getFailureReason() +
                     " type: " + fail.getFailureType());
         }
@@ -821,14 +821,13 @@ public class AsnSchemaParserTest
         BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
         logger.info(tag + " : " + age);
 
-        final ValidatorImpl validator = new ValidatorImpl();
-        final ValidationResult<DecodedTagValidationFailure> validationresult = validator.validate(
-                pdu);
+        final Validator validator = Validators.getDefault();
+        final ValidationResult validationresult = validator.validate(pdu);
 
         // dump any failures so we can see what went wrong
-        for (DecodedTagValidationFailure fail : validationresult.getFailures())
+        for (ValidationFailure fail : validationresult.getFailures())
         {
-            logger.info("Validation Failure for : " + fail.getTag() +
+            logger.info("Validation Failure for : " + fail.getFailureTag() +
                     " reason: " + fail.getFailureReason() +
                     " type: " + fail.getFailureType());
         }
@@ -875,7 +874,7 @@ public class AsnSchemaParserTest
         assertEquals("Smith", last);
 
 /*
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdu);
 
         assertTrue(validationresult.hasFailures());
@@ -916,7 +915,7 @@ public class AsnSchemaParserTest
         tag = "/Human/age[2]";
         assertEquals(new BigInteger("3"), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -963,7 +962,7 @@ public class AsnSchemaParserTest
         age = pdu.<BigInteger>getDecodedObject(tag).get();
         assertEquals(3, age.intValue());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1011,7 +1010,7 @@ public class AsnSchemaParserTest
         age = pdu.<BigInteger>getDecodedObject(tag).get();
         assertEquals(3, age.intValue());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1042,7 +1041,7 @@ public class AsnSchemaParserTest
             logger.info("\t{} => {}", tag, pdu.getHexString(tag));
         }
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1074,7 +1073,7 @@ public class AsnSchemaParserTest
         fave = pdu.<BigInteger>getDecodedObject(tag + "[2]").get();
         assertEquals(new BigInteger("3"), fave);
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1098,7 +1097,7 @@ public class AsnSchemaParserTest
         assertEquals("A", pdus.get(0).getDecodedObject("/Human/lastName").get());
         assertEquals("U", pdus.get(0).getDecodedObject("/Human/firstName").get());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1123,7 +1122,7 @@ public class AsnSchemaParserTest
         tag = "/Human/payload/firstName";
         assertEquals("Adam", pdus.get(0).<String>getDecodedObject(tag).get());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1398,7 +1397,7 @@ public class AsnSchemaParserTest
             tag = "/Human/selection/optA/ints[1]";
             assertEquals(new BigInteger("2"), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1423,7 +1422,7 @@ public class AsnSchemaParserTest
             tag = "/Human/selection/optB/namesInline[1]/last";
             assertEquals("Brown", pdus.get(0).<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1448,7 +1447,7 @@ public class AsnSchemaParserTest
             tag = "/Human/selection/optC/names[1]/last";
             assertEquals("Brown", pdus.get(0).<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1476,7 +1475,7 @@ public class AsnSchemaParserTest
             tag = "/Human/selection/optA/ints[1]";
             assertEquals(new BigInteger("2"), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1501,7 +1500,7 @@ public class AsnSchemaParserTest
             tag = "/Human/selection/optB/namesInline[1]/last";
             assertEquals("Brown", pdus.get(0).<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1526,7 +1525,7 @@ public class AsnSchemaParserTest
             tag = "/Human/selection/optC/names[1]/last";
             assertEquals("Brown", pdus.get(0).<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1555,7 +1554,7 @@ public class AsnSchemaParserTest
         tag = "/Human/payload/open/milliSeconds";
         assertEquals(new BigInteger("100"), pdu.<BigInteger>getDecodedObject(tag).get());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1588,7 +1587,7 @@ public class AsnSchemaParserTest
             actual = pdu.getDecodedObject(tag);
             assertEquals("123", new String(actual.get(), Charsets.UTF_8));
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1618,7 +1617,7 @@ public class AsnSchemaParserTest
             actual = pdu.getDecodedObject(tag);
             assertEquals("456", new String(actual.get(), Charsets.UTF_8));
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1647,7 +1646,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("Fred", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1672,7 +1671,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("Fred", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1694,7 +1693,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("Fred", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1726,7 +1725,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1747,7 +1746,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1771,7 +1770,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1799,7 +1798,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/iRIsContent/sequenceOfA[1]/mid/stuff";
             assertEquals("V", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1823,7 +1822,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/name";
             assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1851,7 +1850,7 @@ public class AsnSchemaParserTest
             tag = "/Human/payload/iRIsContent/setOfA[1]/mid/stuff";
             assertEquals("V", pdu.<String>getDecodedObject(tag).get());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
         }
@@ -1895,7 +1894,7 @@ public class AsnSchemaParserTest
         tag = "/Human/payload/iRIsContent/typeB/stuff";
         assertEquals("U", pdu.<String>getDecodedObject(tag).get());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1921,7 +1920,7 @@ public class AsnSchemaParserTest
         String tag = "/Types/null";
         assertEquals("", pdu.<String>getDecodedObject(tag).get());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
@@ -1964,7 +1963,7 @@ public class AsnSchemaParserTest
             assertEquals(0, pdus.get(1).getUnmappedTags().size());
             assertEquals(0, pdus.get(2).getUnmappedTags().size());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
             assertFalse(validationresult.hasFailures());
 
@@ -2036,15 +2035,14 @@ public class AsnSchemaParserTest
 
             assertEquals(15, pdus.size());
 
-            final ValidatorImpl validator = new ValidatorImpl();
+            final Validator validator = Validators.getDefault();
             for (int i = 0; i < 14; i++)
             {
                 assertEquals(0, pdus.get(i).getUnmappedTags().size());
                 final ValidationResult validationresult = validator.validate(pdus.get(i));
                 if (validationresult.hasFailures())
                 {
-                    final ImmutableSet<DecodedTagValidationFailure> failures
-                            = validationresult.getFailures();
+                    final ImmutableSet<ValidationFailure> failures = validationresult.getFailures();
                     int breakpoint = 0;
                 }
                 assertFalse(validationresult.hasFailures());
@@ -2074,7 +2072,7 @@ public class AsnSchemaParserTest
         //            {
         //
         //
-        //                final ValidatorImpl validator = new ValidatorImpl();
+        //                final Validator validator = Validators.getDefault();
         //                final ValidationResult validationresult = validator.validate(pdu);
         //                // TODO - we should get a validation failure where we can't determine the type of a tag
         //                //assertTrue(validationresult.hasFailures());

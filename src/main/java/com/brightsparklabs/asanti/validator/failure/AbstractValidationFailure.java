@@ -72,4 +72,10 @@ public class AbstractValidationFailure implements ValidationFailure
     {
         return failureReason;
     }
+
+    @Override
+    public String getFailureTag()
+    {
+        return "";
+    }
 }

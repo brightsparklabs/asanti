@@ -4,8 +4,8 @@
  */
 package com.brightsparklabs.asanti.mocks.validator;
 
-import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.assam.validator.ValidationFailure;
 
 import static org.mockito.Mockito.*;
@@ -25,7 +25,7 @@ public class MockDecodedTagValidationFailure
      * Returns a mocked instance of a {@link DecodedTagValidationFailure}
      *
      * @param tag
-     *         tag to return from {@link DecodedTagValidationFailure#getTag()}
+     *         tag to return from {@link DecodedTagValidationFailure#getFailureTag()}
      * @param failureType
      *         tag to return from {@link DecodedTagValidationFailure#getFailureType()}
      * @param failureReason
@@ -37,7 +37,7 @@ public class MockDecodedTagValidationFailure
             FailureType failureType, String failureReason)
     {
         final DecodedTagValidationFailure instance = mock(DecodedTagValidationFailure.class);
-        when(instance.getTag()).thenReturn(tag);
+        when(instance.getFailureTag()).thenReturn(tag);
         when(instance.getFailureType()).thenReturn(failureType);
         when(instance.getFailureReason()).thenReturn(failureReason);
         return instance;

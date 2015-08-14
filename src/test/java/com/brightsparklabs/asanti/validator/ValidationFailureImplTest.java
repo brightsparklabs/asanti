@@ -94,7 +94,7 @@ public class ValidationFailureImplTest
         final DecodedTagValidationFailure instance = new DecodedTagValidationFailure("TEST_TAG",
                 FailureType.UnknownTag,
                 "TEST_REASON");
-        assertEquals("TEST_TAG", instance.getTag());
+        assertEquals("TEST_TAG", instance.getFailureTag());
     }
 
     @Test
