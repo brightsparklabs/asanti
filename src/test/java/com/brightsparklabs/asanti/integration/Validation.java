@@ -4,9 +4,9 @@ import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
-import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.ValidatorImpl;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.assam.validator.ValidationResult;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
@@ -47,7 +47,8 @@ public class Validation
         assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
 
         final ValidatorImpl validator = new ValidatorImpl();
-        final ValidationResult validationresult = validator.validate(pdus.get(0));
+        final ValidationResult<DecodedTagValidationFailure> validationresult = validator.validate(
+                pdus.get(0));
         assertTrue(validationresult.hasFailures());
 
         final ImmutableSet<DecodedTagValidationFailure> failures = validationresult.getFailures();
@@ -78,7 +79,6 @@ public class Validation
 
         tag = "/Human/person/name/last";
         assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
-
 
         final ValidatorImpl validator = new ValidatorImpl();
         final ValidationResult validationresult = validator.validate(pdus.get(0));

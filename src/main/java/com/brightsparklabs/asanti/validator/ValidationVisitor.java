@@ -6,7 +6,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.validator.builtin.*;
-import com.brightsparklabs.asanti.validator.rule.ValidationRule;
+import com.brightsparklabs.assam.validator.ValidationRule;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
 

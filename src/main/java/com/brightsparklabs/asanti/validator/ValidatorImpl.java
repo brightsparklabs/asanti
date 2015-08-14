@@ -11,11 +11,11 @@ import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
 import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
-import com.brightsparklabs.asanti.validator.rule.ValidationRule;
 import com.brightsparklabs.assam.data.AsnData;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.assam.validator.ValidationResult;
+import com.brightsparklabs.assam.validator.ValidationRule;
 import com.brightsparklabs.assam.validator.Validator;
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class ValidatorImpl implements Validator
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationResult validate(AsnData asnData)
+    public ValidationResult<DecodedTagValidationFailure> validate(AsnData asnData)
     {
         if (asnData instanceof AsantiAsnData)
         {
@@ -70,7 +70,7 @@ public class ValidatorImpl implements Validator
      *
      * @return
      */
-    private ValidationResult validate(AsantiAsnData asnData)
+    private ValidationResult<DecodedTagValidationFailure> validate(AsantiAsnData asnData)
     {
         final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
 
