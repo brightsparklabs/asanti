@@ -12,6 +12,7 @@ import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
 import com.brightsparklabs.assam.data.AsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.brightsparklabs.assam.validator.*;
 import com.google.common.collect.*;
@@ -150,7 +151,17 @@ public class ValidatorImpl implements Validator
         final ImmutableSet<ValidationRule> rules = customRules.get(tag);
         for (ValidationRule rule : rules)
         {
-            failures.addAll(rule.validate(tag, asnData));
+            try
+            {
+                failures.addAll(rule.validate(tag, asnData));
+            }
+            catch (DecodeException ex)
+            {
+                final ValidationFailure failure = new DecodedTagValidationFailure(tag,
+                        FailureType.CustomValidationFailed,
+                        "Data was not in the expected format: " + ex.getMessage());
+                failures.add(failure);
+            }
         }
         return failures;
     }
@@ -180,9 +191,10 @@ public class ValidatorImpl implements Validator
             return new ValidatorImpl(customRules);
         }
 
-        public void withValidationRule(ValidationRule rule, String tag)
+        public Builder withValidationRule(ValidationRule rule, String tag)
         {
             customRules.put(tag, rule);
+            return this;
         }
     }
 }

@@ -39,7 +39,8 @@ public class Validators
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the default validator which validates {@AsnData} against its corresponding schema
+     * Returns the default validator which validates @link{AsnData} against its corresponding
+     * schema.
      *
      * @return the default validator
      */
