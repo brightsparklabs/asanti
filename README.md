@@ -423,7 +423,7 @@ failure.getMessage();  // => "The field /Document/header/copyright/date cannot b
 
 final ValidationRule rule = new DateCutoffValidationRule("2014-01-01");
 
-final Validator customValidator = Validators.fromDefault()
+final Validator customValidator = Validators.newCustomValidatorBuilder()
     .withValidationRule(rule, "/Document/header/published/date")
     .withValidationRule(rule, "/Document/header/copyright/date")
     .withValidationRule(rule, "/Document/body/lastModified/date")
@@ -432,9 +432,9 @@ final Validator customValidator = Validators.fromDefault()
 final ValidationResult result = customValidator.validate(asnData);
 final ValidationFailure failure = results.getFailures().first()
 
-failure.getType();     // => DateCutoffFailed
-failure.getTag();      // => "/Document/header/published/date"
-failure.getMessage();  // => "The date in field /Document/header/copyright/date cannot be before 2014-01-01"
+failure.getFailureType();    // => DateCutoffFailed
+failure.getFailureTag();     // => "/Document/header/published/date"
+failure.getFailureReason();  // => "The date in field /Document/header/copyright/date cannot be before 2014-01-01"
 ```
 
 ## Licenses

@@ -6,13 +6,14 @@ package com.brightsparklabs.asanti.validator;
 
 import static org.junit.Assert.*;
 
-import com.brightsparklabs.asanti.validator.result.DecodedAsnDataValidationResult;
+import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
+import com.brightsparklabs.assam.validator.FailureType;
 import org.junit.Test;
 
 import com.brightsparklabs.asanti.mocks.validator.MockDecodedTagValidationFailure;
 
 /**
- * Unit tests for {@link DecodedAsnDataValidationResult}
+ * Unit tests for {@link ValidationResultImpl}
  *
  * @author brightSPARK Labs
  */
@@ -22,18 +23,18 @@ public class ValidationResultImplTest
     // FIXTURES
     // -------------------------------------------------------------------------
 
-    private static final DecodedAsnDataValidationResult noFailures = DecodedAsnDataValidationResult
+    private static final ValidationResultImpl noFailures = ValidationResultImpl
             .builder()
             .build();
 
-    private static final DecodedAsnDataValidationResult oneFailure = DecodedAsnDataValidationResult
+    private static final ValidationResultImpl oneFailure = ValidationResultImpl
             .builder()
             .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG1",
                     FailureType.MandatoryFieldMissing,
                     "Field missing"))
             .build();
 
-    private static final DecodedAsnDataValidationResult multipleFailures = DecodedAsnDataValidationResult
+    private static final ValidationResultImpl multipleFailures = ValidationResultImpl
             .builder()
             .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG1",
                     FailureType.MandatoryFieldMissing,

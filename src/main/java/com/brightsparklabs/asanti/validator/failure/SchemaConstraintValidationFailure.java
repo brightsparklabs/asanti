@@ -14,7 +14,7 @@
  */
 package com.brightsparklabs.asanti.validator.failure;
 
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 
 /**
  * Represents a validation failure from checking a schema constraint.

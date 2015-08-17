@@ -10,7 +10,7 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
 

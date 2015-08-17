@@ -6,7 +6,7 @@ package com.brightsparklabs.asanti.validator.failure;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -53,15 +53,11 @@ public class DecodedTagValidationFailure extends AbstractValidationFailure
     }
 
     // -------------------------------------------------------------------------
-    // PUBLIC METHODS
+    // IMPLEMENTATION: AbstractValidationFailure
     // -------------------------------------------------------------------------
 
-    /**
-     * Returns the name of the tag the validation failure occurred on
-     *
-     * @return the name of the tag the validation failure occurred to
-     */
-    public String getTag()
+    @Override
+    public String getFailureTag()
     {
         return tag;
     }

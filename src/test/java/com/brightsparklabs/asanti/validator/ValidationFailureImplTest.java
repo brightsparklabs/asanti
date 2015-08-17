@@ -5,6 +5,7 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.validator.FailureType;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -93,7 +94,7 @@ public class ValidationFailureImplTest
         final DecodedTagValidationFailure instance = new DecodedTagValidationFailure("TEST_TAG",
                 FailureType.UnknownTag,
                 "TEST_REASON");
-        assertEquals("TEST_TAG", instance.getTag());
+        assertEquals("TEST_TAG", instance.getFailureTag());
     }
 
     @Test

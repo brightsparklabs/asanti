@@ -4,10 +4,11 @@ import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
-import com.brightsparklabs.asanti.validator.FailureType;
-import com.brightsparklabs.asanti.validator.ValidatorImpl;
-import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.brightsparklabs.asanti.validator.result.ValidationResult;
+import com.brightsparklabs.asanti.validator.Validators;
+import com.brightsparklabs.assam.validator.FailureType;
+import com.brightsparklabs.assam.validator.ValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationResult;
+import com.brightsparklabs.assam.validator.Validator;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -46,11 +47,11 @@ public class Validation
         tag = "/Human/name/last";
         assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertTrue(validationresult.hasFailures());
 
-        final ImmutableSet<DecodedTagValidationFailure> failures = validationresult.getFailures();
+        final ImmutableSet<ValidationFailure> failures = validationresult.getFailures();
         assertEquals(1, failures.size());
 
         assertEquals(FailureType.MandatoryFieldMissing, failures.asList().get(0).getFailureType());
@@ -79,8 +80,7 @@ public class Validation
         tag = "/Human/person/name/last";
         assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
 
-
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
