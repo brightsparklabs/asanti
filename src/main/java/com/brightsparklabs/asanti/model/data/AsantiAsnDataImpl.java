@@ -154,6 +154,24 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     }
 
     @Override
+    public boolean contains(Pattern regex)
+    {
+        if (regex == null)
+        {
+            return false;
+        }
+
+        for (final String tag : allTags.keySet())
+        {
+            if (regex.matcher(tag).matches())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Optional<byte[]> getBytes(String tag)
     {
         final DecodedTag decodedTag = allTags.get(tag);

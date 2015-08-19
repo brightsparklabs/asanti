@@ -193,6 +193,22 @@ public class AsantiAsnDataImplTest
         assertFalse(emptyInstance.contains(""));
         assertFalse(emptyInstance.contains("/Document/0/0/0"));
         assertFalse(emptyInstance.contains("/Document/header/published/date"));
+
+        // Test the Pattern overload
+        Pattern pattern = Pattern.compile("(.*?)authors\\[\\d\\](.*?)");
+        assertTrue(instance.contains(pattern));
+        assertFalse(emptyInstance.contains(pattern));
+
+        pattern = Pattern.compile("(.*?)text$");
+        assertTrue(instance.contains(pattern));
+        assertFalse(emptyInstance.contains(pattern));
+
+        pattern = Pattern.compile("(.*?)(.*?)authors\\[\\d\\]$");
+        assertFalse(instance.contains(pattern));
+        assertFalse(emptyInstance.contains(pattern));
+
+        assertFalse(instance.contains((Pattern)null));
+        assertFalse(emptyInstance.contains((Pattern)null));
     }
 
     @Test
