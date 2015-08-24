@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.assam.exception.DecodeException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -40,7 +40,7 @@ public class NullDecoderTest
         {
             bytes = new byte[] { 0x00 };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -50,7 +50,7 @@ public class NullDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -69,7 +69,7 @@ public class NullDecoderTest
         {
             bytes = new byte[] { 0x00 };
             instance.decodeAsString(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -79,7 +79,7 @@ public class NullDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {

@@ -5,8 +5,9 @@ import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import org.junit.After;
@@ -63,7 +64,7 @@ public class AsnSchemaTypeConstructedTest
         // null components
         try
         {
-            new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+            new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                     AsnSchemaConstraint.NULL,
                     null,
                     AsnModuleTaggingMode.AUTOMATIC);
@@ -75,7 +76,7 @@ public class AsnSchemaTypeConstructedTest
         // null tag creator
         try
         {
-            new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+            new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                     AsnSchemaConstraint.NULL,
                     ImmutableList.<AsnSchemaComponentType>of(),
                     null);
@@ -88,7 +89,7 @@ public class AsnSchemaTypeConstructedTest
         // non Constructed type
         try
         {
-            new AsnSchemaTypeConstructed(AsnPrimitiveType.INTEGER,
+            new AsnSchemaTypeConstructed(AsnPrimitiveTypes.INTEGER,
                     AsnSchemaConstraint.NULL,
                     ImmutableList.<AsnSchemaComponentType>of(),
                     AsnModuleTaggingMode.AUTOMATIC);
@@ -106,16 +107,15 @@ public class AsnSchemaTypeConstructedTest
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.of(mockedComponent("a",
                         "",
                         false,
-                        AsnPrimitiveType.INTEGER),
-                mockedComponent("b", "", false, AsnPrimitiveType.INTEGER));
+                        AsnPrimitiveTypes.INTEGER),
+                mockedComponent("b", "", false, AsnPrimitiveTypes.INTEGER));
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
         instance.performTagging();
         instance.checkForDuplicates();
-
 
         verify(components.get(0)).setTag("0");
         verify(components.get(1)).setTag("1");
@@ -128,10 +128,10 @@ public class AsnSchemaTypeConstructedTest
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.of(mockedComponent("a",
                         "0",
                         false,
-                        AsnPrimitiveType.INTEGER),
-                mockedComponent("b", "", false, AsnPrimitiveType.INTEGER));
+                        AsnPrimitiveTypes.INTEGER),
+                mockedComponent("b", "", false, AsnPrimitiveTypes.INTEGER));
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -150,10 +150,10 @@ public class AsnSchemaTypeConstructedTest
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.of(mockedComponent("a",
                         "",
                         false,
-                        AsnPrimitiveType.INTEGER),
-                mockedComponent("b", "", false, AsnPrimitiveType.OCTET_STRING));
+                        AsnPrimitiveTypes.INTEGER),
+                mockedComponent("b", "", false, AsnPrimitiveTypes.OCTET_STRING));
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.DEFAULT);
@@ -174,11 +174,11 @@ public class AsnSchemaTypeConstructedTest
                 .add(mockedComponent("b", "1", false))
                 .add(mockedComponent("c", "1", true))
                 .add(mockedComponent("d", "2", false))
-                .add(mockedComponent("e", "", true, AsnPrimitiveType.INTEGER))
+                .add(mockedComponent("e", "", true, AsnPrimitiveTypes.INTEGER))
                 .add(mockedComponent("f", "1", false))
                 .build();
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -206,7 +206,7 @@ public class AsnSchemaTypeConstructedTest
                 .add(mockedComponent("d", "1", false))
                 .build();
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -232,11 +232,11 @@ public class AsnSchemaTypeConstructedTest
                 .add(mockedComponent("b", "2", false))
                 .add(mockedComponent("c", "3", true))
                 .add(mockedComponent("d", "4", false))
-                .add(mockedComponent("e", "", true, AsnPrimitiveType.INTEGER))
+                .add(mockedComponent("e", "", true, AsnPrimitiveTypes.INTEGER))
                 .add(mockedComponent("f", "5", false))
                 .build();
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -262,7 +262,7 @@ public class AsnSchemaTypeConstructedTest
                 .add(mockedComponent("b", "1", false))
                 .build();
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SET,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SET,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -282,11 +282,11 @@ public class AsnSchemaTypeConstructedTest
     {
         final ImmutableList<AsnSchemaComponentType> choiceComponents
                 = ImmutableList.<AsnSchemaComponentType>builder()
-                .add(mockedComponent("x", "1", false, AsnPrimitiveType.INTEGER))
-                .add(mockedComponent("y", "2", false, AsnPrimitiveType.INTEGER))
+                .add(mockedComponent("x", "1", false, AsnPrimitiveTypes.INTEGER))
+                .add(mockedComponent("y", "2", false, AsnPrimitiveTypes.INTEGER))
                 .build();
 
-        AsnSchemaType choice = MockAsnSchemaType.builder(AsnPrimitiveType.CHOICE)
+        AsnSchemaType choice = MockAsnSchemaType.builder(AsnPrimitiveTypes.CHOICE)
                 .addComponent(choiceComponents.get(0))
                 .addComponent(choiceComponents.get(1))
                 .build();
@@ -298,7 +298,7 @@ public class AsnSchemaTypeConstructedTest
                 .add(mockedComponent("c", "", false, choice))
                 .build();
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -314,11 +314,11 @@ public class AsnSchemaTypeConstructedTest
     {
         final ImmutableList<AsnSchemaComponentType> choiceComponents
                 = ImmutableList.<AsnSchemaComponentType>builder()
-                .add(mockedComponent("x", "1", false, AsnPrimitiveType.INTEGER))
-                .add(mockedComponent("y", "2", false, AsnPrimitiveType.INTEGER))
+                .add(mockedComponent("x", "1", false, AsnPrimitiveTypes.INTEGER))
+                .add(mockedComponent("y", "2", false, AsnPrimitiveTypes.INTEGER))
                 .build();
 
-        AsnSchemaType choice = MockAsnSchemaType.builder(AsnPrimitiveType.CHOICE)
+        AsnSchemaType choice = MockAsnSchemaType.builder(AsnPrimitiveTypes.CHOICE)
                 .addComponent(choiceComponents.get(0))
                 .addComponent(choiceComponents.get(1))
                 .build();
@@ -330,7 +330,7 @@ public class AsnSchemaTypeConstructedTest
                 .add(mockedComponent("c", "", false, choice))
                 .build();
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -352,20 +352,19 @@ public class AsnSchemaTypeConstructedTest
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.of(mockedComponent("a",
                         "1",
                         false,
-                        AsnPrimitiveType.INTEGER),
-                mockedComponent("b", "2", true, AsnPrimitiveType.INTEGER),
-                mockedComponent("c", "3", false, AsnPrimitiveType.INTEGER));
+                        AsnPrimitiveTypes.INTEGER),
+                mockedComponent("b", "2", true, AsnPrimitiveTypes.INTEGER),
+                mockedComponent("c", "3", false, AsnPrimitiveTypes.INTEGER));
 
         DecodingSession decodingSession = mock(DecodingSession.class);
         when(decodingSession.getIndex(any(AsnSchemaTag.class))).thenReturn(0);
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.DEFAULT);
         instance.performTagging();
         instance.checkForDuplicates();
-
 
         final Optional<AsnSchemaComponentType> resultA = instance.getMatchingChild("0[1]",
                 decodingSession);
@@ -400,21 +399,18 @@ public class AsnSchemaTypeConstructedTest
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.of(mockedComponent("a",
                         "1",
                         false,
-                        AsnPrimitiveType.INTEGER),
-                mockedComponent("b", "2", false, AsnPrimitiveType.INTEGER));
-
+                        AsnPrimitiveTypes.INTEGER),
+                mockedComponent("b", "2", false, AsnPrimitiveTypes.INTEGER));
 
         DecodingSession decodingSession = mock(DecodingSession.class);
         when(decodingSession.getIndex(any(AsnSchemaTag.class))).thenReturn(10); // it should not matter what the index is
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SET,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SET,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.DEFAULT);
         instance.performTagging();
         instance.checkForDuplicates();
-
-
 
         final Optional<AsnSchemaComponentType> result = instance.getMatchingChild("10[2]",
                 decodingSession);
@@ -435,23 +431,23 @@ public class AsnSchemaTypeConstructedTest
 
         final ImmutableList<AsnSchemaComponentType> choicechoiceComponents
                 = ImmutableList.<AsnSchemaComponentType>builder()
-                .add(mockedComponent("m", "3", false, AsnPrimitiveType.INTEGER))
-                .add(mockedComponent("n", "4", false, AsnPrimitiveType.INTEGER))
+                .add(mockedComponent("m", "3", false, AsnPrimitiveTypes.INTEGER))
+                .add(mockedComponent("n", "4", false, AsnPrimitiveTypes.INTEGER))
                 .build();
 
-        AsnSchemaType choicechoice = MockAsnSchemaType.builder(AsnPrimitiveType.CHOICE)
+        AsnSchemaType choicechoice = MockAsnSchemaType.builder(AsnPrimitiveTypes.CHOICE)
                 .addComponent(choicechoiceComponents.get(0))
                 .addComponent(choicechoiceComponents.get(1))
                 .build();
 
         final ImmutableList<AsnSchemaComponentType> choiceComponents
                 = ImmutableList.<AsnSchemaComponentType>builder()
-                .add(mockedComponent("x", "1", false, AsnPrimitiveType.INTEGER))
-                .add(mockedComponent("y", "2", false, AsnPrimitiveType.INTEGER))
+                .add(mockedComponent("x", "1", false, AsnPrimitiveTypes.INTEGER))
+                .add(mockedComponent("y", "2", false, AsnPrimitiveTypes.INTEGER))
                 .add(mockedComponent("z", "", false, choicechoice))
                 .build();
 
-        AsnSchemaType choice = MockAsnSchemaType.builder(AsnPrimitiveType.CHOICE)
+        AsnSchemaType choice = MockAsnSchemaType.builder(AsnPrimitiveTypes.CHOICE)
                 .addComponent(choiceComponents.get(0))
                 .addComponent(choiceComponents.get(1))
                 .addComponent(choiceComponents.get(2))
@@ -464,18 +460,20 @@ public class AsnSchemaTypeConstructedTest
                 .add(mockedComponent("c", "", false, choice))
                 .build();
 
-
         DecodingSession decodingSession = mock(DecodingSession.class);
 
         // account for the recursive call that would decorate the tag further.
-        AsnSchemaComponentType recursive = mockedComponent("z/n", "4", false, AsnPrimitiveType.INTEGER);
+        AsnSchemaComponentType recursive = mockedComponent("z/n",
+                "4",
+                false,
+                AsnPrimitiveTypes.INTEGER);
         when(choice.getMatchingChild(eq("2[4]"),
                 any(DecodingSession.class))).thenReturn(Optional.of(recursive));
 
         // go straight to the choice
         when(decodingSession.getIndex(any(AsnSchemaTag.class))).thenReturn(2);
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -489,7 +487,6 @@ public class AsnSchemaTypeConstructedTest
         assertEquals(recursive.getType(), result.get().getType());
     }
 
-
     @Test
     public void testGetAllComponents() throws Exception
     {
@@ -497,11 +494,11 @@ public class AsnSchemaTypeConstructedTest
         // choice components
         final ImmutableList<AsnSchemaComponentType> choiceComponents
                 = ImmutableList.<AsnSchemaComponentType>builder()
-                .add(mockedComponent("x", "1", false, AsnPrimitiveType.INTEGER))
-                .add(mockedComponent("y", "2", false, AsnPrimitiveType.INTEGER))
+                .add(mockedComponent("x", "1", false, AsnPrimitiveTypes.INTEGER))
+                .add(mockedComponent("y", "2", false, AsnPrimitiveTypes.INTEGER))
                 .build();
 
-        AsnSchemaType choice = MockAsnSchemaType.builder(AsnPrimitiveType.CHOICE)
+        AsnSchemaType choice = MockAsnSchemaType.builder(AsnPrimitiveTypes.CHOICE)
                 .addComponent(choiceComponents.get(0))
                 .addComponent(choiceComponents.get(1))
                 .build();
@@ -513,7 +510,7 @@ public class AsnSchemaTypeConstructedTest
                 .add(mockedComponent("c", "", false, choice))
                 .build();
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 components,
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -534,7 +531,7 @@ public class AsnSchemaTypeConstructedTest
     public void testVisitor() throws ParseException
     {
 
-        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveType.SEQUENCE,
+        AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
                 ImmutableList.<AsnSchemaComponentType>of(),
                 AsnModuleTaggingMode.AUTOMATIC);
@@ -542,8 +539,6 @@ public class AsnSchemaTypeConstructedTest
         Object o = instance.accept(BaseAsnSchemaTypeTest.getVisitor());
         assertEquals("Got AsnSchemaTypeConstructed", o);
     }
-
-
 
     /**
      * Creates a mock {@link AsnSchemaComponentType} instance, defaulting to a NULL type
@@ -560,7 +555,7 @@ public class AsnSchemaTypeConstructedTest
      */
     private AsnSchemaComponentType mockedComponent(String name, String tag, boolean isOptional)
     {
-        return mockedComponent(name, tag, isOptional, AsnPrimitiveType.NULL);
+        return mockedComponent(name, tag, isOptional, AsnPrimitiveTypes.INVALID);
     }
 
     /**

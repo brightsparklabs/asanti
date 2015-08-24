@@ -5,9 +5,9 @@
 
 package com.brightsparklabs.asanti.decoder;
 
-import com.brightsparklabs.asanti.common.DecodeException;
 import com.brightsparklabs.asanti.decoder.builtin.*;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -166,6 +166,22 @@ public class AsnByteDecoder
     public static String decodeAsEmbeddedPDV(byte[] bytes) throws DecodeException
     {
         return EmbeddedPDVDecoder.getInstance().decode(bytes);
+    }
+
+    /**
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#Enumerated}
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the decoded bytes
+     *
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
+     */
+    public static String decodeAsEnumerated(byte[] bytes) throws DecodeException
+    {
+        return EnumeratedDecoder.getInstance().decode(bytes);
     }
 
     /**

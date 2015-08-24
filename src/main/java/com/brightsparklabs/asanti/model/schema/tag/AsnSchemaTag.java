@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -206,9 +206,9 @@ public class AsnSchemaTag
     }
 
     /**
-     * Returns the raw tag (that came from the AsnData)
+     * Returns the raw tag (that came from the AsantiAsnData)
      *
-     * @return the raw tag (that came from the AsnData)
+     * @return the raw tag (that came from the AsantiAsnData)
      */
     public String getRawTag()
     {
@@ -301,14 +301,16 @@ public class AsnSchemaTag
             .put(AsnBuiltinType.Integer, "2")
             .put(AsnBuiltinType.BitString, "3")
             .put(AsnBuiltinType.OctetString, "4")
-            .put(AsnBuiltinType.Null, "5").put(AsnBuiltinType.Oid, "6")
-                    //.put(AsnBuiltinType. ObjectDescriptor, 7)
+            .put(AsnBuiltinType.Null, "5")
+            .put(AsnBuiltinType.Oid, "6")
+            .put(AsnBuiltinType.ObjectDescriptor, "7")
             .put(AsnBuiltinType.InstanceOf, "8")
             .put(AsnBuiltinType.External, "8")
             .put(AsnBuiltinType.Real, "9")
             .put(AsnBuiltinType.Enumerated, "10")
             .put(AsnBuiltinType.EmbeddedPDV, "11")
-            .put(AsnBuiltinType.Utf8String, "12").put(AsnBuiltinType.RelativeOid, "13")
+            .put(AsnBuiltinType.Utf8String, "12")
+            .put(AsnBuiltinType.RelativeOid, "13")
                     //.put( reserved, 14)
                     //.put( reserved, 15)
             .put(AsnBuiltinType.Sequence, "16")
@@ -336,13 +338,16 @@ public class AsnSchemaTag
             .put(2, AsnBuiltinType.Integer)
             .put(3, AsnBuiltinType.BitString)
             .put(4, AsnBuiltinType.OctetString)
-            .put(5, AsnBuiltinType.Null).put(6, AsnBuiltinType.Oid)
-                    //.put(AsnBuiltinType. ObjectDescriptor, 7)
-            .put(8, AsnBuiltinType.InstanceOf).put(9, AsnBuiltinType.External)
+            .put(5, AsnBuiltinType.Null)
+            .put(6, AsnBuiltinType.Oid)
+            .put(7, AsnBuiltinType.ObjectDescriptor)
+            .put(8, AsnBuiltinType.InstanceOf)
+            .put(9, AsnBuiltinType.External)
                     //.put(9, AsnBuiltinType.Real)
             .put(10, AsnBuiltinType.Enumerated)
             .put(11, AsnBuiltinType.EmbeddedPDV)
-            .put(12, AsnBuiltinType.Utf8String).put(13, AsnBuiltinType.RelativeOid)
+            .put(12, AsnBuiltinType.Utf8String)
+            .put(13, AsnBuiltinType.RelativeOid)
                     //.put( reserved, 14)
                     //.put( reserved, 15)
             .put(16, AsnBuiltinType.Sequence)

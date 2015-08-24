@@ -4,11 +4,11 @@
  */
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
@@ -31,12 +31,12 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
 
     @Override
     public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
-            DecodedAsnData decodedAsnData)
+            AsantiAsnData asnData)
     {
         final Set<DecodedTagValidationFailure> tagFailures = Sets.newHashSet();
 
         // validate data
-        final byte[] bytes = decodedAsnData.getBytes(tag).orNull();
+        final byte[] bytes = asnData.getBytes(tag).orNull();
         final Iterable<ByteValidationFailure> byteFailures = validate(bytes);
         for (ByteValidationFailure byteFailure : byteFailures)
         {
@@ -47,7 +47,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         }
 
         // validate against the tag's constraint
-        final AsnSchemaType type = decodedAsnData.getType(tag).or(AsnSchemaType.NULL);
+        final AsnSchemaType type = asnData.getType(tag).or(AsnSchemaType.NULL);
         final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
         final Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
         for (AsnSchemaConstraint constraint : constraints)

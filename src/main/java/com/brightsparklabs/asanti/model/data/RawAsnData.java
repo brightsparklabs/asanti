@@ -5,6 +5,7 @@
 
 package com.brightsparklabs.asanti.model.data;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * @author brightSPARK Labs
  */
-public interface AsnData
+public interface RawAsnData
 {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -58,10 +59,10 @@ public interface AsnData
      * @param rawTag
      *         tag associated with the data
      *
-     * @return data associated with the specified tag or an empty byte array if the tag does not
+     * @return data associated with the specified tag or {@code Optional.absent()} if the tag does not
      * exist
      */
-    public byte[] getBytes(String rawTag);
+    public Optional<byte[]> getBytes(String rawTag);
 
     /**
      * Returns a mapping of all tags to the data (bytes) associated with them <p> E.g.

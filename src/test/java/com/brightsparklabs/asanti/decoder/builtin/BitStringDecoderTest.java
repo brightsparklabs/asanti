@@ -5,10 +5,14 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link BitStringDecoder}
@@ -34,6 +38,13 @@ public class BitStringDecoderTest
         // test valid values of unused bits with single byte bit string
         byte[] bytes = { (byte) 0x05, (byte) 0xE0 };
         assertEquals("111", instance.decode(bytes));
+
+        // test other overload
+        AsantiAsnData data = mock(AsantiAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
+
+        assertEquals("111", instance.decode(tag, data));
 
         bytes = new byte[] { (byte) 0x04, (byte) 0xE0 };
         assertEquals("1110", instance.decode(bytes));
@@ -65,7 +76,7 @@ public class BitStringDecoderTest
         {
             bytes = new byte[] { (byte) 0x08, (byte) 0xFF };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException e)
         {
@@ -76,7 +87,7 @@ public class BitStringDecoderTest
         {
             bytes = new byte[] { (byte) 0x0F, (byte) 0xFF, (byte) 0xE0 };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException e)
         {
@@ -87,7 +98,7 @@ public class BitStringDecoderTest
         {
             bytes = new byte[] { };
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException e)
         {
@@ -100,5 +111,13 @@ public class BitStringDecoderTest
         // test that decodeAsString produces the same value as decode
         byte[] bytes = { (byte) 0x05, (byte) 0xE0 };
         assertEquals(instance.decode(bytes), instance.decodeAsString(bytes));
+
+        // test other overload
+        AsantiAsnData data = mock(AsantiAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
+
+        assertEquals(instance.decode(tag, data), instance.decodeAsString(tag, data));
+
     }
 }

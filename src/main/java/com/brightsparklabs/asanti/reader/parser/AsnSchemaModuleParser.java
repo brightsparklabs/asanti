@@ -75,7 +75,8 @@ public class AsnSchemaModuleParser
      * @param moduleText
      *         all text from module within the ASN.1 schema
      *
-     * @return an {@link AsnSchemaModule.Builder} representing the parsed data
+     * @return an {@link com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder}
+     * representing the parsed data
      *
      * @throws NullPointerException
      *         if {@code moduleText} is {@code null}

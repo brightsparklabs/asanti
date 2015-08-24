@@ -2,7 +2,7 @@ package com.brightsparklabs.asanti.model.schema.type;
 
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -47,7 +47,7 @@ public class AsnSchemaTypePlaceholderTest
         AsnSchemaConstraint constraint1 = mock(AsnSchemaConstraint.class);
         AsnSchemaConstraint constraint2 = mock(AsnSchemaConstraint.class);
 
-        when(indirectType.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
+        when(indirectType.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.SEQUENCE);
         when(indirectType.getAllComponents()).thenReturn(ImmutableList.of(mock(
                 AsnSchemaComponentType.class), mock(AsnSchemaComponentType.class)));
 
@@ -141,12 +141,12 @@ public class AsnSchemaTypePlaceholderTest
     public void testSetIndirectType() throws Exception
     {
         // test that if the placeholder is not resolved it does not delegate
-        assertEquals(AsnPrimitiveType.NULL, instance.getPrimitiveType());
+        assertEquals(AsnPrimitiveTypes.INVALID, instance.getPrimitiveType());
         verify(indirectType, never()).getPrimitiveType();
         instance.setIndirectType(indirectType);
 
         // and that it does delegate after it is resolved
-        assertEquals(AsnPrimitiveType.SEQUENCE, instance.getPrimitiveType());
+        assertEquals(AsnPrimitiveTypes.SEQUENCE, instance.getPrimitiveType());
         verify(indirectType).getPrimitiveType();
     }
 

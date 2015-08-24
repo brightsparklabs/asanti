@@ -40,11 +40,11 @@ cd asanti
 // java
 
 // parse an ASN BER/DER binary file
-final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerFile(berFile);
-final AsnData asnData = allAsnData.first();
+final ImmutableList<RawAsnData> allRawAsnData = Asanti.readAsnBerFile(berFile);
+final RawAsnData rawAsnData = allRawAsnData.first();
 
 // print raw tags
-asnData.getRawTags();
+rawAsnData.getRawTags();
 /* => elements:
     - "/1/0/1"
     - "/1/0/2"
@@ -57,12 +57,12 @@ asnData.getRawTags();
 */
 
 // get the data as bytes
-asnData.getBytes("/1/0/1");
+rawAsnData.getBytes("/1/0/1");
 /* =>:
     [ 0x32, 0x30, 0x31, 0x30, 0x30, 0x34, 0x31, 0x33, 0x31, 0x34,
       0x30, 0x37, 0x35, 0x37, 0x2E, 0x37, 0x31, 0x32, 0x5A ]
 */
-asnData.getBytes("/50/0");
+rawAsnData.getBytes("/50/0");
 // => []
 ```
 
@@ -210,11 +210,11 @@ Decoding data against the schema can be achieved via:
 
 ```java
 // java
-final ImmutableList<DecodedAsnData> allDecodedData = Asanti.decodeAsnData(berFile, schemaFile, "Document");
-final DecodedAsnData allDecodedData = allDecodedData.first();
+final ImmutableList<AsnData> allDecodedData = Asanti.decodeAsnData(berFile, schemaFile, "Document");
+final AsnData asnData = allDecodedData.first();
 
 // all decoded tags
-decodedData.getTags();
+asnData.getTags();
 /* => elements:
     - "/Document/header/published/date"
     - "/Document/header/published/country"
@@ -225,29 +225,29 @@ decodedData.getTags();
 */
 
 // unmapped tags (i.e. tags which do not exist in schema)
-decodedData.getUnmappedTags();
+asnData.getUnmappedTags();
 /* => elements:
     - "/Document/body/content/99"
     - "/Document/99/1/1"
 */
 
 // test presence of tags (fully decoded)
-decodedData.contains("/Document/header/published/date"); // => true
-decodedData.contains("/Document/header/published/Date"); // => false (incorrect capitalization)
-decodedData.contains("/Document/header/published");      // => false ('published' is not a leaf node)
-decodedData.contains("/Document/body/prefix/text");      // => true
-decodedData.contains("/Document/body/suffix/text");      // => false (no 'suffix' node present)
-decodedData.contains("/Document/body/content/text");     // => true
+asnData.contains("/Document/header/published/date"); // => true
+asnData.contains("/Document/header/published/Date"); // => false (incorrect capitalization)
+asnData.contains("/Document/header/published");      // => false ('published' is not a leaf node)
+asnData.contains("/Document/body/prefix/text");      // => true
+asnData.contains("/Document/body/suffix/text");      // => false (no 'suffix' node present)
+asnData.contains("/Document/body/content/text");     // => true
 
 // test presence of unmapped tags
-decodedData.contains("/Document/body/content/99");       // => true
-decodedData.contains("/Document/99/1/1");                // => true
+asnData.contains("/Document/body/content/99");       // => true
+asnData.contains("/Document/99/1/1");                // => true
 
 // test presence of non-existent tags
-decodedData.contains("/Document/body/content/date");     // => false
-decodedData.contains("/Document/99/2/1");                // => false
-decodedData.contains("/99/2/1");                         // => false
-decodedData.contains("/Car/door/material");              // => false
+asnData.contains("/Document/body/content/date");     // => false
+asnData.contains("/Document/99/2/1");                // => false
+asnData.contains("/99/2/1");                         // => false
+asnData.contains("/Car/door/material");              // => false
 ```
 
 ##### Extracting decoded data
@@ -256,19 +256,19 @@ decodedData.contains("/Car/door/material");              // => false
 // java
 
 // get data as most appropriate Java Object via implicit cast (requires knowledge of schema)
-final Timestamp date = decodedData.getDecodedObject("/Document/header/published/date");
+final Timestamp date = asnData.getDecodedObject("/Document/header/published/date");
 // => bytes decoded as a Timestamp
 
 // get data as a printable string
-decodedData.getPrintableString("/Document/header/published/date");
+asnData.getPrintableString("/Document/header/published/date");
 // => "2010-04-13T14:07:57.712Z"
 
 // get data as hex string
-decodedData.getHexString("/Document/header/published/date");
+asnData.getHexString("/Document/header/published/date");
 // => "0x32303130303431333134303735372E3731325A"
 
 // get the data as bytes
-final byte[] bytes = decodedData.getBytes("/Document/header/published/date");
+final byte[] bytes = asnData.getBytes("/Document/header/published/date");
 /* =>:
     [ 0x32, 0x30, 0x31, 0x30, 0x30, 0x34, 0x31, 0x33,
       0x31, 0x34, 0x30, 0x37, 0x35, 0x37, 0x2E, 0x37,
@@ -289,13 +289,13 @@ final Timestamp timestamp = ByteDecoder.asGeneralizedTime(bytes);
 // java
 
 // get data as hex strings from all matching tags
-decodedData.getHexStringsMatching("/Document/header/published/.+");
+asnData.getHexStringsMatching("/Document/header/published/.+");
 // => map:
     - "/Document/header/published/date" => "0x32303130303431333134303735372E3731325A"
     - "/Document/header/published/country" => "0x4175737472616C6961"
 
 // get group of bytes
-decodedData.getBytesMatching("/Document/header/published/.+");
+asnData.getBytesMatching("/Document/header/published/.+");
 /* => map:
     - "/Document/header/published/date" =>
           [ 0x32, 0x30, 0x31, 0x30, 0x30, 0x34, 0x31, 0x33,
@@ -314,11 +314,11 @@ decodedData.getBytesMatching("/Document/header/published/.+");
 // java
 
 // parse an ASN BER/DER binary file
-final ImmutableList<AsnData> allAsnData = Asanti.readAsnBerFile(berFile);
-final AsnData asnData = allAsnData.first();
+final ImmutableList<RawAsnData> allRawAsnData = Asanti.readAsnBerFile(berFile);
+final AsnData rawAsnData = allRawAsnData.first();
 
 // print raw tags
-asnData.getRawTags();
+rawAsnData.getRawTags();
 /* => elements:
     - "/2/2/2[0]/1"
     - "/2/2/2[0]/2/1"
@@ -333,10 +333,10 @@ asnData.getRawTags();
 
 // decode against schema
 final AsnSchema schema = AsnSchemaFileReader.read(schemaFile);
-final DecodedAsnData decodedData = Asanti.decodeAsnData(asnData, schema);
+final AsnData asnData = Asanti.decodeAsnData(rawAsnData, schema);
 
 // all decoded tags
-decodedData.getTags();
+asnData.getTags();
 /* => elements:
     - "/Document/body/content/paragraph[0]/title"
     - "/Document/body/content/paragraph[0]/contributor/firstName"
@@ -350,7 +350,7 @@ decodedData.getTags();
 */
 
 // get data as printable strings from all matching tags
-decodedData.getPrintableStringsMatching("/Document/Paragraph[.+]/Point[.+]");
+asnData.getPrintableStringsMatching("/Document/Paragraph[.+]/Point[.+]");
 /* => map:
     - "/Document/body/content/paragraph[1]/point[0]" => "The sky is blue."
     - "/Document/body/content/paragraph[1]/point[1]" => "The grass is green."
@@ -366,12 +366,12 @@ Say decoding the data using the default schema produces the following:
 // java
 
 String tag = "/Document/header/published/date";
-decodedData.getPrintableString(tag);                         // => "2010-04-13T14:07:57.712Z"
-final Timestamp date = decodedData.getDecodedObject("tag");  // => bytes decoded as a Timestamp
+asnData.getPrintableString(tag);                         // => "2010-04-13T14:07:57.712Z"
+final Timestamp date = asnData.getDecodedObject("tag");  // => bytes decoded as a Timestamp
 
 tag = "/Document/body/lastModified/date";
-decodedData.getPrintableString(tag);                         // => "2014-04-13T14:07:57.712Z"
-final Timestamp date = decodedData.getDecodedObject(tag);    // => bytes decoded as a Timestamp
+asnData.getPrintableString(tag);                         // => "2014-04-13T14:07:57.712Z"
+final Timestamp date = asnData.getDecodedObject(tag);    // => bytes decoded as a Timestamp
 ```
 
 Custom decoders can be used to produce the following:
@@ -391,15 +391,15 @@ final Schema customSchema = Schemas.from(schema)
     .build();
 
 // decode using customised schema
-final DecodedAsnData decodedData = AsnAsanti.decodeAsnData(asnData, customSchema);
+final AsnData asnData = AsnAsanti.decodeAsnData(rawAsnData, customSchema);
 
 String tag = "/Document/header/published/date";
-decodedData.getPrintableString(tag);                       // => "About 5 months ago"
-final Integer date = decodedData.getDecodedObject(tag);    // => bytes decoded as an Integer
+asnData.getPrintableString(tag);                       // => "About 5 months ago"
+final Integer date = asnData.getDecodedObject(tag);    // => bytes decoded as an Integer
 
 tag = "/Document/body/lastModified/date";
-decodedData.getPrintableString(tag);                       // => "2014-04-13T14:07:58.712Z"
-final Timestamp date = decodedData.getDecodedObject(tag);  // => bytes decoded as a Timestamp with offset of 1000 ms
+asnData.getPrintableString(tag);                       // => "2014-04-13T14:07:58.712Z"
+final Timestamp date = asnData.getDecodedObject(tag);  // => bytes decoded as a Timestamp with offset of 1000 ms
 ```
 
 ##### Validating decoded data
@@ -408,7 +408,7 @@ final Timestamp date = decodedData.getDecodedObject(tag);  // => bytes decoded a
 // java
 
 final Validator validator = Validators.getDefault();
-final ValidationResult result = validator.validate(decodedAsnData);
+final ValidationResult result = validator.validate(asnData);
 final ValidationFailure failure = results.getFailures().first()
 
 failure.getType();     // => MandatoryFieldMissing
@@ -423,18 +423,18 @@ failure.getMessage();  // => "The field /Document/header/copyright/date cannot b
 
 final ValidationRule rule = new DateCutoffValidationRule("2014-01-01");
 
-final Validator customValidator = Validators.fromDefault()
+final Validator customValidator = Validators.newCustomValidatorBuilder()
     .withValidationRule(rule, "/Document/header/published/date")
     .withValidationRule(rule, "/Document/header/copyright/date")
     .withValidationRule(rule, "/Document/body/lastModified/date")
     .build();
 
-final ValidationResult result = customValidator.validate(decodedAsnData);
+final ValidationResult result = customValidator.validate(asnData);
 final ValidationFailure failure = results.getFailures().first()
 
-failure.getType();     // => DateCutoffFailed
-failure.getTag();      // => "/Document/header/published/date"
-failure.getMessage();  // => "The date in field /Document/header/copyright/date cannot be before 2014-01-01"
+failure.getFailureType();    // => DateCutoffFailed
+failure.getFailureTag();     // => "/Document/header/published/date"
+failure.getFailureReason();  // => "The date in field /Document/header/copyright/date cannot be before 2014-01-01"
 ```
 
 ## Licenses

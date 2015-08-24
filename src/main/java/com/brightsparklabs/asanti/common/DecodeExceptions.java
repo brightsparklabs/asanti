@@ -10,7 +10,8 @@
 
 package com.brightsparklabs.asanti.common;
 
-import com.brightsparklabs.asanti.validator.failure.ValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationFailure;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.collect.Iterables;
 
 /**
@@ -18,21 +19,19 @@ import com.google.common.collect.Iterables;
  *
  * @author brightSPARK Labs
  */
-public class DecodeException extends Exception
+public class DecodeExceptions
 {
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
-     *
-     * @param message
-     *         reason for the failure
+     * Default constructor. Private for static class.
      */
-    public DecodeException(String message)
+    private DecodeExceptions()
     {
-        super(message);
+        // static class should never be initialized
+        throw new AssertionError();
     }
 
     // -------------------------------------------------------------------------
@@ -40,7 +39,7 @@ public class DecodeException extends Exception
     // -------------------------------------------------------------------------
 
     /**
-     * Throws a DecodeException if the supplied iterable is non-empty (i.e. it contains failures).
+     * Throws a DecodeExceptions if the supplied iterable is non-empty (i.e. it contains failures).
      * The exception will contain details of the failures.
      *
      * @param failures

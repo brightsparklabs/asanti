@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class RelativeIriValidatorTest
     @Test
     public void testValidateTag() throws Exception
     {
-        // TODO: ASN-105 need to mock DecodedAsnData
+        // TODO: ASN-105 need to mock AsantiAsnData
     }
 
     @Test

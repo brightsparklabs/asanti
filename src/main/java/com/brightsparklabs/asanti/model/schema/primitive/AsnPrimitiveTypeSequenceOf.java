@@ -1,6 +1,8 @@
 package com.brightsparklabs.asanti.model.schema.primitive;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
 
 /**
  * A type used to represent the primitive builtin type SEQUENCE OF within ASN.1 This class is used
@@ -8,7 +10,7 @@ import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
  *
  * @author brightSPARK Labs
  */
-public class AsnPrimitiveTypeSequenceOf implements AsnPrimitiveType
+public class AsnPrimitiveTypeSequenceOf implements AsnPrimitiveType.SequenceOf
 {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnPrimitiveType

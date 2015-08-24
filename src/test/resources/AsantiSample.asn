@@ -27,7 +27,7 @@ BEGIN
         description [6] SET
         {
             numberLines [0] INTEGER,
-            summary     [1] OCTET STRING
+            summary     [1] UTF8String
         } OPTIONAL
     }
 
@@ -52,7 +52,7 @@ BEGIN
     PublishedMetadata ::= SEQUENCE
     {
         date    [1] GeneralizedTime,
-        country [2] OCTET STRING OPTIONAL
+        country [2] UTF8String OPTIONAL
     }
 
     ModificationMetadata ::= SEQUENCE
@@ -63,33 +63,33 @@ BEGIN
 
     Section-Note ::= SEQUENCE
     {
-        text [1] OCTET STRING
+        text [1] UTF8String
     }
 
     Section-Main ::= SEQUENCE
     {
-        text       [1] OCTET STRING OPTIONAL,
+        text       [1] UTF8String OPTIONAL,
         paragraphs [2] SEQUENCE OF Paragraph,
         sections   [3] SET OF
                        SET
                        {
                             number [1] INTEGER,
-                            text   [2] OCTET STRING
+                            text   [2] UTF8String
                        }
     }
 
     Paragraph ::=  SEQUENCE
     {
-        title        [1] OCTET STRING,
+        title        [1] UTF8String,
         contributor  [2] Person OPTIONAL,
-        points       [3] SEQUENCE OF OCTET STRING
+        points       [3] SEQUENCE OF UTF8String
     }
 
     References ::= SEQUENCE (SIZE (1..50)) OF
     SEQUENCE
     {
-        title [1] OCTET STRING,
-        url   [2] OCTET STRING
+        title [1] UTF8String,
+        url   [2] UTF8String
     }
 
     Date-Due ::= INTEGER
@@ -115,8 +115,8 @@ BEGIN
 
     Person ::= SEQUENCE
     {
-        firstName [1] OCTET STRING,
-        lastName  [2] OCTET STRING,
+        firstName [1] UTF8String,
+        lastName  [2] UTF8String,
         title     [3] ENUMERATED
             { mr, mrs, ms, dr, rev } OPTIONAL,
         gender        Gender OPTIONAL,

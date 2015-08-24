@@ -5,21 +5,27 @@
 package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsnSchema} which conform to the test ASN.1
- * schema defined in the {@linkplain README.md} file
+ * schema defined in the {@code README.md} file
  *
  * @author brightSPARK Labs
  */
@@ -29,7 +35,7 @@ public class MockAsnSchema
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** the example schema defined in the {@linkplain README.md} file */
+    /** the example schema defined in the {@code README.md} file */
     public static final String TEST_SCHEMA_TEXT = new StringBuilder().append("Document-PDU\n")
             .append("    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n")
             .append("DEFINITIONS")
@@ -152,6 +158,9 @@ public class MockAsnSchema
 
     private static Set<String> rawTags = Sets.newLinkedHashSet();
 
+    private static final Timestamp publishDate = Timestamp.valueOf("2015-01-01 00:00:00.0");
+
+    private static final Timestamp lastModifiedDate = Timestamp.valueOf("2015-02-02 00:00:00.0");
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -174,41 +183,48 @@ public class MockAsnSchema
 
         ImmutableSet<OperationResult<DecodedTag, String>> results
                 = ImmutableSet.<OperationResult<DecodedTag, String>>builder()
-                .add(configureGetDecodedTag("/1/0/1",
+                .add(configureGetDecodedTag("0[1]/0[0]/1[1]",
                         "/Document/header/published/date",
                         true,
-                        AsnBuiltinType.Date,
-                        instance))
-                .add(configureGetDecodedTag("/2/0/0",
+                        AsnBuiltinType.GeneralizedTime,
+                        instance,
+                        publishDate))
+                .add(configureGetDecodedTag("1[2]/0[0]/0[0]",
                         "/Document/body/lastModified/date",
                         true,
-                        AsnBuiltinType.Date,
-                        instance))
-                .add(configureGetDecodedTag("/2/1/1",
+                        AsnBuiltinType.GeneralizedTime,
+                        instance,
+                        lastModifiedDate))
+                .add(configureGetDecodedTag("1[2]/1[1]/0[1]",
                         "/Document/body/prefix/text",
                         true,
-                        AsnBuiltinType.OctetString,
-                        instance))
-                .add(configureGetDecodedTag("/2/2/1",
+                        AsnBuiltinType.Utf8String,
+                        instance,
+                        "prefix text"))
+                .add(configureGetDecodedTag("1[2]/2[2]/0[1]",
                         "/Document/body/content/text",
                         true,
-                        AsnBuiltinType.OctetString,
-                        instance))
-                .add(configureGetDecodedTag("/3/0/1",
-                        "/Document/footer/author/firstName",
+                        AsnBuiltinType.Utf8String,
+                        instance,
+                        "content text"))
+                .add(configureGetDecodedTag("2[3]/0[0]/0[UNIVERSAL 16]/0[1]",
+                        "/Document/footer/authors[0]/firstName",
                         true,
-                        AsnBuiltinType.OctetString,
-                        instance))
-                .add(configureGetDecodedTag("/2/2/99",
-                        "/Document/body/content/99",
+                        AsnBuiltinType.Utf8String,
+                        instance,
+                        "firstName"))
+                .add(configureGetDecodedTag("1[2]/0[0]/0[99]",
+                        "/Document/body/content/0[99]",
                         false,
-                        AsnBuiltinType.Null,
-                        instance))
-                .add(configureGetDecodedTag("/99/1/1",
-                        "/Document/99/1/1",
+                        null,
+                        instance,
+                        ""))
+                .add(configureGetDecodedTag("0[99]/0[1]/0[1]",
+                        "/Document/0[99]/0[1]/0[1]",
                         false,
-                        AsnBuiltinType.Null,
-                        instance))
+                        null,
+                        instance,
+                        ""))
                 .build();
 
         String topLevelTypeName = "Document";
@@ -221,6 +237,30 @@ public class MockAsnSchema
         when(instance.getDecodedTags(emptyTags, topLevelTypeName)).thenReturn(emptyResults);
 
         return instance;
+    }
+
+    /**
+     * Returns (a copy) the timestamps that the mocked "/Document/header/published/date" will
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
+     *
+     * @return (a copy) the timestamps that the mocked "/Document/header/published/date" will
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
+     */
+    public static Timestamp getPublishDate()
+    {
+        return new Timestamp(publishDate.getTime());
+    }
+
+    /**
+     * Returns (a copy) the timestamps that the mocked "/Document/body/lastModified/date" will
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
+     *
+     * @return (a copy) the timestamps that the mocked "/Document/body/lastModified/date" will
+     * provide with calls to {@link AsantiAsnData#getDecodedObject}
+     */
+    public static Timestamp getLastModifiedDate()
+    {
+        return new Timestamp(lastModifiedDate.getTime());
     }
 
     // -------------------------------------------------------------------------
@@ -239,20 +279,32 @@ public class MockAsnSchema
      *         the value to return for {@link OperationResult#wasSuccessful()}
      * @param builtinType
      *         the value to return for {@link AsnSchemaType#getBuiltinType()}
+     * @param decodedValue
+     *         the value to return from decoding any input bytes
      */
-    private static OperationResult<DecodedTag, String> configureGetDecodedTag(String rawTag,
+    private static <T> OperationResult<DecodedTag, String> configureGetDecodedTag(String rawTag,
             String decodedTagPath, boolean isFullyDecoded, AsnBuiltinType builtinType,
-            AsnSchema schema)
+            AsnSchema schema, T decodedValue) throws DecodeException
     {
         final DecodedTag decodedTag = mock(DecodedTag.class);
 
         final AsnSchemaType type = mock(AsnSchemaType.class);
+
+        final AsnPrimitiveType primitiveType = mock(AsnPrimitiveType.class);
+        final BuiltinTypeDecoder decoder = mock(BuiltinTypeDecoder.class);
+        when(decoder.decodeAsString(anyString(),
+                any(AsantiAsnData.class))).thenReturn(decodedValue.toString());
+        when(decoder.decode(anyString(), any(AsantiAsnData.class))).thenReturn(decodedValue);
+
+        when(primitiveType.accept(any(AsnPrimitiveTypeVisitor.class))).thenReturn(decoder);
+
+        when(type.getPrimitiveType()).thenReturn(primitiveType);
         when(type.getBuiltinType()).thenReturn(builtinType);
+        when(decodedTag.getType()).thenReturn(type);
 
         when(decodedTag.getTag()).thenReturn(decodedTagPath);
         when(decodedTag.getRawTag()).thenReturn(rawTag);
-        when(decodedTag.getType()).thenReturn(type);
-        when(decodedTag.getType()).thenReturn(type);
+
         when(decodedTag.isFullyDecoded()).thenReturn(isFullyDecoded);
 
         @SuppressWarnings("unchecked")
@@ -262,8 +314,10 @@ public class MockAsnSchema
         when(result.wasSuccessful()).thenReturn(isFullyDecoded);
         when(result.getFailureReason()).thenReturn(Optional.of("mock failure reason"));
 
-
-        when(schema.getType(eq(decodedTagPath))).thenReturn(Optional.of(type));
+        if (isFullyDecoded)
+        {
+            when(schema.getType(eq(decodedTagPath))).thenReturn(Optional.of(type));
+        }
 
         rawTags.add(rawTag);
 

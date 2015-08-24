@@ -9,14 +9,14 @@
  */
 package com.brightsparklabs.asanti.mocks.model.data;
 
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.google.common.base.Optional;
 
 import static org.mockito.Mockito.*;
 
 /**
- * Utility class for obtaining mocked instances of {@link DecodedAsnData} which conform to the test
+ * Utility class for obtaining mocked instances of {@link AsantiAsnData} which conform to the test
  * ASN.1 schema defined in the {@code README.md} file
  *
  * @author brightSPARK Labs
@@ -28,23 +28,23 @@ public class MockDecodedAsnData
     // -------------------------------------------------------------------------
 
     /**
-     * Return a builder for creating mocked instances of {@link DecodedAsnData}.
+     * Return a builder for creating mocked instances of {@link AsantiAsnData}.
      *
      * By default the returned builder will include the following two tags:
      *
      * <ul>
      *
-     * <li>"/null" which returns {@code null} when {@link DecodedAsnData#getBytes(String)} is
+     * <li>"/null" which returns {@code null} when {@link AsantiAsnData#getBytes(String)} is
      * called</li>
      *
-     * <li>"/empty" which returns an empty byte array when {@link DecodedAsnData#getBytes(String)}
+     * <li>"/empty" which returns an empty byte array when {@link AsantiAsnData#getBytes(String)}
      * is called</li>
      *
      * </ul>
      *
      * @param type
      *         the ASN.1 Type Definition to return for all calls to {@link
-     *         DecodedAsnData#getType(String)}
+     *         AsantiAsnData#getType(String)}
      */
     public static Builder builder(AsnSchemaType type) throws Exception
     {
@@ -56,7 +56,7 @@ public class MockDecodedAsnData
     // -------------------------------------------------------------------------
 
     /**
-     * Builder for creating mocked instances of {@link DecodedAsnData}
+     * Builder for creating mocked instances of {@link AsantiAsnData}
      *
      * @author brightSPARK Labs
      */
@@ -67,7 +67,7 @@ public class MockDecodedAsnData
         // ---------------------------------------------------------------------
 
         /** instance being built */
-        final DecodedAsnData mockedInstance = mock(DecodedAsnData.class);
+        final AsantiAsnData mockedInstance = mock(AsantiAsnData.class);
 
         // ---------------------------------------------------------------------
         // CONSTRUCTION
@@ -78,7 +78,7 @@ public class MockDecodedAsnData
          *
          * @param type
          *         the ASN.1 Type Definition to return for all calls of {@link
-         *         DecodedAsnData#getType(String)}
+         *         AsantiAsnData#getType(String)}
          */
         private Builder(AsnSchemaType type)
         {
@@ -119,9 +119,9 @@ public class MockDecodedAsnData
         /**
          * Creates a mocked instance from the data in this builder
          *
-         * @return a mocked instance of {@link DecodedAsnData}
+         * @return a mocked instance of {@link AsantiAsnData}
          */
-        public DecodedAsnData build()
+        public AsantiAsnData build()
         {
             return mockedInstance;
         }

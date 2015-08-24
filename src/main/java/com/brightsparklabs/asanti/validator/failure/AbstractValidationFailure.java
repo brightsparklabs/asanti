@@ -9,7 +9,8 @@
  */
 package com.brightsparklabs.asanti.validator.failure;
 
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
+import com.brightsparklabs.assam.validator.ValidationFailure;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -70,5 +71,11 @@ public class AbstractValidationFailure implements ValidationFailure
     public String getFailureReason()
     {
         return failureReason;
+    }
+
+    @Override
+    public String getFailureTag()
+    {
+        return "";
     }
 }

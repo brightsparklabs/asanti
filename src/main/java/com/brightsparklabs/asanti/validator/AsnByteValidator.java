@@ -10,7 +10,7 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
@@ -148,6 +148,19 @@ public class AsnByteValidator
     public static ImmutableSet<ByteValidationFailure> validateAsEmbeddedPDV(byte[] bytes)
     {
         return EmbeddedPDVValidator.getInstance().validate(bytes);
+    }
+
+    /**
+     * Validates the supplied bytes as an {@link AsnBuiltinType#Enumerated}
+     *
+     * @param bytes
+     *         bytes to validate
+     *
+     * @return any failures which occurred while validating the supplied byte
+     */
+    public static ImmutableSet<ByteValidationFailure> validateAsEnumerated(byte[] bytes)
+    {
+        return EnumeratedValidator.getInstance().validate(bytes);
     }
 
     /**

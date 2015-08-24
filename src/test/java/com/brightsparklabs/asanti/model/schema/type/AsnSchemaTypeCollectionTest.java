@@ -1,9 +1,9 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
 import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;
@@ -43,14 +43,14 @@ public class AsnSchemaTypeCollectionTest
         wrappedSequence = mock(AsnSchemaType.class);
         // For the sake of testing that the Collection is delegating to the element type make it
         // return testable values
-        when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveType.SEQUENCE);
+        when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.SEQUENCE);
         when(wrappedSequence.getBuiltinType()).thenReturn(AsnBuiltinType.Sequence);
         when(wrappedSequence.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
                 Optional.<AsnSchemaComponentType>absent());
         when(wrappedSequence.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
                 Optional.of(component));
 
-        instance = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF,
+        instance = new AsnSchemaTypeCollection(AsnPrimitiveTypes.SEQUENCE_OF,
                 AsnSchemaConstraint.NULL,
                 wrappedSequence);
 
@@ -83,7 +83,7 @@ public class AsnSchemaTypeCollectionTest
 
         try
         {
-            new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF,
+            new AsnSchemaTypeCollection(AsnPrimitiveTypes.SEQUENCE_OF,
                     AsnSchemaConstraint.NULL,
                     null);
             fail("NullPointerException not thrown");
@@ -95,7 +95,7 @@ public class AsnSchemaTypeCollectionTest
         // check we can't create one for non-collection types.
         try
         {
-            new AsnSchemaTypeCollection(AsnPrimitiveType.IA5_STRING,
+            new AsnSchemaTypeCollection(AsnPrimitiveTypes.IA5_STRING,
                     AsnSchemaConstraint.NULL,
                     AsnSchemaType.NULL);
             fail("IllegalArgumentException not thrown");
@@ -105,10 +105,10 @@ public class AsnSchemaTypeCollectionTest
         }
 
         AsnSchemaType wrappedInteger = mock(AsnSchemaType.class);
-        when(wrappedInteger.getPrimitiveType()).thenReturn(AsnPrimitiveType.INTEGER);
+        when(wrappedInteger.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.INTEGER);
 
         AsnSchemaTypeCollection collection
-                = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF,
+                = new AsnSchemaTypeCollection(AsnPrimitiveTypes.SEQUENCE_OF,
                 AsnSchemaConstraint.NULL,
                 wrappedInteger);
 
@@ -118,7 +118,7 @@ public class AsnSchemaTypeCollectionTest
     @Test
     public void testGetPrimitiveType() throws Exception
     {
-        assertEquals(AsnPrimitiveType.SEQUENCE_OF, instance.getPrimitiveType());
+        assertEquals(AsnPrimitiveTypes.SEQUENCE_OF, instance.getPrimitiveType());
         verify(wrappedSequence, never()).getPrimitiveType();
     }
 
@@ -153,7 +153,7 @@ public class AsnSchemaTypeCollectionTest
         DecodingSession decodingSession = mock(DecodingSession.class);
 
         AsnSchemaType wrappedChoice = mock(AsnSchemaType.class);
-        when(wrappedChoice.getPrimitiveType()).thenReturn(AsnPrimitiveType.CHOICE);
+        when(wrappedChoice.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.CHOICE);
         when(wrappedChoice.getBuiltinType()).thenReturn(AsnBuiltinType.Choice);
         when(wrappedChoice.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
                 Optional.<AsnSchemaComponentType>absent());
@@ -161,7 +161,7 @@ public class AsnSchemaTypeCollectionTest
                 Optional.of(component));
 
         AsnSchemaTypeCollection collection
-                = new AsnSchemaTypeCollection(AsnPrimitiveType.SEQUENCE_OF,
+                = new AsnSchemaTypeCollection(AsnPrimitiveTypes.SEQUENCE_OF,
                 AsnSchemaConstraint.NULL,
                 wrappedChoice);
 

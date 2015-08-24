@@ -5,14 +5,19 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link GeneralizedTimeDecoder}
@@ -44,7 +49,18 @@ public class GeneralizedTimeDecoderTest
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decode(bytes);
 
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
+        }
+        catch (DecodeException e)
+        {
+        }
+        try
+        {
+            String time = "19700101";   // not enough bytes - no hours
+            byte[] bytes = time.getBytes(Charsets.UTF_8);
+            instance.decodeAsString(bytes);
+
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
@@ -55,11 +71,68 @@ public class GeneralizedTimeDecoderTest
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decode(bytes);
 
-            fail("Should have thrown DecodeException");
+            fail("Should have thrown DecodeExceptions");
         }
         catch (DecodeException e)
         {
         }
+
+        try
+        {
+            instance.decode(null);
+            fail("Should have thrown DecodeExceptions");
+        }
+        catch (DecodeException e)
+        {
+        }
+        try
+        {
+            instance.decodeAsString(null);
+            fail("Should have thrown DecodeExceptions");
+        }
+        catch (DecodeException e)
+        {
+        }
+
+
+        // null for tag and AsantiAsnData
+        try
+        {
+            AsantiAsnData data = mock(AsantiAsnData.class);
+            instance.decode(null, data);
+            fail("Should have thrown NullPointerException");
+        }
+        catch (NullPointerException e)
+        {
+        }
+        try
+        {
+            AsantiAsnData data = mock(AsantiAsnData.class);
+            instance.decode("someTag", null);
+            fail("Should have thrown NullPointerException");
+        }
+        catch (NullPointerException e)
+        {
+        }
+        try
+        {
+            AsantiAsnData data = mock(AsantiAsnData.class);
+            instance.decodeAsString(null, data);
+            fail("Should have thrown NullPointerException");
+        }
+        catch (NullPointerException e)
+        {
+        }
+        try
+        {
+            AsantiAsnData data = mock(AsantiAsnData.class);
+            instance.decodeAsString("someTag", null);
+            fail("Should have thrown NullPointerException");
+        }
+        catch (NullPointerException e)
+        {
+        }
+
 
     }
 
@@ -77,6 +150,14 @@ public class GeneralizedTimeDecoderTest
         long ms = expectedTime.getTime();
         assertEquals(ms, rawOffset);
         assertEquals(expectedTime, instance.decode(bytes));
+
+        // check that the other overload works
+        AsantiAsnData data = mock(AsantiAsnData.class);
+        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(time.getBytes(Charsets.UTF_8)));
+
+        assertEquals(expectedTime, instance.decode(tag, data));
 
         time = "1900010100";
         bytes = time.getBytes(Charsets.UTF_8);
@@ -188,7 +269,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -198,7 +279,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decode("1900010100z".getBytes(Charsets.UTF_8)); // should be upper case
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -206,10 +287,10 @@ public class GeneralizedTimeDecoderTest
 
         try
         {
-            bytes = new byte[] { 0x1F, '9', '1', '8', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0',
-                                 '.', '1', '1' };
+            bytes = new byte[] { 0x1F, '9', '1', '8', '1', '1', '1', '1', '1', '1', '0', '0', '0',
+                                 '0', '.', '1', '1' };
             instance.decode(bytes); // not a valid VisibleString
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -262,7 +343,7 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decodeAsString("19271111".getBytes(Charsets.UTF_8));    // Too short
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -272,9 +353,51 @@ public class GeneralizedTimeDecoderTest
         try
         {
             instance.decodeAsString(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
+        {
+        }
+    }
+
+    @Test
+    public void testDecodeAsStringOverload() throws Exception
+    {
+        AsantiAsnData data = mock(AsantiAsnData.class);
+        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
+
+        final String tag1 = "tag1";
+        final String time1 = "19700101000000.0";
+        final byte[] bytes1 = time1.getBytes(Charsets.UTF_8);
+        when(data.getBytes(eq(tag1))).thenReturn(Optional.of(bytes1));
+        final String tag2 = "tag2";
+        final String time2 = "1900010100";
+        final byte[] bytes2 = time2.getBytes(Charsets.UTF_8);
+        when(data.getBytes(eq(tag2))).thenReturn(Optional.of(bytes2));
+        final String tag3 = "tag3";
+        final String time3 = "19850416141516.123";
+        final byte[] bytes3 = time3.getBytes(Charsets.UTF_8);
+        when(data.getBytes(eq(tag3))).thenReturn(Optional.of(bytes3));
+        final String tag4 = "tag4";
+        final String time4 = "19850416141516.123Z";
+        final byte[] bytes4 = time4.getBytes(Charsets.UTF_8);
+        when(data.getBytes(eq(tag4))).thenReturn(Optional.of(bytes4));
+
+        assertEquals(time1, instance.decodeAsString(tag1, data));
+        assertEquals(time2, instance.decodeAsString(tag2, data));
+        assertEquals(time3, instance.decodeAsString(tag3, data));
+        assertEquals(time4, instance.decodeAsString(tag4, data));
+
+        // empty bytes
+        try
+        {
+            final String tagEmpty = "tagEmpty";
+            final byte[] bytesEmpty = new byte[0];
+            when(data.getBytes(eq(tagEmpty))).thenReturn(Optional.of(bytesEmpty));
+            instance.decodeAsString(tagEmpty, data);
+            fail("DecodeExceptions not thrown");
+        }
+        catch (DecodeException e)
         {
         }
     }

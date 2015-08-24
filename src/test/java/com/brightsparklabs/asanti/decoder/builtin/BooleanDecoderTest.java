@@ -5,10 +5,13 @@
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.common.DecodeException;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Units tests for {@link BooleanDecoder}
@@ -50,7 +53,7 @@ public class BooleanDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -61,7 +64,7 @@ public class BooleanDecoderTest
         {
             bytes = new byte[0];
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -70,7 +73,7 @@ public class BooleanDecoderTest
         {
             bytes = new byte[2];
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -79,11 +82,18 @@ public class BooleanDecoderTest
         {
             bytes = new byte[100];
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
         }
+
+        // test other overload
+        AsantiAsnData data = mock(AsantiAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte [] { 1 }));
+
+        assertTrue(instance.decode(tag, data));
     }
 
     @Test
@@ -108,7 +118,7 @@ public class BooleanDecoderTest
         try
         {
             instance.decode(null);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
@@ -119,10 +129,17 @@ public class BooleanDecoderTest
         {
             bytes = new byte[0];
             instance.decode(bytes);
-            fail("DecodeException not thrown");
+            fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)
         {
         }
+
+
+        AsantiAsnData data = mock(AsantiAsnData.class);
+        final String tag = "tag";
+        when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte [] { 1 }));
+
+        assertEquals("true", instance.decodeAsString(tag, data));
     }
 }

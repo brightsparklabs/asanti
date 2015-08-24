@@ -4,13 +4,12 @@
  */
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
-import com.brightsparklabs.asanti.model.schema.AsnBuiltinType;
-import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableList;
@@ -73,16 +72,15 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator
 
     @Override
     public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
-            DecodedAsnData decodedAsnData)
+            AsantiAsnData asnData)
     {
-        final ImmutableSet<String> childTags = DecodedTagsHelpers.getImmediateChildren(
-                decodedAsnData,
+        final ImmutableSet<String> childTags = DecodedTagsHelpers.getImmediateChildren(asnData,
                 tag);
 
         // to have gotten a mapped tag the schema look up must have previously worked,
         // so it is safe to assume it will work here.  If it fails then throwing is the right thing
         // to do.  (noting the .get() at the end of the Optional)
-        final AsnSchemaType type = decodedAsnData.getType(tag).get();
+        final AsnSchemaType type = asnData.getType(tag).get();
 
         final Set<DecodedTagValidationFailure> failures = Sets.newHashSet();
 

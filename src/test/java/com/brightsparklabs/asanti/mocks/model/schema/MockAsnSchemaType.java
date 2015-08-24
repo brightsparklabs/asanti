@@ -2,9 +2,10 @@ package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
+import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -36,35 +37,6 @@ public class MockAsnSchemaType
         // private constructor
     }
 
-    // -------------------------------------------------------------------------
-    // PUBLIC METHODS
-    // -------------------------------------------------------------------------
-    public static BaseAsnSchemaType createMockedAsnSchemaType(AsnPrimitiveType primitiveType)
-    {
-        return createMockedAsnSchemaType(primitiveType, AsnSchemaConstraint.NULL);
-    }
-
-    public static BaseAsnSchemaType createMockedAsnSchemaType(AsnPrimitiveType primitiveType,
-            AsnSchemaConstraint constraint)
-    {
-        final BaseAsnSchemaType mockedInstance = mock(BaseAsnSchemaType.class);
-
-        final ImmutableSet<AsnSchemaConstraint> constraints = ImmutableSet.of((constraint == null) ?
-                AsnSchemaConstraint.NULL :
-                constraint);
-
-        final AsnSchemaComponentType componentType = mock(AsnSchemaComponentType.class);
-        when(componentType.getType()).thenReturn(AsnSchemaType.NULL);
-        when(componentType.getName()).thenReturn("");
-
-        when(mockedInstance.getPrimitiveType()).thenReturn(primitiveType);
-        when(mockedInstance.getConstraints()).thenReturn(constraints);
-        when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
-        when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(Optional.<AsnSchemaComponentType>absent());
-
-        return mockedInstance;
-    }
-
     public static AsnSchemaTypeWithNamedTags createMockedInstanceWithNamedValues(
             AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint,
             Iterable<AsnSchemaNamedTag> namedValues)
@@ -78,7 +50,8 @@ public class MockAsnSchemaType
         when(mockedInstance.getPrimitiveType()).thenReturn(primitiveType);
         when(mockedInstance.getConstraints()).thenReturn(constraints);
         when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
-        when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(Optional.<AsnSchemaComponentType>absent());
+        when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
+                Optional.<AsnSchemaComponentType>absent());
 
         return mockedInstance;
     }
@@ -103,6 +76,142 @@ public class MockAsnSchemaType
 
         when(mockedInstance.getModuleName()).thenReturn(moduleName);
         when(mockedInstance.getTypeName()).thenReturn(typeName);
+
+        return mockedInstance;
+    }
+
+    /**
+     * Creates mock {@link AsnSchemaType} instances conforming to the 'People' Type Definition in
+     * the 'People-Protocol' module in the test ASN.1 schema defined in the {@code README.md} file
+     *
+     * @return mock instance
+     */
+    public static AsnSchemaType getPeopleProtocolPeople()
+    {
+        return builder(AsnPrimitiveTypes.SET_OF).setCollectionType(getPeopleProtocolPerson())
+                .build();
+    }
+
+    /**
+     * Creates mock {@link AsnSchemaType} instances conforming to the 'Person' Type Definition in
+     * the 'People-Protocol' module in the test ASN.1 schema defined in the {@code README.md} file
+     *
+     * @return mock instance
+     */
+    public static AsnSchemaType getPeopleProtocolPerson()
+    {
+        AsnSchemaType gender = builder(AsnPrimitiveTypes.ENUMERATED)
+                // TODO ASN-138 - add options.
+                .build();
+
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("1",
+                "firstName",
+                createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
+                .addComponent("2",
+                        "lastName",
+                        createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
+                .addComponent("3", "title", createMockedAsnSchemaType(AsnPrimitiveTypes.ENUMERATED))
+                .addComponent("4", "gender", gender).addComponent("5",
+                        "maritalStatus",
+                        createMockedAsnSchemaType(AsnPrimitiveTypes.CHOICE)) // TODO ASN-138 - choice
+                .build();
+    }
+
+    /**
+     * Creates mock {@link AsnSchemaType} instances conforming to the version component of the
+     * Document Type Definition in the 'Document-PDU' module in the test ASN.1 schema defined in the
+     * {@code README.md} file
+     *
+     * @return mock instance
+     */
+    public static AsnSchemaType getDocumentVersion()
+    {
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("0",
+                "majorVersion",
+                createMockedAsnSchemaType(AsnPrimitiveTypes.INTEGER))
+                .addComponent("1",
+                        "minorVersion",
+                        createMockedAsnSchemaType(AsnPrimitiveTypes.INTEGER))
+                .build();
+    }
+
+    /**
+     * Creates mock {@link AsnSchemaType} instances conforming to the description component of the
+     * Document Type Definition in the 'Document-PDU' module in the test ASN.1 schema defined in the
+     * {@code README.md} file
+     *
+     * @return mock instance
+     */
+    public static AsnSchemaType getDocumentDescription()
+    {
+        return builder(AsnPrimitiveTypes.SET).addComponent("0",
+                "numberLines",
+                createMockedAsnSchemaType(AsnPrimitiveTypes.INTEGER))
+                .addComponent("1",
+                        "summary",
+                        true,
+                        createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
+                .build();
+    }
+
+    // -------------------------------------------------------------------------
+    // The below are helpers to mock the example Asanti schema
+    // -------------------------------------------------------------------------
+
+    /**
+     * Creates mock {@link AsnSchemaType} instances conforming to the 'Due-Date' Type Definition in
+     * the 'Document-PDU' module in the test ASN.1 schema defined in the {@code README.md} file
+     *
+     * @return mock instance
+     */
+    public static AsnSchemaType getDocumentDueDate()
+    {
+        // TODO ASN-138 - add the distinguished names.
+        return createMockedAsnSchemaType(AsnPrimitiveTypes.INTEGER);
+    }
+
+    /**
+     * Creates mock {@link AsnSchemaType} instances conforming to the 'References' Type Definition
+     * in the 'Document-PDU' module in the test ASN.1 schema defined in the {@code README.md} file
+     *
+     * @return mock instance
+     */
+    public static AsnSchemaType getDocumentReferences()
+    {
+        return builder(AsnPrimitiveTypes.SEQUENCE_OF).setCollectionType(builder(AsnPrimitiveTypes.SEQUENCE)
+                .addComponent("1",
+                        "title",
+                        createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
+                .addComponent("2", "url", createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
+                .build()).build();
+    }
+
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
+    public static BaseAsnSchemaType createMockedAsnSchemaType(AsnPrimitiveType primitiveType)
+    {
+        return createMockedAsnSchemaType(primitiveType, AsnSchemaConstraint.NULL);
+    }
+
+    public static BaseAsnSchemaType createMockedAsnSchemaType(AsnPrimitiveType primitiveType,
+            AsnSchemaConstraint constraint)
+    {
+        final BaseAsnSchemaType mockedInstance = mock(BaseAsnSchemaType.class);
+
+        final ImmutableSet<AsnSchemaConstraint> constraints = ImmutableSet.of((constraint == null) ?
+                AsnSchemaConstraint.NULL :
+                constraint);
+
+        final AsnSchemaComponentType componentType = mock(AsnSchemaComponentType.class);
+        when(componentType.getType()).thenReturn(AsnSchemaType.NULL);
+        when(componentType.getName()).thenReturn("");
+
+        when(mockedInstance.getPrimitiveType()).thenReturn(primitiveType);
+        when(mockedInstance.getConstraints()).thenReturn(constraints);
+        when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
+        when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
+                Optional.<AsnSchemaComponentType>absent());
 
         return mockedInstance;
     }
@@ -138,113 +247,6 @@ public class MockAsnSchemaType
         return new MockAsnSchemaTypeBuilder(primitiveType, constraint);
     }
 
-    // -------------------------------------------------------------------------
-    // The below are helpers to mock the example Asanti schema
-    // -------------------------------------------------------------------------
-
-    /**
-     * Creates mock {@link AsnSchemaType} instances conforming to the 'People' Type Definition in
-     * the 'People-Protocol' module in the test ASN.1 schema defined in the {@code README.md} file
-     *
-     * @return mock instance
-     */
-    public static AsnSchemaType getPeopleProtocolPeople()
-    {
-        return builder(AsnPrimitiveType.SET_OF).setCollectionType(getPeopleProtocolPerson())
-                .build();
-    }
-
-    /**
-     * Creates mock {@link AsnSchemaType} instances conforming to the 'Person' Type Definition in
-     * the 'People-Protocol' module in the test ASN.1 schema defined in the {@code README.md} file
-     *
-     * @return mock instance
-     */
-    public static AsnSchemaType getPeopleProtocolPerson()
-    {
-        AsnSchemaType gender = builder(AsnPrimitiveType.ENUMERATED)
-                // TODO ASN-138 - add options.
-                .build();
-
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("1",
-                "firstName",
-                createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
-                .addComponent("2",
-                        "lastName",
-                        createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING)).addComponent("3",
-                        "title",
-                        createMockedAsnSchemaType(AsnPrimitiveType.NULL))// TODO ASN-138 - enumerated
-                .addComponent("4", "gender", gender).addComponent("5",
-                        "maritalStatus",
-                        createMockedAsnSchemaType(AsnPrimitiveType.CHOICE)) // TODO ASN-138 - choice
-                .build();
-    }
-
-    /**
-     * Creates mock {@link AsnSchemaType} instances conforming to the version component of the
-     * Document Type Definition in the 'Document-PDU' module in the test ASN.1 schema defined in the
-     * {@code README.md} file
-     *
-     * @return mock instance
-     */
-    public static AsnSchemaType getDocumentVersion()
-    {
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("0",
-                "majorVersion",
-                createMockedAsnSchemaType(AsnPrimitiveType.INTEGER))
-                .addComponent("1",
-                        "minorVersion",
-                        createMockedAsnSchemaType(AsnPrimitiveType.INTEGER))
-                .build();
-    }
-
-    /**
-     * Creates mock {@link AsnSchemaType} instances conforming to the description component of the
-     * Document Type Definition in the 'Document-PDU' module in the test ASN.1 schema defined in the
-     * {@code README.md} file
-     *
-     * @return mock instance
-     */
-    public static AsnSchemaType getDocumentDescription()
-    {
-        return builder(AsnPrimitiveType.SET).addComponent("0",
-                "numberLines",
-                createMockedAsnSchemaType(AsnPrimitiveType.INTEGER))
-                .addComponent("1",
-                        "summary",
-                        true,
-                        createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
-                .build();
-    }
-
-    /**
-     * Creates mock {@link AsnSchemaType} instances conforming to the 'Due-Date' Type Definition in
-     * the 'Document-PDU' module in the test ASN.1 schema defined in the {@code README.md} file
-     *
-     * @return mock instance
-     */
-    public static AsnSchemaType getDocumentDueDate()
-    {
-        // TODO ASN-138 - add the distinguished names.
-        return createMockedAsnSchemaType(AsnPrimitiveType.INTEGER);
-    }
-
-    /**
-     * Creates mock {@link AsnSchemaType} instances conforming to the 'References' Type Definition
-     * in the 'Document-PDU' module in the test ASN.1 schema defined in the {@code README.md} file
-     *
-     * @return mock instance
-     */
-    public static AsnSchemaType getDocumentReferences()
-    {
-        return builder(AsnPrimitiveType.SEQUENCE_OF).setCollectionType(builder(AsnPrimitiveType.SEQUENCE)
-                .addComponent("1",
-                        "title",
-                        createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
-                .addComponent("2", "url", createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
-                .build()).build();
-    }
-
     /**
      * Creates mock {@link AsnSchemaType} instances conforming to the 'Paragraph' Type Definition in
      * the 'Document-PDU' module in the test ASN.1 schema defined in the {@code README.md} file
@@ -254,15 +256,15 @@ public class MockAsnSchemaType
 
     public static AsnSchemaType getDocumentParagraph()
     {
-        return builder(AsnPrimitiveType.SEQUENCE_OF).setCollectionType(builder(AsnPrimitiveType.SEQUENCE)
+        return builder(AsnPrimitiveTypes.SEQUENCE_OF).setCollectionType(builder(AsnPrimitiveTypes.SEQUENCE)
                 .addComponent("1",
                         "title",
-                        createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
+                        createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
                 .addComponent("2", "contributor", true, getPeopleProtocolPerson())
                 .addComponent("3",
                         "points",
-                        builder(AsnPrimitiveType.SEQUENCE_OF).setCollectionType(
-                                createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING)).build())
+                        builder(AsnPrimitiveTypes.SEQUENCE_OF).setCollectionType(
+                                createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING)).build())
                 .build()).build();
     }
 
@@ -274,9 +276,9 @@ public class MockAsnSchemaType
      */
     public static AsnSchemaType getDocumentSectionNote()
     {
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("1",
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("1",
                 "text",
-                createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING)).build();
+                createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING)).build();
     }
 
     /**
@@ -287,20 +289,20 @@ public class MockAsnSchemaType
      */
     public static AsnSchemaType getDocumentSectionMain()
     {
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("1",
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("1",
                 "text",
                 true,
-                createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
+                createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
                 .addComponent("2", "paragraphs", getDocumentParagraph())
                 .addComponent("3",
                         "sections",
-                        builder(AsnPrimitiveType.SET_OF).setCollectionType(builder(AsnPrimitiveType.SET)
-                                .addComponent("1",
-                                        "number",
-                                        createMockedAsnSchemaType(AsnPrimitiveType.INTEGER))
+                        builder(AsnPrimitiveTypes.SET_OF).setCollectionType(builder(
+                                AsnPrimitiveTypes.SET).addComponent("1",
+                                "number",
+                                createMockedAsnSchemaType(AsnPrimitiveTypes.INTEGER))
                                 .addComponent("2",
                                         "text",
-                                        createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
+                                        createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
                                 .build()).build())
                 .build();
     }
@@ -314,13 +316,13 @@ public class MockAsnSchemaType
      */
     public static AsnSchemaType getDocumentPublishedMetadata()
     {
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("1",
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("1",
                 "date",
-                createMockedAsnSchemaType(AsnPrimitiveType.GENERALIZED_TIME))
+                createMockedAsnSchemaType(AsnPrimitiveTypes.GENERALIZED_TIME))
                 .addComponent("2",
                         "country",
                         true,
-                        createMockedAsnSchemaType(AsnPrimitiveType.OCTET_STRING))
+                        createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
                 .build();
     }
 
@@ -333,9 +335,9 @@ public class MockAsnSchemaType
      */
     public static AsnSchemaType getDocumentModificationMetadataLinked()
     {
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("0",
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("0",
                 "date",
-                createMockedAsnSchemaType(AsnPrimitiveType.GENERALIZED_TIME))
+                createMockedAsnSchemaType(AsnPrimitiveTypes.GENERALIZED_TIME))
                 .addComponent("1", "modifiedBy", getPeopleProtocolPerson())
                 .build();
     }
@@ -348,7 +350,7 @@ public class MockAsnSchemaType
      */
     public static AsnSchemaType getDocumentHeader()
     {
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("0",
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("0",
                 "published",
                 getDocumentPublishedMetadata()).build();
     }
@@ -361,7 +363,7 @@ public class MockAsnSchemaType
      */
     public static AsnSchemaType getDocumentBody()
     {
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("0",
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("0",
                 "lastModified",
                 getDocumentModificationMetadataLinked())
                 .addComponent("1", "prefix", true, getDocumentSectionNote())
@@ -378,8 +380,9 @@ public class MockAsnSchemaType
      */
     public static AsnSchemaType getDocumentFooter()
     {
-        return builder(AsnPrimitiveType.SET).addComponent("0", "authors", getPeopleProtocolPeople())
-                .build();
+        return builder(AsnPrimitiveTypes.SET).addComponent("0",
+                "authors",
+                getPeopleProtocolPeople()).build();
     }
 
     /**
@@ -390,7 +393,7 @@ public class MockAsnSchemaType
      */
     public static AsnSchemaType createMockedAsnSchemaTypeForDocumentPdu()
     {
-        return builder(AsnPrimitiveType.SEQUENCE).addComponent("1", "header", getDocumentHeader())
+        return builder(AsnPrimitiveTypes.SEQUENCE).addComponent("1", "header", getDocumentHeader())
                 .addComponent("2", "body", getDocumentBody())
                 .addComponent("3", "footer", getDocumentFooter())
                 .addComponent("4", "dueDate", getDocumentDueDate())

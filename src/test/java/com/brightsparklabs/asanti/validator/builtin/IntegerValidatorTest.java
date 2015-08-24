@@ -7,11 +7,11 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaNumericValueConstraint;
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveType;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
@@ -46,11 +46,11 @@ public class IntegerValidatorTest
 
         // setup mock
         final AsnSchemaType type = MockAsnSchemaType.createMockedInstanceWithNamedValues(
-                AsnPrimitiveType.INTEGER,
+                AsnPrimitiveTypes.INTEGER,
                 new AsnSchemaNumericValueConstraint(BigInteger.valueOf(1), BigInteger.valueOf(32639)),
                 null);
 
-        final DecodedAsnData mockDecodedAsnData = MockDecodedAsnData.builder(type)
+        final AsantiAsnData mockAsnData = MockDecodedAsnData.builder(type)
                 // 32639 within constraint
                 .addBytes("/valid", new byte[] { (byte) 0b01111111, (byte) 0b01111111 })
                         // 32640 outside constraint (1..32639)
@@ -59,11 +59,11 @@ public class IntegerValidatorTest
 
         // test valid
         ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",
-                mockDecodedAsnData);
+                mockAsnData);
         assertEquals(0, failures.size());
 
         // test invalid - constraint
-        failures = instance.validate("/invalid/constraint", mockDecodedAsnData);
+        failures = instance.validate("/invalid/constraint", mockAsnData);
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.SchemaConstraint, failure.getFailureType());
@@ -71,7 +71,7 @@ public class IntegerValidatorTest
                 failure.getFailureReason());
 
         // test null
-        failures = instance.validate("/null", mockDecodedAsnData);
+        failures = instance.validate("/null", mockAsnData);
         assertEquals(2, failures.size());
         boolean byteErrorPresent = false;
         boolean constraintErrorPresent = false;

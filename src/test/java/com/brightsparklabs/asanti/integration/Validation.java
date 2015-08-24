@@ -1,13 +1,14 @@
 package com.brightsparklabs.asanti.integration;
 
 import com.brightsparklabs.asanti.Asanti;
-import com.brightsparklabs.asanti.model.data.DecodedAsnData;
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
-import com.brightsparklabs.asanti.validator.FailureType;
-import com.brightsparklabs.asanti.validator.ValidatorImpl;
-import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.brightsparklabs.asanti.validator.result.ValidationResult;
+import com.brightsparklabs.asanti.validator.Validators;
+import com.brightsparklabs.assam.validator.FailureType;
+import com.brightsparklabs.assam.validator.ValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationResult;
+import com.brightsparklabs.assam.validator.Validator;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -15,8 +16,6 @@ import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Resources;
 import org.junit.Test;
-
-import java.math.BigInteger;
 
 import static org.junit.Assert.*;
 
@@ -37,22 +36,22 @@ public class Validation
 
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
+        final ImmutableList<AsantiAsnData> pdus = Asanti.decodeAsnData(berData,
                 schema,
                 topLevelType);
 
-        DecodedAsnData pdu = pdus.get(0);
+        AsantiAsnData pdu = pdus.get(0);
         String tag = "/Human/name/first";
         assertEquals("Adam", pdu.<String>getDecodedObject(tag).get());
 
         tag = "/Human/name/last";
         assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
 
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertTrue(validationresult.hasFailures());
 
-        final ImmutableSet<DecodedTagValidationFailure> failures = validationresult.getFailures();
+        final ImmutableSet<ValidationFailure> failures = validationresult.getFailures();
         assertEquals(1, failures.size());
 
         assertEquals(FailureType.MandatoryFieldMissing, failures.asList().get(0).getFailureType());
@@ -70,19 +69,18 @@ public class Validation
 
         String topLevelType = "Human";
 
-        final ImmutableList<DecodedAsnData> pdus = Asanti.decodeAsnData(berData,
+        final ImmutableList<AsantiAsnData> pdus = Asanti.decodeAsnData(berData,
                 schema,
                 topLevelType);
 
-        DecodedAsnData pdu = pdus.get(0);
+        AsantiAsnData pdu = pdus.get(0);
         String tag = "/Human/person/name/first";
         assertEquals("Adam", pdu.<String>getDecodedObject(tag).get());
 
         tag = "/Human/person/name/last";
         assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
 
-
-        final ValidatorImpl validator = new ValidatorImpl();
+        final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
         assertFalse(validationresult.hasFailures());
     }
