@@ -60,7 +60,10 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
     public String decodeAsString(final byte[] bytes) throws DecodeException
     {
         final byte[] validatedBytes = decode(bytes);
-        return ByteArrays.toHexWithAsciiString(validatedBytes);
+
+        return ByteArrays.containsNonPrintableChars(validatedBytes) ?
+                ByteArrays.toHexString(validatedBytes) :
+                ByteArrays.toString(validatedBytes);
     }
 
     @Override

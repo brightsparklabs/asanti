@@ -62,7 +62,7 @@ public class OctetStringDecoderTest
     {
         // test valid
         byte[] bytes = new byte[] { 0x54, 0x45, 0x53, 0x54 };
-        assertEquals("0x54455354 (\"TEST\")", instance.decodeAsString(bytes));
+        assertEquals("TEST", instance.decodeAsString(bytes));
         bytes = new byte[] { 0x00, 0x54, 0x45, 0x53, 0x54, 0x00 };
         assertEquals("0x005445535400", instance.decodeAsString(bytes));
 
@@ -98,7 +98,7 @@ public class OctetStringDecoderTest
         when(data.getBytes(eq(tagEmpty))).thenReturn(Optional.of(bytesEmpty));
 
         // test valid
-        assertEquals("0x54455354 (\"TEST\")", instance.decodeAsString(tagIsAscii, data));
+        assertEquals("TEST", instance.decodeAsString(tagIsAscii, data));
         assertEquals("0x005445535400", instance.decodeAsString(tagNotAscii, data));
 
         assertEquals("", instance.decodeAsString(tagEmpty, data));
