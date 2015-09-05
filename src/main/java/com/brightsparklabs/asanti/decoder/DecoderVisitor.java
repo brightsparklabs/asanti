@@ -153,6 +153,12 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
+    public UtcTimeDecoder visit(final AsnPrimitiveType.UtcTime visitable)
+    {
+        return UtcTimeDecoder.getInstance();
+    }
+
+    @Override
     public BuiltinTypeDecoder visit(final AsnPrimitiveType.Real visitable)
     {
         // TODO - ASN-107
@@ -195,13 +201,6 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     {
         // TODO - ASN-107
         return new BuiltinTypeDecoder.Null("ASN.1 TeletexString decoder not yet implemented");
-    }
-
-    @Override
-    public BuiltinTypeDecoder.Null visit(final AsnPrimitiveType.UtcTime visitable)
-    {
-        // TODO ASN-107
-        return new BuiltinTypeDecoder.Null("Not yet implemented");
     }
 
     @Override

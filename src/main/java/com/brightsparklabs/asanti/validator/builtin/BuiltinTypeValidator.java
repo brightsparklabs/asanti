@@ -35,9 +35,6 @@ public interface BuiltinTypeValidator
     String GENERALIZEDTIME_VALIDATION_ERROR
             = "Supplied bytes do not conform to the GeneralizedTime format. Supplied bytes contain a byte with invalid value: ";
 
-    String GENERALIZEDTIME_ERROR_INCOMPLETE
-            = "Supplied bytes do not conform to the GeneralizedTime format. The GeneralizedTime encoding is incomplete.";
-
     /** validation error string for Bit String failures */
     String EMPTY_BYTE_ARRAY_VALIDATION_ERROR
             = "ASN.1 %s type must contain at least one byte. Supplied array contains 0 bytes";
@@ -63,6 +60,10 @@ public interface BuiltinTypeValidator
     /** validation error string for PrintableString failures */
     String PRINTABLESTRING_VALIDATION_ERROR
             = "Supplied bytes do not conform to the PrintableString format. Supplied bytes contain a byte with invalid value: ";
+
+    /** validation error string for UTCTime failures */
+    String UTCTIME_VALIDATION_ERROR
+            = "Supplied bytes do not conform to the UTCTime format. Supplied bytes contain a byte with invalid value: ";
 
     /** validation error string for VisibleString failures */
     String VISIBLESTRING_VALIDATION_ERROR
