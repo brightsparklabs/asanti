@@ -10,9 +10,9 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.builtin.*;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -486,6 +486,19 @@ public class AsnByteValidator
     public static ImmutableSet<ByteValidationFailure> validateAsUniversalString(byte[] bytes)
     {
         return UniversalStringValidator.getInstance().validate(bytes);
+    }
+
+    /**
+     * Validates the supplied bytes as an {@link AsnBuiltinType#UtcTime}
+     *
+     * @param bytes
+     *         bytes to validate
+     *
+     * @return any failures which occurred while validating the supplied byte
+     */
+    public static ImmutableSet<ByteValidationFailure> validateAsUtcTime(byte[] bytes)
+    {
+        return UtcTimeValidator.getInstance().validate(bytes);
     }
 
     /**

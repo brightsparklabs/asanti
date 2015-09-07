@@ -588,6 +588,22 @@ public class AsnByteDecoder
     }
 
     /**
+     * Decodes the supplied bytes as an {@link AsnBuiltinType#UtcTime}
+     *
+     * @param bytes
+     *         bytes to decode
+     *
+     * @return the decoded bytes
+     *
+     * @throws DecodeException
+     *         if any errors occur while decoding the supplied data
+     */
+    public static Timestamp decodeAsUtcTime(byte[] bytes) throws DecodeException
+    {
+        return UtcTimeDecoder.getInstance().decode(bytes);
+    }
+
+    /**
      * Decodes the supplied bytes as an {@link AsnBuiltinType#Utf8String}
      *
      * @param bytes

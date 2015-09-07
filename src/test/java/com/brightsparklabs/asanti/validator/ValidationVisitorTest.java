@@ -214,8 +214,7 @@ public class ValidationVisitorTest
     public void testVisitAsnSchemaTypeDefinitionUtcTime()
     {
         final BuiltinTypeValidator result = instance.visit(AsnPrimitiveTypes.UTC_TIME);
-        // TODO - ASN-105
-        assertEquals(BuiltinTypeValidator.NULL, result);
+        assertNotNull(result);
     }
 
     @Test
