@@ -123,8 +123,12 @@ public class UtcTimeValidatorTest
         bytes = time.getBytes(Charsets.UTF_8);
         assertEquals(1, instance.validate(bytes).size());
 
+        time = "45050823";
+        bytes = time.getBytes(Charsets.UTF_8);
+        assertEquals(1, instance.validate(bytes).size());
+
         ImmutableList<byte[]> rawDates = ImmutableList.<byte[]>builder()
-                .add("45050823".getBytes(Charsets.UTF_8))
+                //.add("45050823".getBytes(Charsets.UTF_8))
                 .add("4505082314".getBytes(Charsets.UTF_8))
                 .add("450508231415".getBytes(Charsets.UTF_8))
                 .add("450508231415Z".getBytes(Charsets.UTF_8))
@@ -139,40 +143,24 @@ public class UtcTimeValidatorTest
         }
 
         // Minimal
-        String rawDateTime = "85010213";
+        String rawDateTime = "8501021314";
         assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
 
-        // comma as a separator
-        rawDateTime = "85010213";
-        assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
 
         // with Zulu
-        rawDateTime = "85010213Z";
-        assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
-
-        // With + offset, just hours
-        rawDateTime = "85010213+11";
-        assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
-
-        // offset with minutes
-        rawDateTime = "85010213+0130";
-        assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
-
-        // - offset
-        rawDateTime = "85010213-1022";
-        assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
-
-        // include minutes
-        rawDateTime = "8501021314";
-        assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
-
         rawDateTime = "8501021314Z";
         assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
 
-        rawDateTime = "8501021314+1100";
+        // With + offset, just hours
+        rawDateTime = "8501021314+11";
         assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
 
-        rawDateTime = "8501021314-1130";
+        // offset with minutes
+        rawDateTime = "8501021314+0130";
+        assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
+
+        // - offset
+        rawDateTime = "8501021314-1022";
         assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
 
         // include seconds
@@ -237,6 +225,16 @@ public class UtcTimeValidatorTest
         time = "450508230156-9999";
         bytes = time.getBytes(Charsets.UTF_8);
         assertEquals(1, instance.validate(bytes).size());
+
+        // no decimal places
+        rawDateTime = "85010213.1";
+        assertEquals(1, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
+
+        rawDateTime = "8501021314.1";
+        assertEquals(1, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
+
+        rawDateTime = "850102131415.1";
+        assertEquals(1, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
 
         // test null
         final ImmutableSet<ByteValidationFailure> failures = instance.validate(null);

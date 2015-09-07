@@ -195,7 +195,7 @@ public class UtcTimeDecoderTest
         assertEquals(expectedTime.getTime(), instance.decode(bytes).getTime());
 
         // Zero Unix Epoch (Universal time)
-        time = "70010100Z";
+        time = "7001010000Z";
         bytes = time.getBytes(Charsets.UTF_8);
         assertEquals(0, instance.decode(bytes).getTime());
 
@@ -212,7 +212,7 @@ public class UtcTimeDecoderTest
         // test our specific validation bits
         try
         {
-            instance.decode("00010100z".getBytes(Charsets.UTF_8)); // should be upper case
+            instance.decode("0001010000z".getBytes(Charsets.UTF_8)); // should be upper case
             fail("DecodeException not thrown");
         }
         catch (DecodeException ex)
@@ -239,7 +239,7 @@ public class UtcTimeDecoderTest
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
         time = "700101000000";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
-        time = "00010100";
+        time = "0001010000";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
         time = "850416141516";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
@@ -253,7 +253,7 @@ public class UtcTimeDecoderTest
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
         time = "991231235959";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
-        time = "70010100Z";
+        time = "7001010000Z";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
         time = "181111110000";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
@@ -264,7 +264,7 @@ public class UtcTimeDecoderTest
 
         try
         {
-            instance.decodeAsString("271111".getBytes(Charsets.UTF_8));    // Too short
+            instance.decodeAsString("27111100".getBytes(Charsets.UTF_8));    // Too short
             fail("DecodeException not thrown");
         }
         catch (DecodeException ex)
@@ -293,7 +293,7 @@ public class UtcTimeDecoderTest
         final byte[] bytes1 = time1.getBytes(Charsets.UTF_8);
         when(data.getBytes(eq(tag1))).thenReturn(Optional.of(bytes1));
         final String tag2 = "tag2";
-        final String time2 = "00010100";
+        final String time2 = "0001010000";
         final byte[] bytes2 = time2.getBytes(Charsets.UTF_8);
         when(data.getBytes(eq(tag2))).thenReturn(Optional.of(bytes2));
         final String tag3 = "tag3";
