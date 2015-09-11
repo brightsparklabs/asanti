@@ -88,7 +88,7 @@ public class OctetStringDecoderTest
         when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
 
         final String tagIsAscii = "IsAscii";
-        final byte[] bytesIsAscii = new byte[] { 0x54, 0x45, 0x53, 0x54 };
+        final byte[] bytesIsAscii = new byte[] { 0x54, 0x45, 0x53, 0x54, 0x0D, 0x0A, 0x31 };
         when(data.getBytes(eq(tagIsAscii))).thenReturn(Optional.of(bytesIsAscii));
         final String tagNotAscii = "NotAscii";
         final byte[] bytesNotAscii = new byte[] { 0x00, 0x54, 0x45, 0x53, 0x54, 0x00 };
@@ -98,7 +98,7 @@ public class OctetStringDecoderTest
         when(data.getBytes(eq(tagEmpty))).thenReturn(Optional.of(bytesEmpty));
 
         // test valid
-        assertEquals("TEST", instance.decodeAsString(tagIsAscii, data));
+        assertEquals("TEST\r\n1", instance.decodeAsString(tagIsAscii, data));
         assertEquals("0x005445535400", instance.decodeAsString(tagNotAscii, data));
 
         assertEquals("", instance.decodeAsString(tagEmpty, data));

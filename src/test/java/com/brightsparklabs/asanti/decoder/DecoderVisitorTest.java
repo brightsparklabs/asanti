@@ -228,7 +228,6 @@ public class DecoderVisitorTest
     @Test
     public void testVisitAsnSchemaTypeDefinitionUtcTime()
     {
-        // TODO - ASN-107
         final BuiltinTypeDecoder result = instance.visit(AsnPrimitiveTypes.UTC_TIME);
         assertNotNull(result);
     }

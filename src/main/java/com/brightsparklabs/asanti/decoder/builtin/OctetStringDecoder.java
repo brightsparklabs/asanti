@@ -61,9 +61,9 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
     {
         final byte[] validatedBytes = decode(bytes);
 
-        return ByteArrays.containsNonPrintableChars(validatedBytes) ?
-                ByteArrays.toHexString(validatedBytes) :
-                ByteArrays.toString(validatedBytes);
+        return isAsciiPresentable(validatedBytes) ?
+                ByteArrays.toString(validatedBytes) :
+                ByteArrays.toHexString(validatedBytes);
     }
 
     @Override
@@ -74,4 +74,36 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
         DecodeExceptions.throwIfHasFailures(failures);
         return bytes;
     }
+
+    // -------------------------------------------------------------------------
+    // PRIVATE METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns whether the input bytes are presentable as ASCII.  This differs from the {@link
+     * ByteArrays#containsNonPrintableChars} method in that it also considers carriage return and
+     * life feed acceptable characters
+     *
+     * @param bytes
+     *         input bytes to check
+     *
+     * @return the if this can be converted to an ASCII string, false otherwise
+     */
+    private boolean isAsciiPresentable(byte[] bytes)
+    {
+        if (bytes != null)
+        {
+            for (byte x : bytes)
+            {
+                if ((x < 32 || x > 126) && // <space> to ~
+                        ((x != 0x0D) && (x != 0x0A)))    // CR and LF
+                {
+                    // byte is outside printable range
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }

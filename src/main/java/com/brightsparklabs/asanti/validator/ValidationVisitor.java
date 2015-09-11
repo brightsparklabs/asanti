@@ -200,8 +200,7 @@ public class ValidationVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeVal
     @Override
     public BuiltinTypeValidator visit(AsnPrimitiveType.UtcTime visitable)
     {
-        // TODO ASN-105
-        return BuiltinTypeValidator.NULL;
+        return UtcTimeValidator.getInstance();
     }
 
     @Override
