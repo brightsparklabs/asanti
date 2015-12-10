@@ -41,7 +41,7 @@ public class AsnSchemaModuleParser
 
     /** pattern to match a value assignment */
     private static final Pattern PATTERN_VALUE_ASSIGNMENT = Pattern.compile(
-            "^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+( [A-Za-z0-9\\-]+)+) ?::= ?(.+)");
+            "^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:,\\s]+\\})?)+( [A-Za-z0-9\\-]+)+) ?::= ?(.+)");
 
     /** pattern to find the module level tagging mode */
     private static final Pattern PATTERN_DEFINITIONS = Pattern.compile("(([A-Z]+)( TAGS) ?::= ?)");
@@ -311,6 +311,11 @@ public class AsnSchemaModuleParser
             {
                 builder.append(line).append(" ");
                 line = lineIterator.next();
+
+                while (line.charAt(line.length() - 1) == ',') {
+                    // append the next line
+                    line += " " + lineIterator.next();
+                }
             } while (!line.contains("::=") && !"END".equals(line));
 
             final String content = builder.toString().trim();
