@@ -312,10 +312,15 @@ public class AsnSchemaModuleParser
                 builder.append(line).append(" ");
                 line = lineIterator.next();
 
+                final StringBuilder multiLineBuilder = new StringBuilder();
+                multiLineBuilder.append(line);
                 while (line.charAt(line.length() - 1) == ',') {
-                    // append the next line
-                    line += " " + lineIterator.next();
+
+                    // append the next line in case of a comma
+                    multiLineBuilder.append(" ").append(lineIterator.next());
+                    line = multiLineBuilder.toString();
                 }
+                line = multiLineBuilder.toString();
             } while (!line.contains("::=") && !"END".equals(line));
 
             final String content = builder.toString().trim();
