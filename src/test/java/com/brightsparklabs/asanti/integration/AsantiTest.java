@@ -9,8 +9,14 @@ import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.data.RawAsnData;
+import com.brightsparklabs.asanti.validator.Validators;
+import com.brightsparklabs.assam.validator.FailureType;
+import com.brightsparklabs.assam.validator.ValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationResult;
+import com.brightsparklabs.assam.validator.Validator;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import com.google.common.io.*;
 import org.junit.Test;
@@ -198,5 +204,33 @@ public class AsantiTest
         assertEquals(new BigInteger("32"), age);
         age = pdu.<BigInteger>getDecodedObject(tag).get();
         assertEquals(new BigInteger("32"), age);
+    }
+
+    @Test
+    public void testReadBerMissingField() throws Exception
+    {
+        final CharSource schemaSource = Resources.asCharSource(getClass().getResource(
+                "/validation/Simple3.asn"), Charsets.UTF_8);
+        final ByteSource berSource = Resources.asByteSource(getClass().getResource(
+                "/validation/Simple3_missing_b.ber"));
+
+        final ImmutableList<AsantiAsnData> allDecodedData = Asanti.decodeAsnData(berSource,
+                schemaSource,
+                "Human");
+
+        final Validator validator = Validators.getDefault();
+        final ValidationResult validationResult = validator.validate(allDecodedData.get(0));
+
+        // Ensure there are no unmapped tags
+        assertEquals(0, allDecodedData.get(0).getUnmappedTags().size());
+
+        final ImmutableSet<ValidationFailure> failures = validationResult.getFailures();
+        assertEquals(1, failures.size());
+        final ValidationFailure failure = failures.iterator().next();
+        final FailureType failureType = failure.getFailureType();
+        assertEquals(FailureType.MandatoryFieldMissing, failureType);
+        assertEquals("/Human/b", failure.getFailureTag());
+        int breakpoint = 0;
+
     }
 }

@@ -1,0 +1,17 @@
+Test-Protocol
+{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+IMPORTS
+;
+
+Human ::= SEQUENCE
+{
+    a  [1] UTF8String,
+    b  [2] INTEGER,
+    c  [3] UTF8String,
+    d  [4] UTF8String
+}
+
+END
