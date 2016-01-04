@@ -691,8 +691,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
             public Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
                     List<AsnSchemaComponentType> components, DecodingSession decodingSession)
             {
-                // For Sequences, where order matters, we keep track of where we are to in the Sequence
-                // during decoding (via the DecodingSession).
+                // For Sequences, where order matters, we keep track of where we are up to in the
+                // Sequence during decoding (via the DecodingSession).
 
                 // Get the next expected component.
                 int index = decodingSession.getIndex(tag);
@@ -716,10 +716,20 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                         return result;
                     }
 
-                    // If it was not a match, then if the component was optional and we are not
-                    // already at the last component, then we can try the next one.
+                    // If it was not a match, then try the next one.
+                    // if the component was optional then the validation will not have any issues
+                    // if it was not then validation will pick up the missing tag.
+                    // This mechanism will cause "cascading" failures if there are out of order tags
+                    // in that every time we match a tag we expect the next tag to be the one after
+                    // the one we matched (in the schema).
+                    // As an example if the schema defines fields A, B and C, and we receive A, C, B
+                    // then A and C will both be matched but B will not.  If we receive C, A, B then
+                    // C will be matched but A and B will not.  That is the compromise we are
+                    // prepared to take in order to allow the "missing" tags to be skipped, as we
+                    // figure that a missing tag is a more likely condition than out of order, ie
+                    // in getting B and C (missing A), or A and C (missing B)
                     index++;
-                } while (component.isOptional() && (index < components.size()));
+                } while (index < components.size());
 
                 // if we failed a match then ensure all the subsequent components within this context
                 // also fail (avoid an 'accidental' match)
