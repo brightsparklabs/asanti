@@ -350,9 +350,9 @@ public class AsnSchemaTypeConstructedTest
     public void testGetComponentTypesSequence() throws Exception
     {
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.of(mockedComponent("a",
-                        "1",
-                        false,
-                        AsnPrimitiveTypes.INTEGER),
+                "1",
+                false,
+                AsnPrimitiveTypes.INTEGER),
                 mockedComponent("b", "2", true, AsnPrimitiveTypes.INTEGER),
                 mockedComponent("c", "3", false, AsnPrimitiveTypes.INTEGER));
 
@@ -371,6 +371,8 @@ public class AsnSchemaTypeConstructedTest
         assertTrue(resultA.isPresent());
         assertEquals(components.get(0), resultA.get());
 
+        verify(decodingSession).setIndex(any(AsnSchemaTag.class), eq(0));
+
         // check that we can skip an optional
         when(decodingSession.getIndex(any(AsnSchemaTag.class))).thenReturn(1);
         final Optional<AsnSchemaComponentType> resultC = instance.getMatchingChild("1[3]",
@@ -385,6 +387,16 @@ public class AsnSchemaTypeConstructedTest
         assertFalse(resultFail.isPresent());
         // if we fail we should ensure that all the rest of the matches at this level fail
         verify(decodingSession).setIndex(any(AsnSchemaTag.class), eq(3));
+
+
+        // check that we handle "missing" fields by expecting a but receiving b as the 0th field.
+        when(decodingSession.getIndex(any(AsnSchemaTag.class))).thenReturn(0);
+        final Optional<AsnSchemaComponentType> resultB = instance.getMatchingChild("0[2]",
+                decodingSession);
+        assertTrue(resultB.isPresent());
+        assertEquals(components.get(1), resultB.get());
+        // and ensure that we set the index to b
+        verify(decodingSession).setIndex(any(AsnSchemaTag.class), eq(1));
 
         // check that we don't throw if we have data that is not in the schema
         when(decodingSession.getIndex(any(AsnSchemaTag.class))).thenReturn(10);

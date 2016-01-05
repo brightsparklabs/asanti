@@ -41,7 +41,7 @@ public class AsantiCli
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static Logger logger = LoggerFactory.getLogger(AsantiCli.class);
+    private static final Logger logger = LoggerFactory.getLogger(AsantiCli.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -169,54 +169,50 @@ public class AsantiCli
      * and recurse directories. This will attempt to ignore/skip files that are not ASN.1 BER files.
      * This will not propagate exceptions, will only log them.
      *
-     * @param dataFile
+     * @param rootFile
      *         either a directory or ASN.1 BER binary file to decode
      * @param asnSchema
      *         schema to decode against
      * @param topLevelType
      *         the name of the top level
      */
-    private static void handleDataFile(File dataFile, AsnSchema asnSchema, String topLevelType)
+    private static void handleDataFile(File rootFile, AsnSchema asnSchema, String topLevelType)
     {
-
-        try
+        for (File file : Files.fileTreeTraverser().preOrderTraversal(rootFile))
         {
-            if (dataFile.isDirectory())
+            try
             {
-                for (File file : dataFile.listFiles())
+                if (!file.isDirectory())
                 {
-                    handleDataFile(file, asnSchema, topLevelType);
+                    final String name = file.getCanonicalPath();
+
+                    // I don't really know what the 'right' file extensions are, so let's just rule out
+                    // some of the ones that we have come across that are not BER files!
+                    if (!name.toLowerCase().endsWith(".txt") &&
+                            !name.toLowerCase().endsWith(".jpg") &&
+                            !name.toLowerCase().endsWith(".bmp") &&
+                            !name.toLowerCase().endsWith(".asn") &&
+                            !name.toLowerCase().endsWith(".zip") &&
+                            !name.toLowerCase().endsWith(".wav") &&
+                            !name.toLowerCase().endsWith(".pcap") &&
+                            !name.toLowerCase().endsWith(".rtp") &&
+                            !name.toLowerCase().endsWith(".csv") &&
+                            !name.toLowerCase().endsWith(".xlsx") &&
+                            !name.toLowerCase().endsWith(".xls"))
+                    {
+                        loadDataFile(file, asnSchema, topLevelType);
+                    }
+                    else
+                    {
+                        logger.debug("Ignoring file: " + name);
+                    }
                 }
             }
-            else
+            catch (Exception e)
             {
-                final String name = dataFile.getCanonicalPath();
-
-                // I don't really know what the 'right' file extensions are, so let's just rule out
-                // some of the ones that we have come across!
-                if (!name.toLowerCase().endsWith(".txt") &&
-                        !name.toLowerCase().endsWith(".jpg") &&
-                        !name.toLowerCase().endsWith(".bmp") &&
-                        !name.toLowerCase().endsWith(".asn") &&
-                        !name.toLowerCase().endsWith(".zip") &&
-                        !name.toLowerCase().endsWith(".wav") &&
-                        !name.toLowerCase().endsWith(".csv") &&
-                        !name.toLowerCase().endsWith(".xlsx") &&
-                        !name.toLowerCase().endsWith(".xls"))
-                {
-                    loadDataFile(dataFile, asnSchema, topLevelType);
-                }
-                else
-                {
-                    logger.debug("Ignoring file: " + name);
-                }
+                logger.error("Exception: " + e.getMessage());
             }
         }
-        catch (Exception e)
-        {
-            logger.error("Exception: " + e.getMessage());
-        }
-
     }
 
     /**

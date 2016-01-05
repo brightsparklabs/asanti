@@ -297,6 +297,24 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     }
 
     @Override
+    public <T> Optional<T> getDecodedObject(String tag, Class<T> classOfT)
+            throws DecodeException, ClassCastException
+    {
+        final DecodedTag decodedTag = decodedTags.get(tag);
+        if (decodedTag == null)
+        {
+            return Optional.absent();
+        }
+
+        final AsnSchemaType schemaType = decodedTag.getType();
+        final AsnPrimitiveType type = schemaType.getPrimitiveType();
+        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
+        // this should throw a ClassCastException if it the types don't match.
+        final T result = classOfT.cast(decoder.decode(tag, this));
+        return Optional.of(result);
+    }
+
+    @Override
     public ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex)
             throws DecodeException
     {

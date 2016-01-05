@@ -1,0 +1,4 @@
+first-man Human ::= 
+{  
+    a "aa", c "ee", d "ff"
+}
