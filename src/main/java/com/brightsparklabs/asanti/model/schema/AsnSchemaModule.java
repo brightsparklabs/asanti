@@ -378,6 +378,7 @@ public class AsnSchemaModule
                 // visit all the components to resolve them
                 for (AsnSchemaComponentType componentType : visitable.getAllComponents())
                 {
+                    logger.trace("Resolving types for {}", componentType.getName());
                     componentType.getType().accept(this);
                 }
 
@@ -412,8 +413,13 @@ public class AsnSchemaModule
                 final String moduleName = visitable.getModuleName();
                 final String typeName = visitable.getTypeName();
 
-                // Assume that the type is in this module.
-                AsnSchemaTypeDefinition newTypeDefinition = types.get(typeName);
+                // If there is a module specified then try import from that first.
+                // Otherwise try locally, and if that doesn't find it then try the imports without
+                // knowing from which module.
+                AsnSchemaTypeDefinition newTypeDefinition = Strings.isNullOrEmpty(moduleName) ?
+                        types.get(typeName) :
+                        getImportedTypeDefinition(moduleName, typeName, otherModules);
+
                 if (newTypeDefinition == null)
                 {
                     // then it will come from an import.
@@ -526,6 +532,7 @@ public class AsnSchemaModule
             {
                 for (AsnSchemaComponentType component : visitable.getAllComponents())
                 {
+                    logger.trace("tagging component {}", component.getName());
                     component.getType().accept(this);
                 }
 
@@ -588,6 +595,7 @@ public class AsnSchemaModule
             {
                 for (AsnSchemaComponentType component : visitable.getAllComponents())
                 {
+                    logger.trace("Checking for duplicates for {}", component.getName());
                     component.getType().accept(this);
                 }
 
