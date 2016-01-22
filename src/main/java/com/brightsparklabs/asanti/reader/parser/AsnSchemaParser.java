@@ -34,7 +34,7 @@ public class AsnSchemaParser
     private static final Pattern PATTERN_CARRIAGE_RETURN = Pattern.compile("\\r");
 
     /** pattern to match commented lines */
-    private static final Pattern PATTERN_COMMENTS = Pattern.compile("[\\t ]*--.*?(--|\\n)");
+    private static final Pattern PATTERN_COMMENTS = Pattern.compile("[\\t ]*--.*?(--|\\n|\\z)");
 
     /** pattern to match block comments */
     private static final Pattern PATTERN_BLOCK_COMMENTS = Pattern.compile("(?s)/\\*.*?\\*/");
