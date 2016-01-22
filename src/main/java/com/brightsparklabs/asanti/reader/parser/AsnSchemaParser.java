@@ -34,7 +34,8 @@ public class AsnSchemaParser
     private static final Pattern PATTERN_CARRIAGE_RETURN = Pattern.compile("\\r");
 
     /** pattern to match comments that are started with -- and end with newline */
-    private static final Pattern PATTERN_ENDLINE_COMMENTS = Pattern.compile("[\\t ]*--.*?\\n");
+    private static final Pattern PATTERN_ENDLINE_COMMENTS
+            = Pattern.compile("[\\t ]*--.*?(\\n|\\z)");
 
     /** pattern to match comments that are started and ended with -- */
     private static final Pattern PATTERN_INLINE_COMMENTS = Pattern.compile("[\\t ]*--.*?--");
@@ -54,6 +55,9 @@ public class AsnSchemaParser
 
     /** pattern to match semicolons */
     private static final Pattern PATTERN_SEMICOLONS = Pattern.compile(";");
+
+    /** pattern to join lines that end in a comma */
+    private static final Pattern PATTERN_COMMA_TERMINATED = Pattern.compile(",\\n");
 
     /** error message if schema is missing 'END' keyword */
     private static final String ERROR_MISSING_END_KEYWORD = "Schema is missing an 'END' keyword";
@@ -210,6 +214,7 @@ public class AsnSchemaParser
         // ensure module header keywords appear on separate lines
         asnSchema = PATTERN_SCHEMA_KEYWORDS.matcher(asnSchema).replaceAll("\n$1\n");
         asnSchema = PATTERN_SEMICOLONS.matcher(asnSchema).replaceAll("\n;\n");
+        asnSchema = PATTERN_COMMA_TERMINATED.matcher(asnSchema).replaceAll(", ");
 
         final Iterable<String> lines = Splitter.on("\n")
                 .trimResults()

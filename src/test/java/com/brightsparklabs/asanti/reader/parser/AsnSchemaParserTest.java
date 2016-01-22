@@ -291,6 +291,7 @@ public class AsnSchemaParserTest
                 "optB OCTET STRING\n"+
                 "}\n"+
                 "END";
+                //"END -- comment at the end of file, note no newline, we need this comment to be cleaned out";
 
         final String cleaned = "People-Protocol\n" +
                 "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
@@ -302,14 +303,12 @@ public class AsnSchemaParserTest
                 "BEGIN\n" +
                 "Gender ::= ENUMERATED\n" +
                 "{\n" +
-                "male(0),\n" +
-                "female(1)\n" +
+                "male(0), female(1)\n" +
                 "}\n" +
                 "SomeType ::= INTEGER (0..100)\n"+
                 "SomeChoice ::= CHOICE\n"+
                 "{\n"+
-                "optA INTEGER,\n"+
-                "optB OCTET STRING\n"+
+                "optA INTEGER, optB OCTET STRING\n"+
                 "}\n"+
                 "END";
 
