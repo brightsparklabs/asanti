@@ -277,10 +277,6 @@ public class AsnSchemaParserTest
                 "DEFINITIONS\n" +
                 "AUTOMATIC TAGS ::=\n" +
                 "IMPORTS\n" +
-//                "Hair-type\n" +
-//                "FROM Hair-Protocol\n" +
-//                "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }\n"
-//                +
                 ";\n" +
                 "BEGIN\n" +
                 "Gender ::= ENUMERATED\n" +
@@ -302,10 +298,6 @@ public class AsnSchemaParserTest
                 "DEFINITIONS\n" +
                 "AUTOMATIC TAGS ::=\n" +
                 "IMPORTS\n" +
-//                "Hair-type\n" +
-//                "FROM Hair-Protocol\n" +
-//                "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }\n"
-//                +
                 ";\n" +
                 "BEGIN\n" +
                 "Gender ::= ENUMERATED\n" +
