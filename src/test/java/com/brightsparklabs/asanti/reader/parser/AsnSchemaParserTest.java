@@ -38,14 +38,15 @@ public class AsnSchemaParserTest
 
     /**
      * number of lines expected after pre-parsing the Document-PDU module from the example schema
+     * This takes in to account that all lines ending in comma are joined.
      */
-    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 44;
+    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 34;
 
     /**
      * number of lines expected after pre-parsing the People-Protocol module from the example
-     * schema
+     * schema. This takes in to account that all lines ending in comma are joined.
      */
-    private static final int EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT = 22;
+    private static final int EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT = 18;
 
     /** an invalid schema (missing an END tag) */
     private static final String SCHEMA_NO_END = "People-Protocol\n" +
@@ -166,11 +167,9 @@ public class AsnSchemaParserTest
             "BEGIN\n" +
             "Gender ::= ENUMERATED\n" +
             "{\n" +
-            "male(0),\n" +
-            "female(1)\n" +
+            "male(0), female(1)\n" +
             "}\n" +
             "END";
-
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
@@ -262,5 +261,80 @@ public class AsnSchemaParserTest
         // test parse with a schema which has all regex combinations
         final AsnSchema actualSchema = AsnSchemaParser.parse(SCHEMA_FOR_REGEX_TEST);
         assertNotNull(actualSchema);
+    }
+
+    @Test
+    public void testParse_EndLineComments() throws Exception
+    {
+        // test added in response to bug where comments that are ended with the new line removed the
+        // new line.  Sometimes the newline matter, eg when at the "root" level, the newline is the
+        // separator between different type defs or value assignments.
+        // ASN-184
+        final String withComments = "People-Protocol\n" +
+                "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+                +
+                "DEFINITIONS\n" +
+                "AUTOMATIC TAGS ::=\n" +
+                "IMPORTS\n" +
+                ";\n" +
+                "BEGIN\n" +
+                "Gender ::= ENUMERATED\n" +
+                "{\n" +
+                "male(0),\n" +
+                "female(1)\n" +
+                "}\n" +
+                "SomeType ::= INTEGER (0..100) -- this comment ends at the end of this line\n"+
+                "SomeChoice ::= CHOICE\n"+
+                "{\n"+
+                "optA INTEGER,\n"+
+                "optB OCTET STRING\n"+
+                "}\n"+
+                "END";
+                //"END -- comment at the end of file, note no newline, we need this comment to be cleaned out";
+
+        final String cleaned = "People-Protocol\n" +
+                "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
+                +
+                "DEFINITIONS\n" +
+                "AUTOMATIC TAGS ::=\n" +
+                "IMPORTS\n" +
+                ";\n" +
+                "BEGIN\n" +
+                "Gender ::= ENUMERATED\n" +
+                "{\n" +
+                "male(0), female(1)\n" +
+                "}\n" +
+                "SomeType ::= INTEGER (0..100)\n"+
+                "SomeChoice ::= CHOICE\n"+
+                "{\n"+
+                "optA INTEGER, optB OCTET STRING\n"+
+                "}\n"+
+                "END";
+
+
+        // prepare objects for mocking of AsnSchemaModuleParser.parse static method
+        // set up mock AsnSchemaModule to return
+        final AsnSchemaModule.Builder mockAsnSchemaModule = AsnSchemaModule.builder()
+                .setName("People-Protocol");
+
+        // prepare expected input to the AsnSchemaModuleParser.parse static method for
+        // valid block comments
+        final Splitter newLineSplitter = Splitter.on("\n").omitEmptyStrings();
+        final List<String> expectedParseInput
+                = newLineSplitter.splitToList(cleaned);
+
+        // mock AsnSchemaModuleParser.parse static method to only return mock object
+        // if argument matches expected input
+        PowerMockito.mockStatic(AsnSchemaModuleParser.class);
+        when(AsnSchemaModuleParser.parse(expectedParseInput)).thenReturn(mockAsnSchemaModule);
+
+
+        // This test is really testing that the preparation of the schema (ie removing comments etc)
+        // produces the expected results.
+
+        // test parse with a schema which has all regex combinations
+        final AsnSchema actualSchema = AsnSchemaParser.parse(withComments);
+        assertNotNull(actualSchema);
+
     }
 }

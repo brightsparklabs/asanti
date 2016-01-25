@@ -2164,6 +2164,20 @@ public class AsnSchemaParserTest
     }
 
     @Test
+    public void testParse_EtsiV202e() throws Exception
+    {
+        long start = System.currentTimeMillis();
+
+        final CharSource schemaData
+                = Resources.asCharSource(getClass().getResource("/EIFv202e.asn"), Charsets.UTF_8);
+        AsnSchema schema = AsnSchemaReader.read(schemaData);
+        long end = System.currentTimeMillis();
+        logger.debug("Schema load time: {}ms", end-start);
+
+        assertNotNull(schema);
+    }
+
+    @Test
     public void testParse_Duplicates() throws Exception
     {
         try
