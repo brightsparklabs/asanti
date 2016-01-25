@@ -209,12 +209,12 @@ public class AsnSchemaParser
         asnSchema = PATTERN_ENDLINE_COMMENTS.matcher(asnSchema).replaceAll("\n");
         asnSchema = PATTERN_INLINE_COMMENTS.matcher(asnSchema).replaceAll("");
         asnSchema = PATTERN_BLOCK_COMMENTS.matcher(asnSchema).replaceAll("");
+        asnSchema = PATTERN_COMMA_TERMINATED.matcher(asnSchema).replaceAll(", ");
         asnSchema = PATTERN_NEW_LINE.matcher(asnSchema).replaceAll("\n");
         asnSchema = PATTERN_TABS_SPACES.matcher(asnSchema).replaceAll(" ");
         // ensure module header keywords appear on separate lines
         asnSchema = PATTERN_SCHEMA_KEYWORDS.matcher(asnSchema).replaceAll("\n$1\n");
         asnSchema = PATTERN_SEMICOLONS.matcher(asnSchema).replaceAll("\n;\n");
-        asnSchema = PATTERN_COMMA_TERMINATED.matcher(asnSchema).replaceAll(", ");
 
         final Iterable<String> lines = Splitter.on("\n")
                 .trimResults()

@@ -38,14 +38,15 @@ public class AsnSchemaParserTest
 
     /**
      * number of lines expected after pre-parsing the Document-PDU module from the example schema
+     * This takes in to account that all lines ending in comma are joined.
      */
-    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 44;
+    private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 34;
 
     /**
      * number of lines expected after pre-parsing the People-Protocol module from the example
-     * schema
+     * schema. This takes in to account that all lines ending in comma are joined.
      */
-    private static final int EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT = 22;
+    private static final int EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT = 18;
 
     /** an invalid schema (missing an END tag) */
     private static final String SCHEMA_NO_END = "People-Protocol\n" +
@@ -166,11 +167,9 @@ public class AsnSchemaParserTest
             "BEGIN\n" +
             "Gender ::= ENUMERATED\n" +
             "{\n" +
-            "male(0),\n" +
-            "female(1)\n" +
+            "male(0), female(1)\n" +
             "}\n" +
             "END";
-
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------

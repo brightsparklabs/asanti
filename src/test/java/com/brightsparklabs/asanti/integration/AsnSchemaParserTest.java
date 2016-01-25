@@ -2166,18 +2166,15 @@ public class AsnSchemaParserTest
     @Test
     public void testParse_EtsiV202e() throws Exception
     {
-        //fail("for quick runs");
-
         long start = System.currentTimeMillis();
-
-        // TODO ASN-137, ASN-141 prevent us from being able to parse the EIFv122.asn schema
 
         final CharSource schemaData
                 = Resources.asCharSource(getClass().getResource("/EIFv202e.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
-
         long end = System.currentTimeMillis();
-        int i = 0;
+        logger.debug("Schema load time: {}ms", end-start);
+
+        assertNotNull(schema);
     }
 
     @Test
