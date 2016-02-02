@@ -142,12 +142,14 @@ public class AsnSchemaTypePlaceholderTest
     {
         // test that if the placeholder is not resolved it does not delegate
         assertEquals(AsnPrimitiveTypes.INVALID, instance.getPrimitiveType());
-        verify(indirectType, never()).getPrimitiveType();
+        // TODO INC-53
+        assertNull(verify(indirectType, never()).getPrimitiveType());
         instance.setIndirectType(indirectType);
 
         // and that it does delegate after it is resolved
         assertEquals(AsnPrimitiveTypes.SEQUENCE, instance.getPrimitiveType());
-        verify(indirectType).getPrimitiveType();
+        // TODO INC-53
+        assertNull(verify(indirectType).getPrimitiveType());
     }
 
     @Test
@@ -168,12 +170,14 @@ public class AsnSchemaTypePlaceholderTest
     {
         // test that if the placeholder is not resolved it does not delegate
         assertEquals(0, instance.getAllComponents().size());
-        verify(indirectType, never()).getAllComponents();
+        // TODO INC-53
+        assertNull(verify(indirectType, never()).getAllComponents());
         instance.setIndirectType(indirectType);
 
         // and that it does delegate after it is resolved
         assertEquals(2, instance.getAllComponents().size());
-        verify(indirectType).getAllComponents();
+        // TODO INC-53
+        assertNull(verify(indirectType).getAllComponents());
     }
 
     @Test

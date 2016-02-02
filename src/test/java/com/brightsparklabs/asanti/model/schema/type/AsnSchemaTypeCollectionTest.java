@@ -1,9 +1,9 @@
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;
@@ -119,7 +119,8 @@ public class AsnSchemaTypeCollectionTest
     public void testGetPrimitiveType() throws Exception
     {
         assertEquals(AsnPrimitiveTypes.SEQUENCE_OF, instance.getPrimitiveType());
-        verify(wrappedSequence, never()).getPrimitiveType();
+        // TODO INC-53
+        assertNull(verify(wrappedSequence, never()).getPrimitiveType());
     }
 
     @Test

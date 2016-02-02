@@ -47,7 +47,9 @@ public class AsnSchemaTypeWithNamedTagsTest
         // null named tags
         try
         {
-            new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL, null);
+            new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.INTEGER,
+                    AsnSchemaConstraint.NULL,
+                    null);
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -71,8 +73,9 @@ public class AsnSchemaTypeWithNamedTagsTest
                 ImmutableList.of(mockTag0, mockTag1));
 
         assertEquals(AsnPrimitiveTypes.INTEGER, withTags.getPrimitiveType());
-        verify(mockTag0).getTag();
-        verify(mockTag1).getTag();
+        // TODO INC-53
+        assertNull(verify(mockTag0).getTag());
+        assertNull(verify(mockTag1).getTag());
     }
 
     @Test
@@ -80,7 +83,8 @@ public class AsnSchemaTypeWithNamedTagsTest
     {
         AsnSchemaTypeVisitor v = BaseAsnSchemaTypeTest.getVisitor();
 
-        AsnSchemaTypeWithNamedTags instance = new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.INTEGER,
+        AsnSchemaTypeWithNamedTags instance
+                = new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.INTEGER,
                 AsnSchemaConstraint.NULL,
                 ImmutableList.<AsnSchemaNamedTag>of());
 
