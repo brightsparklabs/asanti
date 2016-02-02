@@ -306,7 +306,8 @@ public class AsnSchemaTypeConstructedTest
         instance.checkForDuplicates();
 
         // verify that we recursed in to the Choice components, but did not try to set the tags
-        verify(choiceComponents.get(0)).getType();
+        //TODO INC-53
+        assertNull(verify(choiceComponents.get(0)).getType());
     }
 
     @Test
@@ -350,9 +351,9 @@ public class AsnSchemaTypeConstructedTest
     public void testGetComponentTypesSequence() throws Exception
     {
         ImmutableList<AsnSchemaComponentType> components = ImmutableList.of(mockedComponent("a",
-                "1",
-                false,
-                AsnPrimitiveTypes.INTEGER),
+                        "1",
+                        false,
+                        AsnPrimitiveTypes.INTEGER),
                 mockedComponent("b", "2", true, AsnPrimitiveTypes.INTEGER),
                 mockedComponent("c", "3", false, AsnPrimitiveTypes.INTEGER));
 
@@ -387,7 +388,6 @@ public class AsnSchemaTypeConstructedTest
         assertFalse(resultFail.isPresent());
         // if we fail we should ensure that all the rest of the matches at this level fail
         verify(decodingSession).setIndex(any(AsnSchemaTag.class), eq(3));
-
 
         // check that we handle "missing" fields by expecting a but receiving b as the 0th field.
         when(decodingSession.getIndex(any(AsnSchemaTag.class))).thenReturn(0);
