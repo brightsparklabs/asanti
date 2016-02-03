@@ -33,8 +33,12 @@ public class AsnSchemaParser
     /** pattern to match carriage returns */
     private static final Pattern PATTERN_CARRIAGE_RETURN = Pattern.compile("\\r");
 
-    /** pattern to match commented lines */
-    private static final Pattern PATTERN_COMMENTS = Pattern.compile("[\\t ]*--.*?(--|\\n)");
+    /** pattern to match comments that are started with -- and end with newline */
+    private static final Pattern PATTERN_ENDLINE_COMMENTS
+            = Pattern.compile("[\\t ]*--.*?(\\n|\\z)");
+
+    /** pattern to match comments that are started and ended with -- */
+    private static final Pattern PATTERN_INLINE_COMMENTS = Pattern.compile("[\\t ]*--.*?--");
 
     /** pattern to match block comments */
     private static final Pattern PATTERN_BLOCK_COMMENTS = Pattern.compile("(?s)/\\*.*?\\*/");
@@ -51,6 +55,9 @@ public class AsnSchemaParser
 
     /** pattern to match semicolons */
     private static final Pattern PATTERN_SEMICOLONS = Pattern.compile(";");
+
+    /** pattern to join lines that end in a comma */
+    private static final Pattern PATTERN_COMMA_TERMINATED = Pattern.compile(",\\n");
 
     /** error message if schema is missing 'END' keyword */
     private static final String ERROR_MISSING_END_KEYWORD = "Schema is missing an 'END' keyword";
@@ -199,8 +206,10 @@ public class AsnSchemaParser
     {
         // cull comments and collapse whitespace
         asnSchema = PATTERN_CARRIAGE_RETURN.matcher(asnSchema).replaceAll("");
-        asnSchema = PATTERN_COMMENTS.matcher(asnSchema).replaceAll("");
+        asnSchema = PATTERN_ENDLINE_COMMENTS.matcher(asnSchema).replaceAll("\n");
+        asnSchema = PATTERN_INLINE_COMMENTS.matcher(asnSchema).replaceAll("");
         asnSchema = PATTERN_BLOCK_COMMENTS.matcher(asnSchema).replaceAll("");
+        asnSchema = PATTERN_COMMA_TERMINATED.matcher(asnSchema).replaceAll(", ");
         asnSchema = PATTERN_NEW_LINE.matcher(asnSchema).replaceAll("\n");
         asnSchema = PATTERN_TABS_SPACES.matcher(asnSchema).replaceAll(" ");
         // ensure module header keywords appear on separate lines
