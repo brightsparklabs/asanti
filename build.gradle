@@ -8,13 +8,14 @@
 // -----------------------------------------------------------------------------
 
 apply plugin: 'java'
-apply plugin: 'java-library-distribution'
+apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'findbugs'    // code quality
 apply plugin: 'jacoco'      // code coverage
 apply plugin: 'maven'       // publishing to maven central
 apply plugin: 'signing'     // publishing to maven central
+
 
 // -----------------------------------------------------------------------------
 // REPOSITORIES/DEPENDENCIES
@@ -63,14 +64,9 @@ String getVersion() {
 }
 
 // -----------------------------------------------------------------------------
-// CREATE JAR FILE (via java-library-distribution)
+// CREATE START SCRIPTS (via application)
 // -----------------------------------------------------------------------------
-
-distributions {
-    main {
-        baseName = project.name
-    }
-}
+mainClassName = 'com.brightsparklabs.asanti.AsantiCli'
 
 // -----------------------------------------------------------------------------
 // GENERATE CODE QUALITY REPORT (via findbugs)
