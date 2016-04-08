@@ -21,14 +21,11 @@ import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Files;
 import org.apache.commons.cli.*;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Main class as an example of how to use the library.
@@ -69,15 +66,6 @@ public class AsantiCli
             CommandLineParser parser = new DefaultParser();
             final CommandLine cmdLine = parser.parse(options, args);
             validateCommandLine(cmdLine);
-
-            if (cmdLine.hasOption("l"))
-            {
-                // Set log4j configuration
-                Properties properties = new Properties();
-                properties.load(new FileInputStream(cmdLine.getOptionValue("l")));
-                LogManager.resetConfiguration();
-                PropertyConfigurator.configure(properties);
-            }
 
             switch (cmdLine.getArgs().length)
             {
@@ -313,8 +301,7 @@ public class AsantiCli
      */
     private static Options getOptions()
     {
-        return new Options().addOption("h", "help", false, "Print out help")
-                .addOption("l", "logfile", true, "use the specified the log4j properties file");
+        return new Options().addOption("h", "help", false, "Print out help");
     }
 
     /**

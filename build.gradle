@@ -16,6 +16,11 @@ apply plugin: 'jacoco'      // code coverage
 apply plugin: 'maven'       // publishing to maven central
 apply plugin: 'signing'     // publishing to maven central
 
+// -----------------------------------------------------------------------------
+// IMPORTS
+// -----------------------------------------------------------------------------
+
+apply from: 'startScripts.gradle'
 
 // -----------------------------------------------------------------------------
 // REPOSITORIES/DEPENDENCIES
