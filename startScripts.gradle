@@ -1,0 +1,54 @@
+/*
+ * Created brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
+/**
+ * Alter the start scripts created by the Gradle Application plugin to add the
+ * $APP_HOME/etc folder to the classpath as the first entry.  This allows a
+ * log4j configuration file to be placed in this folder which will override any
+ * log4j configuration files contained in a JAR within the classpath.
+ *
+ * @author brightSPARK Labs
+ */
+
+startScripts {
+
+    // Support closures to add an additional element to CLASSPATH definition
+    // in the start script files.
+    def configureClasspathVar = { findClasspath, pathSeparator, slash, appHome, line ->
+
+        // Looking for the line that starts with either CLASSPATH= or set
+        // CLASSPATH=, defined by the findClasspath closure argument.
+        line = line.replaceAll(~/^${findClasspath}=.*$/) { original ->
+
+            // Get original line and append 'etc' directory to the start of
+            // the classpath.
+            // Use specified path separator, slash, and APP_HOME variable which
+            // is different for Windows or Unix systems.
+            original = original.replace("${findClasspath}=", "${findClasspath}=${appHome}${slash}etc${pathSeparator}")
+        }
+    }
+
+    def configureUnixClasspath = configureClasspathVar.curry('CLASSPATH', ':', '/', '\$APP_HOME')
+    def configureWindowsClasspath = configureClasspathVar.curry('set CLASSPATH', ';', '\\', '%APP_HOME%')
+
+    // The default script content is generated and with the doLast method we
+    // can still alter the contents before the complete task ends.
+    doLast {
+
+        // Alter the start script for Unix systems.
+        unixScript.text =
+                unixScript
+                        .readLines()
+                        .collect(configureUnixClasspath)
+                        .join('\n')
+
+        // Alter the start script for Windows systems.
+        windowsScript.text =
+                windowsScript
+                        .readLines()
+                        .collect(configureWindowsClasspath)
+                        .join('\r\n')
+    }
+}

@@ -20,13 +20,11 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Files;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Map;
 
 /**
@@ -36,6 +34,13 @@ import java.util.Map;
  */
 public class AsantiCli
 {
+    // -------------------------------------------------------------------------
+    // CONSTANTS
+    // -------------------------------------------------------------------------
+
+    /** constant to use to add new lines to output */
+    private static final String NEW_LINE = System.lineSeparator();
+
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -57,10 +62,15 @@ public class AsantiCli
     {
         try
         {
-            switch (args.length)
+            Options options = getOptions();
+            CommandLineParser parser = new DefaultParser();
+            final CommandLine cmdLine = parser.parse(options, args);
+            validateCommandLine(cmdLine);
+
+            switch (cmdLine.getArgs().length)
             {
                 case 1:
-                    final String filename = args[0];
+                    final String filename = cmdLine.getArgs()[0];
                     final File file = new File(filename);
 
                     if (filename.endsWith(".asn"))
@@ -74,13 +84,17 @@ public class AsantiCli
                     break;
 
                 case 2:
-                    throw new Exception("Top level type name not supplied");
+                    throw new ParseException("Top level type name not supplied");
 
                 case 3:
                 {
-                    final String asnFilename = args[0].endsWith(".asn") ? args[0] : args[1];
-                    final String berFilename = args[0].endsWith(".asn") ? args[1] : args[0];
-                    final String topLevelType = args[2];
+                    final String asnFilename = cmdLine.getArgs()[0].endsWith(".asn") ?
+                            cmdLine.getArgs()[0] :
+                            cmdLine.getArgs()[1];
+                    final String berFilename = cmdLine.getArgs()[0].endsWith(".asn") ?
+                            cmdLine.getArgs()[1] :
+                            cmdLine.getArgs()[0];
+                    final String topLevelType = cmdLine.getArgs()[2];
                     final File asnFile = new File(asnFilename);
                     final File berFile = new File(berFilename);
                     // Load the schema once, and use it for all data files.
@@ -91,12 +105,17 @@ public class AsantiCli
                 break;
 
                 default:
-                    throw new Exception("No ASN Schema (.asn) or ASN Data (.ber) file supplied");
+                    throw new ParseException("No ASN Schema (.asn) or ASN Data (.ber) file supplied");
             }
         }
-        catch (final Exception ex)
+        catch (final IOException ex)
         {
             logger.error("Could not parse file", ex);
+            System.exit(1);
+        }
+        catch (final ParseException e)
+        {
+            printUsage(e.getMessage());
             System.exit(1);
         }
     }
@@ -273,5 +292,63 @@ public class AsantiCli
             }
             count++;
         }
+    }
+
+    /**
+     * Returns the Command Line Options for this application
+     *
+     * @return the Command Line Options for this application
+     */
+    private static Options getOptions()
+    {
+        return new Options().addOption("h", "help", false, "Print out help");
+    }
+
+    /**
+     * Performs application validation against the provided command line.  If the validation fails
+     * then an appropriate exception will be thrown (ParseException or subclasses)
+     *
+     * @param cmdLine
+     *         the command line passes to main
+     *
+     * @throws ParseException
+     *         if there are issues with the options or arguments
+     */
+    private static void validateCommandLine(final CommandLine cmdLine) throws ParseException
+    {
+        if (cmdLine.hasOption("h"))
+        {
+            throw new ParseException("");
+        }
+
+        if (cmdLine.getArgs().length != 1 && cmdLine.getArgs().length != 3)
+        {
+            throw new MissingArgumentException("Must specify 1 or 3 arguments");
+        }
+
+        // All good!
+    }
+
+    /**
+     * Prints the usage message
+     *
+     * @param footerMessage
+     *         adds to the footer of the message, useful for specifying known issues with usage.
+     */
+    private static void printUsage(final String footerMessage)
+    {
+        final String callPattern = "USAGE: asanti [options] <asn_schema_file>" + NEW_LINE +
+                "    asanti [options] <asn_ber_file>" + NEW_LINE +
+                "    asanti [options] <asn_schema_file> <asn_ber_file> <top_level_type>" + NEW_LINE
+                + NEW_LINE +
+                "Where:" + NEW_LINE +
+                "    asn_schema_file        the ASN.1 schema file to parse (must end in '.asn')"
+                + NEW_LINE +
+                "    asn_ber_file           the ASN.1 BER file to parse (must end in '.ber')"
+                + NEW_LINE +
+                "    top_level_type         the name of the top level type in the schema file";
+
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp(callPattern, "Options:", getOptions(), NEW_LINE + footerMessage);
     }
 }
