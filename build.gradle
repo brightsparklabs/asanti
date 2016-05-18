@@ -8,13 +8,19 @@
 // -----------------------------------------------------------------------------
 
 apply plugin: 'java'
-apply plugin: 'java-library-distribution'
+apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'findbugs'    // code quality
 apply plugin: 'jacoco'      // code coverage
 apply plugin: 'maven'       // publishing to maven central
 apply plugin: 'signing'     // publishing to maven central
+
+// -----------------------------------------------------------------------------
+// IMPORTS
+// -----------------------------------------------------------------------------
+
+apply from: 'startScripts.gradle'
 
 // -----------------------------------------------------------------------------
 // REPOSITORIES/DEPENDENCIES
@@ -31,6 +37,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.10'
     compile 'joda-time:joda-time:2.8.1'
 
+    compile "commons-cli:commons-cli:1.3"
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.powermock:powermock-api-mockito:1.6.1'
@@ -63,14 +70,9 @@ String getVersion() {
 }
 
 // -----------------------------------------------------------------------------
-// CREATE JAR FILE (via java-library-distribution)
+// CREATE START SCRIPTS (via application)
 // -----------------------------------------------------------------------------
-
-distributions {
-    main {
-        baseName = project.name
-    }
-}
+mainClassName = 'com.brightsparklabs.asanti.AsantiCli'
 
 // -----------------------------------------------------------------------------
 // GENERATE CODE QUALITY REPORT (via findbugs)
