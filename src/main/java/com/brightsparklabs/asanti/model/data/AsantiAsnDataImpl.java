@@ -90,9 +90,9 @@ public class AsantiAsnDataImpl implements AsantiAsnData
 
         this.rawAsnData = rawAsnData;
 
-        // decode the tags in the data
-        final Map<String, DecodedTag> decodedToRawTags = Maps.newHashMap();
-        final Map<String, DecodedTag> unmappedTags = Maps.newHashMap();
+        // decode the tags in the data, use LinkedHashMap to preserve insertion order
+        final Map<String, DecodedTag> decodedToRawTags = Maps.newLinkedHashMap();
+        final Map<String, DecodedTag> unmappedTags = Maps.newLinkedHashMap();
 
         ImmutableSet<OperationResult<DecodedTag, String>> results = asnSchema.getDecodedTags(
                 rawAsnData.getRawTags(),

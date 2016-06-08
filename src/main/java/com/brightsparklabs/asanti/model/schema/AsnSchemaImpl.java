@@ -89,7 +89,8 @@ public class AsnSchemaImpl implements AsnSchema
     {
         DecodingSession session = new DecodingSessionImpl();
 
-        final Set<OperationResult<DecodedTag, String>> results = Sets.newHashSet();
+        // use LinkedHashSet to preserve insertion order
+        final Set<OperationResult<DecodedTag, String>> results = Sets.newLinkedHashSet();
         for (String rawTag : rawTags)
         {
             final OperationResult<DecodedTag, String> decodeResult = getDecodedTag(rawTag,
