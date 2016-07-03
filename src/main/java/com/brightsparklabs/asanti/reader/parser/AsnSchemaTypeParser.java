@@ -344,7 +344,7 @@ public class AsnSchemaTypeParser
     {
 
         final String namedValuesText = matcher.group(1);
-        logger.debug("named values {}", namedValuesText);
+        logger.trace("named values {}", namedValuesText);
         final ImmutableList<AsnSchemaNamedTag> namedValues
                 = AsnSchemaNamedTagParser.parseEnumeratedOptions(namedValuesText);
 
@@ -470,7 +470,7 @@ public class AsnSchemaTypeParser
         final String constraintText = Strings.nullToEmpty(matcher.group(10));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        logger.debug("Creating placeholder -{} typeName: {} constraints: {}",
+        logger.trace("Creating placeholder -{} typeName: {} constraints: {}",
                 (moduleName.isEmpty() ? "" : " moduleName: " + moduleName),
                 typeName,
                 constraintText);

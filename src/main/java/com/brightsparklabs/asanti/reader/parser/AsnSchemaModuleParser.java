@@ -124,7 +124,7 @@ public class AsnSchemaModuleParser
         try
         {
             final String moduleName = lineIterator.next().split(" ")[0];
-            logger.info("Found module: {}", moduleName);
+            logger.debug("Found module: {}", moduleName);
             moduleBuilder.setName(moduleName);
 
             final StringBuilder lines = new StringBuilder();
@@ -314,7 +314,7 @@ public class AsnSchemaModuleParser
             } while (!line.contains("::=") && !"END".equals(line));
 
             final String content = builder.toString().trim();
-            logger.debug("Found content: {}", content);
+            logger.trace("Found content: {}", content);
 
             // check if content is a type definition
             Matcher matcher = PATTERN_TYPE_DEFINITION_SIMPLE.matcher(content);
@@ -371,7 +371,7 @@ public class AsnSchemaModuleParser
     {
         final String name = valueAssignmentMatcher.group(1);
         final String value = valueAssignmentMatcher.group(5);
-        logger.debug("Found value assignment: {} - {}", name, value);
+        logger.trace("Found value assignment: {} - {}", name, value);
         // TODO ASN-79 - parse value assignment
     }
 }
