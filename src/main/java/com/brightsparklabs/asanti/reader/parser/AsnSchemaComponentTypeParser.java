@@ -152,7 +152,7 @@ public class AsnSchemaComponentTypeParser
 
         for (final String item : items)
         {
-            logger.debug("  - {}", item);
+            logger.trace("  - {}", item);
         }
 
         return items;

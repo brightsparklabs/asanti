@@ -79,7 +79,7 @@ public class AsnSchemaConstraintParser
             return AsnSchemaConstraint.NULL;
         }
 
-        logger.debug("Found constraint: {}", constraintText);
+        logger.trace("Found constraint: {}", constraintText);
 
         // check if defining a bounded SIZE constraint
         Matcher matcher = PATTERN_SIZE_CONSTRAINT.matcher(constraintText);
