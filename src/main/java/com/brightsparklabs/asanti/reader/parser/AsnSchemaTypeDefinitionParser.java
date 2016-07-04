@@ -70,7 +70,7 @@ public final class AsnSchemaTypeDefinitionParser
             AsnModuleTaggingMode taggingMode) throws ParseException
     {
         checkNotNull(taggingMode);
-        logger.debug("Found type definition: {} = {}", name, value);
+        logger.trace("Found type definition: {} = {}", name, value);
         if (name == null || name.trim().isEmpty())
         {
             throw new ParseException("A name must be supplied for a Type Definition", -1);
@@ -82,7 +82,7 @@ public final class AsnSchemaTypeDefinitionParser
 
         // Get the underlying type
         AsnSchemaType type = AsnSchemaTypeParser.parse(value, taggingMode);
-        logger.debug("\t{} is type {}", name, type.getBuiltinType());
+        logger.trace("\t{} is type {}", name, type.getBuiltinType());
         // wrap it with the typedefinition name.
         return new AsnSchemaTypeDefinitionImpl(name, type);
     }

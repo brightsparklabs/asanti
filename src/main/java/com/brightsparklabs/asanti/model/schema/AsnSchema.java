@@ -26,7 +26,10 @@ public interface AsnSchema
      * Returns the decoded tags for the supplied raw tags. E.g. {@code
      * getDecodedTag("/0[1]/0[0]/0[1]", "Document")} =&gt; {@code "/Document/header/published/date"}
      * Decoding needs to be done on a whole data file at once time, as the ordering of the data can
-     * impact the (validity of the) decoding, as ASN.1 SEQUENCE objects are order dependent.
+     * impact the (validity of the) decoding, as ASN.1 SEQUENCE objects are order dependent.  The
+     * iteration order of the returned data will preserve the iteration order of rawTags, ie the
+     * iteration order of the decoded tags will be as read from the data file (which should, for the
+     * most part, be as defined in the schema).
      *
      * @param rawTags
      *         raw tags to decode
@@ -36,7 +39,7 @@ public interface AsnSchema
      *
      * @return the result of the decode attempt containing the decoded tags for each of the rawTags
      */
-    public ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(Iterable<String> rawTags,
+    ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(Iterable<String> rawTags,
             String topLevelTypeName);
 
     /**

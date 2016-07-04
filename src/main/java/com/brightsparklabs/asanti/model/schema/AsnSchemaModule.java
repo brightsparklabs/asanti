@@ -286,7 +286,7 @@ public class AsnSchemaModule
 
             for (AsnSchemaTypeDefinition typeDefinition : types.values())
             {
-                logger.debug("Resolving Type {} in module {}", typeDefinition.getName(), this.name);
+                logger.trace("Resolving Type {} in module {}", typeDefinition.getName(), this.name);
                 typeDefinition.getType().accept(resolver);
             }
         }
@@ -303,7 +303,7 @@ public class AsnSchemaModule
         {
             for (AsnSchemaTypeDefinition typeDefinition : types.values())
             {
-                logger.debug("Perform Tagging for TypeDef {} in module {}",
+                logger.trace("Perform Tagging for TypeDef {} in module {}",
                         typeDefinition.getName(),
                         this.name);
 
@@ -323,7 +323,7 @@ public class AsnSchemaModule
         {
             for (AsnSchemaTypeDefinition typeDefinition : types.values())
             {
-                logger.debug("Checking Duplicates for TypeDef {} in module {}",
+                logger.trace("Checking Duplicates for TypeDef {} in module {}",
                         typeDefinition.getName(),
                         this.name);
 
