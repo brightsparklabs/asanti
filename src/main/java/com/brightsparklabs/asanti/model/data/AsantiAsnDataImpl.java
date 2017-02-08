@@ -12,7 +12,6 @@ import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -20,6 +19,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -132,7 +132,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         {
             return Optional.of(type.get().getPrimitiveType());
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
@@ -208,7 +208,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
             final String result = "0x" + BaseEncoding.base16().encode(bytes.get());
             return Optional.of(result);
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
@@ -241,7 +241,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         final DecodedTag decodedTag = decodedTags.get(tag);
         if (decodedTag == null)
         {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         final AsnSchemaType schemaType = decodedTag.getType();
@@ -274,7 +274,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         final DecodedTag decodedTag = decodedTags.get(tag);
         if (decodedTag == null)
         {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         final AsnSchemaType schemaType = decodedTag.getType();
@@ -303,7 +303,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         final DecodedTag decodedTag = decodedTags.get(tag);
         if (decodedTag == null)
         {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         final AsnSchemaType schemaType = decodedTag.getType();

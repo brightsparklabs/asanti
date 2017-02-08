@@ -127,7 +127,7 @@ public class ValidatorImpl implements Validator
     private Set<ValidationFailure> validateDefault(String tag, AsantiAsnData asnData)
     {
         final Set<ValidationFailure> failures = Sets.newHashSet();
-        final AsnPrimitiveType type = asnData.getPrimitiveType(tag).or(AsnPrimitiveTypes.INVALID);
+        final AsnPrimitiveType type = asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
         final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
                 validationVisitor);
         if (tagValidator != null)

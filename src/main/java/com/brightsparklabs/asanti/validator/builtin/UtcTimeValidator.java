@@ -63,6 +63,6 @@ public class UtcTimeValidator extends PrimitiveBuiltinTypeValidator
         final OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> result
                 = UtcTimeDecoder.validateAndDecode(bytes);
 
-        return result.getFailureReason().or(ImmutableSet.<ByteValidationFailure>of());
+        return result.getFailureReason().orElse(ImmutableSet.of());
     }
 }

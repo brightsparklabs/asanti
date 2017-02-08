@@ -446,7 +446,7 @@ public class AsantiAsnDataImplTest
         // test raw tags (demonstrating two different usages or Optional)
         assertFalse(instance.getType("/2/2/99").isPresent());
         assertEquals(AsnBuiltinType.Null,
-                instance.getType("/99/1/1").or(AsnSchemaType.NULL).getBuiltinType());
+                instance.getType("/99/1/1").orElse(AsnSchemaType.NULL).getBuiltinType());
 
         // test unknown tags
         assertFalse(instance.getType("").isPresent());

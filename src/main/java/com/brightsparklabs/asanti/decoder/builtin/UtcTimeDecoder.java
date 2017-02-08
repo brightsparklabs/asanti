@@ -122,7 +122,7 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
         if (!result.wasSuccessful())
         {
             DecodeExceptions.throwIfHasFailures(result.getFailureReason()
-                    .or(ImmutableSet.<ByteValidationFailure>of()));
+                    .orElse(ImmutableSet.of()));
         }
 
         return result.getOutput();
@@ -140,7 +140,7 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
         if (!result.wasSuccessful())
         {
             DecodeExceptions.throwIfHasFailures(result.getFailureReason()
-                    .or(ImmutableSet.<ByteValidationFailure>of()));
+                    .orElse(ImmutableSet.of()));
         }
 
         // Now that we know it is valid, return the raw string.

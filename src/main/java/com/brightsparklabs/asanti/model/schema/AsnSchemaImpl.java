@@ -11,7 +11,7 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -120,7 +120,7 @@ public class AsnSchemaImpl implements AsnSchema
             Optional<AsnSchemaType> next = getNext(type, nextTag);
             if (!next.isPresent())
             {
-                return Optional.absent();
+                return Optional.empty();
             }
             type = next.get();
         }
@@ -142,7 +142,7 @@ public class AsnSchemaImpl implements AsnSchema
      * @param tag
      *         tag of the child to match
      *
-     * @return the child component that matches the tag, {@link Optional#absent()} if no match
+     * @return the child component that matches the tag, {@link Optional#empty()} if no match
      */
     private Optional<AsnSchemaType> getNext(AsnSchemaType type, String tag)
     {
@@ -154,7 +154,7 @@ public class AsnSchemaImpl implements AsnSchema
                 return Optional.of(component.getType());
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**

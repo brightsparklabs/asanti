@@ -10,7 +10,7 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -165,7 +165,7 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
             DecodingSession decodingSession)
     {
         return indirectType == null ?
-                Optional.<AsnSchemaComponentType>absent() :
+                Optional.<AsnSchemaComponentType>empty() :
                 indirectType.getMatchingChild(tag, decodingSession);
     }
 

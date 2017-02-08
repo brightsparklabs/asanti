@@ -6,7 +6,7 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
@@ -278,7 +278,7 @@ public class AsnSchemaTag
      */
     private static String getUniversalTagForBuiltInType(AsnBuiltinType type)
     {
-        return Optional.fromNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).or("");
+        return Optional.ofNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).orElse("");
     }
 
     /**
@@ -287,12 +287,12 @@ public class AsnSchemaTag
      * @param universalTag
      *         ASN.1 Universal tag
      *
-     * @return respective AsnBuiltinType for the Universal tag, {@link Optional#absent()} if there
+     * @return respective AsnBuiltinType for the Universal tag, {@link Optional#empty()} if there
      * is no match
      */
     public static Optional<AsnBuiltinType> getBuiltInTypeForUniversalTag(int universalTag)
     {
-        return Optional.fromNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag));
+        return Optional.ofNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag));
     }
 
     private static final ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG

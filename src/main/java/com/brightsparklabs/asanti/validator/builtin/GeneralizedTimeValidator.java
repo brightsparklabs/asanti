@@ -63,6 +63,6 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
         final OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> result
                 = GeneralizedTimeDecoder.validateAndDecode(bytes);
 
-        return result.getFailureReason().or(ImmutableSet.<ByteValidationFailure>of());
+        return result.getFailureReason().orElse(ImmutableSet.of());
     }
 }

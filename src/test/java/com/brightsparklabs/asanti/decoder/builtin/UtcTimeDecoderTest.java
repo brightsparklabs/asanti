@@ -8,7 +8,7 @@ package com.brightsparklabs.asanti.decoder.builtin;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.junit.Test;
 
 import java.sql.Timestamp;
@@ -139,7 +139,7 @@ public class UtcTimeDecoderTest
 
         // check that the other overload works
         AsantiAsnData data = mock(AsantiAsnData.class);
-        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
+        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>empty());
         final String tag = "tag";
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(time.getBytes(Charsets.UTF_8)));
 
@@ -286,7 +286,7 @@ public class UtcTimeDecoderTest
     public void testDecodeAsStringOverload() throws Exception
     {
         AsantiAsnData data = mock(AsantiAsnData.class);
-        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
+        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>empty());
 
         final String tag1 = "tag1";
         final String time1 = "700101000000";

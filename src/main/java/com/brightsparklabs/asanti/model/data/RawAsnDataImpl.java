@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.model.data;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -86,7 +86,7 @@ public class RawAsnDataImpl implements RawAsnData
     public Optional<byte[]> getBytes(String rawTag)
     {
         final byte[] result = tagsToData.get(rawTag);
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
 
     @Override

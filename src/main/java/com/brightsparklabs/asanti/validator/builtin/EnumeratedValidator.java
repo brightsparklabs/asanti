@@ -72,7 +72,7 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator
         final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result
                 = validateAndDecode(tag, asnData);
 
-        return result.getFailureReason().or(ImmutableSet.<DecodedTagValidationFailure>of());
+        return result.getFailureReason().orElse(ImmutableSet.of());
     }
 
     // -------------------------------------------------------------------------

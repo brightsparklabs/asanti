@@ -12,7 +12,7 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -41,7 +41,7 @@ public abstract class AbstractBuiltinTypeDecoder<T> implements BuiltinTypeDecode
         checkNotNull(asnData);
         final Optional<byte[]> bytes = asnData.getBytes(tag);
 
-        return decode(bytes.orNull());
+        return decode(bytes.orElse(null) );
     }
 
     @Override
@@ -57,6 +57,6 @@ public abstract class AbstractBuiltinTypeDecoder<T> implements BuiltinTypeDecode
         checkNotNull(asnData);
         final Optional<byte[]> bytes = asnData.getBytes(tag);
 
-        return decodeAsString(bytes.orNull());
+        return decodeAsString(bytes.orElse(null));
     }
 }

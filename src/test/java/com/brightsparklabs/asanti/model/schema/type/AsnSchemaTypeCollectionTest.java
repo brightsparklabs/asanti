@@ -4,7 +4,7 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class AsnSchemaTypeCollectionTest
         when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.SEQUENCE);
         when(wrappedSequence.getBuiltinType()).thenReturn(AsnBuiltinType.Sequence);
         when(wrappedSequence.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
-                Optional.<AsnSchemaComponentType>absent());
+                Optional.<AsnSchemaComponentType>empty());
         when(wrappedSequence.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
                 Optional.of(component));
 
@@ -157,7 +157,7 @@ public class AsnSchemaTypeCollectionTest
         when(wrappedChoice.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.CHOICE);
         when(wrappedChoice.getBuiltinType()).thenReturn(AsnBuiltinType.Choice);
         when(wrappedChoice.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
-                Optional.<AsnSchemaComponentType>absent());
+                Optional.<AsnSchemaComponentType>empty());
         when(wrappedChoice.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
                 Optional.of(component));
 

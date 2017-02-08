@@ -14,7 +14,7 @@ import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -179,7 +179,7 @@ public class MockAsnSchema
 
         instance = mock(AsnSchema.class);
 
-        when(instance.getType(anyString())).thenReturn(Optional.<AsnSchemaType>absent());
+        when(instance.getType(anyString())).thenReturn(Optional.<AsnSchemaType>empty());
 
         ImmutableSet<OperationResult<DecodedTag, String>> results
                 = ImmutableSet.<OperationResult<DecodedTag, String>>builder()

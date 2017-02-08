@@ -87,7 +87,7 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
         if (!result.wasSuccessful())
         {
             DecodeExceptions.throwIfHasFailures(result.getFailureReason()
-                    .or(ImmutableSet.<DecodedTagValidationFailure>of()));
+                    .orElse(ImmutableSet.of()));
         }
 
         return result.getOutput();

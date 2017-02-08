@@ -6,7 +6,7 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -51,7 +51,7 @@ public class MockAsnSchemaType
         when(mockedInstance.getConstraints()).thenReturn(constraints);
         when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
         when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
-                Optional.<AsnSchemaComponentType>absent());
+                Optional.<AsnSchemaComponentType>empty());
 
         return mockedInstance;
     }
@@ -211,7 +211,7 @@ public class MockAsnSchemaType
         when(mockedInstance.getConstraints()).thenReturn(constraints);
         when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
         when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
-                Optional.<AsnSchemaComponentType>absent());
+                Optional.<AsnSchemaComponentType>empty());
 
         return mockedInstance;
     }
@@ -447,7 +447,7 @@ public class MockAsnSchemaType
 
             // setup default matchers, when new components are added they will add specific returns for those tags.
             when(mockedInstance.getMatchingChild(anyString(),
-                    any(DecodingSession.class))).thenReturn(Optional.<AsnSchemaComponentType>absent());
+                    any(DecodingSession.class))).thenReturn(Optional.<AsnSchemaComponentType>empty());
         }
 
         // ---------------------------------------------------------------------
@@ -589,7 +589,7 @@ public class MockAsnSchemaType
 
                         return Optional.of(mockResult);
                     }
-                    return Optional.absent();
+                    return Optional.empty();
                 }
             });
 

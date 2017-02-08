@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.common;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * A result from an operation which was either successful or not successful. The result contains the
@@ -52,7 +52,7 @@ public class OperationResult<T, FailureType>
     {
         this.wasSuccessful = wasSuccessful;
         this.output = output;
-        this.failureReason = Optional.fromNullable(failureReason);
+        this.failureReason = Optional.ofNullable(failureReason);
     }
 
     /**
