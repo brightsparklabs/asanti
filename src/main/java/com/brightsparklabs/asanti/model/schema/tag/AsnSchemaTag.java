@@ -172,12 +172,10 @@ public class AsnSchemaTag
      */
     public static String createRawTagUniversal(int tagIndex, int universalTagNumber)
     {
-        Optional<AsnBuiltinType> type = getBuiltInTypeForUniversalTag(universalTagNumber);
-        if (type.isPresent())
+        return getBuiltInTypeForUniversalTag(universalTagNumber).map(type ->
         {
-            return createRawTag(tagIndex, createUniversalPortion(type.get()));
-        }
-        return "";
+            return createRawTag(tagIndex, createUniversalPortion(type));
+        }).orElse("");
     }
 
     /**

@@ -127,12 +127,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     @Override
     public Optional<AsnPrimitiveType> getPrimitiveType(String tag)
     {
-        final Optional<AsnSchemaType> type = getType(tag);
-        if (type.isPresent())
-        {
-            return Optional.of(type.get().getPrimitiveType());
-        }
-        return Optional.empty();
+        return getType(tag).map(AsnSchemaType::getPrimitiveType);
     }
 
     @Override
@@ -186,11 +181,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         final Map<String, byte[]> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            final Optional<byte[]> bytes = getBytes(tag);
-            if (bytes.isPresent())
-            {
-                result.put(tag, bytes.get());
-            }
+            getBytes(tag).ifPresent(b -> result.put(tag, b));
         }
 
         // check against the raw tags too
@@ -202,13 +193,10 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     @Override
     public Optional<String> getHexString(String tag)
     {
-        final Optional<byte[]> bytes = getBytes(tag);
-        if (bytes.isPresent())
+        return getBytes(tag).map(bytes ->
         {
-            final String result = "0x" + BaseEncoding.base16().encode(bytes.get());
-            return Optional.of(result);
-        }
-        return Optional.empty();
+            return "0x" + BaseEncoding.base16().encode(bytes);
+        });
     }
 
     @Override
@@ -217,11 +205,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         final Map<String, String> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            final Optional<String> hexString = getHexString(tag);
-            if (hexString.isPresent())
-            {
-                result.put(tag, hexString.get());
-            }
+            getHexString(tag).ifPresent(h -> result.put(tag, h));
         }
 
         // Add any matched to raw tags
@@ -258,11 +242,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         final Map<String, String> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            final Optional<String> printableString = getPrintableString(tag);
-            if (printableString.isPresent())
-            {
-                result.put(tag, printableString.get());
-            }
+            getPrintableString(tag).ifPresent(p -> result.put(tag, p));
         }
 
         return ImmutableMap.copyOf(result);
@@ -321,11 +301,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         final Map<String, Object> result = Maps.newHashMap();
         for (final String tag : getMatchingTags(regex))
         {
-            final Optional<String> decodedObject = getDecodedObject(tag);
-            if (decodedObject.isPresent())
-            {
-                result.put(tag, decodedObject.get());
-            }
+            getDecodedObject(tag).ifPresent(o -> result.put(tag, o));
         }
 
         return ImmutableMap.copyOf(result);
