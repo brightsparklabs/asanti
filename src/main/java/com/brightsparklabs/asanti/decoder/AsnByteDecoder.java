@@ -10,7 +10,7 @@ import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 /**
  * Utility class for decoding bytes in ASN.1 Types
@@ -115,7 +115,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsDate(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsDate(byte[] bytes) throws DecodeException
     {
         return DateDecoder.getInstance().decode(bytes);
     }
@@ -131,7 +131,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsDateTime(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsDateTime(byte[] bytes) throws DecodeException
     {
         return DateTimeDecoder.getInstance().decode(bytes);
     }
@@ -211,7 +211,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsGeneralizedTime(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsGeneralizedTime(byte[] bytes) throws DecodeException
     {
         return GeneralizedTimeDecoder.getInstance().decode(bytes);
     }
@@ -550,7 +550,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsTime(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsTime(byte[] bytes) throws DecodeException
     {
         return TimeDecoder.getInstance().decode(bytes);
     }
@@ -566,7 +566,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsTimeOfDay(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsTimeOfDay(byte[] bytes) throws DecodeException
     {
         return TimeOfDayDecoder.getInstance().decode(bytes);
     }
@@ -598,7 +598,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsUtcTime(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsUtcTime(byte[] bytes) throws DecodeException
     {
         return UtcTimeDecoder.getInstance().decode(bytes);
     }

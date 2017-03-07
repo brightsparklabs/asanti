@@ -23,14 +23,16 @@ import org.joda.time.format.DateTimeParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 /**
  * Decoder for data of type {@link AsnBuiltinType#UtcTime}
  *
  * @author brightSPARK Labs
  */
-public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
+public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime>
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -55,9 +57,9 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
             .toFormatter();
 
     /** a time zone offset parser, specifying "Z" as no timezone, ie UTC */
-    private static final DateTimeParser offset
-            = new DateTimeFormatterBuilder().appendTimeZoneOffset("", "Z", false, 1, 2).toParser();
-
+    private static final DateTimeParser offset = new DateTimeFormatterBuilder()
+            .appendTimeZoneOffset("", "Z", false, 1, 2)
+            .toParser();
 
     /** parser option for when only up to the Minutes are defined, so optional decimals and offset */
     private static final DateTimeFormatter uptoMinutes = new DateTimeFormatterBuilder()
@@ -82,8 +84,9 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
      * The parser to use, it is an OR of the three precisions, each of which has its optional
      * components
      */
-    private static final DateTimeFormatter parser = new DateTimeFormatterBuilder().append(null,
-            options).toFormatter();
+    private static final DateTimeFormatter parser = new DateTimeFormatterBuilder()
+            .append(null, options)
+            .toFormatter();
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -115,13 +118,14 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
     // -------------------------------------------------------------------------
 
     @Override
-    public Timestamp decode(final byte[] bytes) throws DecodeException
+    public OffsetDateTime decode(final byte[] bytes) throws DecodeException
     {
-        OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> result = validateAndDecode(
-                bytes);
+        OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result
+                = validateAndDecode(bytes);
         if (!result.wasSuccessful())
         {
-            DecodeExceptions.throwIfHasFailures(result.getFailureReason()
+            DecodeExceptions.throwIfHasFailures(result
+                    .getFailureReason()
                     .orElse(ImmutableSet.of()));
         }
 
@@ -135,11 +139,12 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
         // as such we should just return the "raw" string (if it is valid)
         // This is useful given that the decode to Timestamp discards timezone information.
 
-        OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> result = validateAndDecode(
-                bytes);
+        OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result
+                = validateAndDecode(bytes);
         if (!result.wasSuccessful())
         {
-            DecodeExceptions.throwIfHasFailures(result.getFailureReason()
+            DecodeExceptions.throwIfHasFailures(result
+                    .getFailureReason()
                     .orElse(ImmutableSet.of()));
         }
 
@@ -161,7 +166,7 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
      * @return OperationResult that will contain a Timestamp if successful, or a
      * ByteValidationFailure otherwise
      */
-    public static OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> validateAndDecode(
+    public static OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> validateAndDecode(
             final byte[] bytes)
     {
         // UTCTime is considered a "useful" type that is a specialisation of VisibleString
@@ -193,22 +198,19 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
             }
 
             // use the Joda-Time parser
-            final DateTime dateTime = parser.parseDateTime(rawDateTime);
-            Timestamp result = new Timestamp(dateTime.getMillis());
-            return OperationResult.createSuccessfulInstance(result);
+            final DateTime dateTime = parser.withOffsetParsed().parseDateTime(rawDateTime);
+
+            final Instant instant = Instant.ofEpochMilli(dateTime.getMillis());
+
+            final OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant,
+                    ZoneId.systemDefault());
+
+            return OperationResult.createSuccessfulInstance(offsetDateTime);
         }
-        catch (IllegalArgumentException e)
+        catch (final IllegalArgumentException | DecodeException e)
         {
-            final String error = TimeValidator.UTCTIME_VALIDATION_ERROR + e.getMessage();
-            return OperationResult.createUnsuccessfulInstance(null,
-                    ImmutableSet.of(new ByteValidationFailure(bytes.length,
-                            FailureType.DataIncorrectlyFormatted,
-                            error)));
-        }
-        catch (DecodeException e)
-        {
-            // In theory we should not get here because we explicitly validated the VisibleString
-            // above.
+            // In theory we should not get DecodeException because we explicitly validated the
+            // VisibleString above.
             final String error = TimeValidator.UTCTIME_VALIDATION_ERROR + e.getMessage();
             return OperationResult.createUnsuccessfulInstance(null,
                     ImmutableSet.of(new ByteValidationFailure(bytes.length,
