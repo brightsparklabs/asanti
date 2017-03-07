@@ -7,11 +7,11 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.builtin.GeneralizedTimeDecoder;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 /**
  * Validator for data of type {@link AsnBuiltinType#GeneralizedTime}
@@ -60,7 +60,7 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
 
-        final OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> result
+        final OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result
                 = GeneralizedTimeDecoder.validateAndDecode(bytes);
 
         return result.getFailureReason().orElse(ImmutableSet.of());
