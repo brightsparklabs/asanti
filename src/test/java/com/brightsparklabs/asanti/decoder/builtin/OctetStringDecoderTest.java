@@ -85,7 +85,7 @@ public class OctetStringDecoderTest
     public void testDecodeAsStringOverload() throws Exception
     {
         AsantiAsnData data = mock(AsantiAsnData.class);
-        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>empty());
+        when(data.getBytes(anyString())).thenReturn(Optional.empty());
 
         final String tagIsAscii = "IsAscii";
         final byte[] bytesIsAscii = new byte[] { 0x54, 0x45, 0x53, 0x54, 0x0D, 0x0A, 0x31 };

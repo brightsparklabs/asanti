@@ -51,7 +51,7 @@ public class MockAsnSchemaType
         when(mockedInstance.getConstraints()).thenReturn(constraints);
         when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
         when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
-                Optional.<AsnSchemaComponentType>empty());
+                Optional.empty());
 
         return mockedInstance;
     }
@@ -211,7 +211,7 @@ public class MockAsnSchemaType
         when(mockedInstance.getConstraints()).thenReturn(constraints);
         when(mockedInstance.getBuiltinType()).thenReturn(primitiveType.getBuiltinType());
         when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
-                Optional.<AsnSchemaComponentType>empty());
+                Optional.empty());
 
         return mockedInstance;
     }
@@ -447,7 +447,7 @@ public class MockAsnSchemaType
 
             // setup default matchers, when new components are added they will add specific returns for those tags.
             when(mockedInstance.getMatchingChild(anyString(),
-                    any(DecodingSession.class))).thenReturn(Optional.<AsnSchemaComponentType>empty());
+                    any(DecodingSession.class))).thenReturn(Optional.empty());
         }
 
         // ---------------------------------------------------------------------

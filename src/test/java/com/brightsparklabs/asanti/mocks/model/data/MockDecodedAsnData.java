@@ -85,7 +85,7 @@ public class MockDecodedAsnData
             when(mockedInstance.getType(anyString())).thenReturn(Optional.of(type));
             when(mockedInstance.getBytes("/empty")).thenReturn(Optional.of(new byte[0]));
             when(mockedInstance.getType("/null")).thenReturn(Optional.of(type));
-            when(mockedInstance.getBytes("/null")).thenReturn(Optional.<byte[]>empty());
+            when(mockedInstance.getBytes("/null")).thenReturn(Optional.empty());
         }
 
         // ---------------------------------------------------------------------
