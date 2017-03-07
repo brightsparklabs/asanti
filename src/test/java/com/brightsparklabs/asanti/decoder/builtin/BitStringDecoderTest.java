@@ -7,8 +7,9 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
-import java.util.Optional;
 import org.junit.Test;
+
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
@@ -96,7 +97,7 @@ public class BitStringDecoderTest
         // test empty byte array
         try
         {
-            bytes = new byte[] { };
+            bytes = new byte[] {};
             instance.decode(bytes);
             fail("DecodeExceptions not thrown");
         }

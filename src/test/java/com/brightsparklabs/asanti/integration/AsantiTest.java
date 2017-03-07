@@ -123,7 +123,7 @@ public class AsantiTest
         logger.info("{} is {}", tag, s);
         assertEquals("Adam", s);
 
-        String name = pdu.<String>getDecodedObject(tag).get();
+        String name = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Adam", name);
     }
 
@@ -194,7 +194,7 @@ public class AsantiTest
         String s = AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag).get());
         logger.info("{} is {}", tag, s);
         assertEquals("Adam", s);
-        s = pdu.<String>getDecodedObject(tag).get();
+        s = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Adam", s);
 
         tag = "/Human/age";
@@ -202,7 +202,7 @@ public class AsantiTest
         BigInteger age = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag).get());
         logger.info("{} is {}", tag, age);
         assertEquals(new BigInteger("32"), age);
-        age = pdu.<BigInteger>getDecodedObject(tag).get();
+        age = pdu.getDecodedObject(tag, BigInteger.class).get();
         assertEquals(new BigInteger("32"), age);
     }
 
