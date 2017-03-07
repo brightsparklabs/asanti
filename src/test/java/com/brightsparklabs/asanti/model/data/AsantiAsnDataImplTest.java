@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
@@ -63,7 +64,7 @@ public class AsantiAsnDataImplTest
         instance = new AsantiAsnDataImpl(rawAsnData, asnSchema, "Document");
 
         // create empty instance
-        final RawAsnData emptyAsnData = new RawAsnDataImpl(Maps.<String, byte[]>newHashMap());
+        final RawAsnData emptyAsnData = new RawAsnDataImpl(Maps.newHashMap());
         emptyInstance = new AsantiAsnDataImpl(emptyAsnData, asnSchema, "Document");
     }
 
@@ -463,10 +464,10 @@ public class AsantiAsnDataImplTest
     public void testGetDecodedObjectWithType() throws Exception
     {
         assertEquals(MockAsnSchema.getPublishDate(),
-                instance.getDecodedObject("/Document/header/published/date", Timestamp.class)
+                instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class)
                         .get());
         assertEquals(MockAsnSchema.getLastModifiedDate(),
-                instance.getDecodedObject("/Document/body/lastModified/date", Timestamp.class)
+                instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class)
                         .get());
         assertEquals("prefix text",
                 instance.getDecodedObject("/Document/body/prefix/text", String.class).get());
@@ -510,32 +511,32 @@ public class AsantiAsnDataImplTest
     public void testGetDecodedObject() throws Exception
     {
         assertEquals(MockAsnSchema.getPublishDate(),
-                instance.<Timestamp>getDecodedObject("/Document/header/published/date").get());
+                instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class).get());
         assertEquals(MockAsnSchema.getLastModifiedDate(),
-                instance.<Timestamp>getDecodedObject("/Document/body/lastModified/date").get());
+                instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class).get());
         assertEquals("prefix text",
-                instance.<String>getDecodedObject("/Document/body/prefix/text").get());
+                instance.getDecodedObject("/Document/body/prefix/text", String.class).get());
         assertEquals("content text",
-                instance.<String>getDecodedObject("/Document/body/content/text").get());
+                instance.getDecodedObject("/Document/body/content/text", String.class).get());
         assertEquals("firstName",
-                instance.<String>getDecodedObject("/Document/footer/authors[0]/firstName").get());
+                instance.getDecodedObject("/Document/footer/authors[0]/firstName", String.class).get());
 
         // test unmapped tags
-        assertFalse(instance.getDecodedObject("/Document/body/content/99").isPresent());
-        assertFalse(instance.getDecodedObject("/Document/99/1/1").isPresent());
+        assertFalse(instance.getDecodedObject("/Document/body/content/99", String.class).isPresent());
+        assertFalse(instance.getDecodedObject("/Document/99/1/1", String.class).isPresent());
 
         // test raw tags
-        assertFalse(instance.getDecodedObject("/1[2]/0[0]/0[99]").isPresent());
-        assertFalse(instance.getDecodedObject("/0[99]/0[1]/0[1]").isPresent());
+        assertFalse(instance.getDecodedObject("/1[2]/0[0]/0[99]", String.class).isPresent());
+        assertFalse(instance.getDecodedObject("/0[99]/0[1]/0[1]", String.class).isPresent());
 
         // test unknown tags
-        assertFalse(instance.getDecodedObject("").isPresent());
-        assertFalse(instance.getDecodedObject("/0/0/0").isPresent());
-        assertFalse(instance.getDecodedObject("/Document/2/2/99").isPresent());
+        assertFalse(instance.getDecodedObject("", String.class).isPresent());
+        assertFalse(instance.getDecodedObject("/0/0/0", String.class).isPresent());
+        assertFalse(instance.getDecodedObject("/Document/2/2/99", String.class).isPresent());
 
-        assertFalse(emptyInstance.getDecodedObject("").isPresent());
-        assertFalse(emptyInstance.getDecodedObject("/0/0/0").isPresent());
-        assertFalse(emptyInstance.getDecodedObject("/Document/header/published/date").isPresent());
+        assertFalse(emptyInstance.getDecodedObject("", String.class).isPresent());
+        assertFalse(emptyInstance.getDecodedObject("/0/0/0", String.class).isPresent());
+        assertFalse(emptyInstance.getDecodedObject("/Document/header/published/date", String.class).isPresent());
     }
 
     @Test

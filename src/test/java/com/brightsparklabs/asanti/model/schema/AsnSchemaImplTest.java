@@ -82,7 +82,7 @@ public class AsnSchemaImplTest
         }
         try
         {
-            new AsnSchemaImpl("Document-PDU", ImmutableMap.<String, AsnSchemaModule>of());
+            new AsnSchemaImpl("Document-PDU", ImmutableMap.of());
             fail("IllegalArgumentException not thrown");
         }
         catch (final IllegalArgumentException ex)

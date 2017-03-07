@@ -46,7 +46,7 @@ public class AsnSchemaTypeCollectionTest
         when(wrappedSequence.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.SEQUENCE);
         when(wrappedSequence.getBuiltinType()).thenReturn(AsnBuiltinType.Sequence);
         when(wrappedSequence.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
-                Optional.<AsnSchemaComponentType>empty());
+                Optional.empty());
         when(wrappedSequence.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
                 Optional.of(component));
 
@@ -157,7 +157,7 @@ public class AsnSchemaTypeCollectionTest
         when(wrappedChoice.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.CHOICE);
         when(wrappedChoice.getBuiltinType()).thenReturn(AsnBuiltinType.Choice);
         when(wrappedChoice.getMatchingChild(anyString(), any(DecodingSession.class))).thenReturn(
-                Optional.<AsnSchemaComponentType>empty());
+                Optional.empty());
         when(wrappedChoice.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
                 Optional.of(component));
 

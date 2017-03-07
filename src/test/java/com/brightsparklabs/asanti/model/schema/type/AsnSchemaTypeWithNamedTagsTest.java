@@ -38,7 +38,7 @@ public class AsnSchemaTypeWithNamedTagsTest
         {
             new AsnSchemaTypeWithNamedTags(null,
                     AsnSchemaConstraint.NULL,
-                    ImmutableList.<AsnSchemaNamedTag>of());
+                    ImmutableList.of());
             fail("NullPointerException not thrown");
         }
         catch (final NullPointerException ex)
@@ -86,7 +86,7 @@ public class AsnSchemaTypeWithNamedTagsTest
         AsnSchemaTypeWithNamedTags instance
                 = new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.INTEGER,
                 AsnSchemaConstraint.NULL,
-                ImmutableList.<AsnSchemaNamedTag>of());
+                ImmutableList.of());
 
         Object o = instance.accept(v);
         assertEquals("Got AsnSchemaTypeWithNamedTags", o);
