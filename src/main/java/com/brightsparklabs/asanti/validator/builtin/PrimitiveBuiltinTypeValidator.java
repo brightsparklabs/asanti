@@ -36,7 +36,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         final Set<DecodedTagValidationFailure> tagFailures = Sets.newHashSet();
 
         // validate data
-        final byte[] bytes = asnData.getBytes(tag).orNull();
+        final byte[] bytes = asnData.getBytes(tag).orElse(null);
         final Iterable<ByteValidationFailure> byteFailures = validate(bytes);
         for (ByteValidationFailure byteFailure : byteFailures)
         {
@@ -47,7 +47,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         }
 
         // validate against the tag's constraint
-        final AsnSchemaType type = asnData.getType(tag).or(AsnSchemaType.NULL);
+        final AsnSchemaType type = asnData.getType(tag).orElse(AsnSchemaType.NULL);
         final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
         final Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
         for (AsnSchemaConstraint constraint : constraints)

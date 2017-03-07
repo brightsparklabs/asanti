@@ -11,7 +11,7 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.brightsparklabs.assam.visitor.VisitableThrowing;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -59,7 +59,7 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
     /**
-     * Returns the {@code AsnSchemaComponentType} for the tag, or {@link Optional#absent()} if none
+     * Returns the {@code AsnSchemaComponentType} for the tag, or {@link Optional#empty()} if none
      * found
      *
      * @param tag
@@ -67,7 +67,7 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
      * @param decodingSession
      *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
      *
-     * @return the {@code AsnSchemaComponentType} for the tag, or {@link Optional#absent()} if none
+     * @return the {@code AsnSchemaComponentType} for the tag, or {@link Optional#empty()} if none
      * found
      */
     Optional<AsnSchemaComponentType> getMatchingChild(String tag, DecodingSession decodingSession);
@@ -128,7 +128,7 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
         public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
                 DecodingSession decodingSession)
         {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         @Override

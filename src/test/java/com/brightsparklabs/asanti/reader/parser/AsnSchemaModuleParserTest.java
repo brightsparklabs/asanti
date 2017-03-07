@@ -166,7 +166,7 @@ public class AsnSchemaModuleParserTest
         // test empty file
         try
         {
-            AsnSchemaModuleParser.parse(Lists.<String>newArrayList());
+            AsnSchemaModuleParser.parse(Lists.newArrayList());
             fail("ParseException not thrown");
         }
         catch (final ParseException ex)
@@ -254,7 +254,7 @@ public class AsnSchemaModuleParserTest
         final String expectedImportsStatement
                 = "Person FROM People-Protocol { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) } ";
 
-        final Map<String, String> mockedImportsMap = Maps.<String, String>newHashMap();
+        final Map<String, String> mockedImportsMap = Maps.newHashMap();
         mockedImportsMap.put("Person", "People-Protocol");
         final ImmutableMap<String, String> mockedImportsImmutableMap = ImmutableMap.copyOf(
                 mockedImportsMap);

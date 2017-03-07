@@ -5,12 +5,12 @@
 
 package com.brightsparklabs.asanti.model.data;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.*;
@@ -42,7 +42,7 @@ public class RawAsnDataImpl implements RawAsnData
      * @throws NullPointerException
      *         if parameters are {@code null}
      */
-    public RawAsnDataImpl(Map<String, byte[]> tagsToData)
+    public RawAsnDataImpl(final Map<String, byte[]> tagsToData)
     {
         checkNotNull(tagsToData);
         this.tagsToData = ImmutableMap.copyOf(tagsToData);
@@ -53,19 +53,21 @@ public class RawAsnDataImpl implements RawAsnData
     // -------------------------------------------------------------------------
 
     @Override
-    public boolean contains(String tag)
+    public boolean contains(final String tag)
     {
         return tagsToData.containsKey(tag);
     }
 
     @Override
-    public boolean contains(Pattern regex)
+    public boolean contains(final Pattern regex)
     {
         if (regex == null)
         {
             return false;
         }
 
+        return tagsToData.keySet().stream().anyMatch(tag -> regex.matcher(tag).matches());
+/*
         for (final String tag : tagsToData.keySet())
         {
             if (regex.matcher(tag).matches())
@@ -74,6 +76,7 @@ public class RawAsnDataImpl implements RawAsnData
             }
         }
         return false;
+*/
     }
 
     @Override
@@ -86,7 +89,7 @@ public class RawAsnDataImpl implements RawAsnData
     public Optional<byte[]> getBytes(String rawTag)
     {
         final byte[] result = tagsToData.get(rawTag);
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
 
     @Override
@@ -96,11 +99,11 @@ public class RawAsnDataImpl implements RawAsnData
     }
 
     @Override
-    public ImmutableMap<String, byte[]> getBytesMatching(Pattern regex)
+    public ImmutableMap<String, byte[]> getBytesMatching(final Pattern regex)
     {
         if (regex == null)
         {
-            return ImmutableMap.<String, byte[]>of();
+            return ImmutableMap.of();
         }
 
         final Map<String, byte[]> tags = Maps.newHashMap();

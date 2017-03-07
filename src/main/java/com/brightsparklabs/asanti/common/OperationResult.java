@@ -5,7 +5,7 @@
 
 package com.brightsparklabs.asanti.common;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * A result from an operation which was either successful or not successful. The result contains the
@@ -48,11 +48,11 @@ public class OperationResult<T, FailureType>
      * @param failureReason
      *         the (Optional) reason the operation failed
      */
-    private OperationResult(boolean wasSuccessful, T output, FailureType failureReason)
+    private OperationResult(boolean wasSuccessful, final T output, final FailureType failureReason)
     {
         this.wasSuccessful = wasSuccessful;
         this.output = output;
-        this.failureReason = Optional.fromNullable(failureReason);
+        this.failureReason = Optional.ofNullable(failureReason);
     }
 
     /**
@@ -73,7 +73,7 @@ public class OperationResult<T, FailureType>
      * @return a 'successful' result instance containing the supplied data
      */
     public static <T, FailureType> OperationResult<T, FailureType> createSuccessfulInstance(
-            T output)
+            final T output)
     {
         return new OperationResult<>(true, output, null);
     }
@@ -98,7 +98,7 @@ public class OperationResult<T, FailureType>
      * @return an 'unsuccessful' result instance containing the supplied data
      */
     public static <T, FailureType> OperationResult<T, FailureType> createUnsuccessfulInstance(
-            T output, FailureType failureReason)
+            final T output, final FailureType failureReason)
     {
         return new OperationResult<>(false, output, failureReason);
     }

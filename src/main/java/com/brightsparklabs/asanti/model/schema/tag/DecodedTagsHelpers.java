@@ -92,10 +92,10 @@ public class DecodedTagsHelpers
         for (final String tag : asnData.getUnmappedTags())
         {
             final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
-            StringBuilder reconstructed = new StringBuilder("");
+            final StringBuilder reconstructed = new StringBuilder("");
             // filter out the unmapped.  We know it is unmapped because it starts
             // with a digit
-            for (String tagName : Collections2.filter(tags, filterOutDigits))
+            for (final String tagName : Collections2.filter(tags, filterOutDigits))
             {
                 reconstructed.append("/").append(tagName);
                 result.add(reconstructed.toString());
@@ -219,7 +219,7 @@ public class DecodedTagsHelpers
         @Override
         public boolean apply(final String input)
         {
-            return (input.startsWith(parentTag));
+            return input.startsWith(parentTag);
         }
     }
 

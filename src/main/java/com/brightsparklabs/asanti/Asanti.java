@@ -46,8 +46,8 @@ public class Asanti
      * @throws IOException
      *         if any errors occur reading from the file
      */
-    public static ImmutableList<AsantiAsnData> decodeAsnData(ByteSource source, CharSource schema,
-            String topLevelType) throws IOException
+    public static ImmutableList<AsantiAsnData> decodeAsnData(final ByteSource source,
+            final CharSource schema, final String topLevelType) throws IOException
     {
         // TODO: ASN-78 - cache schema
         final AsnSchema asnSchema = AsnSchemaReader.read(schema);
@@ -70,8 +70,8 @@ public class Asanti
      * @throws IOException
      *         if any errors occur reading the data
      */
-    public static ImmutableList<AsantiAsnData> decodeAsnData(ByteSource source,
-            AsnSchema asnSchema, String topLevelType) throws IOException
+    public static ImmutableList<AsantiAsnData> decodeAsnData(final ByteSource source,
+            final AsnSchema asnSchema, final String topLevelType) throws IOException
     {
         final ImmutableList<RawAsnData> allRawAsnData = readAsnBerData(source);
         final List<AsantiAsnData> allAsnData = Lists.newArrayList();
@@ -99,8 +99,8 @@ public class Asanti
      * @throws IOException
      *         if any errors occur reading from the file
      */
-    public static AsantiAsnData decodeAsnData(RawAsnData rawAsnData, AsnSchema asnSchema,
-            String topLevelType) throws IOException
+    public static AsantiAsnData decodeAsnData(final RawAsnData rawAsnData,
+            final AsnSchema asnSchema, final String topLevelType) throws IOException
     {
         return new AsantiAsnDataImpl(rawAsnData, asnSchema, topLevelType);
     }
@@ -116,7 +116,8 @@ public class Asanti
      * @throws IOException
      *         if any errors occur reading from the file
      */
-    public static ImmutableList<RawAsnData> readAsnBerData(ByteSource source) throws IOException
+    public static ImmutableList<RawAsnData> readAsnBerData(final ByteSource source)
+            throws IOException
     {
         return AsnBerDataReader.read(source);
     }
@@ -136,7 +137,7 @@ public class Asanti
      * @throws IOException
      *         if any errors occur reading from the file
      */
-    public static ImmutableList<RawAsnData> readAsnBerData(ByteSource source, int maxPDUs)
+    public static ImmutableList<RawAsnData> readAsnBerData(final ByteSource source, int maxPDUs)
             throws IOException
     {
         return AsnBerDataReader.read(source, maxPDUs);

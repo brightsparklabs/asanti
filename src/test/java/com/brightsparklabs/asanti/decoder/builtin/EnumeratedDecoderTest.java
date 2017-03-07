@@ -7,7 +7,7 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeVisitor;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeWithNamedTags;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.assam.exception.DecodeException;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
@@ -70,20 +70,15 @@ public class EnumeratedDecoderTest
     public void testDecode1() throws Exception
     {
         final AsnSchemaTypeWithNamedTags type = mock(AsnSchemaTypeWithNamedTags.class);
-        when(type.getConstraints()).thenReturn(ImmutableSet.<AsnSchemaConstraint>of());
+        when(type.getConstraints()).thenReturn(ImmutableSet.of());
 
         // We need to go to this length so that we can test the "internal" visitor
-        when(type.accept(any(AsnSchemaTypeVisitor.class))).thenAnswer(new Answer<String>()
+        when(type.accept(any(AsnSchemaTypeVisitor.class))).thenAnswer(p ->
         {
+            Object[] args = p.getArguments();
+            AsnSchemaTypeVisitor arg = (AsnSchemaTypeVisitor) args[0];
 
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable
-            {
-                Object[] args = invocation.getArguments();
-                AsnSchemaTypeVisitor arg = (AsnSchemaTypeVisitor) args[0];
-
-                return (String) arg.visit(type);
-            }
+            return (String) arg.visit(type);
         });
         ImmutableMap<String, AsnSchemaNamedTag> namedTags = ImmutableMap.of("1",
                 new AsnSchemaNamedTag("enumValue", "1"));
@@ -91,14 +86,14 @@ public class EnumeratedDecoderTest
 
         String tag = "/Foo";
         AsantiAsnData data = mock(AsantiAsnData.class);
-        when(data.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
+        when(data.getType(eq(tag))).thenReturn(Optional.of(type));
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 1 }));
 
         assertEquals("enumValue", instance.decode(tag, data));
         assertEquals("enumValue", instance.decodeAsString(tag, data));
 
         AsantiAsnData dataBad = mock(AsantiAsnData.class);
-        when(dataBad.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
+        when(dataBad.getType(eq(tag))).thenReturn(Optional.of(type));
         when(dataBad.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 2 }));
 
         try
@@ -112,7 +107,7 @@ public class EnumeratedDecoderTest
         }
 
         final String tagEmpty = "emptyBytes";
-        when(data.getType(eq(tagEmpty))).thenReturn(Optional.<AsnSchemaType>of(type));
+        when(data.getType(eq(tagEmpty))).thenReturn(Optional.of(type));
         when(data.getBytes(eq(tagEmpty))).thenReturn(Optional.of(new byte[0]));
         try
         {

@@ -123,7 +123,7 @@ public class MockAsnSchemaTypeDefinition
 
         return listBuilder.build();
 */
-        return ImmutableList.<AsnSchemaTypeDefinition>of();
+        return ImmutableList.of();
     }
 
     /**

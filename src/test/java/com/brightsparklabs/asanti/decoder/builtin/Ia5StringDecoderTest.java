@@ -8,7 +8,7 @@ package com.brightsparklabs.asanti.decoder.builtin;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

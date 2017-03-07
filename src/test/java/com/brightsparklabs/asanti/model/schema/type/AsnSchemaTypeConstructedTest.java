@@ -8,7 +8,7 @@ import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import org.junit.After;
 import org.junit.Before;
@@ -54,7 +54,7 @@ public class AsnSchemaTypeConstructedTest
         {
             new AsnSchemaTypeConstructed(null,
                     AsnSchemaConstraint.NULL,
-                    ImmutableList.<AsnSchemaComponentType>of(),
+                    ImmutableList.of(),
                     AsnModuleTaggingMode.AUTOMATIC);
             fail("NullPointerException not thrown");
         }
@@ -78,7 +78,7 @@ public class AsnSchemaTypeConstructedTest
         {
             new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                     AsnSchemaConstraint.NULL,
-                    ImmutableList.<AsnSchemaComponentType>of(),
+                    ImmutableList.of(),
                     null);
             fail("NullPointerException not thrown");
         }
@@ -91,7 +91,7 @@ public class AsnSchemaTypeConstructedTest
         {
             new AsnSchemaTypeConstructed(AsnPrimitiveTypes.INTEGER,
                     AsnSchemaConstraint.NULL,
-                    ImmutableList.<AsnSchemaComponentType>of(),
+                    ImmutableList.of(),
                     AsnModuleTaggingMode.AUTOMATIC);
             fail("IllegalArgumentException not thrown");
         }
@@ -545,7 +545,7 @@ public class AsnSchemaTypeConstructedTest
 
         AsnSchemaTypeConstructed instance = new AsnSchemaTypeConstructed(AsnPrimitiveTypes.SEQUENCE,
                 AsnSchemaConstraint.NULL,
-                ImmutableList.<AsnSchemaComponentType>of(),
+                ImmutableList.of(),
                 AsnModuleTaggingMode.AUTOMATIC);
 
         Object o = instance.accept(BaseAsnSchemaTypeTest.getVisitor());

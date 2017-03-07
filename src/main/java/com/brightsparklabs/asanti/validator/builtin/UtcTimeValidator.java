@@ -11,7 +11,7 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 /**
  * Validator for data of type {@link AsnBuiltinType#UtcTime}
@@ -60,9 +60,9 @@ public class UtcTimeValidator extends PrimitiveBuiltinTypeValidator
     protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
     {
 
-        final OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> result
+        final OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result
                 = UtcTimeDecoder.validateAndDecode(bytes);
 
-        return result.getFailureReason().or(ImmutableSet.<ByteValidationFailure>of());
+        return result.getFailureReason().orElse(ImmutableSet.of());
     }
 }

@@ -17,7 +17,7 @@ import com.brightsparklabs.assam.validator.ValidationFailure;
 import com.brightsparklabs.assam.validator.ValidationResult;
 import com.brightsparklabs.assam.validator.Validator;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -624,7 +624,7 @@ public class AsnSchemaParserTest
         assertEquals(BigInteger.valueOf(32), age);
 
         tag = "/Human/name";
-        String name = pdu.<String>getDecodedObject(tag).get();
+        String name = pdu.getDecodedObject(tag, String.class).get();
         logger.info(tag + " : " + name);
         assertEquals("Adam", name);
     }
@@ -690,7 +690,7 @@ public class AsnSchemaParserTest
         assertEquals(BigInteger.valueOf(32), age);
 
         tag = "/Human/payload/optA/name";
-        String name = pdu.<String>getDecodedObject(tag).get();
+        String name = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Adam", name);
     }
 
@@ -711,7 +711,7 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         String tag = "/Human/age";
-        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        BigInteger age = pdu.getDecodedObject(tag, BigInteger.class).get();
         logger.info(tag + " : " + age);
         assertEquals(BigInteger.valueOf(32), age);
 
@@ -738,17 +738,17 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         String tag = "/Human/name/first";
-        String first = pdu.<String>getDecodedObject(tag).get();
+        String first = pdu.getDecodedObject(tag, String.class).get();
         logger.info(tag + " : " + first);
         assertEquals("Adam", first);
 
         tag = "/Human/name/last";
-        String last = pdu.<String>getDecodedObject(tag).get();
+        String last = pdu.getDecodedObject(tag, String.class).get();
         logger.info(tag + " : " + last);
         assertEquals("Smith", last);
 
         tag = "/Human/age";
-        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        BigInteger age = pdu.getDecodedObject(tag, BigInteger.class).get();
         logger.info(tag + " : " + age);
         assertEquals(BigInteger.valueOf(32), age);
 
@@ -775,7 +775,7 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         String tag = "/Human/age";
-        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        BigInteger age = pdu.getDecodedObject(tag, BigInteger.class).get();
         logger.info(tag + " : " + age);
         assertEquals(BigInteger.valueOf(32), age);
 
@@ -818,7 +818,7 @@ public class AsnSchemaParserTest
         assertEquals(0, pdu.getUnmappedTags().size());
 
         String tag = "/Human/age";
-        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        BigInteger age = pdu.getDecodedObject(tag, BigInteger.class).get();
         logger.info(tag + " : " + age);
 
         final Validator validator = Validators.getDefault();
@@ -859,17 +859,17 @@ public class AsnSchemaParserTest
         AsnBuiltinType builtinType = pdu.getType(tag).get().getBuiltinType();
         assertEquals(AsnBuiltinType.Integer, builtinType);
 
-        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        BigInteger age = pdu.getDecodedObject(tag, BigInteger.class).get();
         logger.info(tag + " : " + age);
         assertEquals(BigInteger.valueOf(32), age);
 
         tag = "/Human/name/first";
-        String first = pdu.<String>getDecodedObject(tag).get();
+        String first = pdu.getDecodedObject(tag, String.class).get();
         logger.info(tag + " : " + first);
         assertEquals("Adam", first);
 
         tag = "/Human/name/last";
-        String last = pdu.<String>getDecodedObject(tag).get();
+        String last = pdu.getDecodedObject(tag, String.class).get();
         logger.info(tag + " : " + last);
         assertEquals("Smith", last);
 
@@ -909,11 +909,11 @@ public class AsnSchemaParserTest
         debugPdus(pdus);
 
         String tag = "/Human/age[0]";
-        assertEquals(BigInteger.ONE, pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.ONE, pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/age[1]";
-        assertEquals(BigInteger.valueOf(2), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(2), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/age[2]";
-        assertEquals(BigInteger.valueOf(3), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(3), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
 
         final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -939,27 +939,27 @@ public class AsnSchemaParserTest
         debugPdus(pdus);
 
         String tag = "/Human/age";
-        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        BigInteger age = pdu.getDecodedObject(tag, BigInteger.class).get();
         assertEquals(32, age.intValue());
 
         tag = "/Human/name";
-        String name = pdu.<String>getDecodedObject(tag).get();
+        String name = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Adam", name);
 
         tag = "/Human/friends[0]/name";
-        name = pdu.<String>getDecodedObject(tag).get();
+        name = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Finn", name);
 
         tag = "/Human/friends[0]/age";
-        age = pdu.<BigInteger>getDecodedObject(tag).get();
+        age = pdu.getDecodedObject(tag, BigInteger.class).get();
         assertEquals(5, age.intValue());
 
         tag = "/Human/friends[1]/name";
-        name = pdu.<String>getDecodedObject(tag).get();
+        name = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Fatty", name);
 
         tag = "/Human/friends[1]/age";
-        age = pdu.<BigInteger>getDecodedObject(tag).get();
+        age = pdu.getDecodedObject(tag, BigInteger.class).get();
         assertEquals(3, age.intValue());
 
         final Validator validator = Validators.getDefault();
@@ -987,27 +987,27 @@ public class AsnSchemaParserTest
         debugPdus(pdus);
 
         String tag = "/Human/age";
-        BigInteger age = pdu.<BigInteger>getDecodedObject(tag).get();
+        BigInteger age = pdu.getDecodedObject(tag, BigInteger.class).get();
         assertEquals(32, age.intValue());
 
         tag = "/Human/name";
-        String name = pdu.<String>getDecodedObject(tag).get();
+        String name = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Adam", name);
 
         tag = "/Human/friends[0]/name";
-        name = pdu.<String>getDecodedObject(tag).get();
+        name = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Finn", name);
 
         tag = "/Human/friends[0]/age";
-        age = pdu.<BigInteger>getDecodedObject(tag).get();
+        age = pdu.getDecodedObject(tag, BigInteger.class).get();
         assertEquals(5, age.intValue());
 
         tag = "/Human/friends[1]/name";
-        name = pdu.<String>getDecodedObject(tag).get();
+        name = pdu.getDecodedObject(tag, String.class).get();
         assertEquals("Fatty", name);
 
         tag = "/Human/friends[1]/age";
-        age = pdu.<BigInteger>getDecodedObject(tag).get();
+        age = pdu.getDecodedObject(tag, BigInteger.class).get();
         assertEquals(3, age.intValue());
 
         final Validator validator = Validators.getDefault();
@@ -1066,11 +1066,11 @@ public class AsnSchemaParserTest
         debugPdus(pdus);
 
         String tag = "/Human/faveNumbers";
-        BigInteger fave = pdu.<BigInteger>getDecodedObject(tag + "[0]").get();
+        BigInteger fave = pdu.getDecodedObject(tag + "[0]", BigInteger.class).get();
         assertEquals(BigInteger.ONE, fave);
-        fave = pdu.<BigInteger>getDecodedObject(tag + "[1]").get();
+        fave = pdu.getDecodedObject(tag + "[1]", BigInteger.class).get();
         assertEquals(BigInteger.valueOf(2), fave);
-        fave = pdu.<BigInteger>getDecodedObject(tag + "[2]").get();
+        fave = pdu.getDecodedObject(tag + "[2]", BigInteger.class).get();
         assertEquals(BigInteger.valueOf(3), fave);
 
         final Validator validator = Validators.getDefault();
@@ -1094,8 +1094,8 @@ public class AsnSchemaParserTest
                 topLevelType);
         debugPdus((pdus));
 
-        assertEquals("A", pdus.get(0).getDecodedObject("/Human/lastName").get());
-        assertEquals("U", pdus.get(0).getDecodedObject("/Human/firstName").get());
+        assertEquals("A", pdus.get(0).getDecodedObject("/Human/lastName", String.class).get());
+        assertEquals("U", pdus.get(0).getDecodedObject("/Human/firstName", String.class).get());
 
         final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1118,9 +1118,9 @@ public class AsnSchemaParserTest
                 topLevelType);
         debugPdus((pdus));
         String tag = "/Human/payload/lastName";
-        assertEquals("Smith", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("Smith", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/payload/firstName";
-        assertEquals("Adam", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
 
         final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1143,11 +1143,11 @@ public class AsnSchemaParserTest
                 topLevelType);
         debugPdus((pdus));
         String tag = "/Human/payload/a";
-        assertEquals(BigInteger.valueOf(10), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/payload/b/i";
-        assertEquals(BigInteger.ONE, pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.ONE, pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/payload/c";
-        assertEquals("U", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("U", pdus.get(0).getDecodedObject(tag, String.class).get());
     }
 
     @Test
@@ -1169,15 +1169,15 @@ public class AsnSchemaParserTest
         debugPdus(pdus);
 
         String tag = "/Human/a/a";
-        assertEquals(BigInteger.valueOf(10), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/a/b";
-        assertEquals("U", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("U", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/a/c";
-        assertEquals("V", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("V", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/b/b";
-        assertEquals("A", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("A", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/b/c";
-        assertEquals("B", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("B", pdus.get(0).getDecodedObject(tag, String.class).get());
     }
 
     @Test
@@ -1197,11 +1197,11 @@ public class AsnSchemaParserTest
         debugPdus((pdus));
 
         String tag = "/Human/c";
-        assertEquals("A", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("A", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/b";
-        assertEquals(BigInteger.valueOf(10), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/a";
-        assertEquals("U", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("U", pdus.get(0).getDecodedObject(tag, String.class).get());
     }
 
     @Test
@@ -1221,11 +1221,11 @@ public class AsnSchemaParserTest
         debugPdus((pdus));
 
         String tag = "/Human/c";
-        assertEquals("A", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("A", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/b";
-        assertEquals(BigInteger.valueOf(10), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/a";
-        assertEquals("U", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("U", pdus.get(0).getDecodedObject(tag, String.class).get());
     }
 
     @Test
@@ -1245,11 +1245,11 @@ public class AsnSchemaParserTest
         debugPdus((pdus));
 
         String tag = "/Human/c";
-        assertEquals("A", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("A", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/b";
-        assertEquals(BigInteger.valueOf(10), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/a";
-        assertEquals("U", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("U", pdus.get(0).getDecodedObject(tag, String.class).get());
     }
 
     @Test
@@ -1269,9 +1269,9 @@ public class AsnSchemaParserTest
         debugPdus((pdus));
 
         String tag = "/Human/b";
-        assertEquals(BigInteger.valueOf(10), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/a";
-        assertEquals("U", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("U", pdus.get(0).getDecodedObject(tag, String.class).get());
     }
 
     @Test
@@ -1293,7 +1293,7 @@ public class AsnSchemaParserTest
             debugPdus((pdus));
 
             String tag = "/Human/payload/name";
-            assertEquals("Adam", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag
                     = "/Human/payload/supplementary-Services-Information/non-Standard-Supplementary-Services[0]/simpleIndication";
             Optional<byte[]> bytes = pdus.get(0).getBytes(tag);
@@ -1311,7 +1311,7 @@ public class AsnSchemaParserTest
             debugPdus((pdus));
 
             String tag = "/Human/payload/name";
-            assertEquals("Adam", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag
                     = "/Human/payload/supplementary-Services-Information/non-Standard-Supplementary-Services[0]/simpleIndication";
             Optional<byte[]> bytes = pdus.get(0).getBytes(tag);
@@ -1342,9 +1342,9 @@ public class AsnSchemaParserTest
         debugPdus((pdus));
 
         String tag = "/Human/name[0]/a";
-        assertEquals(BigInteger.valueOf(10), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/name[1]/b";
-        assertEquals("U", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("U", pdus.get(0).getDecodedObject(tag, String.class).get());
     }
 
     @Test
@@ -1365,13 +1365,13 @@ public class AsnSchemaParserTest
         debugPdus((pdus));
 
         String tag = "/Human/name[0][0]/a";
-        assertEquals(BigInteger.valueOf(10), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/name[0][1]/b";
-        assertEquals("U", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("U", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/name[1][0]/a";
-        assertEquals(BigInteger.valueOf(11), pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(11), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/name[1][1]/b";
-        assertEquals("V", pdus.get(0).<String>getDecodedObject(tag).get());
+        assertEquals("V", pdus.get(0).getDecodedObject(tag, String.class).get());
     }
 
     @Test
@@ -1393,10 +1393,10 @@ public class AsnSchemaParserTest
             debugPdus((pdus));
 
             String tag = "/Human/selection/optA/ints[0]";
-            assertEquals(BigInteger.ONE, pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.ONE, pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
             tag = "/Human/selection/optA/ints[1]";
             assertEquals(BigInteger.valueOf(2),
-                    pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+                    pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1414,14 +1414,14 @@ public class AsnSchemaParserTest
             debugPdus((pdus));
 
             String tag = "/Human/selection/optB/namesInline[0]/first";
-            assertEquals("Adam", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag = "/Human/selection/optB/namesInline[0]/last";
-            assertEquals("Smith", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Smith", pdus.get(0).getDecodedObject(tag, String.class).get());
 
             tag = "/Human/selection/optB/namesInline[1]/first";
-            assertEquals("Michael", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Michael", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag = "/Human/selection/optB/namesInline[1]/last";
-            assertEquals("Brown", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Brown", pdus.get(0).getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1439,14 +1439,14 @@ public class AsnSchemaParserTest
             debugPdus((pdus));
 
             String tag = "/Human/selection/optC/names[0]/first";
-            assertEquals("Adam", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag = "/Human/selection/optC/names[0]/last";
-            assertEquals("Smith", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Smith", pdus.get(0).getDecodedObject(tag, String.class).get());
 
             tag = "/Human/selection/optC/names[1]/first";
-            assertEquals("Michael", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Michael", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag = "/Human/selection/optC/names[1]/last";
-            assertEquals("Brown", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Brown", pdus.get(0).getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1472,10 +1472,10 @@ public class AsnSchemaParserTest
             debugPdus((pdus));
 
             String tag = "/Human/selection/optA/ints[0]";
-            assertEquals(BigInteger.ONE, pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.ONE, pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
             tag = "/Human/selection/optA/ints[1]";
             assertEquals(BigInteger.valueOf(2),
-                    pdus.get(0).<BigInteger>getDecodedObject(tag).get());
+                    pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1493,14 +1493,14 @@ public class AsnSchemaParserTest
             debugPdus((pdus));
 
             String tag = "/Human/selection/optB/namesInline[0]/first";
-            assertEquals("Adam", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag = "/Human/selection/optB/namesInline[0]/last";
-            assertEquals("Smith", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Smith", pdus.get(0).getDecodedObject(tag, String.class).get());
 
             tag = "/Human/selection/optB/namesInline[1]/first";
-            assertEquals("Michael", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Michael", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag = "/Human/selection/optB/namesInline[1]/last";
-            assertEquals("Brown", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Brown", pdus.get(0).getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1518,14 +1518,14 @@ public class AsnSchemaParserTest
             debugPdus((pdus));
 
             String tag = "/Human/selection/optC/names[0]/first";
-            assertEquals("Adam", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag = "/Human/selection/optC/names[0]/last";
-            assertEquals("Smith", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Smith", pdus.get(0).getDecodedObject(tag, String.class).get());
 
             tag = "/Human/selection/optC/names[1]/first";
-            assertEquals("Michael", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Michael", pdus.get(0).getDecodedObject(tag, String.class).get());
             tag = "/Human/selection/optC/names[1]/last";
-            assertEquals("Brown", pdus.get(0).<String>getDecodedObject(tag).get());
+            assertEquals("Brown", pdus.get(0).getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1551,7 +1551,7 @@ public class AsnSchemaParserTest
 
         AsantiAsnData pdu = pdus.get(0);
         String tag = "/Human/payload/name";
-        assertEquals("Adam", pdu.<String>getDecodedObject(tag).get());
+        assertEquals("Adam", pdu.getDecodedObject(tag, String.class).get());
 
         tag = "/Human/payload/open/milliSeconds";
         assertEquals(BigInteger.valueOf(100), pdu.getDecodedObject(tag, BigInteger.class).get());
@@ -1579,14 +1579,14 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/age/dob";
-            Optional<byte[]> actual = pdu.getDecodedObject(tag);
+            Optional<byte[]> actual = pdu.getDecodedObject(tag, byte[].class);
             assertEquals("1973", new String(actual.get(), Charsets.UTF_8));
 
             tag = "/Human/payload/name";
-            assertEquals("Fred", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("Fred", pdu.getDecodedObject(tag, String.class).get());
 
             tag = "/Human/payload/cin/iri-to-CC/cc[0]";
-            actual = pdu.getDecodedObject(tag);
+            actual = pdu.getDecodedObject(tag, byte[].class);
             assertEquals("123", new String(actual.get(), Charsets.UTF_8));
 
             final Validator validator = Validators.getDefault();
@@ -1605,18 +1605,18 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/age/dob";
-            Optional<byte[]> actual = pdu.getDecodedObject(tag);
+            Optional<byte[]> actual = pdu.getDecodedObject(tag, byte[].class);
             assertEquals("1973", new String(actual.get(), Charsets.UTF_8));
 
             tag = "/Human/payload/name";
-            assertEquals("Fred", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("Fred", pdu.getDecodedObject(tag, String.class).get());
 
             tag = "/Human/payload/cin/iri-to-CC/cc[0]";
-            actual = pdu.getDecodedObject(tag);
+            actual = pdu.getDecodedObject(tag, byte[].class);
             assertEquals("123", new String(actual.get(), Charsets.UTF_8));
 
             tag = "/Human/payload/cin/iri-to-CC/cc[1]";
-            actual = pdu.getDecodedObject(tag);
+            actual = pdu.getDecodedObject(tag, byte[].class);
             assertEquals("456", new String(actual.get(), Charsets.UTF_8));
 
             final Validator validator = Validators.getDefault();
@@ -1643,10 +1643,10 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/age/roundYears";
-            assertEquals(BigInteger.valueOf(42), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(42), pdu.getDecodedObject(tag, BigInteger.class).get());
 
             tag = "/Human/payload/name";
-            assertEquals("Fred", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("Fred", pdu.getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1664,9 +1664,9 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/age/ymd/years";
-            assertEquals(BigInteger.valueOf(42), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(42), pdu.getDecodedObject(tag, BigInteger.class).get());
             tag = "/Human/payload/age/ymd/months";
-            assertEquals(BigInteger.valueOf(2), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(2), pdu.getDecodedObject(tag, BigInteger.class).get());
             tag = "/Human/payload/age/ymd/days";
             assertEquals(BigInteger.valueOf(22), pdu.getDecodedObject(tag, BigInteger.class).get());
 
@@ -1689,11 +1689,11 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/age/dob";
-            Optional<byte[]> actual = pdu.getDecodedObject(tag);
+            Optional<byte[]> actual = pdu.getDecodedObject(tag, byte[].class);
             assertEquals("1973", new String(actual.get(), Charsets.UTF_8));
 
             tag = "/Human/payload/name";
-            assertEquals("Fred", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("Fred", pdu.getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1722,10 +1722,10 @@ public class AsnSchemaParserTest
             assertEquals(BigInteger.valueOf(10), pdu.getDecodedObject(tag, BigInteger.class).get());
 
             tag = "/Human/payload/iRIsContent/typeA/mid/stuff";
-            assertEquals("U", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("U", pdu.getDecodedObject(tag, String.class).get());
 
             tag = "/Human/payload/name";
-            assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("payload", pdu.getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1743,10 +1743,10 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/iRIsContent/int";
-            assertEquals(BigInteger.valueOf(10), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(10), pdu.getDecodedObject(tag, BigInteger.class).get());
 
             tag = "/Human/payload/name";
-            assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("payload", pdu.getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1767,10 +1767,10 @@ public class AsnSchemaParserTest
             assertEquals(BigInteger.valueOf(10), pdu.getDecodedObject(tag, BigInteger.class).get());
 
             tag = "/Human/payload/iRIsContent/sequenceOfA[0]/mid/stuff";
-            assertEquals("U", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("U", pdu.getDecodedObject(tag, String.class).get());
 
             tag = "/Human/payload/name";
-            assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("payload", pdu.getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1788,17 +1788,17 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/iRIsContent/sequenceOfA[0]/mid/other";
-            assertEquals(BigInteger.valueOf(10), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(10), pdu.getDecodedObject(tag, BigInteger.class).get());
 
             tag = "/Human/payload/iRIsContent/sequenceOfA[0]/mid/stuff";
-            assertEquals("U", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("U", pdu.getDecodedObject(tag, String.class).get());
             tag = "/Human/payload/name";
-            assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("payload", pdu.getDecodedObject(tag, String.class).get());
 
             tag = "/Human/payload/iRIsContent/sequenceOfA[1]/mid/other";
-            assertEquals(BigInteger.valueOf(11), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(11), pdu.getDecodedObject(tag, BigInteger.class).get());
             tag = "/Human/payload/iRIsContent/sequenceOfA[1]/mid/stuff";
-            assertEquals("V", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("V", pdu.getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1816,13 +1816,13 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/iRIsContent/setOfA[0]/mid/other";
-            assertEquals(BigInteger.valueOf(10), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(10), pdu.getDecodedObject(tag, BigInteger.class).get());
 
             tag = "/Human/payload/iRIsContent/setOfA[0]/mid/stuff";
-            assertEquals("U", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("U", pdu.getDecodedObject(tag, String.class).get());
 
             tag = "/Human/payload/name";
-            assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("payload", pdu.getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1840,17 +1840,17 @@ public class AsnSchemaParserTest
 
             AsantiAsnData pdu = pdus.get(0);
             String tag = "/Human/payload/iRIsContent/setOfA[0]/mid/other";
-            assertEquals(BigInteger.valueOf(10), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(10), pdu.getDecodedObject(tag, BigInteger.class).get());
 
             tag = "/Human/payload/iRIsContent/setOfA[0]/mid/stuff";
-            assertEquals("U", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("U", pdu.getDecodedObject(tag, String.class).get());
             tag = "/Human/payload/name";
-            assertEquals("payload", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("payload", pdu.getDecodedObject(tag, String.class).get());
 
             tag = "/Human/payload/iRIsContent/setOfA[1]/mid/other";
-            assertEquals(BigInteger.valueOf(11), pdu.<BigInteger>getDecodedObject(tag).get());
+            assertEquals(BigInteger.valueOf(11), pdu.getDecodedObject(tag, BigInteger.class).get());
             tag = "/Human/payload/iRIsContent/setOfA[1]/mid/stuff";
-            assertEquals("V", pdu.<String>getDecodedObject(tag).get());
+            assertEquals("V", pdu.getDecodedObject(tag, String.class).get());
 
             final Validator validator = Validators.getDefault();
             final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1892,9 +1892,9 @@ public class AsnSchemaParserTest
 
         AsantiAsnData pdu = pdus.get(0);
         String tag = "/Human/payload/iRIsContent/typeB/other";
-        assertEquals(BigInteger.valueOf(10), pdu.<BigInteger>getDecodedObject(tag).get());
+        assertEquals(BigInteger.valueOf(10), pdu.getDecodedObject(tag, BigInteger.class).get());
         tag = "/Human/payload/iRIsContent/typeB/stuff";
-        assertEquals("U", pdu.<String>getDecodedObject(tag).get());
+        assertEquals("U", pdu.getDecodedObject(tag, String.class).get());
 
         final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1920,7 +1920,7 @@ public class AsnSchemaParserTest
 
         AsantiAsnData pdu = pdus.get(0);
         String tag = "/Types/null";
-        assertEquals("", pdu.<String>getDecodedObject(tag).get());
+        assertEquals("", pdu.getDecodedObject(tag, String.class).get());
 
         final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -1971,29 +1971,29 @@ public class AsnSchemaParserTest
 
             String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
 
-            BigInteger number = pdus.get(0).<BigInteger>getDecodedObject(tag).get();
+            BigInteger number = pdus.get(0).getDecodedObject(tag, BigInteger.class).get();
             assertEquals(BigInteger.valueOf(622697890), number);
 
             tag = "/PS-PDU/pSHeader/sequenceNumber";
-            number = pdus.get(0).<BigInteger>getDecodedObject(tag).get();
+            number = pdus.get(0).getDecodedObject(tag, BigInteger.class).get();
             assertEquals(BigInteger.ZERO, number);
 
             tag = "/PS-PDU/pSHeader/authorizationCountryCode";
-            String str = pdus.get(0).<String>getDecodedObject(tag).get();
+            String str = pdus.get(0).getDecodedObject(tag, String.class).get();
             assertEquals("AU", str);
 
             tag = "/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode";
-            str = pdus.get(1).<String>getDecodedObject(tag).get();
+            str = pdus.get(1).getDecodedObject(tag, String.class).get();
             assertEquals("AU", str);
 
             tag
                     = "/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier";
-            Optional<byte[]> bytes = pdus.get(1).getDecodedObject(tag);
+            Optional<byte[]> bytes = pdus.get(1).getDecodedObject(tag, byte[].class);
             str = new String(bytes.get(), Charsets.UTF_8);
             assertEquals("BAEProd2", str);
 
             tag = "/PS-PDU/pSHeader/sequenceNumber";
-            number = pdus.get(2).<BigInteger>getDecodedObject(tag).get();
+            number = pdus.get(2).getDecodedObject(tag, BigInteger.class).get();
             assertEquals(BigInteger.valueOf(8), number);
         }
 
@@ -2009,29 +2009,29 @@ public class AsnSchemaParserTest
 
             String tag = "/PS-PDU/pSHeader/communicationIdentifier/communicationIdentityNumber";
 
-            Optional<BigInteger> number = pdus.get(0).getDecodedObject(tag);
+            Optional<BigInteger> number = pdus.get(0).getDecodedObject(tag, BigInteger.class);
             assertEquals(BigInteger.valueOf(622697903), number.get());
 
             tag = "/PS-PDU/pSHeader/sequenceNumber";
-            number = pdus.get(0).getDecodedObject(tag);
+            number = pdus.get(0).getDecodedObject(tag, BigInteger.class);
             assertEquals(BigInteger.ZERO, number.get());
 
             tag = "/PS-PDU/pSHeader/authorizationCountryCode";
-            Optional<String> str = pdus.get(0).getDecodedObject(tag);
+            Optional<String> str = pdus.get(0).getDecodedObject(tag, String.class);
             assertEquals("AU", str.get());
 
             tag = "/PS-PDU/pSHeader/communicationIdentifier/deliveryCountryCode";
-            str = pdus.get(1).getDecodedObject(tag);
+            str = pdus.get(1).getDecodedObject(tag, String.class);
             assertEquals("AU", str.get());
 
             tag
                     = "/PS-PDU/pSHeader/communicationIdentifier/networkIdentifier/networkElementIdentifier";
-            Optional<byte[]> bytes = pdus.get(1).getDecodedObject(tag);
+            Optional<byte[]> bytes = pdus.get(1).getDecodedObject(tag, byte[].class);
             String octetToString = new String(bytes.get(), Charsets.UTF_8);
             assertEquals("BAEProd2", octetToString);
 
             tag = "/PS-PDU/pSHeader/communicationIdentifier/cINExtension/iri-to-CC/cc[0]";
-            bytes = pdus.get(1).getDecodedObject(tag);
+            bytes = pdus.get(1).getDecodedObject(tag, byte[].class);
             octetToString = new String(bytes.get(), Charsets.UTF_8);
             assertEquals("3030", octetToString);
 
@@ -2229,7 +2229,7 @@ public class AsnSchemaParserTest
         assertEquals(BigInteger.valueOf(32), age);
 
         tag = "/Human/name";
-        String name = pdu.<String>getDecodedObject(tag).get();
+        String name = pdu.getDecodedObject(tag, String.class).get();
         logger.info("{} : {}", tag, name);
         assertEquals("Adam", name);
 
@@ -2239,7 +2239,7 @@ public class AsnSchemaParserTest
             // There is no casting issue here, only validation, so this will work
             BigInteger bigInt = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag).get());
             // this is castign from String to BigInteger, which will throw
-            bigInt = pdu.<BigInteger>getDecodedObject(tag).get();
+            bigInt = pdu.getDecodedObject(tag, BigInteger.class).get();
             fail("Should have thrown ClassCastException");
         }
         catch (ClassCastException e)
@@ -2250,7 +2250,7 @@ public class AsnSchemaParserTest
         {
             tag = "/Human/age";
             AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag).get());
-            String s = pdu.<String>getDecodedObject(tag).get();
+            String s = pdu.getDecodedObject(tag, String.class).get();
             fail("Should have thrown ClassCastException");
         }
         catch (ClassCastException e)

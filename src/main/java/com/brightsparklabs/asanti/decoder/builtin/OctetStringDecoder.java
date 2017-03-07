@@ -89,7 +89,7 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
      *
      * @return the if this can be converted to an ASCII string, false otherwise
      */
-    private boolean isAsciiPresentable(byte[] bytes)
+    private boolean isAsciiPresentable(final byte[] bytes)
     {
         if (bytes != null)
         {

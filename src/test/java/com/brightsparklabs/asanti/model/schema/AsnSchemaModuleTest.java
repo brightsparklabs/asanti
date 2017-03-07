@@ -7,7 +7,6 @@ package com.brightsparklabs.asanti.model.schema;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.google.common.collect.Lists;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

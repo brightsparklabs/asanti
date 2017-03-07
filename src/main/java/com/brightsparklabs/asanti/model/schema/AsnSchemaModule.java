@@ -657,8 +657,8 @@ public class AsnSchemaModule
         private Null()
         {
             super("NULL",
-                    Maps.<String, AsnSchemaTypeDefinition>newHashMap(),
-                    Maps.<String, String>newHashMap());
+                    Maps.newHashMap(),
+                    Maps.newHashMap());
         }
     }
 }

@@ -24,7 +24,10 @@ import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
@@ -58,7 +61,7 @@ public class AsantiCli
      * @param args
      *         command line arguments
      */
-    public static void main(String[] args)
+    public static void main(final String[] args)
     {
         try
         {
@@ -135,7 +138,8 @@ public class AsantiCli
      * @param topLevelType
      *         top level type in the schema to decode objects as
      */
-    private static void loadDataFile(File berFile, AsnSchema asnSchema, String topLevelType)
+    private static void loadDataFile(final File berFile, final AsnSchema asnSchema,
+            final String topLevelType)
     {
         try
         {
@@ -151,7 +155,7 @@ public class AsantiCli
 
                 logger.info("Parsing PDU[{}]", i);
                 final AsantiAsnData pdu = pdus.get(i);
-                for (String tag : pdu.getTags())
+                for (final String tag : pdu.getTags())
                 {
                     try
                     {
@@ -160,7 +164,7 @@ public class AsantiCli
                                 pdu.getPrintableString(tag).get(),
                                 pdu.getType(tag).get().getBuiltinType());
                     }
-                    catch (DecodeException e)
+                    catch (final DecodeException e)
                     {
                         logger.info("\t{} => {} as {} (as HexString because {})",
                                 tag,
@@ -169,13 +173,13 @@ public class AsantiCli
                                 e.getMessage());
                     }
                 }
-                for (String tag : pdu.getUnmappedTags())
+                for (final String tag : pdu.getUnmappedTags())
                 {
                     logger.info("\t?{} => {}", tag, pdu.getHexString(tag));
                 }
             }
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             logger.error("Exception loading data file: " + e.getMessage());
         }
@@ -195,9 +199,10 @@ public class AsantiCli
      * @param topLevelType
      *         the name of the top level
      */
-    private static void handleDataFile(File rootFile, AsnSchema asnSchema, String topLevelType)
+    private static void handleDataFile(final File rootFile, final AsnSchema asnSchema,
+            final String topLevelType)
     {
-        for (File file : Files.fileTreeTraverser().preOrderTraversal(rootFile))
+        for (final File file : Files.fileTreeTraverser().preOrderTraversal(rootFile))
         {
             try
             {
@@ -207,17 +212,16 @@ public class AsantiCli
 
                     // I don't really know what the 'right' file extensions are, so let's just rule out
                     // some of the ones that we have come across that are not BER files!
-                    if (!name.toLowerCase().endsWith(".txt") &&
-                            !name.toLowerCase().endsWith(".jpg") &&
-                            !name.toLowerCase().endsWith(".bmp") &&
-                            !name.toLowerCase().endsWith(".asn") &&
-                            !name.toLowerCase().endsWith(".zip") &&
-                            !name.toLowerCase().endsWith(".wav") &&
-                            !name.toLowerCase().endsWith(".pcap") &&
-                            !name.toLowerCase().endsWith(".rtp") &&
-                            !name.toLowerCase().endsWith(".csv") &&
-                            !name.toLowerCase().endsWith(".xlsx") &&
-                            !name.toLowerCase().endsWith(".xls"))
+                    if (!name.toLowerCase().endsWith(".txt") && !name.toLowerCase().endsWith(".jpg")
+                            && !name.toLowerCase().endsWith(".bmp") && !name
+                            .toLowerCase()
+                            .endsWith(".asn") && !name.toLowerCase().endsWith(".zip") && !name
+                            .toLowerCase()
+                            .endsWith(".wav") && !name.toLowerCase().endsWith(".pcap") && !name
+                            .toLowerCase()
+                            .endsWith(".rtp") && !name.toLowerCase().endsWith(".csv") && !name
+                            .toLowerCase()
+                            .endsWith(".xlsx") && !name.toLowerCase().endsWith(".xls"))
                     {
                         loadDataFile(file, asnSchema, topLevelType);
                     }
@@ -227,7 +231,7 @@ public class AsantiCli
                     }
                 }
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 logger.error("Exception: " + e.getMessage());
             }
@@ -243,7 +247,7 @@ public class AsantiCli
      * @throws IOException
      *         if any errors occur while parsing
      */
-    private static void testReadingAsnFile(File asnFile) throws IOException
+    private static void testReadingAsnFile(final File asnFile) throws IOException
     {
         final CharSource schemaSource = Files.asCharSource(asnFile, Charsets.UTF_8);
         final AsnSchema asnSchema = AsnSchemaReader.read(schemaSource);
@@ -276,7 +280,7 @@ public class AsantiCli
      * @throws IOException
      *         if any errors occur while parsing
      */
-    private static void testReadingBerFile(File berFile) throws IOException
+    private static void testReadingBerFile(final File berFile) throws IOException
     {
         final ByteSource byteSource = Files.asByteSource(berFile);
         final ImmutableList<RawAsnData> data = Asanti.readAsnBerData(byteSource);
@@ -337,18 +341,17 @@ public class AsantiCli
      */
     private static void printUsage(final String footerMessage)
     {
-        final String callPattern = "USAGE: asanti [options] <asn_schema_file>" + NEW_LINE +
-                "    asanti [options] <asn_ber_file>" + NEW_LINE +
-                "    asanti [options] <asn_schema_file> <asn_ber_file> <top_level_type>" + NEW_LINE
-                + NEW_LINE +
-                "Where:" + NEW_LINE +
-                "    asn_schema_file        the ASN.1 schema file to parse (must end in '.asn')"
-                + NEW_LINE +
-                "    asn_ber_file           the ASN.1 BER file to parse (must end in '.ber')"
-                + NEW_LINE +
-                "    top_level_type         the name of the top level type in the schema file";
+        final String callPattern = "USAGE: asanti [options] <asn_schema_file>" + NEW_LINE
+                + "    asanti [options] <asn_ber_file>" + NEW_LINE
+                + "    asanti [options] <asn_schema_file> <asn_ber_file> <top_level_type>"
+                + NEW_LINE + NEW_LINE + "Where:" + NEW_LINE
+                + "    asn_schema_file        the ASN.1 schema file to parse (must end in '.asn')"
+                + NEW_LINE
+                + "    asn_ber_file           the ASN.1 BER file to parse (must end in '.ber')"
+                + NEW_LINE
+                + "    top_level_type         the name of the top level type in the schema file";
 
-        HelpFormatter formatter = new HelpFormatter();
+        final HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(callPattern, "Options:", getOptions(), NEW_LINE + footerMessage);
     }
 }
