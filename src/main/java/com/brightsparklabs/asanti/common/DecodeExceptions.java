@@ -10,8 +10,8 @@
 
 package com.brightsparklabs.asanti.common;
 
-import com.brightsparklabs.assam.validator.ValidationFailure;
 import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.validator.ValidationFailure;
 import com.google.common.collect.Iterables;
 
 /**
@@ -48,7 +48,7 @@ public class DecodeExceptions
      * @throws DecodeException
      *         if the iterable is non-empty
      */
-    public static void throwIfHasFailures(Iterable<? extends ValidationFailure> failures)
+    public static void throwIfHasFailures(final Iterable<? extends ValidationFailure> failures)
             throws DecodeException
     {
         if (Iterables.isEmpty(failures))
@@ -57,7 +57,7 @@ public class DecodeExceptions
         }
 
         final StringBuilder builder = new StringBuilder();
-        for (ValidationFailure failure : failures)
+        for (final ValidationFailure failure : failures)
         {
             builder.append(failure.getFailureReason()).append("\n");
         }

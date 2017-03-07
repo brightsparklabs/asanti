@@ -11,7 +11,6 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 
-import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 
 /**

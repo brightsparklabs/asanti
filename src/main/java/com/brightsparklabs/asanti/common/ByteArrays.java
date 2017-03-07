@@ -62,7 +62,7 @@ public class ByteArrays
      * @return the bytes represented as hex (with ASCII after if appropriate) or an empty string if
      * byte array was {@code null}/empty
      */
-    public static String toHexWithAsciiString(byte[] bytes)
+    public static String toHexWithAsciiString(final byte[] bytes)
     {
         if (bytes == null || bytes.length == 0)
         {
@@ -86,11 +86,11 @@ public class ByteArrays
      * @return {@code true} if array contains non-printable ASCII characters. {@code false}
      * otherwise
      */
-    public static boolean containsNonPrintableChars(byte[] bytes)
+    public static boolean containsNonPrintableChars(final byte[] bytes)
     {
         if (bytes != null)
         {
-            for (byte x : bytes)
+            for (final byte x : bytes)
             {
                 if (x < 32 || x > 126)
                 {
@@ -110,7 +110,7 @@ public class ByteArrays
      *
      * @return string represented by the bytes or an empty string if byte array was {@code null}
      */
-    public static String toString(byte[] bytes)
+    public static String toString(final byte[] bytes)
     {
         return bytes == null ? "" : new String(bytes, Charsets.UTF_8);
     }
@@ -125,7 +125,7 @@ public class ByteArrays
      * @return the bytes represented as hex or an empty string if byte array was {@code null} or
      * empty
      */
-    public static String toHexString(byte[] bytes)
+    public static String toHexString(final byte[] bytes)
     {
         return (bytes == null || bytes.length == 0) ? "" : "0x" + hexEncoding.encode(bytes);
     }

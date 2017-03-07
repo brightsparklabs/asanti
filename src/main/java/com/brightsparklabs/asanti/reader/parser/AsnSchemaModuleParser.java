@@ -291,6 +291,7 @@ public class AsnSchemaModuleParser
      *         the Module wide tagging mode, determines whether to automatically generate tags.
      *
      * @throws ParseException
+     *         if parsing errors are encountered.
      */
     private static void parseTypeDefinitionsAndValueAssignments(String firstLine,
             Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder,

@@ -104,7 +104,7 @@ public class DecoderVisitor implements AsnPrimitiveTypeVisitor<BuiltinTypeDecode
     }
 
     @Override
-    public IntegerDecoder visit(AsnPrimitiveType.Integer visitable)
+    public IntegerDecoder visit(final AsnPrimitiveType.Integer visitable)
     {
         return IntegerDecoder.getInstance();
     }
