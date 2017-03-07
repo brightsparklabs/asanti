@@ -7,15 +7,16 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeVisitor;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeWithNamedTags;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
-import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import java.util.Optional;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -69,7 +70,7 @@ public class EnumeratedValidatorTest
     public void testValidateViaTag() throws Exception
     {
         final AsnSchemaTypeWithNamedTags type = mock(AsnSchemaTypeWithNamedTags.class);
-        when(type.getConstraints()).thenReturn(ImmutableSet.<AsnSchemaConstraint>of());
+        when(type.getConstraints()).thenReturn(ImmutableSet.of());
 
         // We need to go to this length so that we can test the "internal" visitor
         when(type.accept(any(AsnSchemaTypeVisitor.class))).thenAnswer(new Answer<String>()
@@ -90,13 +91,13 @@ public class EnumeratedValidatorTest
 
         String tag = "/Foo";
         AsantiAsnData data = mock(AsantiAsnData.class);
-        when(data.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
+        when(data.getType(eq(tag))).thenReturn(Optional.of(type));
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 1 }));
 
         assertTrue(instance.validateAndDecode(tag, data).wasSuccessful());
 
         AsantiAsnData dataBad = mock(AsantiAsnData.class);
-        when(dataBad.getType(eq(tag))).thenReturn(Optional.<AsnSchemaType>of(type));
+        when(dataBad.getType(eq(tag))).thenReturn(Optional.of(type));
         when(dataBad.getBytes(eq(tag))).thenReturn(Optional.of(new byte[] { 2 }));
 
         final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result

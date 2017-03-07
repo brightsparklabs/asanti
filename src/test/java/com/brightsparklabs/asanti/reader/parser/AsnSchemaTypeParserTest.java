@@ -71,10 +71,10 @@ public class AsnSchemaTypeParserTest
         PowerMockito.mockStatic(AsnSchemaNamedTagParser.class);
         distinguishedValuesArgument = ArgumentCaptor.forClass(String.class);
         when(AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesArgument.capture()))
-                .thenReturn(ImmutableList.<AsnSchemaNamedTag>of());
+                .thenReturn(ImmutableList.of());
         enumeratedOptionsArgument = ArgumentCaptor.forClass(String.class);
         when(AsnSchemaNamedTagParser.parseEnumeratedOptions(enumeratedOptionsArgument.capture())).thenReturn(
-                ImmutableList.<AsnSchemaNamedTag>of());
+                ImmutableList.of());
 
         // mock AsnSchemaComponentTypeParser.parse, and capture call arguments
         PowerMockito.mockStatic(AsnSchemaComponentTypeParser.class);
@@ -82,7 +82,7 @@ public class AsnSchemaTypeParserTest
         ArgumentCaptor<AsnModuleTaggingMode> taggingMode = ArgumentCaptor.forClass(
                 AsnModuleTaggingMode.class);
         when(AsnSchemaComponentTypeParser.parse(componentArgument.capture(), taggingMode.capture()))
-                .thenReturn(ImmutableList.<AsnSchemaComponentType>of());
+                .thenReturn(ImmutableList.of());
     }
 
     // -------------------------------------------------------------------------
