@@ -10,11 +10,11 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.text.ParseException;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -70,15 +70,14 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
      * @throws IllegalArgumentException
      *         if {@code typeName} is blank
      */
-    public AsnSchemaTypePlaceholder(String moduleName, String typeName,
-            AsnSchemaConstraint constraint)
+    public AsnSchemaTypePlaceholder(final String moduleName, final String typeName,
+            final AsnSchemaConstraint constraint)
     {
         super(AsnPrimitiveTypes.INVALID, constraint);
 
-        checkNotNull(typeName);
         checkArgument(!typeName.trim().isEmpty(), "Type name must be specified");
 
-        this.typeName = typeName;
+        this.typeName = checkNotNull(typeName);
         this.moduleName = moduleName;
     }
 
@@ -119,7 +118,7 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
      * @param type
      *         the {@link AsnSchemaType}
      */
-    public void setIndirectType(AsnSchemaType type)
+    public void setIndirectType(final AsnSchemaType type)
     {
         indirectType = type;
     }
@@ -140,9 +139,7 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     @Override
     public ImmutableList<AsnSchemaComponentType> getAllComponents()
     {
-        return indirectType == null ?
-                ImmutableList.<AsnSchemaComponentType>of() :
-                indirectType.getAllComponents();
+        return indirectType == null ? ImmutableList.of() : indirectType.getAllComponents();
     }
 
     @Override
@@ -152,7 +149,8 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
         {
             // return our own constraints, and those of the type we are delegating to.
             // this allows constraint 'chaining'
-            return new ImmutableSet.Builder<AsnSchemaConstraint>().addAll(super.getConstraints())
+            return new ImmutableSet.Builder<AsnSchemaConstraint>()
+                    .addAll(super.getConstraints())
                     .addAll(indirectType.getConstraints())
                     .build();
         }
@@ -161,11 +159,11 @@ public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType
     }
 
     @Override
-    public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
-            DecodingSession decodingSession)
+    public Optional<AsnSchemaComponentType> getMatchingChild(final String tag,
+            final DecodingSession decodingSession)
     {
         return indirectType == null ?
-                Optional.<AsnSchemaComponentType>empty() :
+                Optional.empty() :
                 indirectType.getMatchingChild(tag, decodingSession);
     }
 
