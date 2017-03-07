@@ -40,7 +40,7 @@ public class ValidatorImpl implements Validator
     // -------------------------------------------------------------------------
 
     /** custom validation rules */
-    ImmutableSetMultimap<String, ValidationRule> customRules;
+    private final ImmutableSetMultimap<String, ValidationRule> customRules;
 
     /** visitor to determine which {@link ValidationRule} to apply to a tag */
     private final ValidationVisitor validationVisitor = new ValidationVisitor();
@@ -127,7 +127,9 @@ public class ValidatorImpl implements Validator
     private Set<ValidationFailure> validateDefault(String tag, AsantiAsnData asnData)
     {
         final Set<ValidationFailure> failures = Sets.newHashSet();
-        final AsnPrimitiveType type = asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
+        final AsnPrimitiveType type = asnData
+                .getPrimitiveType(tag)
+                .orElse(AsnPrimitiveTypes.INVALID);
         final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
                 validationVisitor);
         if (tagValidator != null)

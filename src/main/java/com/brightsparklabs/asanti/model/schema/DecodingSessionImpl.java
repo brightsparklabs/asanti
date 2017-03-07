@@ -28,21 +28,18 @@ public class DecodingSessionImpl implements DecodingSession
     // -------------------------------------------------------------------------
 
     @Override
-    public void setContext(String context)
+    public void setContext(final String context)
     {
         this.context = context;
 
-        if (offsetMap.get(context) == null)
-        {
-            offsetMap.put(context, new TagToIndex());
-        }
+        offsetMap.computeIfAbsent(context, key -> new TagToIndex());
     }
 
     @Override
-    public int getIndex(AsnSchemaTag tag)
+    public int getIndex(final AsnSchemaTag tag)
     {
 
-        TagToIndex tagToIndex = offsetMap.get(context);
+        final TagToIndex tagToIndex = offsetMap.get(context);
 
         // If this is the first time this context has been used then by default we are at 0
         if (tagToIndex.tag == null)
@@ -65,9 +62,9 @@ public class DecodingSessionImpl implements DecodingSession
     }
 
     @Override
-    public void setIndex(AsnSchemaTag tag, int index)
+    public void setIndex(final AsnSchemaTag tag, int index)
     {
-        TagToIndex tagToIndex = offsetMap.get(context);
+        final TagToIndex tagToIndex = offsetMap.get(context);
         tagToIndex.tag = tag;
         tagToIndex.index = index;
     }
