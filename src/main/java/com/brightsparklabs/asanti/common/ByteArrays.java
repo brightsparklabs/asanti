@@ -116,15 +116,17 @@ public class ByteArrays
     }
 
     /**
-     * Returns a hex representation of the bytes in the supplied array, with "0x" prepended to it
+     * Returns a hex representation of the bytes in the supplied array, with "0x" prepended to it,
+     *  or an empty string if byte array was {@code null} or empty
      *
      * @param bytes
      *         bytes to decode
      *
-     * @return the bytes represented as hex or an empty string if byte array was {@code null}
+     * @return the bytes represented as hex or an empty string if byte array was {@code null} or
+     * empty
      */
     public static String toHexString(byte[] bytes)
     {
-        return (bytes == null) ? "" : "0x" + hexEncoding.encode(bytes);
+        return (bytes == null || bytes.length == 0) ? "" : "0x" + hexEncoding.encode(bytes);
     }
 }
