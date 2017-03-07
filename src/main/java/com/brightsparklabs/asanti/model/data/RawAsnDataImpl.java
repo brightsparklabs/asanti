@@ -100,7 +100,7 @@ public class RawAsnDataImpl implements RawAsnData
     {
         if (regex == null)
         {
-            return ImmutableMap.<String, byte[]>of();
+            return ImmutableMap.of();
         }
 
         final Map<String, byte[]> tags = Maps.newHashMap();

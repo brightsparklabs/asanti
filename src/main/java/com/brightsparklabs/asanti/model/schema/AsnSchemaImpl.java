@@ -11,7 +11,6 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
-import java.util.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -212,7 +211,7 @@ public class AsnSchemaImpl implements AsnSchema
                 decodeSuccessful);
 
         return decodeSuccessful ?
-                OperationResult.<DecodedTag, String>createSuccessfulInstance(decodedTag) :
+                OperationResult.createSuccessfulInstance(decodedTag) :
                 OperationResult.createUnsuccessfulInstance(decodedTag,
                         "The supplied raw tag does not map to a type in this schema");
     }
@@ -249,7 +248,8 @@ public class AsnSchemaImpl implements AsnSchema
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
-            final String decodedTagPath = tagJoiner.join(result.decodedTags)
+            final String decodedTagPath = tagJoiner
+                    .join(result.decodedTags)
                     .replaceAll("/\\[", "\\[");
             // By definition the new tag is the child of its container.
             decodingSession.setContext(decodedTagPath);
