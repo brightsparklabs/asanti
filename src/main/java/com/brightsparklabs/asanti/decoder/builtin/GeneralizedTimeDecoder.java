@@ -184,8 +184,8 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
     {
         // GeneralizedTime is considered a "useful" type that is a specialisation of VisibleString
         // as such we should just return the "raw" string (if it is valid)
-        // This is useful given that the decode to Timestamp discards timezone information
-        // and may discard precision.
+        // This is useful given that the decode to OffsetDateTime discards the original timezone
+        // information, and may discard precision.
 
         OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result
                 = validateAndDecode(bytes);
@@ -211,11 +211,10 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
      * @param bytes
      *         bytes to be decoded.
      *
-     * @return OperationResult that will contain a Timestamp if successful, or a
+     * @return OperationResult that will contain a OffsetDateTime if successful, or a
      * ByteValidationFailure otherwise
      */
     public static OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> validateAndDecode(
-            //public static OperationResult<Timestamp, ImmutableSet<ByteValidationFailure>> validateAndDecode(
             final byte[] bytes)
     {
         // GeneralizedTime is considered a "useful" type that is a specialisation of VisibleString
@@ -236,7 +235,8 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
 
             // There are a few things that Joda-Time is not handling that we need to.
 
-            // Joda doesn't seem to understand that "Z" is not "z" (it seems to be case insensitive)
+            // Joda doesn't seem to understand that "Z" is not "z" (it seems to be case insensitive,
+            // where we explicitly want only "Z")
             if (rawDateTime.endsWith("z"))
             {
                 final String error = GeneralizedTimeValidator.GENERALIZEDTIME_VALIDATION_ERROR
@@ -250,7 +250,7 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
             // It can't handle smaller than milliseconds, and we need to go to nano
             // So we'll parse out the sub-milliseconds ourselves (only for the seconds precision)
             String replacement = rawDateTime;
-            int nanos = 0;
+            int nanosOfSecond = 0;
             boolean setNanos = false;
             final Matcher matcher = PATTERN_SUB_MILLI_SECONDS.matcher(rawDateTime);
             if (matcher.matches())
@@ -266,12 +266,9 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
                     final String trimmedSubMilliSeconds = subMilliSeconds.substring(0,
                             Math.min(length, 6));
 
-                    // because the Timestamp setNanos function seems to actually set all the subseconds
-                    // and not just the nano seconds, we track all subseconds and only call setNanos
-                    // if we need to
-                    BigDecimal bd = new BigDecimal("0." + milliSeconds + trimmedSubMilliSeconds);
-                    bd = bd.multiply(BigDecimal.valueOf(1000000000L));
-                    nanos = bd.intValue();
+                    final BigDecimal bd = new BigDecimal("0." + milliSeconds
+                            + trimmedSubMilliSeconds).multiply(BigDecimal.valueOf(1000000000L));
+                    nanosOfSecond = bd.intValue();
                     setNanos = true;
 
                     // Joda only has milli second precision.  It can parse up to 18 decimals, but
@@ -288,7 +285,6 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
                                 subMilliSeconds,
                                 trimmedSubMilliSeconds);
                     }
-
                 }
             }
             else
@@ -317,11 +313,10 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
 
             // use the Joda-Time parser, and keep the parsed timezone offset
             final DateTime dateTime = parser.withOffsetParsed().parseDateTime(replacement);
-
             final Instant instant = setNanos ?
-                    Instant.ofEpochSecond(Math.floorDiv(dateTime.getMillis(), 1000), nanos) :
+                    Instant.ofEpochSecond(Math.floorDiv(dateTime.getMillis(), 1000),
+                            nanosOfSecond) :
                     Instant.ofEpochMilli(dateTime.getMillis());
-
             final OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant,
                     ZoneId.systemDefault());
 

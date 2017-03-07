@@ -100,6 +100,7 @@ class GeneralizedTimeDecoderTestSpock extends Specification {
         "19700101000000.000000001+0130"                                                                       || OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 000000001, oneHour30offset)
         "19691231235959.999999999+0130"                                                                       || OffsetDateTime.of(1969, 12, 31, 23, 59, 59, 999999999, oneHour30offset)
         "19700101000000.0000000009Z"                                                                          || OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
+        "19700101000000.1234Z"                                                                                || OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 123400000, ZoneOffset.UTC)
         "19181111110000.123456789123456789123456789123456789123456789123456789123456789123456789123456789Z"   || OffsetDateTime.of(1918, 11, 11, 11, 0, 0, 123456789, ZoneOffset.UTC)
         "19181111110000.123456789123456789123456789123456789123456789123456789123456789123456789123456789-01" || OffsetDateTime.of(1918, 11, 11, 11, 0, 0, 123456789, minusOneHouroffset)
         "19181111110000.123456789"                                                                            || OffsetDateTime.of(1918, 11, 11, 11, 0, 0, 123456789, localOffset)
