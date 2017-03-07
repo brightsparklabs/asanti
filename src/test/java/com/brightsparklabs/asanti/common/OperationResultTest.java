@@ -54,8 +54,8 @@ public class OperationResultTest
     public void testGetFailureReason() throws Exception
     {
         OperationResult<String, String> instance = OperationResult.createSuccessfulInstance("TEST");
-        assertEquals("", instance.getFailureReason().or(""));
+        assertEquals("", instance.getFailureReason().orElse(""));
         instance = OperationResult.createUnsuccessfulInstance("TEST", "Failed");
-        assertEquals("Failed", instance.getFailureReason().or(""));
+        assertEquals("Failed", instance.getFailureReason().orElse(""));
     }
 }

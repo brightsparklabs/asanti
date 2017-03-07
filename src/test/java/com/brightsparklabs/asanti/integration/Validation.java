@@ -42,10 +42,10 @@ public class Validation
 
         AsantiAsnData pdu = pdus.get(0);
         String tag = "/Human/name/first";
-        assertEquals("Adam", pdu.<String>getDecodedObject(tag).get());
+        assertEquals("Adam", pdu.getDecodedObject(tag, String.class).get());
 
         tag = "/Human/name/last";
-        assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
+        assertEquals("Smith", pdu.getDecodedObject(tag, String.class).get());
 
         final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));
@@ -75,10 +75,10 @@ public class Validation
 
         AsantiAsnData pdu = pdus.get(0);
         String tag = "/Human/person/name/first";
-        assertEquals("Adam", pdu.<String>getDecodedObject(tag).get());
+        assertEquals("Adam", pdu.getDecodedObject(tag, String.class).get());
 
         tag = "/Human/person/name/last";
-        assertEquals("Smith", pdu.<String>getDecodedObject(tag).get());
+        assertEquals("Smith", pdu.getDecodedObject(tag, String.class).get());
 
         final Validator validator = Validators.getDefault();
         final ValidationResult validationresult = validator.validate(pdus.get(0));

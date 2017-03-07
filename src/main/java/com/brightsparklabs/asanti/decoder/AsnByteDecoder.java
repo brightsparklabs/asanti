@@ -10,7 +10,7 @@ import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 /**
  * Utility class for decoding bytes in ASN.1 Types
@@ -51,7 +51,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsBitString(byte[] bytes) throws DecodeException
+    public static String decodeAsBitString(final byte[] bytes) throws DecodeException
     {
         return BitStringDecoder.getInstance().decode(bytes);
     }
@@ -67,7 +67,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsBmpString(byte[] bytes) throws DecodeException
+    public static String decodeAsBmpString(final byte[] bytes) throws DecodeException
     {
         return BmpStringDecoder.getInstance().decode(bytes);
     }
@@ -83,7 +83,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static boolean decodeAsBoolean(byte[] bytes) throws DecodeException
+    public static boolean decodeAsBoolean(final byte[] bytes) throws DecodeException
     {
         return BooleanDecoder.getInstance().decode(bytes);
     }
@@ -99,7 +99,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsCharacterString(byte[] bytes) throws DecodeException
+    public static String decodeAsCharacterString(final byte[] bytes) throws DecodeException
     {
         return CharacterStringDecoder.getInstance().decode(bytes);
     }
@@ -115,7 +115,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsDate(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsDate(final byte[] bytes) throws DecodeException
     {
         return DateDecoder.getInstance().decode(bytes);
     }
@@ -131,7 +131,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsDateTime(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsDateTime(final byte[] bytes) throws DecodeException
     {
         return DateTimeDecoder.getInstance().decode(bytes);
     }
@@ -147,7 +147,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsDuration(byte[] bytes) throws DecodeException
+    public static String decodeAsDuration(final byte[] bytes) throws DecodeException
     {
         return DurationDecoder.getInstance().decode(bytes);
     }
@@ -163,7 +163,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsEmbeddedPDV(byte[] bytes) throws DecodeException
+    public static String decodeAsEmbeddedPDV(final byte[] bytes) throws DecodeException
     {
         return EmbeddedPDVDecoder.getInstance().decode(bytes);
     }
@@ -179,7 +179,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsEnumerated(byte[] bytes) throws DecodeException
+    public static String decodeAsEnumerated(final byte[] bytes) throws DecodeException
     {
         return EnumeratedDecoder.getInstance().decode(bytes);
     }
@@ -195,7 +195,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsExternal(byte[] bytes) throws DecodeException
+    public static String decodeAsExternal(final byte[] bytes) throws DecodeException
     {
         return ExternalDecoder.getInstance().decode(bytes);
     }
@@ -211,7 +211,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsGeneralizedTime(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsGeneralizedTime(final byte[] bytes) throws DecodeException
     {
         return GeneralizedTimeDecoder.getInstance().decode(bytes);
     }
@@ -227,7 +227,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsGeneralString(byte[] bytes) throws DecodeException
+    public static String decodeAsGeneralString(final byte[] bytes) throws DecodeException
     {
         return GeneralStringDecoder.getInstance().decode(bytes);
     }
@@ -243,7 +243,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsGraphicString(byte[] bytes) throws DecodeException
+    public static String decodeAsGraphicString(final byte[] bytes) throws DecodeException
     {
         return GraphicStringDecoder.getInstance().decode(bytes);
     }
@@ -259,7 +259,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsIa5String(byte[] bytes) throws DecodeException
+    public static String decodeAsIa5String(final byte[] bytes) throws DecodeException
     {
         return Ia5StringDecoder.getInstance().decode(bytes);
     }
@@ -275,7 +275,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsInstanceOf(byte[] bytes) throws DecodeException
+    public static String decodeAsInstanceOf(final byte[] bytes) throws DecodeException
     {
         return InstanceOfDecoder.getInstance().decode(bytes);
     }
@@ -291,7 +291,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static BigInteger decodeAsInteger(byte[] bytes) throws DecodeException
+    public static BigInteger decodeAsInteger(final byte[] bytes) throws DecodeException
     {
         return IntegerDecoder.getInstance().decode(bytes);
     }
@@ -307,7 +307,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsIri(byte[] bytes) throws DecodeException
+    public static String decodeAsIri(final byte[] bytes) throws DecodeException
     {
         return IriDecoder.getInstance().decode(bytes);
     }
@@ -323,7 +323,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsIso646String(byte[] bytes) throws DecodeException
+    public static String decodeAsIso646String(final byte[] bytes) throws DecodeException
     {
         return Iso646StringDecoder.getInstance().decode(bytes);
     }
@@ -339,7 +339,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsNull(byte[] bytes) throws DecodeException
+    public static String decodeAsNull(final byte[] bytes) throws DecodeException
     {
         return NullDecoder.getInstance().decode(bytes);
     }
@@ -355,7 +355,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsNumericString(byte[] bytes) throws DecodeException
+    public static String decodeAsNumericString(final byte[] bytes) throws DecodeException
     {
         return NumericStringDecoder.getInstance().decode(bytes);
     }
@@ -371,7 +371,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsObjectClassField(byte[] bytes) throws DecodeException
+    public static String decodeAsObjectClassField(final byte[] bytes) throws DecodeException
     {
         return ObjectClassFieldDecoder.getInstance().decode(bytes);
     }
@@ -390,7 +390,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static byte[] decodeAsOctetString(byte[] bytes) throws DecodeException
+    public static byte[] decodeAsOctetString(final byte[] bytes) throws DecodeException
     {
         return OctetStringDecoder.getInstance().decode(bytes);
     }
@@ -406,7 +406,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsOid(byte[] bytes) throws DecodeException
+    public static String decodeAsOid(final byte[] bytes) throws DecodeException
     {
         return OidDecoder.getInstance().decode(bytes);
     }
@@ -422,7 +422,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsOidIri(byte[] bytes) throws DecodeException
+    public static String decodeAsOidIri(final byte[] bytes) throws DecodeException
     {
         return OidIriDecoder.getInstance().decode(bytes);
     }
@@ -438,7 +438,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsPrefixed(byte[] bytes) throws DecodeException
+    public static String decodeAsPrefixed(final byte[] bytes) throws DecodeException
     {
         return PrefixedDecoder.getInstance().decode(bytes);
     }
@@ -454,7 +454,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsPrintableString(byte[] bytes) throws DecodeException
+    public static String decodeAsPrintableString(final byte[] bytes) throws DecodeException
     {
         return PrintableStringDecoder.getInstance().decode(bytes);
     }
@@ -470,7 +470,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsReal(byte[] bytes) throws DecodeException
+    public static String decodeAsReal(final byte[] bytes) throws DecodeException
     {
         return RealDecoder.getInstance().decode(bytes);
     }
@@ -486,7 +486,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsRelativeIri(byte[] bytes) throws DecodeException
+    public static String decodeAsRelativeIri(final byte[] bytes) throws DecodeException
     {
         return RelativeIriDecoder.getInstance().decode(bytes);
     }
@@ -502,7 +502,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsRelativeOid(byte[] bytes) throws DecodeException
+    public static String decodeAsRelativeOid(final byte[] bytes) throws DecodeException
     {
         return RelativeOidDecoder.getInstance().decode(bytes);
     }
@@ -518,7 +518,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsRelativeOidIri(byte[] bytes) throws DecodeException
+    public static String decodeAsRelativeOidIri(final byte[] bytes) throws DecodeException
     {
         return RelativeOidIriDecoder.getInstance().decode(bytes);
     }
@@ -534,7 +534,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsTeletexString(byte[] bytes) throws DecodeException
+    public static String decodeAsTeletexString(final byte[] bytes) throws DecodeException
     {
         return TeletexStringDecoder.getInstance().decode(bytes);
     }
@@ -550,7 +550,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsTime(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsTime(final byte[] bytes) throws DecodeException
     {
         return TimeDecoder.getInstance().decode(bytes);
     }
@@ -566,7 +566,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsTimeOfDay(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsTimeOfDay(final byte[] bytes) throws DecodeException
     {
         return TimeOfDayDecoder.getInstance().decode(bytes);
     }
@@ -582,7 +582,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsUniversalString(byte[] bytes) throws DecodeException
+    public static String decodeAsUniversalString(final byte[] bytes) throws DecodeException
     {
         return UniversalStringDecoder.getInstance().decode(bytes);
     }
@@ -598,7 +598,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static Timestamp decodeAsUtcTime(byte[] bytes) throws DecodeException
+    public static OffsetDateTime decodeAsUtcTime(final byte[] bytes) throws DecodeException
     {
         return UtcTimeDecoder.getInstance().decode(bytes);
     }
@@ -614,7 +614,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsUtf8String(byte[] bytes) throws DecodeException
+    public static String decodeAsUtf8String(final byte[] bytes) throws DecodeException
     {
         return Utf8StringDecoder.getInstance().decode(bytes);
     }
@@ -630,7 +630,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsVideotexString(byte[] bytes) throws DecodeException
+    public static String decodeAsVideotexString(final byte[] bytes) throws DecodeException
     {
         return VideotexStringDecoder.getInstance().decode(bytes);
     }
@@ -646,7 +646,7 @@ public class AsnByteDecoder
      * @throws DecodeException
      *         if any errors occur while decoding the supplied data
      */
-    public static String decodeAsVisibleString(byte[] bytes) throws DecodeException
+    public static String decodeAsVisibleString(final byte[] bytes) throws DecodeException
     {
         return VisibleStringDecoder.getInstance().decode(bytes);
     }

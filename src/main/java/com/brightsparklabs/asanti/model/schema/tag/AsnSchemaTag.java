@@ -6,10 +6,10 @@
 package com.brightsparklabs.asanti.model.schema.tag;
 
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -172,12 +172,9 @@ public class AsnSchemaTag
      */
     public static String createRawTagUniversal(int tagIndex, int universalTagNumber)
     {
-        Optional<AsnBuiltinType> type = getBuiltInTypeForUniversalTag(universalTagNumber);
-        if (type.isPresent())
-        {
-            return createRawTag(tagIndex, createUniversalPortion(type.get()));
-        }
-        return "";
+        return getBuiltInTypeForUniversalTag(universalTagNumber)
+                .map(type -> createRawTag(tagIndex, createUniversalPortion(type)))
+                .orElse("");
     }
 
     /**
@@ -278,7 +275,7 @@ public class AsnSchemaTag
      */
     private static String getUniversalTagForBuiltInType(AsnBuiltinType type)
     {
-        return Optional.fromNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).or("");
+        return Optional.ofNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).orElse("");
     }
 
     /**
@@ -287,12 +284,12 @@ public class AsnSchemaTag
      * @param universalTag
      *         ASN.1 Universal tag
      *
-     * @return respective AsnBuiltinType for the Universal tag, {@link Optional#absent()} if there
-     * is no match
+     * @return respective AsnBuiltinType for the Universal tag, {@link Optional#empty()} if there is
+     * no match
      */
     public static Optional<AsnBuiltinType> getBuiltInTypeForUniversalTag(int universalTag)
     {
-        return Optional.fromNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag));
+        return Optional.ofNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag));
     }
 
     private static final ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG
@@ -311,8 +308,8 @@ public class AsnSchemaTag
             .put(AsnBuiltinType.EmbeddedPDV, "11")
             .put(AsnBuiltinType.Utf8String, "12")
             .put(AsnBuiltinType.RelativeOid, "13")
-                    //.put( reserved, 14)
-                    //.put( reserved, 15)
+            //.put( reserved, 14)
+            //.put( reserved, 15)
             .put(AsnBuiltinType.Sequence, "16")
             .put(AsnBuiltinType.SequenceOf, "16")
             .put(AsnBuiltinType.Set, "17")
@@ -343,17 +340,17 @@ public class AsnSchemaTag
             .put(7, AsnBuiltinType.ObjectDescriptor)
             .put(8, AsnBuiltinType.InstanceOf)
             .put(9, AsnBuiltinType.External)
-                    //.put(9, AsnBuiltinType.Real)
+            //.put(9, AsnBuiltinType.Real)
             .put(10, AsnBuiltinType.Enumerated)
             .put(11, AsnBuiltinType.EmbeddedPDV)
             .put(12, AsnBuiltinType.Utf8String)
             .put(13, AsnBuiltinType.RelativeOid)
-                    //.put( reserved, 14)
-                    //.put( reserved, 15)
+            //.put( reserved, 14)
+            //.put( reserved, 15)
             .put(16, AsnBuiltinType.Sequence)
-                    //.put(16, AsnBuiltinType.SequenceOf)
+            //.put(16, AsnBuiltinType.SequenceOf)
             .put(17, AsnBuiltinType.Set)
-                    //.put(17, AsnBuiltinType.SetOf)
+            //.put(17, AsnBuiltinType.SetOf)
             .put(18, AsnBuiltinType.NumericString)
             .put(19, AsnBuiltinType.PrintableString)
             .put(20, AsnBuiltinType.TeletexString)

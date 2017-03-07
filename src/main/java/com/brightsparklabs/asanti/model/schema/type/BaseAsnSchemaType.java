@@ -4,7 +4,7 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -94,7 +94,7 @@ public class BaseAsnSchemaType implements AsnSchemaType
     public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
             DecodingSession decodingSession)
     {
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override

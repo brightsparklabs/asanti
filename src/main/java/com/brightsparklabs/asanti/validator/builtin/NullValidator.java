@@ -5,9 +5,9 @@
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -63,10 +63,9 @@ public class NullValidator extends PrimitiveBuiltinTypeValidator
 
         if (bytes.length != 0)
         {
-            final String error = NULL_VALIDATION_ERROR;
             final ByteValidationFailure failure = new ByteValidationFailure(0,
                     FailureType.DataIncorrectlyFormatted,
-                    error);
+                    NULL_VALIDATION_ERROR);
             failures.add(failure);
         }
 

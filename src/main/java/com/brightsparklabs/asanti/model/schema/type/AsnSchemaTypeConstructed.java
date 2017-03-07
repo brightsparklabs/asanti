@@ -12,7 +12,7 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -366,7 +366,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
          * @param decodingSession
          *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
          *
-         * @return the matching component or {@link Optional#absent()} if no match
+         * @return the matching component or {@link Optional#empty()} if no match
          */
         public Optional<AsnSchemaComponentType> getComponentType(AsnSchemaTag tag,
                 ImmutableList<AsnSchemaComponentType> components, DecodingSession decodingSession)
@@ -503,7 +503,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
          *         the DecodingSession to use for context
          *
          * @return the matching AsnSchemaComponentType if there is a match, {@link
-         * Optional#absent()} otherwise.  Noting that the returned component may be a sub-component
+         * Optional#empty()} otherwise.  Noting that the returned component may be a sub-component
          * if the passed in component was a CHOICE, and in this case the Name will be fully
          * qualified to provide a full path
          */
@@ -544,7 +544,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
             }
 
             // No match
-            return Optional.absent();
+            return Optional.empty();
         }
 
         // -------------------------------------------------------------------------
@@ -675,8 +675,8 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
              *         the DecodingSession that holds the state needed to manipulate the tag
              *         indexes
              *
-             * @return appropriate AsnSchemaComponentType if match found, otherwise {@code
-             * Optional.absent()}
+             * @return appropriate AsnSchemaComponentType if match found, otherwise {@link
+             * Optional#empty()}
              */
             Optional<AsnSchemaComponentType> getComponent(AsnSchemaTag tag,
                     List<AsnSchemaComponentType> components, DecodingSession decodingSession);
@@ -703,7 +703,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                     // Protect against more data than the schema knows about
                     if (index >= components.size())
                     {
-                        return Optional.absent();
+                        return Optional.empty();
                     }
 
                     component = components.get(index);
@@ -736,7 +736,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                 decodingSession.setIndex(tag, components.size());
 
                 //  No match found.
-                return Optional.absent();
+                return Optional.empty();
             }
         }
 
@@ -769,7 +769,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType
                         return result;
                     }
                 }
-                return Optional.absent();
+                return Optional.empty();
             }
         }
     }

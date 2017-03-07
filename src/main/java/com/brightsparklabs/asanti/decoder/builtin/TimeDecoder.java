@@ -12,14 +12,14 @@ import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 /**
  * Decoder for data of type {@link AsnBuiltinType#Time}
  *
  * @author brightSPARK Labs
  */
-public class TimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
+public class TimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime>
 {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -58,7 +58,7 @@ public class TimeDecoder extends AbstractBuiltinTypeDecoder<Timestamp>
     // -------------------------------------------------------------------------
 
     @Override
-    public Timestamp decode(final byte[] bytes) throws DecodeException
+    public OffsetDateTime decode(final byte[] bytes) throws DecodeException
     {
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsTime(bytes);
         DecodeExceptions.throwIfHasFailures(failures);

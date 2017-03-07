@@ -62,7 +62,7 @@ public class RawAsnDataImplTest
         assertTrue(tags.contains("/2/2/0"));
         assertTrue(tags.contains("/99/0"));
 
-        instance = new RawAsnDataImpl(Maps.<String, byte[]>newHashMap());
+        instance = new RawAsnDataImpl(Maps.newHashMap());
         tags = instance.getRawTags();
         assertEquals(tags.size(), 0);
     }
@@ -78,7 +78,7 @@ public class RawAsnDataImplTest
         assertArrayEquals(instance.getBytes("/99/0").get(), "/99/0".getBytes(Charsets.UTF_8));
         assertFalse(instance.getBytes("/fake/0").isPresent());
 
-        instance = new RawAsnDataImpl(Maps.<String, byte[]>newHashMap());
+        instance = new RawAsnDataImpl(Maps.newHashMap());
         assertFalse(instance.getBytes("/0/0/0").isPresent());
         assertFalse(instance.getBytes("/0/1/0").isPresent());
         assertFalse(instance.getBytes("/1/0/1").isPresent());
@@ -99,7 +99,7 @@ public class RawAsnDataImplTest
         assertArrayEquals(data.get("/2/2/0"), "/2/2/0".getBytes(Charsets.UTF_8));
         assertArrayEquals(data.get("/99/0"), "/99/0".getBytes(Charsets.UTF_8));
 
-        instance = new RawAsnDataImpl(Maps.<String, byte[]>newHashMap());
+        instance = new RawAsnDataImpl(Maps.newHashMap());
         data = instance.getBytes();
         assertTrue(data.size() == 0);
     }

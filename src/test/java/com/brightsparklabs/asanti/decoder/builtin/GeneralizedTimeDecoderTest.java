@@ -8,11 +8,14 @@ package com.brightsparklabs.asanti.decoder.builtin;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import org.junit.Test;
 
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Calendar;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
@@ -94,7 +97,6 @@ public class GeneralizedTimeDecoderTest
         {
         }
 
-
         // null for tag and AsantiAsnData
         try
         {
@@ -133,7 +135,6 @@ public class GeneralizedTimeDecoderTest
         {
         }
 
-
     }
 
     @Test
@@ -145,15 +146,19 @@ public class GeneralizedTimeDecoderTest
 
         // Minimum values (Local time)
         String time = "19700101000000.0";
-        Timestamp expectedTime = Timestamp.valueOf("1970-01-01 00:00:00.0");
+        //Timestamp expectedTime = Timestamp.valueOf("1970-01-01 00:00:00.0");
+        final Instant of = Instant.parse("1970-01-01T00:00:00Z");
+        final ZoneOffset offset = ZoneId.systemDefault().getRules().getOffset(of);
+        OffsetDateTime expectedTime = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, offset);
+        //final OffsetDateTime expectedTime = OffsetDateTime.of(1970, 01, 01, 0, 0, 0, 0, OffsetDateTime.now().getOffset());
         byte[] bytes = time.getBytes(Charsets.UTF_8);
-        long ms = expectedTime.getTime();
+        long ms = expectedTime.toInstant().toEpochMilli();
         assertEquals(ms, rawOffset);
         assertEquals(expectedTime, instance.decode(bytes));
 
         // check that the other overload works
         AsantiAsnData data = mock(AsantiAsnData.class);
-        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
+        when(data.getBytes(anyString())).thenReturn(Optional.empty());
         final String tag = "tag";
         when(data.getBytes(eq(tag))).thenReturn(Optional.of(time.getBytes(Charsets.UTF_8)));
 
@@ -161,57 +166,57 @@ public class GeneralizedTimeDecoderTest
 
         time = "1900010100";
         bytes = time.getBytes(Charsets.UTF_8);
-        Timestamp decoded = instance.decode(bytes);
+        OffsetDateTime decoded = instance.decode(bytes);
         long expectedMs = -2208988800000L + rawOffset;
-        assertEquals(expectedMs, decoded.getTime());
+        assertEquals(expectedMs, decoded.toInstant().toEpochMilli());
 
         time = "19850416141516.123";
         bytes = time.getBytes(Charsets.UTF_8);
         decoded = instance.decode(bytes);
         expectedMs = 482508916123L + rawOffset;
-        assertEquals(expectedMs, decoded.getTime());
+        assertEquals(expectedMs, decoded.toInstant().toEpochMilli());
 
         time = "19850416141516.123Z";
         bytes = time.getBytes(Charsets.UTF_8);
         decoded = instance.decode(bytes);
         expectedMs = 482508916123L;
-        assertEquals(expectedMs, decoded.getTime());
+        assertEquals(expectedMs, decoded.toInstant().toEpochMilli());
 
         time = "19850416141516.123-01";
         bytes = time.getBytes(Charsets.UTF_8);
         decoded = instance.decode(bytes);
         expectedMs = 482508916123L + ONE_HOUR_IN_MILLI_SECONDS;
-        assertEquals(expectedMs, decoded.getTime());
+        assertEquals(expectedMs, decoded.toInstant().toEpochMilli());
 
         time = "19850416141516.123+1030";
         bytes = time.getBytes(Charsets.UTF_8);
         decoded = instance.decode(bytes);
         expectedMs = 482508916123L - (long) (ONE_HOUR_IN_MILLI_SECONDS * 10.5);
-        assertEquals(expectedMs, decoded.getTime());
+        assertEquals(expectedMs, decoded.toInstant().toEpochMilli());
 
         time = "19850416141516.123+1031";
         bytes = time.getBytes(Charsets.UTF_8);
         decoded = instance.decode(bytes);
         expectedMs = 482508916123L - (long) (ONE_HOUR_IN_MILLI_SECONDS * 10.5)
                 - ONE_MINUTE_IN_MILLI_SECONDS;
-        assertEquals(expectedMs, decoded.getTime());
+        assertEquals(expectedMs, decoded.toInstant().toEpochMilli());
 
         // Maximum values (Local time)
-        time = "99991231235959.999999999";
-        expectedTime = Timestamp.valueOf("9999-12-31 23:59:59.999999999");
+        time = "99991231235959.999999999Z";
+        expectedTime = OffsetDateTime.of(9999, 12, 31, 23, 59, 59, 999999999, ZoneOffset.UTC);
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime, instance.decode(bytes));
+        assertEquals(expectedTime.toInstant(), instance.decode(bytes).toInstant());
 
         // Another valid time (Local time)
-        time = "19181111110000.123456789";
-        expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123");
+        time = "19181111110000.123456789Z";
+        expectedTime = OffsetDateTime.of(1918, 11, 11, 11, 0, 0, 123456789, ZoneOffset.UTC);
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime.getTime(), instance.decode(bytes).getTime());
-
+        assertEquals(expectedTime.toInstant(), instance.decode(bytes).toInstant());
+/*
         // Zero Unix Epoch (Universal time)
         time = "1970010100Z";
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(0, instance.decode(bytes).getTime());
+        assertEquals(0, instance.decode(bytes).toInstant().toEpochMilli());
 
         // Sub milliseconds
         time = "19181111110000.123456789";
@@ -264,7 +269,7 @@ public class GeneralizedTimeDecoderTest
         expectedTime = Timestamp.valueOf("1918-11-11 11:07:24.443");
         bytes = time.getBytes(Charsets.UTF_8);
         assertEquals(expectedTime, instance.decode(bytes));
-
+*/
         // null
         try
         {
@@ -364,7 +369,7 @@ public class GeneralizedTimeDecoderTest
     public void testDecodeAsStringOverload() throws Exception
     {
         AsantiAsnData data = mock(AsantiAsnData.class);
-        when(data.getBytes(anyString())).thenReturn(Optional.<byte[]>absent());
+        when(data.getBytes(anyString())).thenReturn(Optional.empty());
 
         final String tag1 = "tag1";
         final String time1 = "19700101000000.0";

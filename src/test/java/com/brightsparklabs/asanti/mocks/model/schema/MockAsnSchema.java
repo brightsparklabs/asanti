@@ -14,11 +14,12 @@ import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -36,7 +37,8 @@ public class MockAsnSchema
     // -------------------------------------------------------------------------
 
     /** the example schema defined in the {@code README.md} file */
-    public static final String TEST_SCHEMA_TEXT = new StringBuilder().append("Document-PDU\n")
+    public static final String TEST_SCHEMA_TEXT = new StringBuilder()
+            .append("Document-PDU\n")
             .append("    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n")
             .append("DEFINITIONS")
             .append("    AUTOMATIC TAGS ::=")
@@ -158,9 +160,23 @@ public class MockAsnSchema
 
     private static Set<String> rawTags = Sets.newLinkedHashSet();
 
-    private static final Timestamp publishDate = Timestamp.valueOf("2015-01-01 00:00:00.0");
+    private static final OffsetDateTime publishDate = OffsetDateTime.of(2015,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            ZoneOffset.UTC);
 
-    private static final Timestamp lastModifiedDate = Timestamp.valueOf("2015-02-02 00:00:00.0");
+    private static final OffsetDateTime lastModifiedDate = OffsetDateTime.of(2015,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            ZoneOffset.UTC);
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -179,7 +195,7 @@ public class MockAsnSchema
 
         instance = mock(AsnSchema.class);
 
-        when(instance.getType(anyString())).thenReturn(Optional.<AsnSchemaType>absent());
+        when(instance.getType(anyString())).thenReturn(Optional.empty());
 
         ImmutableSet<OperationResult<DecodedTag, String>> results
                 = ImmutableSet.<OperationResult<DecodedTag, String>>builder()
@@ -240,27 +256,27 @@ public class MockAsnSchema
     }
 
     /**
-     * Returns (a copy) the timestamps that the mocked "/Document/header/published/date" will
+     * Returns the timestamps that the mocked "/Document/header/published/date" will
      * provide with calls to {@link AsantiAsnData#getDecodedObject}
      *
-     * @return (a copy) the timestamps that the mocked "/Document/header/published/date" will
-     * provide with calls to {@link AsantiAsnData#getDecodedObject}
+     * @return the timestamps that the mocked "/Document/header/published/date" will provide with
+     * calls to {@link AsantiAsnData#getDecodedObject}
      */
-    public static Timestamp getPublishDate()
+    public static OffsetDateTime getPublishDate()
     {
-        return new Timestamp(publishDate.getTime());
+        return publishDate;
     }
 
     /**
-     * Returns (a copy) the timestamps that the mocked "/Document/body/lastModified/date" will
+     * Returns the timestamps that the mocked "/Document/body/lastModified/date" will
      * provide with calls to {@link AsantiAsnData#getDecodedObject}
      *
-     * @return (a copy) the timestamps that the mocked "/Document/body/lastModified/date" will
-     * provide with calls to {@link AsantiAsnData#getDecodedObject}
+     * @return the timestamps that the mocked "/Document/body/lastModified/date" will provide with
+     * calls to {@link AsantiAsnData#getDecodedObject}
      */
-    public static Timestamp getLastModifiedDate()
+    public static OffsetDateTime getLastModifiedDate()
     {
-        return new Timestamp(lastModifiedDate.getTime());
+        return lastModifiedDate;
     }
 
     // -------------------------------------------------------------------------

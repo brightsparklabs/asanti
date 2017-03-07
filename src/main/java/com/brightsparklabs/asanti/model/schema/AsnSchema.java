@@ -7,7 +7,7 @@ package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -48,7 +48,7 @@ public interface AsnSchema
      * @param tag
      *         fully qualified decoded tag
      *
-     * @return the AsnSchemaType of the tag, {@link Optional#absent()} if no match
+     * @return the AsnSchemaType of the tag, {@link Optional#empty()} if no match
      */
     Optional<AsnSchemaType> getType(String tag);
 }

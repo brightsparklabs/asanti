@@ -11,7 +11,7 @@ package com.brightsparklabs.asanti.mocks.model.data;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -85,7 +85,7 @@ public class MockDecodedAsnData
             when(mockedInstance.getType(anyString())).thenReturn(Optional.of(type));
             when(mockedInstance.getBytes("/empty")).thenReturn(Optional.of(new byte[0]));
             when(mockedInstance.getType("/null")).thenReturn(Optional.of(type));
-            when(mockedInstance.getBytes("/null")).thenReturn(Optional.<byte[]>absent());
+            when(mockedInstance.getBytes("/null")).thenReturn(Optional.empty());
         }
 
         // ---------------------------------------------------------------------

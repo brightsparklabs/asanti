@@ -38,7 +38,7 @@ public class DecodeExceptionTest
                 "TEST_REASON");
         try
         {
-            DecodeExceptions.throwIfHasFailures(ImmutableSet.<DecodedTagValidationFailure>of(failure));
+            DecodeExceptions.throwIfHasFailures(ImmutableSet.of(failure));
             fail("DecodeExceptions not thrown");
         }
         catch (DecodeException ex)

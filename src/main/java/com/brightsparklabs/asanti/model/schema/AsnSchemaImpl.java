@@ -11,7 +11,6 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -120,7 +119,7 @@ public class AsnSchemaImpl implements AsnSchema
             Optional<AsnSchemaType> next = getNext(type, nextTag);
             if (!next.isPresent())
             {
-                return Optional.absent();
+                return Optional.empty();
             }
             type = next.get();
         }
@@ -142,7 +141,7 @@ public class AsnSchemaImpl implements AsnSchema
      * @param tag
      *         tag of the child to match
      *
-     * @return the child component that matches the tag, {@link Optional#absent()} if no match
+     * @return the child component that matches the tag, {@link Optional#empty()} if no match
      */
     private Optional<AsnSchemaType> getNext(AsnSchemaType type, String tag)
     {
@@ -154,7 +153,7 @@ public class AsnSchemaImpl implements AsnSchema
                 return Optional.of(component.getType());
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
@@ -212,7 +211,7 @@ public class AsnSchemaImpl implements AsnSchema
                 decodeSuccessful);
 
         return decodeSuccessful ?
-                OperationResult.<DecodedTag, String>createSuccessfulInstance(decodedTag) :
+                OperationResult.createSuccessfulInstance(decodedTag) :
                 OperationResult.createUnsuccessfulInstance(decodedTag,
                         "The supplied raw tag does not map to a type in this schema");
     }
@@ -249,7 +248,8 @@ public class AsnSchemaImpl implements AsnSchema
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
-            final String decodedTagPath = tagJoiner.join(result.decodedTags)
+            final String decodedTagPath = tagJoiner
+                    .join(result.decodedTags)
                     .replaceAll("/\\[", "\\[");
             // By definition the new tag is the child of its container.
             decodingSession.setContext(decodedTagPath);
