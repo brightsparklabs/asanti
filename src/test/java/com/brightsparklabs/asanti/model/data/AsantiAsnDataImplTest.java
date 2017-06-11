@@ -296,23 +296,23 @@ public class AsantiAsnDataImplTest
     @Test
     public void testGetHexString() throws Exception
     {
-        assertEquals("0x2F312F302F31",
+        assertEquals("2F312F302F31",
                 instance.getHexString("/Document/header/published/date").get());
-        assertEquals("0x2F322F302F30",
+        assertEquals("2F322F302F30",
                 instance.getHexString("/Document/body/lastModified/date").get());
-        assertEquals("0x2F322F312F31", instance.getHexString("/Document/body/prefix/text").get());
-        assertEquals("0x2F322F322F31", instance.getHexString("/Document/body/content/text").get());
-        assertEquals("0x2F332F302F31",
+        assertEquals("2F322F312F31", instance.getHexString("/Document/body/prefix/text").get());
+        assertEquals("2F322F322F31", instance.getHexString("/Document/body/content/text").get());
+        assertEquals("2F332F302F31",
                 instance.getHexString("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
-        assertEquals("0x2F322F302F3939",
+        assertEquals("2F322F302F3939",
                 instance.getHexString("/Document/body/content/0[99]").get());
-        assertEquals("0x2F39392F312F31", instance.getHexString("/Document/0[99]/0[1]/0[1]").get());
+        assertEquals("2F39392F312F31", instance.getHexString("/Document/0[99]/0[1]/0[1]").get());
 
         // test raw tags
-        assertEquals("0x2F322F302F3939", instance.getHexString("1[2]/0[0]/0[99]").get());
-        assertEquals("0x2F39392F312F31", instance.getHexString("0[99]/0[1]/0[1]").get());
+        assertEquals("2F322F302F3939", instance.getHexString("1[2]/0[0]/0[99]").get());
+        assertEquals("2F39392F312F31", instance.getHexString("0[99]/0[1]/0[1]").get());
 
         // test unmapped is the same as respective raw
         assertEquals(instance.getHexString("/Document/body/content/0[99]").get(),
@@ -334,17 +334,17 @@ public class AsantiAsnDataImplTest
         Pattern regex = Pattern.compile("/Document/bod[x-z]/.+");
         ImmutableMap<String, String> result = instance.getHexStringsMatching(regex);
         assertEquals(4, result.size());
-        assertEquals("0x2F322F302F30", result.get("/Document/body/lastModified/date"));
-        assertEquals("0x2F322F312F31", result.get("/Document/body/prefix/text"));
-        assertEquals("0x2F322F322F31", result.get("/Document/body/content/text"));
-        assertEquals("0x2F322F302F3939", result.get("/Document/body/content/0[99]"));
+        assertEquals("2F322F302F30", result.get("/Document/body/lastModified/date"));
+        assertEquals("2F322F312F31", result.get("/Document/body/prefix/text"));
+        assertEquals("2F322F322F31", result.get("/Document/body/content/text"));
+        assertEquals("2F322F302F3939", result.get("/Document/body/content/0[99]"));
         result = emptyInstance.getHexStringsMatching(regex);
         assertEquals(0, result.size());
 
         regex = Pattern.compile("/Document/.\\[\\d{2,4}\\]/\\d+\\[\\d+\\]/\\d\\[1\\]");
         result = instance.getHexStringsMatching(regex);
         assertEquals(1, result.size());
-        assertEquals("0x2F39392F312F31", result.get("/Document/0[99]/0[1]/0[1]"));
+        assertEquals("2F39392F312F31", result.get("/Document/0[99]/0[1]/0[1]"));
         result = emptyInstance.getHexStringsMatching(regex);
         assertEquals(0, result.size());
 
@@ -352,8 +352,8 @@ public class AsantiAsnDataImplTest
         regex = Pattern.compile("1\\[2\\]/0\\[0\\]/.+");
         result = instance.getHexStringsMatching(regex);
         assertEquals(2, result.size());
-        assertEquals("0x2F322F302F30", result.get("1[2]/0[0]/0[0]"));
-        assertEquals("0x2F322F302F3939", result.get("1[2]/0[0]/0[99]"));
+        assertEquals("2F322F302F30", result.get("1[2]/0[0]/0[0]"));
+        assertEquals("2F322F302F3939", result.get("1[2]/0[0]/0[99]"));
         result = emptyInstance.getHexStringsMatching(regex);
         assertEquals(0, result.size());
 
