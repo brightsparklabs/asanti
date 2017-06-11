@@ -25,7 +25,7 @@ class ByteArraysTest extends Specification {
         (byte[]) [] || ""
         (byte[]) [0] || "0x00"
         (byte[]) [0, 1, 2, 3, 4, 5] || "0x000102030405"
-        (byte[]) [ 'h', 'e', 'l', 'l', 'o' ] || "0x68656c6c6f (\"hello\")"
+        (byte[]) [ 'h', 'e', 'l', 'l', 'o' ] || "0x68656C6C6F (\"hello\")"
     }
 
     def "test containsNonPrintableChars: #input"() {
@@ -65,7 +65,7 @@ class ByteArraysTest extends Specification {
         (byte[]) [] || ""
         (byte[]) [0] || "0x00"
         (byte[]) [0, 1, 2, 3, 4, 5] || "0x000102030405"
-        (byte[]) [ 'h', 'e', 'l', 'l', 'o' ] || "0x68656c6c6f"
+        (byte[]) [ 'h', 'e', 'l', 'l', 'o' ] || "0x68656C6C6F"
     }
 
 }

@@ -25,7 +25,7 @@ public class ByteArrays
     // -------------------------------------------------------------------------
 
     /** basic hex encoding in lowercase */
-    private static BaseEncoding hexEncoding = BaseEncoding.base16().lowerCase();
+    private static BaseEncoding hexEncoding = BaseEncoding.base16();
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -117,7 +117,8 @@ public class ByteArrays
 
     /**
      * Returns a hex representation of the bytes in the supplied array, with "0x" prepended to it,
-     *  or an empty string if byte array was {@code null} or empty
+     * or an empty string if byte array was {@code null} or empty.  The hex conversion will use an
+     * uppercase alphabet, ie "0xAB" as opposed to "0xab".
      *
      * @param bytes
      *         bytes to decode

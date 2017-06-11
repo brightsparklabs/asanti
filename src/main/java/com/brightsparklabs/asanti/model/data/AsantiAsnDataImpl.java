@@ -114,8 +114,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         this.asnSchema = asnSchema;
         this.decodedTags = ImmutableMap.copyOf(decodedToRawTags);
         this.unmappedTags = ImmutableMap.copyOf(unmappedTags);
-        this.allTags = ImmutableMap.<String, DecodedTag>builder()
-                .putAll(decodedToRawTags)
+        this.allTags = ImmutableMap.<String, DecodedTag>builder().putAll(decodedToRawTags)
                 .putAll(unmappedTags)
                 .build();
     }
@@ -193,7 +192,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     @Override
     public Optional<String> getHexString(final String tag)
     {
-        return getBytes(tag).map(bytes -> "0x" + BaseEncoding.base16().encode(bytes));
+        return getBytes(tag).map(bytes -> BaseEncoding.base16().encode(bytes));
     }
 
     @Override
@@ -209,7 +208,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         final Map<String, byte[]> raw = rawAsnData.getBytesMatching(regex);
         for (Map.Entry<String, byte[]> entry : raw.entrySet())
         {
-            final String hexString = "0x" + BaseEncoding.base16().encode(entry.getValue());
+            final String hexString = BaseEncoding.base16().encode(entry.getValue());
             result.put(entry.getKey(), hexString);
         }
 
