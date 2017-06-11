@@ -63,7 +63,7 @@ public class VisibleStringValidatorTest
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR + "0x7f00",
+        assertEquals(BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR + "0x7F00",
                 failure.getFailureReason());
 
         // test invalid - constraint
@@ -123,7 +123,7 @@ public class VisibleStringValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix + String.format("0x%02x", b), failure.getFailureReason());
+            assertEquals(errorPrefix + String.format("0x%02X", b), failure.getFailureReason());
         }
 
         bytes[0] = Byte.MAX_VALUE;
@@ -131,7 +131,7 @@ public class VisibleStringValidatorTest
         assertEquals(1, failures.size());
         ByteValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(errorPrefix + "0x7f", failure.getFailureReason());
+        assertEquals(errorPrefix + "0x7F", failure.getFailureReason());
 
         // test empty
         bytes = new byte[0];
