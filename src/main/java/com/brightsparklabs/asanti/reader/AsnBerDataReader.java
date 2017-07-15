@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
 import org.bouncycastle.asn1.*;
-import org.bouncycastle.asn1.util.ASN1Dump;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +22,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-
-import static com.brightsparklabs.asanti.common.ByteArrays.*;
 
 /**
  * Reads data from ASN.1 BER/DER binary files
@@ -86,14 +83,8 @@ public class AsnBerDataReader
         DERObject asnObject = asnInputStream.readObject();
         while (asnObject != null)
         {
-            if (logger.isTraceEnabled())
-            {
-                logger.trace(ASN1Dump.dumpAsString(asnObject));
-            }
-
             final Map<String, byte[]> tagsToData
                     = Maps.newLinkedHashMap();  // we want to preserve input order
-            logger.trace("processDerObject: {}", asnObject.toString());
 
             processDerObject(asnObject, "", tagsToData, 0);
             final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
@@ -139,12 +130,6 @@ public class AsnBerDataReader
     private static void processDerObject(DERObject derObject, String prefix,
             Map<String, byte[]> tagsToData, int index) throws IOException
     {
-        logger.trace("DerObject entry,  prefix {}, tagsToData.size() {} => {} : {}",
-                prefix,
-                tagsToData.size(),
-                toHexString(derObject.getDEREncoded()),
-                derObject);
-
         if (derObject instanceof ASN1Sequence)
         {
             processSequence((ASN1Sequence) derObject, prefix, tagsToData);
@@ -225,8 +210,6 @@ public class AsnBerDataReader
     private static void processElementsFromSequenceOrSet(Enumeration<?> elements, String prefix,
             Map<String, byte[]> tagsToData) throws IOException
     {
-        logger.trace("ElementsFromSequenceOrSet prefix {}", prefix);
-
         int index = 0;
         while (elements.hasMoreElements())
         {
@@ -243,11 +226,9 @@ public class AsnBerDataReader
             {
                 // Because this type is not tagged then we need to add a universal tag
                 int tagNumber = getTagNumber(getType(derObject));
-                logger.trace("adding faux tag, not tagged {}", tagNumber);
                 elementPrefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, tagNumber);
             }
 
-            logger.trace("elementPrefix {}, isTagged {} index {}", elementPrefix, isTagged, index);
             processDerObject(derObject, elementPrefix, tagsToData, index);
             index++;
         }
@@ -258,7 +239,6 @@ public class AsnBerDataReader
             // Sequence/Set is valid, for example all the components could be OPTIONAL)
             // Make an empty data object against this tag so that we know we received the
             // Constructed type as this is important for decoding and validation.
-            logger.trace("Creating an Empty tagsToData for an empty Sequence/Set {}", prefix);
             tagsToData.put(prefix, new byte[0]);
         }
     }
@@ -289,7 +269,6 @@ public class AsnBerDataReader
         int containingType = getType(asnTaggedObject);
         if (isConstructedType(containingType))
         {
-            logger.trace("Containing type is Constructed.");
             index = 0;
         }
 
@@ -305,14 +284,8 @@ public class AsnBerDataReader
         if (asnTaggedObject.isExplicit() && isUniversalType(type))
         {
             int number = getTagNumber(type);
-            logger.trace("adding faux tag, tagged explicit {}", number);
             prefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, number);
         }
-
-        logger.trace("TaggedObject entry - prefix {}, adding {}, explicit {} ",
-                prefix,
-                asnTaggedObject.getTagNo(),
-                asnTaggedObject.isExplicit());
 
         processDerObject(asnTaggedObject.getObject(), prefix, tagsToData, index);
     }
@@ -374,15 +347,6 @@ public class AsnBerDataReader
             // extract and store value
             final int firstDataByteIndex = 2 + numberOfAdditionalLengthBytes;
             value = Arrays.copyOfRange(tlvData, firstDataByteIndex, tlvData.length);
-        }
-
-        if (logger.isTraceEnabled())
-        {
-            // The derObject.getDEREncoded is not a cheap operation, so only call it if needed.
-            logger.trace("PrimitiveDerObject.  tagsToData.put {} : {} - object => {}",
-                    tag,
-                    toHexString(value),
-                    toHexString(derObject.getDEREncoded()));
         }
 
         tagsToData.put(tag, value);
