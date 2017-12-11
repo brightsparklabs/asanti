@@ -12,10 +12,7 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +32,7 @@ public class AsnSchemaImpl implements AsnSchema
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaModule.class);
+    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaImpl.class);
 
     /** splitter for separating tag strings */
     private static final Splitter tagSplitter = Splitter.on("/").omitEmptyStrings();
@@ -49,6 +46,9 @@ public class AsnSchemaImpl implements AsnSchema
 
     /** the primary module defined in this schema (defaults to the first module) */
     private final AsnSchemaModule primaryModule;
+
+    /** a simple cache to avoid recalculating Tag to Type mapping */
+    private final Map<String, Optional<AsnSchemaType>> tagCache = Maps.newConcurrentMap();
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -106,6 +106,12 @@ public class AsnSchemaImpl implements AsnSchema
     @Override
     public Optional<AsnSchemaType> getType(String tag)
     {
+        final Optional<AsnSchemaType> cacheHit = tagCache.get(tag);
+        if (cacheHit != null)
+        {
+            return cacheHit;
+        }
+
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
         final Iterator<String> it = tags.iterator();
 
@@ -123,7 +129,10 @@ public class AsnSchemaImpl implements AsnSchema
             }
             type = next.get();
         }
-        return Optional.of(type);
+
+        final Optional<AsnSchemaType> result = Optional.of(type);
+        tagCache.put(tag, result);
+        return result;
     }
 
     // -------------------------------------------------------------------------
@@ -248,8 +257,7 @@ public class AsnSchemaImpl implements AsnSchema
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
-            final String decodedTagPath = tagJoiner
-                    .join(result.decodedTags)
+            final String decodedTagPath = tagJoiner.join(result.decodedTags)
                     .replaceAll("/\\[", "\\[");
             // By definition the new tag is the child of its container.
             decodingSession.setContext(decodedTagPath);
