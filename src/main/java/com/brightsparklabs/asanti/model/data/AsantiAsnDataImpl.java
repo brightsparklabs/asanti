@@ -303,15 +303,8 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         return ImmutableMap.copyOf(result);
     }
 
-    /**
-     * Returns all tags which match the supplied regular expression
-     *
-     * @param regex
-     *         regular expression to test tag names against
-     *
-     * @return all tags which match the supplied regular expression
-     */
-    private ImmutableSet<String> getMatchingTags(final Pattern regex)
+//    @Override
+    public ImmutableSet<String> getMatchingTags(final Pattern regex)
     {
         if (regex == null)
         {

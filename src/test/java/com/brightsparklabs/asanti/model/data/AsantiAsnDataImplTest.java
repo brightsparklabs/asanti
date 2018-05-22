@@ -7,6 +7,7 @@ package com.brightsparklabs.asanti.model.data;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.assam.data.AsnData;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
@@ -37,6 +38,10 @@ public class AsantiAsnDataImplTest
     /** default instance to test */
     private static AsantiAsnData instance;
 
+    private static AsantiAsnDataImpl asnDataInstance;
+
+    private static Pattern pattern = Pattern.compile("/\\Document.*");
+
     /** empty instance to test */
     private static AsantiAsnData emptyInstance;
 
@@ -62,6 +67,11 @@ public class AsantiAsnDataImplTest
         final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
         final AsnSchema asnSchema = MockAsnSchema.getInstance();
         instance = new AsantiAsnDataImpl(rawAsnData, asnSchema, "Document");
+
+        // create AsnData instance
+        final RawAsnData rawOtherAsnData = new RawAsnDataImpl(tagsToData);
+        final AsnSchema asnOtherSchema = MockAsnSchema.getInstance();
+        asnDataInstance = new AsantiAsnDataImpl(rawOtherAsnData, asnOtherSchema, "Document");
 
         // create empty instance
         final RawAsnData emptyAsnData = new RawAsnDataImpl(Maps.newHashMap());
@@ -142,6 +152,16 @@ public class AsantiAsnDataImplTest
         catch (final IllegalArgumentException ex)
         {
         }
+    }
+
+    @Test
+    public void testGetMatchingTags() throws Exception
+    {
+        final ImmutableSet<String> matchingTags = asnDataInstance.getMatchingTags(pattern);
+        assertEquals(7, matchingTags.size());
+
+        final ImmutableSet<String> shouldBeEmpty = asnDataInstance.getMatchingTags(null);
+        assertTrue(shouldBeEmpty.isEmpty());
     }
 
     @Test
