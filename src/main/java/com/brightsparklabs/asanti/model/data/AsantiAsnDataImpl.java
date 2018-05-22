@@ -303,7 +303,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
         return ImmutableMap.copyOf(result);
     }
 
-//    @Override
+    @Override
     public ImmutableSet<String> getMatchingTags(final Pattern regex)
     {
         if (regex == null)

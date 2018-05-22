@@ -7,7 +7,6 @@ package com.brightsparklabs.asanti.model.data;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.assam.data.AsnData;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
@@ -38,7 +37,7 @@ public class AsantiAsnDataImplTest
     /** default instance to test */
     private static AsantiAsnData instance;
 
-    private static AsantiAsnDataImpl asnDataInstance;
+    private static AsantiAsnData asnDataInstance;
 
     private static Pattern pattern = Pattern.compile("/\\Document.*");
 
@@ -53,8 +52,9 @@ public class AsantiAsnDataImplTest
     public static void setUpBeforeClass() throws Exception
     {
         /** data to construct rawAsnData from */
-        final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]>builder()
-                .put("0[1]/0[0]/1[1]", "/1/0/1".getBytes(Charsets.UTF_8))
+        final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]>builder().put(
+                "0[1]/0[0]/1[1]",
+                "/1/0/1".getBytes(Charsets.UTF_8))
                 .put("1[2]/0[0]/0[0]", "/2/0/0".getBytes(Charsets.UTF_8))
                 .put("1[2]/1[1]/0[1]", "/2/1/1".getBytes(Charsets.UTF_8))
                 .put("1[2]/2[2]/0[1]", "/2/2/1".getBytes(Charsets.UTF_8))
@@ -326,8 +326,7 @@ public class AsantiAsnDataImplTest
                 instance.getHexString("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
-        assertEquals("2F322F302F3939",
-                instance.getHexString("/Document/body/content/0[99]").get());
+        assertEquals("2F322F302F3939", instance.getHexString("/Document/body/content/0[99]").get());
         assertEquals("2F39392F312F31", instance.getHexString("/Document/0[99]/0[1]/0[1]").get());
 
         // test raw tags
@@ -531,18 +530,22 @@ public class AsantiAsnDataImplTest
     public void testGetDecodedObject() throws Exception
     {
         assertEquals(MockAsnSchema.getPublishDate(),
-                instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class).get());
+                instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class)
+                        .get());
         assertEquals(MockAsnSchema.getLastModifiedDate(),
-                instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class).get());
+                instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class)
+                        .get());
         assertEquals("prefix text",
                 instance.getDecodedObject("/Document/body/prefix/text", String.class).get());
         assertEquals("content text",
                 instance.getDecodedObject("/Document/body/content/text", String.class).get());
         assertEquals("firstName",
-                instance.getDecodedObject("/Document/footer/authors[0]/firstName", String.class).get());
+                instance.getDecodedObject("/Document/footer/authors[0]/firstName", String.class)
+                        .get());
 
         // test unmapped tags
-        assertFalse(instance.getDecodedObject("/Document/body/content/99", String.class).isPresent());
+        assertFalse(instance.getDecodedObject("/Document/body/content/99", String.class)
+                .isPresent());
         assertFalse(instance.getDecodedObject("/Document/99/1/1", String.class).isPresent());
 
         // test raw tags
@@ -556,7 +559,8 @@ public class AsantiAsnDataImplTest
 
         assertFalse(emptyInstance.getDecodedObject("", String.class).isPresent());
         assertFalse(emptyInstance.getDecodedObject("/0/0/0", String.class).isPresent());
-        assertFalse(emptyInstance.getDecodedObject("/Document/header/published/date", String.class).isPresent());
+        assertFalse(emptyInstance.getDecodedObject("/Document/header/published/date", String.class)
+                .isPresent());
     }
 
     @Test
