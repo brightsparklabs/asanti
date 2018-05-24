@@ -48,8 +48,9 @@ public class AsantiAsnDataImplTest
     public static void setUpBeforeClass() throws Exception
     {
         /** data to construct rawAsnData from */
-        final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]>builder()
-                .put("0[1]/0[0]/1[1]", "/1/0/1".getBytes(Charsets.UTF_8))
+        final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]>builder().put(
+                "0[1]/0[0]/1[1]",
+                "/1/0/1".getBytes(Charsets.UTF_8))
                 .put("1[2]/0[0]/0[0]", "/2/0/0".getBytes(Charsets.UTF_8))
                 .put("1[2]/1[1]/0[1]", "/2/1/1".getBytes(Charsets.UTF_8))
                 .put("1[2]/2[2]/0[1]", "/2/2/1".getBytes(Charsets.UTF_8))
@@ -157,6 +158,29 @@ public class AsantiAsnDataImplTest
 
         tags = emptyInstance.getTags();
         assertEquals(tags.size(), 0);
+    }
+
+    @Test
+    public void testGetTagsMatching() throws Exception
+    {
+        // test can match all tags
+        final Pattern patternMatchAllTags = Pattern.compile("/\\Document.*");
+        final ImmutableSet<String> matchingAllTags = instance.getTagsMatching(patternMatchAllTags);
+        assertEquals(7, matchingAllTags.size());
+
+        // test can match some tags
+        final Pattern patternMatchDocumentBodyTags = Pattern.compile("/\\Document/body/.*");
+        final ImmutableSet<String> matchingDocumentBodyTags = instance.getTagsMatching(patternMatchDocumentBodyTags);
+        assertEquals(4, matchingDocumentBodyTags.size());
+
+        // test match no tags
+        final Pattern patternMatchNoTags = Pattern.compile("/\\Document/garbage.*");
+        final ImmutableSet<String> matchingNoTags = instance.getTagsMatching(patternMatchNoTags);
+        assertEquals(0, matchingNoTags.size());
+
+        // test null regex returns empty set
+        final ImmutableSet<String> shouldBeEmpty = instance.getTagsMatching(null);
+        assertTrue(shouldBeEmpty.isEmpty());
     }
 
     @Test
@@ -306,8 +330,7 @@ public class AsantiAsnDataImplTest
                 instance.getHexString("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
-        assertEquals("2F322F302F3939",
-                instance.getHexString("/Document/body/content/0[99]").get());
+        assertEquals("2F322F302F3939", instance.getHexString("/Document/body/content/0[99]").get());
         assertEquals("2F39392F312F31", instance.getHexString("/Document/0[99]/0[1]/0[1]").get());
 
         // test raw tags
@@ -511,18 +534,22 @@ public class AsantiAsnDataImplTest
     public void testGetDecodedObject() throws Exception
     {
         assertEquals(MockAsnSchema.getPublishDate(),
-                instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class).get());
+                instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class)
+                        .get());
         assertEquals(MockAsnSchema.getLastModifiedDate(),
-                instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class).get());
+                instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class)
+                        .get());
         assertEquals("prefix text",
                 instance.getDecodedObject("/Document/body/prefix/text", String.class).get());
         assertEquals("content text",
                 instance.getDecodedObject("/Document/body/content/text", String.class).get());
         assertEquals("firstName",
-                instance.getDecodedObject("/Document/footer/authors[0]/firstName", String.class).get());
+                instance.getDecodedObject("/Document/footer/authors[0]/firstName", String.class)
+                        .get());
 
         // test unmapped tags
-        assertFalse(instance.getDecodedObject("/Document/body/content/99", String.class).isPresent());
+        assertFalse(instance.getDecodedObject("/Document/body/content/99", String.class)
+                .isPresent());
         assertFalse(instance.getDecodedObject("/Document/99/1/1", String.class).isPresent());
 
         // test raw tags
@@ -536,7 +563,8 @@ public class AsantiAsnDataImplTest
 
         assertFalse(emptyInstance.getDecodedObject("", String.class).isPresent());
         assertFalse(emptyInstance.getDecodedObject("/0/0/0", String.class).isPresent());
-        assertFalse(emptyInstance.getDecodedObject("/Document/header/published/date", String.class).isPresent());
+        assertFalse(emptyInstance.getDecodedObject("/Document/header/published/date", String.class)
+                .isPresent());
     }
 
     @Test

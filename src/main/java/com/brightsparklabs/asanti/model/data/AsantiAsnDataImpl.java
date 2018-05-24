@@ -136,6 +136,20 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     }
 
     @Override
+    public ImmutableSet<String> getTagsMatching(final Pattern regex)
+    {
+        if (regex == null)
+        {
+            return ImmutableSet.of();
+        }
+
+        return allTags.keySet()
+                .stream()
+                .filter(tag -> regex.matcher(tag).matches())
+                .collect(ImmutableSet.toImmutableSet());
+    }
+
+    @Override
     public ImmutableSet<String> getUnmappedTags()
     {
         return ImmutableSet.copyOf(unmappedTags.keySet());
@@ -178,7 +192,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     public ImmutableMap<String, byte[]> getBytesMatching(final Pattern regex)
     {
         final Map<String, byte[]> result = Maps.newHashMap();
-        for (final String tag : getMatchingTags(regex))
+        for (final String tag : getTagsMatching(regex))
         {
             getBytes(tag).ifPresent(b -> result.put(tag, b));
         }
@@ -199,7 +213,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
     public ImmutableMap<String, String> getHexStringsMatching(final Pattern regex)
     {
         final Map<String, String> result = Maps.newHashMap();
-        for (final String tag : getMatchingTags(regex))
+        for (final String tag : getTagsMatching(regex))
         {
             getHexString(tag).ifPresent(h -> result.put(tag, h));
         }
@@ -236,7 +250,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData
             throws DecodeException
     {
         final Map<String, String> result = Maps.newHashMap();
-        for (final String tag : getMatchingTags(regex))
+        for (final String tag : getTagsMatching(regex))
         {
             getPrintableString(tag).ifPresent(p -> result.put(tag, p));
         }
@@ -295,39 +309,12 @@ public class AsantiAsnDataImpl implements AsantiAsnData
             throws DecodeException
     {
         final Map<String, Object> result = Maps.newHashMap();
-        for (final String tag : getMatchingTags(regex))
+        for (final String tag : getTagsMatching(regex))
         {
             getDecodedObject(tag).ifPresent(o -> result.put(tag, o));
         }
 
         return ImmutableMap.copyOf(result);
-    }
-
-    /**
-     * Returns all tags which match the supplied regular expression
-     *
-     * @param regex
-     *         regular expression to test tag names against
-     *
-     * @return all tags which match the supplied regular expression
-     */
-    private ImmutableSet<String> getMatchingTags(final Pattern regex)
-    {
-        if (regex == null)
-        {
-            return ImmutableSet.of();
-        }
-
-        final Set<String> tags = Sets.newHashSet();
-        for (final String tag : allTags.keySet())
-        {
-            if (regex.matcher(tag).matches())
-            {
-                tags.add(tag);
-            }
-        }
-
-        return ImmutableSet.copyOf(tags);
     }
 
     // -------------------------------------------------------------------------
