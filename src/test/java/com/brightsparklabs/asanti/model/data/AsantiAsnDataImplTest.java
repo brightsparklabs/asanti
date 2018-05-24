@@ -37,10 +37,6 @@ public class AsantiAsnDataImplTest
     /** default instance to test */
     private static AsantiAsnData instance;
 
-    private static AsantiAsnData asnDataInstance;
-
-    private static Pattern pattern = Pattern.compile("/\\Document.*");
-
     /** empty instance to test */
     private static AsantiAsnData emptyInstance;
 
@@ -67,11 +63,6 @@ public class AsantiAsnDataImplTest
         final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
         final AsnSchema asnSchema = MockAsnSchema.getInstance();
         instance = new AsantiAsnDataImpl(rawAsnData, asnSchema, "Document");
-
-        // create AsnData instance
-        final RawAsnData rawOtherAsnData = new RawAsnDataImpl(tagsToData);
-        final AsnSchema asnOtherSchema = MockAsnSchema.getInstance();
-        asnDataInstance = new AsantiAsnDataImpl(rawOtherAsnData, asnOtherSchema, "Document");
 
         // create empty instance
         final RawAsnData emptyAsnData = new RawAsnDataImpl(Maps.newHashMap());
@@ -155,16 +146,6 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetMatchingTags() throws Exception
-    {
-        final ImmutableSet<String> matchingTags = asnDataInstance.getMatchingTags(pattern);
-        assertEquals(7, matchingTags.size());
-
-        final ImmutableSet<String> shouldBeEmpty = asnDataInstance.getMatchingTags(null);
-        assertTrue(shouldBeEmpty.isEmpty());
-    }
-
-    @Test
     public void testGetTags() throws Exception
     {
         ImmutableSet<String> tags = instance.getTags();
@@ -177,6 +158,29 @@ public class AsantiAsnDataImplTest
 
         tags = emptyInstance.getTags();
         assertEquals(tags.size(), 0);
+    }
+
+    @Test
+    public void testGetTagsMatching() throws Exception
+    {
+        // test can match all tags
+        final Pattern patternMatchAllTags = Pattern.compile("/\\Document.*");
+        final ImmutableSet<String> matchingAllTags = instance.getTagsMatching(patternMatchAllTags);
+        assertEquals(7, matchingAllTags.size());
+
+        // test can match some tags
+        final Pattern patternMatchDocumentBodyTags = Pattern.compile("/\\Document/body/.*");
+        final ImmutableSet<String> matchingDocumentBodyTags = instance.getTagsMatching(patternMatchDocumentBodyTags);
+        assertEquals(4, matchingDocumentBodyTags.size());
+
+        // test match no tags
+        final Pattern patternMatchNoTags = Pattern.compile("/\\Document/garbage.*");
+        final ImmutableSet<String> matchingNoTags = instance.getTagsMatching(patternMatchNoTags);
+        assertEquals(0, matchingNoTags.size());
+
+        // test null regex returns empty set
+        final ImmutableSet<String> shouldBeEmpty = instance.getTagsMatching(null);
+        assertTrue(shouldBeEmpty.isEmpty());
     }
 
     @Test
