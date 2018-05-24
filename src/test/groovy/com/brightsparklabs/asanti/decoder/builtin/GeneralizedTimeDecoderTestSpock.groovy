@@ -24,7 +24,7 @@ class GeneralizedTimeDecoderTestSpock extends Specification {
     private static final long rawOffsetInMs = calendar.getTimeZone().getRawOffset()
     private static final long rawOffsetInSeconds = rawOffsetInMs / 1000
     private static final int hours = rawOffsetInSeconds / 3600
-    private static final int minutes = rawOffsetInSeconds - (hours * 3600)
+    private static final int minutes = (int)(rawOffsetInSeconds / 60) % 60
     @Shared
     private static final ZoneOffset localOffset = ZoneOffset.ofHoursMinutes(hours, minutes)
     @Shared
