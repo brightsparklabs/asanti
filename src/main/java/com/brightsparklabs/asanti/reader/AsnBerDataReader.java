@@ -80,7 +80,7 @@ public class AsnBerDataReader
 
         final List<RawAsnData> result = Lists.newArrayList();
 
-        DERObject asnObject = asnInputStream.readObject();
+        ASN1Primitive asnObject = asnInputStream.readObject();
         while (asnObject != null)
         {
             final Map<String, byte[]> tagsToData
@@ -127,7 +127,7 @@ public class AsnBerDataReader
      * @throws IOException
      *         if any errors occur reading from the file
      */
-    private static void processDerObject(DERObject derObject, String prefix,
+    private static void processDerObject(ASN1Primitive derObject, String prefix,
             Map<String, byte[]> tagsToData, int index) throws IOException
     {
         if (derObject instanceof ASN1Sequence)
@@ -214,10 +214,12 @@ public class AsnBerDataReader
         while (elements.hasMoreElements())
         {
             final Object obj = elements.nextElement();
-
-            final DERObject derObject = (obj instanceof DERObject) ?
-                    (DERObject) obj :
-                    ((DEREncodable) obj).getDERObject();
+            // MJF - is the check below still needed prior to casting?
+            // if not then we can get rid of a couple lines of code here...
+            final ASN1Primitive derObject = (ASN1Primitive) obj;
+            //            final DERObject derObject = (obj instanceof DERObject) ?
+            //                    (DERObject) obj :
+            //                    ((DEREncodable) obj).getDERObject();
 
             boolean isTagged = (derObject instanceof ASN1TaggedObject);
             String elementPrefix = prefix;
@@ -261,7 +263,7 @@ public class AsnBerDataReader
             Map<String, byte[]> tagsToData, int index) throws IOException
     {
 
-        DERObject obj = asnTaggedObject.getObject();
+        ASN1Primitive obj = asnTaggedObject.getObject();
 
         prefix = prefix + "/" + AsnSchemaTag.createRawTag(index,
                 String.valueOf(asnTaggedObject.getTagNo()));
@@ -324,7 +326,7 @@ public class AsnBerDataReader
      * @throws IOException
      *         if any errors occur reading from the file
      */
-    private static void processPrimitiveDerObject(DERObject derObject, String tag,
+    private static void processPrimitiveDerObject(ASN1Primitive derObject, String tag,
             Map<String, byte[]> tagsToData) throws IOException
     {
         // get the bytes representing Tag-Length-Value
@@ -360,9 +362,11 @@ public class AsnBerDataReader
      *
      * @return the T from the TLV
      */
-    private static int getType(DERObject object)
+    private static int getType(ASN1Primitive object) throws IOException
     {
-        return object.getDEREncoded()[0] & 0xff;
+        //MJF
+        // return object.getDEREncoded()[0] & 0xff;
+        return object.getEncoded()[0] & 0xff;
     }
 
     /**
