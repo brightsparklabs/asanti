@@ -214,12 +214,9 @@ public class AsnBerDataReader
         while (elements.hasMoreElements())
         {
             final Object obj = elements.nextElement();
-            // MJF - is the check below still needed prior to casting?
-            // if not then we can get rid of a couple lines of code here...
-            final ASN1Primitive derObject = (ASN1Primitive) obj;
-            //            final DERObject derObject = (obj instanceof DERObject) ?
-            //                    (DERObject) obj :
-            //                    ((DEREncodable) obj).getDERObject();
+            final ASN1Primitive derObject = (obj instanceof ASN1Primitive) ?
+                    (ASN1Primitive) obj :
+                    ((ASN1Encodable) obj).toASN1Primitive();
 
             boolean isTagged = (derObject instanceof ASN1TaggedObject);
             String elementPrefix = prefix;
@@ -355,17 +352,15 @@ public class AsnBerDataReader
     }
 
     /**
-     * Returns the T from a TLV (Type Length Value) triplet from teh DER object
+     * Returns the T from a TLV (Type Length Value) triplet from the ASN1Primitive object
      *
      * @param object
-     *         the DERObject to extract the T from
+     *         the ASN1Primitive to extract the T from
      *
      * @return the T from the TLV
      */
     private static int getType(ASN1Primitive object) throws IOException
     {
-        //MJF
-        // return object.getDEREncoded()[0] & 0xff;
         return object.getEncoded()[0] & 0xff;
     }
 
