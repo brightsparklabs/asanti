@@ -215,8 +215,7 @@ public class AsnSchemaParserTest
 
         // prepare objects for mocking of AsnSchemaModuleParser.parse static method
         // set up mock AsnSchemaModule to return
-        final AsnSchemaModule.Builder mockAsnSchemaModule = AsnSchemaModule
-                .builder()
+        final AsnSchemaModule.Builder mockAsnSchemaModule = AsnSchemaModule.builder()
                 .setName("People-Protocol");
 
         // prepare expected input to the AsnSchemaModuleParser.parse static method for
