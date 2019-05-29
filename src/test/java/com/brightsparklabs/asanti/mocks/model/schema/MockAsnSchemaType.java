@@ -6,7 +6,6 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import java.util.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -16,6 +15,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,7 +111,8 @@ public class MockAsnSchemaType
                         "lastName",
                         createMockedAsnSchemaType(AsnPrimitiveTypes.OCTET_STRING))
                 .addComponent("3", "title", createMockedAsnSchemaType(AsnPrimitiveTypes.ENUMERATED))
-                .addComponent("4", "gender", gender).addComponent("5",
+                .addComponent("4", "gender", gender)
+                .addComponent("5",
                         "maritalStatus",
                         createMockedAsnSchemaType(AsnPrimitiveTypes.CHOICE)) // TODO ASN-138 - choice
                 .build();

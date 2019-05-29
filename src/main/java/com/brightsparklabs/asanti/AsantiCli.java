@@ -202,7 +202,7 @@ public class AsantiCli
     private static void handleDataFile(final File rootFile, final AsnSchema asnSchema,
             final String topLevelType)
     {
-        for (final File file : Files.fileTreeTraverser().preOrderTraversal(rootFile))
+        for (final File file : Files.fileTraverser().depthFirstPreOrder(rootFile))
         {
             try
             {
@@ -212,16 +212,17 @@ public class AsantiCli
 
                     // I don't really know what the 'right' file extensions are, so let's just rule out
                     // some of the ones that we have come across that are not BER files!
-                    if (!name.toLowerCase().endsWith(".txt") && !name.toLowerCase().endsWith(".jpg")
-                            && !name.toLowerCase().endsWith(".bmp") && !name
-                            .toLowerCase()
-                            .endsWith(".asn") && !name.toLowerCase().endsWith(".zip") && !name
-                            .toLowerCase()
-                            .endsWith(".wav") && !name.toLowerCase().endsWith(".pcap") && !name
-                            .toLowerCase()
-                            .endsWith(".rtp") && !name.toLowerCase().endsWith(".csv") && !name
-                            .toLowerCase()
-                            .endsWith(".xlsx") && !name.toLowerCase().endsWith(".xls"))
+                    if (!name.toLowerCase().endsWith(".txt") //
+                            && !name.toLowerCase().endsWith(".jpg") //
+                            && !name.toLowerCase().endsWith(".bmp") //
+                            && !name.toLowerCase().endsWith(".asn") //
+                            && !name.toLowerCase().endsWith(".zip") //
+                            && !name.toLowerCase().endsWith(".wav") //
+                            && !name.toLowerCase().endsWith(".pcap") //
+                            && !name.toLowerCase().endsWith(".rtp") //
+                            && !name.toLowerCase().endsWith(".csv") //
+                            && !name.toLowerCase().endsWith(".xlsx") //
+                            && !name.toLowerCase().endsWith(".xls"))
                     {
                         loadDataFile(file, asnSchema, topLevelType);
                     }
