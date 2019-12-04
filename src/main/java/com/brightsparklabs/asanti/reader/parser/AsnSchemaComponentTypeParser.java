@@ -34,7 +34,7 @@ public class AsnSchemaComponentTypeParser
 
     /** pattern to break text into: tag name, tag, type, optional/default */
     private static final Pattern PATTERN_COMPONENT_TYPE = Pattern.compile(
-            "([a-zA-Z0-9\\-]+) ?(\\[(\\d+)\\])? ?(.+?) ?((OPTIONAL)|(DEFAULT ([a-zA-Z0-9\\-]+)))?");
+            "([a-zA-Z0-9\\-]+) ?(\\[(\\d+)\\])? ?(.+?) ?((OPTIONAL)|((DEFAULT) ([a-zA-Z0-9\\-]+)))?");
 
     /**
      * pattern to break the raw type string into: set/sequence of, construct constraints, type name,
@@ -183,7 +183,9 @@ public class AsnSchemaComponentTypeParser
         final String tagName = matcher.group(1);
         final String tag = matcher.group(3);
         final String rawType = matcher.group(4);
-        final boolean isOptional = matcher.group(6) != null;
+        // 6 is OPTIONAL, 8 is DEFAULT.  While they are not the same, both really mean that the
+        // data does not need to provide a value.  ASN-150 is to implement the DEFAULT case.
+        final boolean isOptional = matcher.group(6) != null || matcher.group(8) != null;
 
         matcher = PATTERN_RAW_TYPE.matcher(rawType);
         if (!matcher.matches())

@@ -7,8 +7,9 @@ package com.brightsparklabs.asanti.reader.parser;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for {@link AsnSchemaComponentTypeParser}
@@ -38,111 +39,73 @@ public class AsnSchemaComponentTypeParserTest
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
-    /** an argument capture helper for Constraints */
-    private ArgumentCaptor<String> typeArgument;
 
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
-    @Before
-    public void setUpBeforeTest() throws Exception
-    {
-        // mock AsnSchemaTypeParser.parse static method
-        PowerMockito.mockStatic(AsnSchemaTypeParser.class);
-        // we want to capture the typeArgument that gets passed to the AsnSchemaTypeParser
-        typeArgument = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<AsnModuleTaggingMode> taggingMode = ArgumentCaptor.forClass(AsnModuleTaggingMode.class);
-        when(AsnSchemaTypeParser.parse(typeArgument.capture(), taggingMode.capture())).thenReturn(AsnSchemaType.NULL);
-    }
 
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
-    @Test
-    public void testParse_NullOrEmpty() throws Exception
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseEmpty() throws Exception
     {
-        // test empty componentTypesText
-        try
-        {
-            AsnSchemaComponentTypeParser.parse("", AsnModuleTaggingMode.DEFAULT);
-            fail("IllegalArgumentException not thrown");
-        }
-        catch (final IllegalArgumentException ex)
-        {
-        }
-
-        // test null componentTypesText
-        try
-        {
-            AsnSchemaComponentTypeParser.parse(null, AsnModuleTaggingMode.DEFAULT);
-            fail("NullPointerException not thrown");
-        }
-        catch (final NullPointerException ex)
-        {
-        }
+        AsnSchemaComponentTypeParser.parse("", AsnModuleTaggingMode.DEFAULT);
     }
 
-    @Test
-    public void testParse_Exceptions() throws Exception
+    @Test(expected = NullPointerException.class)
+    public void testParseNull() throws Exception
     {
-        // test parse invalid type name
-        try
-        {
-            AsnSchemaComponentTypeParser.parse("!invalidType [0] type", AsnModuleTaggingMode.DEFAULT);
-            fail("ParseException not thrown");
-        }
-        catch (final ParseException ex)
-        {
-        }
+        AsnSchemaComponentTypeParser.parse(null, AsnModuleTaggingMode.DEFAULT);
+    }
 
-        // test parse no type
-        try
-        {
-            AsnSchemaComponentTypeParser.parse("typeName [0]", AsnModuleTaggingMode.DEFAULT);
-            fail("ParseException not thrown");
-        }
-        catch (final ParseException ex)
-        {
-        }
+    @Test(expected = ParseException.class)
+    public void testParseInvalidName() throws Exception
+    {
+        AsnSchemaComponentTypeParser.parse("!invalidType [0] type", AsnModuleTaggingMode.DEFAULT);
+    }
 
-        // test parse no type name
-        try
-        {
-            AsnSchemaComponentTypeParser.parse("[0] type", AsnModuleTaggingMode.DEFAULT);
-            fail("ParseException not thrown");
-        }
-        catch (final ParseException ex)
-        {
-        }
+    @Test(expected = ParseException.class)
+    public void testParseNoType() throws Exception
+    {
+        AsnSchemaComponentTypeParser.parse("typeName [0]", AsnModuleTaggingMode.DEFAULT);
+    }
 
-        // test parse invalid type
-        try
-        {
-            AsnSchemaComponentTypeParser.parse("typeName [0] type?", AsnModuleTaggingMode.DEFAULT);
-            fail("ParseException not thrown");
-        }
-        catch (final ParseException ex)
-        {
-        }
+    @Test(expected = ParseException.class)
+    public void testParseNoName() throws Exception
+    {
+        AsnSchemaComponentTypeParser.parse("[0] type", AsnModuleTaggingMode.DEFAULT);
+    }
 
-        // test invalid pseudo type
-        try
-        {
-            AsnSchemaComponentTypeParser.parse("typeName [0] SEQUENCE {", AsnModuleTaggingMode.DEFAULT);
-            fail("ParseException not thrown");
-        }
-        catch (final ParseException ex)
-        {
-        }
+    @Test(expected = ParseException.class)
+    public void testParseInvalidType() throws Exception
+    {
+        AsnSchemaComponentTypeParser.parse("typeName [0] type?", AsnModuleTaggingMode.DEFAULT);
+    }
+
+    @Test(expected = ParseException.class)
+    public void testParseInvalidPseudoType() throws Exception
+    {
+        AsnSchemaComponentTypeParser.parse("typeName [0] SEQUENCE {", AsnModuleTaggingMode.DEFAULT);
     }
 
     @Test
     public void testParse_DocumentPdu() throws Exception
     {
+        // mock AsnSchemaTypeParser.parse static method
+        PowerMockito.mockStatic(AsnSchemaTypeParser.class);
+        // we want to capture the typeArgument that gets passed to the AsnSchemaTypeParser
+        ArgumentCaptor<String> typeArgument = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<AsnModuleTaggingMode> taggingMode = ArgumentCaptor.forClass(
+                AsnModuleTaggingMode.class);
+        when(AsnSchemaTypeParser.parse(typeArgument.capture(), taggingMode.capture())).thenReturn(
+                AsnSchemaType.NULL);
+
         // Document type
         ImmutableList<AsnSchemaComponentType> actualComponents = AsnSchemaComponentTypeParser.parse(
-                "header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL", AsnModuleTaggingMode.DEFAULT);
+                "header [1] Header, body [2] Body, footer [3] Footer, dueDate [4] Date-Due, version [5] SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }, description [6] SET { numberLines [0] INTEGER, summary [1] OCTET STRING } OPTIONAL",
+                AsnModuleTaggingMode.DEFAULT);
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForDocument(),
                 actualComponents);
@@ -154,36 +117,67 @@ public class AsnSchemaComponentTypeParserTest
         assertEquals("Body", callArguments.get(1));
         assertEquals("Footer", callArguments.get(2));
         assertEquals("Date-Due", callArguments.get(3));
-        assertEquals("SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }", callArguments.get(4));
-        assertEquals("SET { numberLines [0] INTEGER, summary [1] OCTET STRING }", callArguments.get(5));
-
+        assertEquals("SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }",
+                callArguments.get(4));
+        assertEquals("SET { numberLines [0] INTEGER, summary [1] OCTET STRING }",
+                callArguments.get(5));
 
         // Body type
         actualComponents = AsnSchemaComponentTypeParser.parse(
-                "lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL", AsnModuleTaggingMode.DEFAULT);
-        assertEquals(6+4, callArguments.size());
+                "lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL",
+                AsnModuleTaggingMode.DEFAULT);
+        assertEquals(6 + 4, callArguments.size());
         assertEquals("ModificationMetadata", callArguments.get(6));
         assertEquals("Section-Note", callArguments.get(7));
         assertEquals("Section-Main", callArguments.get(8));
         assertEquals("Section-Note", callArguments.get(9));
-
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForBody(),
                 actualComponents);
 
         // Section-Main type
         actualComponents = AsnSchemaComponentTypeParser.parse(
-                "text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph, sections [3] SET OF SET { number [1] INTEGER, text [2] OCTET STRING }", AsnModuleTaggingMode.DEFAULT);
+                "text [1] OCTET STRING OPTIONAL, paragraphs [2] SEQUENCE OF Paragraph, sections [3] SET OF SET { number [1] INTEGER, text [2] OCTET STRING }",
+                AsnModuleTaggingMode.DEFAULT);
 
         compareAsnSchemaComponentTypes(MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForSectionMain(),
                 actualComponents);
 
         // check that the AsnSchemaTypeParser got called the right number of times with the right inputs
-        assertEquals(10+3, callArguments.size());
+        assertEquals(10 + 3, callArguments.size());
         assertEquals("OCTET STRING", callArguments.get(10));
         assertEquals("SEQUENCE OF Paragraph", callArguments.get(11));
-        assertEquals("SET OF SET { number [1] INTEGER, text [2] OCTET STRING }", callArguments.get(12));
+        assertEquals("SET OF SET { number [1] INTEGER, text [2] OCTET STRING }",
+                callArguments.get(12));
 
+    }
+
+    @Test
+    public void testDefault() throws Exception
+    {
+        final ImmutableList<AsnSchemaComponentType> parse = AsnSchemaComponentTypeParser.parse(
+                "text [1] OCTET STRING OPTIONAL, value [2] INTEGER DEFAULT 25, other BOOLEAN",
+                AsnModuleTaggingMode.DEFAULT);
+
+        assertEquals(3, parse.size());
+        final AsnSchemaComponentType optString = parse.get(0);
+        assertEquals("text", optString.getName());
+        assertEquals(AsnBuiltinType.OctetString, optString.getType().getBuiltinType());
+        assertEquals("1", optString.getTag());
+        assertTrue(optString.isOptional());
+        // final List<String> allValues = typeArgument.getAllValues();
+
+        final AsnSchemaComponentType defaultInt = parse.get(1);
+        assertEquals("value", defaultInt.getName());
+        assertEquals(AsnBuiltinType.Integer, defaultInt.getType().getBuiltinType());
+        assertEquals("2", defaultInt.getTag());
+        assertTrue(defaultInt.isOptional());
+
+        final AsnSchemaComponentType other = parse.get(2);
+        assertEquals("other", other.getName());
+        assertEquals(AsnBuiltinType.Boolean, other.getType().getBuiltinType());
+        assertEquals("", other.getTag());
+        assertFalse(other.isOptional());
     }
 
     @Test
@@ -211,10 +205,8 @@ public class AsnSchemaComponentTypeParserTest
     /**
      * Compares two lists of {@link AsnSchemaComponentType} for equality
      *
-     * @param expected
-     *         the expected list of components types
-     * @param actual
-     *         the actual list of components types to compare against the expected
+     * @param expected the expected list of components types
+     * @param actual   the actual list of components types to compare against the expected
      */
     private void compareAsnSchemaComponentTypes(List<AsnSchemaComponentType> expected,
             List<AsnSchemaComponentType> actual)
