@@ -219,7 +219,7 @@ public class DecodedTagsHelpers
         @Override
         public boolean apply(final String input)
         {
-            return input.startsWith(parentTag);
+            return input != null && input.startsWith(parentTag);
         }
     }
 
@@ -251,7 +251,7 @@ public class DecodedTagsHelpers
         @Override
         public String apply(final String input)
         {
-            if (!input.startsWith(parentTag))
+            if (input == null || !input.startsWith(parentTag))
             {
                 return "";
             }

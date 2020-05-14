@@ -56,7 +56,7 @@ public class DecodingSessionImpl implements DecodingSession
 
         // this must be a new tag, so capture it and increment the index.
         tagToIndex.tag = tag;
-        tagToIndex.index++;
+        tagToIndex.index = tagToIndex.index + 1;
 
         return tagToIndex.index;
     }
