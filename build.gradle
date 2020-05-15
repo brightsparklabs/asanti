@@ -17,6 +17,9 @@ plugins {
     // Apply the application plugin to add support for building an application
     id 'application'
 
+    // Apply the library plugin to add support for exposing as a library
+    id 'java-library'
+
     // Apply the groovy plugin to also add support for Groovy (needed for Spock)
     id 'groovy'
 
@@ -45,7 +48,7 @@ dependencies {
         slf4j: "1.7.30"
     ]
 
-    implementation 'com.brightsparklabs:assam:0.7.1'
+    api 'com.brightsparklabs:assam:0.7.1'
     implementation "com.google.guava:guava:29.0-jre"
     implementation "org.bouncycastle:bcprov-jdk15on:1.65"
     implementation "org.slf4j:slf4j-api:${versions.slf4j}"
