@@ -79,8 +79,28 @@ project.ext.scm = 'scm:git@github.com:brightsparklabs/asanti.git'
 mainClassName = 'com.brightsparklabs.asanti.AsantiCli'
 
 // -----------------------------------------------------------------------------
-// PUBLISHING TO MAVEN CENTRAL (via maven-publish)
+// PUBLISH ARTIFACTS (via bintray)
 // -----------------------------------------------------------------------------
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['Publication']
+    override = true
+    publish = true
+    pkg {
+        repo = 'maven'
+        name = project.name
+        userOrg = 'brightsparklabs'
+        licenses = ['MIT']
+        vcsUrl = project.ext.url
+        version {
+            name = project.version
+            vcsTag = project.version
+            released = new Date()
+        }
+    }
+}
 
 // Include javadoc and sources (requirements for publishing to Maven Central)
 task javadocJar(type: Jar) {
