@@ -1,4 +1,13 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.integration;
+
+import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.Asanti;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
@@ -17,28 +26,22 @@ import com.google.common.io.CharSource;
 import com.google.common.io.Resources;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-/**
- * Integration tests (meaning they don't use mocks and are end-to-end) to test Validation
- */
-public class Validation
-{
+/** Integration tests (meaning they don't use mocks and are end-to-end) to test Validation */
+public class Validation {
     @Test
-    public void testMissingData() throws Exception
-    {
-        final CharSource schemaData = Resources.asCharSource(getClass().getResource(
-                "/validation/Simple.asn"), Charsets.UTF_8);
+    public void testMissingData() throws Exception {
+        final CharSource schemaData =
+                Resources.asCharSource(
+                        getClass().getResource("/validation/Simple.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData = Resources.asByteSource(getClass().getResource(
-                "/validation/Simple.ber"));
+        final ByteSource berData =
+                Resources.asByteSource(getClass().getResource("/validation/Simple.ber"));
 
         String topLevelType = "Human";
 
-        final ImmutableList<AsantiAsnData> pdus = Asanti.decodeAsnData(berData,
-                schema,
-                topLevelType);
+        final ImmutableList<AsantiAsnData> pdus =
+                Asanti.decodeAsnData(berData, schema, topLevelType);
 
         AsantiAsnData pdu = pdus.get(0);
         String tag = "/Human/name/first";
@@ -58,20 +61,19 @@ public class Validation
     }
 
     @Test
-    public void testSequenceOf() throws Exception
-    {
-        final CharSource schemaData = Resources.asCharSource(getClass().getResource(
-                "/validation/Simple2.asn"), Charsets.UTF_8);
+    public void testSequenceOf() throws Exception {
+        final CharSource schemaData =
+                Resources.asCharSource(
+                        getClass().getResource("/validation/Simple2.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData = Resources.asByteSource(getClass().getResource(
-                "/validation/Simple2.ber"));
+        final ByteSource berData =
+                Resources.asByteSource(getClass().getResource("/validation/Simple2.ber"));
 
         String topLevelType = "Human";
 
-        final ImmutableList<AsantiAsnData> pdus = Asanti.decodeAsnData(berData,
-                schema,
-                topLevelType);
+        final ImmutableList<AsantiAsnData> pdus =
+                Asanti.decodeAsnData(berData, schema, topLevelType);
 
         AsantiAsnData pdu = pdus.get(0);
         String tag = "/Human/person/name/first";

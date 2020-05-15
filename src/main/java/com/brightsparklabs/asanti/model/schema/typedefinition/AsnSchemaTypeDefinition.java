@@ -1,3 +1,10 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
@@ -9,8 +16,7 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
  *
  * @author brightSPARK Labs
  */
-public interface AsnSchemaTypeDefinition
-{
+public interface AsnSchemaTypeDefinition {
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
@@ -44,11 +50,10 @@ public interface AsnSchemaTypeDefinition
     /**
      * Null instance of {@link AsnSchemaTypeDefinitionImpl}.
      *
-     * <p> NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that is the name used
+     * <p>NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that is the name used
      * to model an actual ASN.1 {@code NULL} Type Definition.
      */
-    public static class Null extends AsnSchemaTypeDefinitionImpl
-    {
+    public static class Null extends AsnSchemaTypeDefinitionImpl {
         // ---------------------------------------------------------------------
         // CONSTRUCTION
         // ---------------------------------------------------------------------
@@ -57,8 +62,7 @@ public interface AsnSchemaTypeDefinition
          * Default constructor. This is private. Use {@link AsnSchemaTypeDefinition#NULL} to obtain
          * an instance.
          */
-        private Null()
-        {
+        private Null() {
             super("NULL", AsnSchemaType.NULL);
         }
 
@@ -67,14 +71,12 @@ public interface AsnSchemaTypeDefinition
         // ---------------------------------------------------------------------
 
         @Override
-        public String getName()
-        {
+        public String getName() {
             return "";
         }
 
         @Override
-        public AsnSchemaType getType()
-        {
+        public AsnSchemaType getType() {
             return null;
         }
     }

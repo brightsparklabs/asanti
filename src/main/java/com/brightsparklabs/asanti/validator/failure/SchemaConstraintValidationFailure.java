@@ -1,17 +1,10 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
-
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
 package com.brightsparklabs.asanti.validator.failure;
 
 import com.brightsparklabs.assam.validator.FailureType;
@@ -21,8 +14,7 @@ import com.brightsparklabs.assam.validator.FailureType;
  *
  * @author brightSPARK Labs
  */
-public class SchemaConstraintValidationFailure extends AbstractValidationFailure
-{
+public class SchemaConstraintValidationFailure extends AbstractValidationFailure {
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
@@ -30,18 +22,12 @@ public class SchemaConstraintValidationFailure extends AbstractValidationFailure
     /**
      * Default constructor.
      *
-     * @param failureType
-     *         the type of failure that occurred
-     * @param failureReason
-     *         the reason for the failure
-     *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
-     * @throws IllegalArgumentException
-     *         if location or failureReason are empty
+     * @param failureType the type of failure that occurred
+     * @param failureReason the reason for the failure
+     * @throws NullPointerException if parameters are {@code null}
+     * @throws IllegalArgumentException if location or failureReason are empty
      */
-    public SchemaConstraintValidationFailure(FailureType failureType, String failureReason)
-    {
+    public SchemaConstraintValidationFailure(FailureType failureType, String failureReason) {
         super(failureType, failureReason);
     }
 }

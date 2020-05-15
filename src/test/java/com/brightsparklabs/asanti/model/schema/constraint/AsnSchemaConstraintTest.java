@@ -1,27 +1,24 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
-import com.google.common.collect.ImmutableSet;
-
 import static org.junit.Assert.*;
+
+import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
+import com.brightsparklabs.assam.validator.FailureType;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Unit tests for {@link AsnSchemaConstraint}
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaConstraintTest
-{
+public class AsnSchemaConstraintTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -30,13 +27,10 @@ public class AsnSchemaConstraintTest
      * Utility method to test that applying the supplied constraint to the specified bytes produces
      * no failures
      *
-     * @param constraint
-     *         constraint to apply
-     * @param bytes
-     *         bytes to test
+     * @param constraint constraint to apply
+     * @param bytes bytes to test
      */
-    public static void checkSuccess(AsnSchemaConstraint constraint, byte[] bytes)
-    {
+    public static void checkSuccess(AsnSchemaConstraint constraint, byte[] bytes) {
         final ImmutableSet<SchemaConstraintValidationFailure> failures = constraint.apply(bytes);
         assertEquals(true, failures.isEmpty());
     }
@@ -45,16 +39,13 @@ public class AsnSchemaConstraintTest
      * Utility method to test that applying the supplied constraint to the specified bytes produces
      * a single failure
      *
-     * @param constraint
-     *         constraint to apply
-     * @param bytes
-     *         bytes to test
-     * @param expectedFailureReason
-     *         expected failure reason from applying the constraint to the bytes
+     * @param constraint constraint to apply
+     * @param bytes bytes to test
+     * @param expectedFailureReason expected failure reason from applying the constraint to the
+     *     bytes
      */
-    public static void checkFailure(AsnSchemaConstraint constraint, byte[] bytes,
-            String expectedFailureReason)
-    {
+    public static void checkFailure(
+            AsnSchemaConstraint constraint, byte[] bytes, String expectedFailureReason) {
         final ImmutableSet<SchemaConstraintValidationFailure> failures = constraint.apply(bytes);
         assertEquals(1, failures.size());
         final SchemaConstraintValidationFailure failure = failures.iterator().next();

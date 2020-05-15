@@ -1,17 +1,14 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
- */
-
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
-import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -20,20 +17,18 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public abstract class AbstractAsnSchemaConstraint implements AsnSchemaConstraint
-{
+public abstract class AbstractAsnSchemaConstraint implements AsnSchemaConstraint {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes)
-    {
-        if (bytes == null)
-        {
-            final SchemaConstraintValidationFailure failure = new SchemaConstraintValidationFailure(
-                    FailureType.DataMissing,
-                    "No data found to validate against constraint");
+    public ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes) {
+        if (bytes == null) {
+            final SchemaConstraintValidationFailure failure =
+                    new SchemaConstraintValidationFailure(
+                            FailureType.DataMissing,
+                            "No data found to validate against constraint");
             return ImmutableSet.of(failure);
         }
         return applyToNonNullBytes(bytes);
@@ -47,9 +42,7 @@ public abstract class AbstractAsnSchemaConstraint implements AsnSchemaConstraint
      * Applies the constraint to the supplied bytes. The bytes parameter is guaranteed to be
      * non-{@code null}.
      *
-     * @param bytes
-     *         the bytes to test
-     *
+     * @param bytes the bytes to test
      * @return any failures encountered in applying the constraint to the supplied bytes
      */
     protected abstract ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(

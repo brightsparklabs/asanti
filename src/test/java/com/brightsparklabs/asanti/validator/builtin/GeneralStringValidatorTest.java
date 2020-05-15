@@ -1,24 +1,25 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.assam.validator.FailureType;
+import static org.junit.Assert.*;
+
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Units tests for {@link GeneralStringValidator}
  *
  * @author brightSPARK Labs
  */
-public class GeneralStringValidatorTest
-{
+public class GeneralStringValidatorTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -31,17 +32,15 @@ public class GeneralStringValidatorTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testValidateTag() throws Exception
-    {
+    public void testValidateTag() throws Exception {
         // TODO: ASN-105 need to mock AsantiAsnData
     }
 
     @Test
-    public void testValidateBytes() throws Exception
-    {
+    public void testValidateBytes() throws Exception {
         // TODO: ASN-105 implement
         // test valid
-        byte[] bytes = new byte[] { 0x00 };
+        byte[] bytes = new byte[] {0x00};
         assertEquals(0, instance.validate(bytes).size());
 
         // test invalid

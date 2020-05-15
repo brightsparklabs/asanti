@@ -40,15 +40,15 @@ startScripts {
         // Alter the start script for Unix systems.
         unixScript.text =
                 unixScript
-                        .readLines()
-                        .collect(configureUnixClasspath)
-                        .join('\n')
+                .readLines()
+                .collect(configureUnixClasspath)
+                .join('\n')
 
         // Alter the start script for Windows systems.
         windowsScript.text =
                 windowsScript
-                        .readLines()
-                        .collect(configureWindowsClasspath)
-                        .join('\r\n')
+                .readLines()
+                .collect(configureWindowsClasspath)
+                .join('\r\n')
     }
 }

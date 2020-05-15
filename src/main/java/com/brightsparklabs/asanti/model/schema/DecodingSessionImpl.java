@@ -1,8 +1,14 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.Maps;
-
 import java.util.Map;
 
 /**
@@ -10,14 +16,13 @@ import java.util.Map;
  *
  * @author brightSPARK Labs
  */
-public class DecodingSessionImpl implements DecodingSession
-{
+public class DecodingSessionImpl implements DecodingSession {
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** storage of the  for each index for each "context" */
+    /** storage of the for each index for each "context" */
     private final Map<String, TagToIndex> offsetMap = Maps.newHashMap();
 
     /** the context is how we provide unique offsets for each level of the hierarchy of data */
@@ -28,29 +33,25 @@ public class DecodingSessionImpl implements DecodingSession
     // -------------------------------------------------------------------------
 
     @Override
-    public void setContext(final String context)
-    {
+    public void setContext(final String context) {
         this.context = context;
 
         offsetMap.computeIfAbsent(context, key -> new TagToIndex());
     }
 
     @Override
-    public int getIndex(final AsnSchemaTag tag)
-    {
+    public int getIndex(final AsnSchemaTag tag) {
 
         final TagToIndex tagToIndex = offsetMap.get(context);
 
         // If this is the first time this context has been used then by default we are at 0
-        if (tagToIndex.tag == null)
-        {
+        if (tagToIndex.tag == null) {
             tagToIndex.tag = tag;
             return tagToIndex.index;
         }
 
         // If this the last tag that we used then the last index
-        if (tagToIndex.tag.getRawTag().equals(tag.getRawTag()))
-        {
+        if (tagToIndex.tag.getRawTag().equals(tag.getRawTag())) {
             return tagToIndex.index;
         }
 
@@ -62,8 +63,7 @@ public class DecodingSessionImpl implements DecodingSession
     }
 
     @Override
-    public void setIndex(final AsnSchemaTag tag, int index)
-    {
+    public void setIndex(final AsnSchemaTag tag, int index) {
         final TagToIndex tagToIndex = offsetMap.get(context);
         tagToIndex.tag = tag;
         tagToIndex.index = index;
@@ -78,8 +78,7 @@ public class DecodingSessionImpl implements DecodingSession
      *
      * @author brightSPARK Labs
      */
-    private static class TagToIndex
-    {
+    private static class TagToIndex {
         /** the tag to keep track of */
         AsnSchemaTag tag = null;
 

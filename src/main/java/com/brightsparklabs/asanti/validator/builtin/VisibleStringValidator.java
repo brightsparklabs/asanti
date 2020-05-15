@@ -1,17 +1,18 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.common.ByteArrays;
+import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 
 /**
@@ -19,8 +20,7 @@ import java.util.Set;
  *
  * @author brightSPARK Labs
  */
-public class VisibleStringValidator extends PrimitiveBuiltinTypeValidator
-{
+public class VisibleStringValidator extends PrimitiveBuiltinTypeValidator {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public class VisibleStringValidator extends PrimitiveBuiltinTypeValidator
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private VisibleStringValidator() {}
 
@@ -44,10 +44,8 @@ public class VisibleStringValidator extends PrimitiveBuiltinTypeValidator
      *
      * @return a singleton instance of this class
      */
-    public static VisibleStringValidator getInstance()
-    {
-        if (instance == null)
-        {
+    public static VisibleStringValidator getInstance() {
+        if (instance == null) {
             instance = new VisibleStringValidator();
         }
         return instance;
@@ -58,17 +56,16 @@ public class VisibleStringValidator extends PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------
 
     @Override
-    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
-    {
+    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes) {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
 
-        if (ByteArrays.containsNonPrintableChars(bytes))
-        {
-            final String error = BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR
-                    + ByteArrays.toHexString(bytes);
-            final ByteValidationFailure failure = new ByteValidationFailure(bytes.length,
-                    FailureType.DataIncorrectlyFormatted,
-                    error);
+        if (ByteArrays.containsNonPrintableChars(bytes)) {
+            final String error =
+                    BuiltinTypeValidator.VISIBLESTRING_VALIDATION_ERROR
+                            + ByteArrays.toHexString(bytes);
+            final ByteValidationFailure failure =
+                    new ByteValidationFailure(
+                            bytes.length, FailureType.DataIncorrectlyFormatted, error);
             failures.add(failure);
         }
 

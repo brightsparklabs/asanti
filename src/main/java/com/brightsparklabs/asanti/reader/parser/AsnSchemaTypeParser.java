@@ -1,4 +1,13 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.reader.parser;
+
+import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
@@ -9,22 +18,18 @@ import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.google.common.base.Preconditions.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Logic for parsing a type (either a Type Definition, or Component Type)
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeParser
-{
+public class AsnSchemaTypeParser {
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
@@ -40,15 +45,13 @@ public class AsnSchemaTypeParser
     // -------------------------------------------------------------------------
 
     /** pattern to match a SET OF type definition */
-    private static final Pattern PATTERN_TYPE_COLLECTION = Pattern.compile(
-            "^(SEQUENCE|SET)(( SIZE)? \\(.+?\\)\\)?)? OF (.+)$");
+    private static final Pattern PATTERN_TYPE_COLLECTION =
+            Pattern.compile("^(SEQUENCE|SET)(( SIZE)? \\(.+?\\)\\)?)? OF (.+)$");
 
     /** all valid 'collection' types */
-    private static final ImmutableMap<String, AsnPrimitiveType> collectionTypes = ImmutableMap.of(
-            "SEQUENCE",
-            AsnPrimitiveTypes.SEQUENCE_OF,
-            "SET",
-            AsnPrimitiveTypes.SET_OF);
+    private static final ImmutableMap<String, AsnPrimitiveType> collectionTypes =
+            ImmutableMap.of(
+                    "SEQUENCE", AsnPrimitiveTypes.SEQUENCE_OF, "SET", AsnPrimitiveTypes.SET_OF);
 
     // -------------------------------------------------------------------------
     // CONSTRUCTED TYPES (SEQUENCE, SET, CHOICE)
@@ -59,21 +62,22 @@ public class AsnSchemaTypeParser
      */
 
     /** pattern to match a Constructed type definition */
-    private static final Pattern PATTERN_TYPE_CONSTRUCTED = Pattern.compile(
-            "^(SEQUENCE|SET|CHOICE) ?\\{(.+)\\} ?(\\(.+\\))?$");
+    private static final Pattern PATTERN_TYPE_CONSTRUCTED =
+            Pattern.compile("^(SEQUENCE|SET|CHOICE) ?\\{(.+)\\} ?(\\(.+\\))?$");
 
     /** all valid 'constructed' types */
-    private static final ImmutableMap<String, AsnPrimitiveType> constructedTypes = ImmutableMap.of(
-            "SEQUENCE",
-            AsnPrimitiveTypes.SEQUENCE,
-            "SET",
-            AsnPrimitiveTypes.SET,
-            "CHOICE",
-            AsnPrimitiveTypes.CHOICE);
+    private static final ImmutableMap<String, AsnPrimitiveType> constructedTypes =
+            ImmutableMap.of(
+                    "SEQUENCE",
+                    AsnPrimitiveTypes.SEQUENCE,
+                    "SET",
+                    AsnPrimitiveTypes.SET,
+                    "CHOICE",
+                    AsnPrimitiveTypes.CHOICE);
 
     /** pattern to match a ENUMERATED type definition */
-    private static final Pattern PATTERN_TYPE_ENUMERATED = Pattern.compile(
-            "^ENUMERATED ?\\{(.+)\\}$");
+    private static final Pattern PATTERN_TYPE_ENUMERATED =
+            Pattern.compile("^ENUMERATED ?\\{(.+)\\}$");
 
     /** pattern to match a CLASS type definition */
     private static final Pattern PATTERN_TYPE_CLASS = Pattern.compile("^CLASS ?\\{(.+)\\}$");
@@ -91,95 +95,98 @@ public class AsnSchemaTypeParser
     // TODO ASN-135 - ^ these two are actually different.  Set up some tests and decide what to do
 
     /** pattern to match a type with distinguished values */
-    private static final Pattern PATTERN_TYPE_WITH_NAMED_VALUES = Pattern.compile(
-            "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
+    private static final Pattern PATTERN_TYPE_WITH_NAMED_VALUES =
+            Pattern.compile(
+                    "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
 
     /** all valid 'distinguished value' types */
-    private static final ImmutableMap<String, AsnPrimitiveType> distinguishedValuesTypes
-            = ImmutableMap.of("BIT STRING",
-            AsnPrimitiveTypes.BIT_STRING,
-            "INTEGER",
-            AsnPrimitiveTypes.INTEGER);
+    private static final ImmutableMap<String, AsnPrimitiveType> distinguishedValuesTypes =
+            ImmutableMap.of(
+                    "BIT STRING",
+                    AsnPrimitiveTypes.BIT_STRING,
+                    "INTEGER",
+                    AsnPrimitiveTypes.INTEGER);
 
     // -------------------------------------------------------------------------
     // TYPES WITH CONSTRAINTS
     // -------------------------------------------------------------------------
 
     /** pattern to match a type with constraints */
-    private static final Pattern PATTERN_TYPE_WITH_CONSTRAINTS = Pattern.compile(
-            "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String|RELATIVE-OID|BOOLEAN|UTCTime|NULL|REAL|ObjectDescriptor|TeletexString|VideotexString|GraphicString|UniversalString|CHARACTER STRING|BMPString) ?(\\((.+)\\))?$");
+    private static final Pattern PATTERN_TYPE_WITH_CONSTRAINTS =
+            Pattern.compile(
+                    "^(GeneralString|VisibleString|NumericString|IA5String|OCTET STRING|UTF8String|OBJECT IDENTIFIER|PrintableString|IA5String|RELATIVE-OID|BOOLEAN|UTCTime|NULL|REAL|ObjectDescriptor|TeletexString|VideotexString|GraphicString|UniversalString|CHARACTER STRING|BMPString) ?(\\((.+)\\))?$");
 
     /** all valid 'constrained' types */
-    private static final ImmutableMap<String, AsnPrimitiveType> constrainedTypes
-            = ImmutableMap.<String, AsnPrimitiveType>builder()
-            .put("BMPString", AsnPrimitiveTypes.BMP_STRING)
-            .put("BOOLEAN", AsnPrimitiveTypes.BOOLEAN)
-            .put("CHARACTER STRING", AsnPrimitiveTypes.CHARACTER_STRING)
-            .put("IA5String", AsnPrimitiveTypes.IA5_STRING)
-            .put("GeneralString", AsnPrimitiveTypes.GENERAL_STRING)
-            .put("GraphicString", AsnPrimitiveTypes.GRAPHIC_STRING)
-            .put("NULL", AsnPrimitiveTypes.NULL)
-            .put("NumericString", AsnPrimitiveTypes.NUMERIC_STRING)
-            .put("OBJECT IDENTIFIER", AsnPrimitiveTypes.OID)
-            .put("ObjectDescriptor", AsnPrimitiveTypes.OBJECT_DESCRIPTOR)
-            .put("OCTET STRING", AsnPrimitiveTypes.OCTET_STRING)
-            .put("PrintableString", AsnPrimitiveTypes.PRINTABLE_STRING)
-            .put("REAL", AsnPrimitiveTypes.REAL)
-            .put("RELATIVE-OID", AsnPrimitiveTypes.RELATIVE_OID)
-            .put("TeletexString", AsnPrimitiveTypes.TELETEX_STRING)
-            .put("UniversalString", AsnPrimitiveTypes.UNIVERSAL_STRING)
-            .put("UTCTime", AsnPrimitiveTypes.UTC_TIME)
-            .put("UTF8String", AsnPrimitiveTypes.UTF8_STRING)
-            .put("VideotexString", AsnPrimitiveTypes.VIDEOTEX_STRING)
-            .put("VisibleString", AsnPrimitiveTypes.VISIBLE_STRING)
-            .build();
+    private static final ImmutableMap<String, AsnPrimitiveType> constrainedTypes =
+            ImmutableMap.<String, AsnPrimitiveType>builder()
+                    .put("BMPString", AsnPrimitiveTypes.BMP_STRING)
+                    .put("BOOLEAN", AsnPrimitiveTypes.BOOLEAN)
+                    .put("CHARACTER STRING", AsnPrimitiveTypes.CHARACTER_STRING)
+                    .put("IA5String", AsnPrimitiveTypes.IA5_STRING)
+                    .put("GeneralString", AsnPrimitiveTypes.GENERAL_STRING)
+                    .put("GraphicString", AsnPrimitiveTypes.GRAPHIC_STRING)
+                    .put("NULL", AsnPrimitiveTypes.NULL)
+                    .put("NumericString", AsnPrimitiveTypes.NUMERIC_STRING)
+                    .put("OBJECT IDENTIFIER", AsnPrimitiveTypes.OID)
+                    .put("ObjectDescriptor", AsnPrimitiveTypes.OBJECT_DESCRIPTOR)
+                    .put("OCTET STRING", AsnPrimitiveTypes.OCTET_STRING)
+                    .put("PrintableString", AsnPrimitiveTypes.PRINTABLE_STRING)
+                    .put("REAL", AsnPrimitiveTypes.REAL)
+                    .put("RELATIVE-OID", AsnPrimitiveTypes.RELATIVE_OID)
+                    .put("TeletexString", AsnPrimitiveTypes.TELETEX_STRING)
+                    .put("UniversalString", AsnPrimitiveTypes.UNIVERSAL_STRING)
+                    .put("UTCTime", AsnPrimitiveTypes.UTC_TIME)
+                    .put("UTF8String", AsnPrimitiveTypes.UTF8_STRING)
+                    .put("VideotexString", AsnPrimitiveTypes.VIDEOTEX_STRING)
+                    .put("VisibleString", AsnPrimitiveTypes.VISIBLE_STRING)
+                    .build();
 
     // -------------------------------------------------------------------------
     // TYPES WITHOUT CONSTRAINTS
     // -------------------------------------------------------------------------
 
     /** pattern to match a type without constraints */
-    private static final Pattern PATTERN_TYPE_WITH_NO_CONSTRAINTS = Pattern.compile(
-            "^(GeneralizedTime)$");
+    private static final Pattern PATTERN_TYPE_WITH_NO_CONSTRAINTS =
+            Pattern.compile("^(GeneralizedTime)$");
 
     /** all valid 'unconstrained' types */
-    private static final ImmutableMap<String, AsnPrimitiveType> noConstraintsTypes
-            = ImmutableMap.<String, AsnPrimitiveType>builder()
-            .put("GeneralizedTime", AsnPrimitiveTypes.GENERALIZED_TIME)
-            .build();
+    private static final ImmutableMap<String, AsnPrimitiveType> noConstraintsTypes =
+            ImmutableMap.<String, AsnPrimitiveType>builder()
+                    .put("GeneralizedTime", AsnPrimitiveTypes.GENERALIZED_TIME)
+                    .build();
 
     // TODO ASN-25 remove this once ASN-25 is completed
 
     /** pattern to match a PRIMITIVE type definition */
-    private static final Pattern PATTERN_TYPE_PRIMITIVE = Pattern.compile(
-            "^(BIT STRING|BMPString|BOOLEAN|CHARACTER STRING|DATE|DATE_TIME|DURATION|EMBEDDED PDV|GeneralizedTime|GeneralString|GraphicString|IA5String|INTEGER|ISO646String|NULL|NumericString|OCTET STRING|OBJECT IDENTIFIER|OID-IRI|PrintableString|REAL|RELATIVE-OID|RELATIVE-OID-IRI|T61String|TeletexString|TIME|TIME-OF-DAY|UniversalString|UTCTime|UTF8String|VideotexString|VisibleString) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
+    private static final Pattern PATTERN_TYPE_PRIMITIVE =
+            Pattern.compile(
+                    "^(BIT STRING|BMPString|BOOLEAN|CHARACTER STRING|DATE|DATE_TIME|DURATION|EMBEDDED PDV|GeneralizedTime|GeneralString|GraphicString|IA5String|INTEGER|ISO646String|NULL|NumericString|OCTET STRING|OBJECT IDENTIFIER|OID-IRI|PrintableString|REAL|RELATIVE-OID|RELATIVE-OID-IRI|T61String|TeletexString|TIME|TIME-OF-DAY|UniversalString|UTCTime|UTF8String|VideotexString|VisibleString) ?(\\{(.+)\\})? ?(\\((.+)\\))?$");
 
     /** pattern for non-primitive type matching */
-    private static final Pattern PATTERN_DEFINED_TYPE = Pattern.compile(
-            "^(((EXPLICIT|IMPLICIT)[ ]+)?(([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
-    //"^((([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+    private static final Pattern PATTERN_DEFINED_TYPE =
+            Pattern.compile(
+                    "^(((EXPLICIT|IMPLICIT)[ ]+)?(([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+    // "^((([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT
+    // ?.+)?$");
 
     /** error message if an unknown ASN.1 built-in type is found */
-    private static final String ERROR_UNKNOWN_BUILT_IN_TYPE
-            = "Parser expected a constructed built-in type (SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS) or a primitive built-in type (BIT STRING, GeneralizedTime, Ia5String, INTEGER, NumericString, OCTET STRING, Utf8String, VisibleString, BOOLEAN, DATE, CHARACTER STRING, DATE_TIME, DURATION, EMBEDDED PDV, EXTERNAL, INTEGER, OID-IRI, NULL, OBJECT IDENTIFIER, REAL, RELATIVE-OID-IRI, RELATIVE-OID, BmpString, GeneralString, GraphicString, Iso646String, PrintableString, TeletexString, T61String, UniversalString, VideotexString, TIME, TIME-OF-DAY, CHARACTER STRING) but found: ";
+    private static final String ERROR_UNKNOWN_BUILT_IN_TYPE =
+            "Parser expected a constructed built-in type (SEQUENCE, SET, ENUMERATED, SEQUENCE OF, SET OF, CHOICE, CLASS) or a primitive built-in type (BIT STRING, GeneralizedTime, Ia5String, INTEGER, NumericString, OCTET STRING, Utf8String, VisibleString, BOOLEAN, DATE, CHARACTER STRING, DATE_TIME, DURATION, EMBEDDED PDV, EXTERNAL, INTEGER, OID-IRI, NULL, OBJECT IDENTIFIER, REAL, RELATIVE-OID-IRI, RELATIVE-OID, BmpString, GeneralString, GraphicString, Iso646String, PrintableString, TeletexString, T61String, UniversalString, VideotexString, TIME, TIME-OF-DAY, CHARACTER STRING) but found: ";
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
     /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnSchemaTypeDefinitionParser.class
-            .getName());
+    private static final Logger logger =
+            LoggerFactory.getLogger(AsnSchemaTypeDefinitionParser.class.getName());
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
-    /**
-     * Private constructor. There should be no need to ever instantiate this static class.
-     */
-    private AsnSchemaTypeParser()
-    {
+    /** Private constructor. There should be no need to ever instantiate this static class. */
+    private AsnSchemaTypeParser() {
         throw new AssertionError();
     }
 
@@ -190,26 +197,18 @@ public class AsnSchemaTypeParser
     /**
      * Parses a type definition from a module from an ASN.1 schema
      *
-     * @param value
-     *         the string to parse.  This should be either the Type of the defined type (i.e. the
-     *         text on the right hand side of the {@code ::=}), or the Type of a Component Type
-     * @param taggingMode
-     *         dictates the mode in which to handle/generate tags
-     *
+     * @param value the string to parse. This should be either the Type of the defined type (i.e.
+     *     the text on the right hand side of the {@code ::=}), or the Type of a Component Type
+     * @param taggingMode dictates the mode in which to handle/generate tags
      * @return an {@link AsnSchemaType} object representing the parsed type
-     *
-     * @throws ParseException
-     *         if either of the parameters are {@code null}/empty or any errors occur while parsing
-     *         the type
-     * @throws NullPointerException
-     *         if taggingMode is {@code null}
+     * @throws ParseException if either of the parameters are {@code null}/empty or any errors occur
+     *     while parsing the type
+     * @throws NullPointerException if taggingMode is {@code null}
      */
     public static AsnSchemaType parse(String value, AsnModuleTaggingMode taggingMode)
-            throws ParseException
-    {
+            throws ParseException {
         checkNotNull(taggingMode);
-        if (value == null || value.trim().isEmpty())
-        {
+        if (value == null || value.trim().isEmpty()) {
             throw new ParseException("A value must be supplied for a Type", -1);
         }
 
@@ -217,14 +216,12 @@ public class AsnSchemaTypeParser
         // CONSTRUCTED TYPES (SEQUENCE, SET ETC)
         // -------------------------------------------------------------------------
         Matcher matcher = PATTERN_TYPE_CONSTRUCTED.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             return parseConstructed(matcher, taggingMode);
         }
 
         matcher = PATTERN_TYPE_ENUMERATED.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             return parseEnumerated(matcher);
         }
 
@@ -232,8 +229,7 @@ public class AsnSchemaTypeParser
         // COLLECTION TYPES (SEQUENCE OF AND SET OF)
         // -------------------------------------------------------------------------
         matcher = PATTERN_TYPE_COLLECTION.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             return parseCollection(matcher, taggingMode);
         }
 
@@ -241,8 +237,7 @@ public class AsnSchemaTypeParser
         // TYPES WITH CONSTRAINTS AND DISTINGUISHED VALUES
         // -------------------------------------------------------------------------
         matcher = PATTERN_TYPE_WITH_NAMED_VALUES.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             return parseWithNamedValues(matcher);
         }
 
@@ -251,8 +246,7 @@ public class AsnSchemaTypeParser
         // -------------------------------------------------------------------------
         // check if defining an Object Identifier
         matcher = PATTERN_TYPE_WITH_CONSTRAINTS.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             return parseWithConstraints(matcher);
         }
 
@@ -261,22 +255,19 @@ public class AsnSchemaTypeParser
         // -------------------------------------------------------------------------
         // check if defining a GeneralizedTime
         matcher = PATTERN_TYPE_WITH_NO_CONSTRAINTS.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             return parseWithoutConstraints(matcher);
         }
 
         // catch logging for if we missed a Primitive.
         matcher = PATTERN_TYPE_PRIMITIVE.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             logger.warn("Did not parse as Primitive: " + value);
         }
 
         // check if defining a CLASS
         matcher = PATTERN_TYPE_CLASS.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             // TODO ASN-39 - handle CLASS
             logger.warn("Type Definitions for CLASS not yet supported");
             return AsnSchemaType.NULL;
@@ -286,8 +277,7 @@ public class AsnSchemaTypeParser
         // TYPES THAT ARE NOT PRIMITIVES, I.E. THEY MUST BE TYPE DEFINITIONS
         // -------------------------------------------------------------------------
         matcher = PATTERN_DEFINED_TYPE.matcher(value);
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             return parsePlaceHolder(matcher);
         }
 
@@ -303,26 +293,20 @@ public class AsnSchemaTypeParser
     /**
      * Parses a constructed type (eg SEQUENCE)
      *
-     * @param matcher
-     *         matcher which matched on a corresponding
-     * @param taggingMode
-     *         dictates the mode in which to handle/generate tags
-     *
+     * @param matcher matcher which matched on a corresponding
+     * @param taggingMode dictates the mode in which to handle/generate tags
      * @return an {@link AsnSchemaTypeConstructed} representing the parsed data
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the type
+     * @throws ParseException if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeConstructed parseConstructed(Matcher matcher,
-            AsnModuleTaggingMode taggingMode) throws ParseException
-    {
+    private static AsnSchemaTypeConstructed parseConstructed(
+            Matcher matcher, AsnModuleTaggingMode taggingMode) throws ParseException {
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, constructedTypes);
 
         final String componentTypesText = matcher.group(2);
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
 
-        final ImmutableList<AsnSchemaComponentType> componentTypes
-                = AsnSchemaComponentTypeParser.parse(componentTypesText, taggingMode);
+        final ImmutableList<AsnSchemaComponentType> componentTypes =
+                AsnSchemaComponentTypeParser.parse(componentTypesText, taggingMode);
 
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
@@ -332,41 +316,31 @@ public class AsnSchemaTypeParser
     /**
      * Parses an Enumerated type
      *
-     * @param matcher
-     *         matcher which matched on eg {@link #PATTERN_TYPE_ENUMERATED}
-     *
+     * @param matcher matcher which matched on eg {@link #PATTERN_TYPE_ENUMERATED}
      * @return an {@link AsnSchemaTypeWithNamedTags} representing the parsed data
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the type
+     * @throws ParseException if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeWithNamedTags parseEnumerated(Matcher matcher) throws ParseException
-    {
+    private static AsnSchemaTypeWithNamedTags parseEnumerated(Matcher matcher)
+            throws ParseException {
 
         final String namedValuesText = matcher.group(1);
         logger.trace("named values {}", namedValuesText);
-        final ImmutableList<AsnSchemaNamedTag> namedValues
-                = AsnSchemaNamedTagParser.parseEnumeratedOptions(namedValuesText);
+        final ImmutableList<AsnSchemaNamedTag> namedValues =
+                AsnSchemaNamedTagParser.parseEnumeratedOptions(namedValuesText);
 
-        return new AsnSchemaTypeWithNamedTags(AsnPrimitiveTypes.ENUMERATED,
-                AsnSchemaConstraint.NULL,
-                namedValues);
+        return new AsnSchemaTypeWithNamedTags(
+                AsnPrimitiveTypes.ENUMERATED, AsnSchemaConstraint.NULL, namedValues);
     }
 
     /**
      * Parses a collection type (eg SEQUENCE Of)
      *
-     * @param matcher
-     *         matcher which matched on a corresponding
-     *
+     * @param matcher matcher which matched on a corresponding
      * @return an {@link AsnSchemaTypeCollection} representing the parsed data
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the type
+     * @throws ParseException if any errors occur while parsing the type
      */
-    private static AsnSchemaTypeCollection parseCollection(Matcher matcher,
-            AsnModuleTaggingMode taggingMode) throws ParseException
-    {
+    private static AsnSchemaTypeCollection parseCollection(
+            Matcher matcher, AsnModuleTaggingMode taggingMode) throws ParseException {
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, collectionTypes);
 
         final String constraintText = Strings.nullToEmpty(matcher.group(2));
@@ -382,16 +356,12 @@ public class AsnSchemaTypeParser
     /**
      * Parses a type of the form Typename, eg "^GeneralizedTime$"
      *
-     * @param matcher
-     *         matcher which matched on a corresponding "generic" matcher
-     *
+     * @param matcher matcher which matched on a corresponding "generic" matcher
      * @return an {@link BaseAsnSchemaType} representing the parsed data
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the type
+     * @throws ParseException if any errors occur while parsing the type
      */
-    private static BaseAsnSchemaType parseWithoutConstraints(Matcher matcher) throws ParseException
-    {
+    private static BaseAsnSchemaType parseWithoutConstraints(Matcher matcher)
+            throws ParseException {
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, noConstraintsTypes);
 
         return new BaseAsnSchemaType(primitiveType, AsnSchemaConstraint.NULL);
@@ -400,17 +370,11 @@ public class AsnSchemaTypeParser
     /**
      * Parses a type of the form Typename Constraint, eg "INTEGER (1..100)"
      *
-     * @param matcher
-     *         matcher which matched on a corresponding "generic" matcher
-     *
+     * @param matcher matcher which matched on a corresponding "generic" matcher
      * @return an {@link BaseAsnSchemaType} representing the parsed data
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the type
+     * @throws ParseException if any errors occur while parsing the type
      */
-
-    private static BaseAsnSchemaType parseWithConstraints(Matcher matcher) throws ParseException
-    {
+    private static BaseAsnSchemaType parseWithConstraints(Matcher matcher) throws ParseException {
 
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, constrainedTypes);
 
@@ -423,22 +387,17 @@ public class AsnSchemaTypeParser
     /**
      * Parses a type that may have both Constraints and Named values
      *
-     * @param matcher
-     *         matcher which matched on eg {@link #PATTERN_TYPE_WITH_NAMED_VALUES}
-     *
+     * @param matcher matcher which matched on eg {@link #PATTERN_TYPE_WITH_NAMED_VALUES}
      * @return an {@link AsnSchemaTypeWithNamedTags} representing the parsed data
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the type
+     * @throws ParseException if any errors occur while parsing the type
      */
     private static AsnSchemaTypeWithNamedTags parseWithNamedValues(Matcher matcher)
-            throws ParseException
-    {
+            throws ParseException {
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, distinguishedValuesTypes);
 
         final String distinguishedValuesText = Strings.nullToEmpty(matcher.group(3));
-        final ImmutableList<AsnSchemaNamedTag> distinguishedValues
-                = AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesText);
+        final ImmutableList<AsnSchemaNamedTag> distinguishedValues =
+                AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(distinguishedValuesText);
         final String constraintText = Strings.nullToEmpty(matcher.group(7));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
@@ -448,29 +407,25 @@ public class AsnSchemaTypeParser
     /**
      * Parses a type that is not a ASN.1 primitive type.
      *
-     * @param matcher
-     *         matcher which matched on {@link #PATTERN_DEFINED_TYPE}
-     *
+     * @param matcher matcher which matched on {@link #PATTERN_DEFINED_TYPE}
      * @return an {@link AsnSchemaTypePlaceholder} representing the parsed data
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the type
+     * @throws ParseException if any errors occur while parsing the type
      */
-    private static AsnSchemaTypePlaceholder parsePlaceHolder(Matcher matcher) throws ParseException
-    {
+    private static AsnSchemaTypePlaceholder parsePlaceHolder(Matcher matcher)
+            throws ParseException {
         final String moduleName = Strings.nullToEmpty(matcher.group(5));
         final String typeName = Strings.nullToEmpty(matcher.group(6));
 
         final String tagMode = matcher.group(3);
-        if (tagMode != null)
-        {
+        if (tagMode != null) {
             logger.debug("Have a defined TAG mode. {} has tag mode of {}", typeName, tagMode);
         }
 
         final String constraintText = Strings.nullToEmpty(matcher.group(10));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        logger.trace("Creating placeholder -{} typeName: {} constraints: {}",
+        logger.trace(
+                "Creating placeholder -{} typeName: {} constraints: {}",
                 (moduleName.isEmpty() ? "" : " moduleName: " + moduleName),
                 typeName,
                 constraintText);
@@ -480,22 +435,16 @@ public class AsnSchemaTypeParser
     /**
      * helper function to extract the AsnPrimitiveType from the matcher
      *
-     * @param matcher
-     *         matcher which should have the primitive type as group 1
-     * @param sourceTypes
-     *         Map of ASN.1 primitive types to AsnPrimitiveType
-     *
+     * @param matcher matcher which should have the primitive type as group 1
+     * @param sourceTypes Map of ASN.1 primitive types to AsnPrimitiveType
      * @return a {@link AsnPrimitiveTypes} as extracted from the matcher
-     *
-     * @throws ParseException
-     *         if the type is not in the sourceTypes
+     * @throws ParseException if the type is not in the sourceTypes
      */
-    private static AsnPrimitiveType getPrimitiveType(Matcher matcher,
-            ImmutableMap<String, AsnPrimitiveType> sourceTypes) throws ParseException
-    {
+    private static AsnPrimitiveType getPrimitiveType(
+            Matcher matcher, ImmutableMap<String, AsnPrimitiveType> sourceTypes)
+            throws ParseException {
         final AsnPrimitiveType primitiveType = sourceTypes.get(matcher.group(1));
-        if (primitiveType == null)
-        {
+        if (primitiveType == null) {
             // unknown definition
             final String error = ERROR_UNKNOWN_BUILT_IN_TYPE + matcher.group(0);
             throw new ParseException(error, -1);

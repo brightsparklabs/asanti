@@ -1,16 +1,17 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 
 /**
@@ -18,8 +19,7 @@ import java.util.Set;
  *
  * @author brightSPARK Labs
  */
-public class OidValidator extends PrimitiveBuiltinTypeValidator
-{
+public class OidValidator extends PrimitiveBuiltinTypeValidator {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -34,7 +34,7 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private OidValidator() {}
 
@@ -43,10 +43,8 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
      *
      * @return a singleton instance of this class
      */
-    public static OidValidator getInstance()
-    {
-        if (instance == null)
-        {
+    public static OidValidator getInstance() {
+        if (instance == null) {
             instance = new OidValidator();
         }
         return instance;
@@ -57,45 +55,36 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------
 
     @Override
-    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
-    {
+    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes) {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
 
-        if (bytes.length > 0)
-        {
+        if (bytes.length > 0) {
             int firstByte = bytes[0] & 0xFF;
-            if (firstByte > 0x7F)
-            {
+            if (firstByte > 0x7F) {
                 final String error = OID_VALIDATION_ERROR + String.format("0x%02X ", firstByte);
-                final ByteValidationFailure failure = new ByteValidationFailure(0,
-                        FailureType.DataIncorrectlyFormatted,
-                        error);
+                final ByteValidationFailure failure =
+                        new ByteValidationFailure(0, FailureType.DataIncorrectlyFormatted, error);
                 failures.add(failure);
             }
 
             // Check the MSB of the last bit. If this is set, the OID is incomplete.
             int i = bytes.length - 1;
-            if (i >= 1)
-            {
+            if (i >= 1) {
                 byte b = bytes[i];
-                if ((b & (byte) 0x80) != 0)
-                {
-                    final String error = OID_VALIDATION_ERROR_INCOMPLETE + String.format("0x%02X ",
-                            b);
-                    final ByteValidationFailure failure = new ByteValidationFailure(i,
-                            FailureType.DataIncorrectlyFormatted,
-                            error);
+                if ((b & (byte) 0x80) != 0) {
+                    final String error =
+                            OID_VALIDATION_ERROR_INCOMPLETE + String.format("0x%02X ", b);
+                    final ByteValidationFailure failure =
+                            new ByteValidationFailure(
+                                    i, FailureType.DataIncorrectlyFormatted, error);
                     failures.add(failure);
                 }
             }
-        }
-        else
-        {
+        } else {
             // Empty bytes array
             final String error = String.format(EMPTY_BYTE_ARRAY_VALIDATION_ERROR, "OID");
-            final ByteValidationFailure failure = new ByteValidationFailure(0,
-                    FailureType.DataMissing,
-                    error);
+            final ByteValidationFailure failure =
+                    new ByteValidationFailure(0, FailureType.DataMissing, error);
             failures.add(failure);
         }
         return ImmutableSet.copyOf(failures);

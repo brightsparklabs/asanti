@@ -1,20 +1,22 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.validator.builtin;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 
 /**
@@ -23,26 +25,22 @@ import java.util.Set;
  *
  * @author brightSPARK Labs
  */
-public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValidator
-{
+public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValidator {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BuiltinTypeValidator
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<DecodedTagValidationFailure> validate(String tag,
-            AsantiAsnData asnData)
-    {
+    public ImmutableSet<DecodedTagValidationFailure> validate(String tag, AsantiAsnData asnData) {
         final Set<DecodedTagValidationFailure> tagFailures = Sets.newHashSet();
 
         // validate data
         final byte[] bytes = asnData.getBytes(tag).orElse(null);
         final Iterable<ByteValidationFailure> byteFailures = validate(bytes);
-        for (ByteValidationFailure byteFailure : byteFailures)
-        {
-            final DecodedTagValidationFailure tagFailure = new DecodedTagValidationFailure(tag,
-                    byteFailure.getFailureType(),
-                    byteFailure.getFailureReason());
+        for (ByteValidationFailure byteFailure : byteFailures) {
+            final DecodedTagValidationFailure tagFailure =
+                    new DecodedTagValidationFailure(
+                            tag, byteFailure.getFailureType(), byteFailure.getFailureReason());
             tagFailures.add(tagFailure);
         }
 
@@ -50,15 +48,15 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         final AsnSchemaType type = asnData.getType(tag).orElse(AsnSchemaType.NULL);
         final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
         final Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
-        for (AsnSchemaConstraint constraint : constraints)
-        {
+        for (AsnSchemaConstraint constraint : constraints) {
             constraintFailures.addAll(constraint.apply(bytes));
         }
-        for (SchemaConstraintValidationFailure constraintFailure : constraintFailures)
-        {
-            final DecodedTagValidationFailure tagFailure = new DecodedTagValidationFailure(tag,
-                    constraintFailure.getFailureType(),
-                    constraintFailure.getFailureReason());
+        for (SchemaConstraintValidationFailure constraintFailure : constraintFailures) {
+            final DecodedTagValidationFailure tagFailure =
+                    new DecodedTagValidationFailure(
+                            tag,
+                            constraintFailure.getFailureType(),
+                            constraintFailure.getFailureReason());
             tagFailures.add(tagFailure);
         }
 
@@ -66,13 +64,11 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
     }
 
     @Override
-    public ImmutableSet<ByteValidationFailure> validate(final byte[] bytes)
-    {
-        if (bytes == null)
-        {
-            final ByteValidationFailure failure = new ByteValidationFailure(0,
-                    FailureType.DataMissing,
-                    "No bytes present to validate");
+    public ImmutableSet<ByteValidationFailure> validate(final byte[] bytes) {
+        if (bytes == null) {
+            final ByteValidationFailure failure =
+                    new ByteValidationFailure(
+                            0, FailureType.DataMissing, "No bytes present to validate");
             return ImmutableSet.of(failure);
         }
         return validateNonNullBytes(bytes);
@@ -86,9 +82,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
      * Validates the supplied bytes based on the the kind of ASN.1 Built-in Type represented by this
      * validator. The bytes parameter is guaranteed to be non-{@code null}.
      *
-     * @param bytes
-     *         bytes to validate
-     *
+     * @param bytes bytes to validate
      * @return any failures encountered while validating the bytes
      */
     protected abstract ImmutableSet<ByteValidationFailure> validateNonNullBytes(byte[] bytes);

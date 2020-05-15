@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator;
@@ -13,8 +15,7 @@ import com.brightsparklabs.assam.validator.Validator;
  *
  * @author brightSPARK Labs
  */
-public class Validators
-{
+public class Validators {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -26,11 +27,8 @@ public class Validators
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
-    /**
-     * Private constructor.
-     */
-    private Validators()
-    {
+    /** Private constructor. */
+    private Validators() {
         // static utility class should never be instantiated
         throw new AssertionError();
     }
@@ -45,14 +43,12 @@ public class Validators
      *
      * @return the default validator
      */
-    public static Validator getDefault()
-    {
+    public static Validator getDefault() {
         /*
          * NOTE: Not thread safe, but unlikely this method will actually be called. Generally a
          * custom validator will be used.
          */
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = ValidatorImpl.builder().build();
         }
         return instance;
@@ -64,8 +60,7 @@ public class Validators
      *
      * @return the default validator
      */
-    public static ValidatorImpl.Builder newCustomValidatorBuilder()
-    {
+    public static ValidatorImpl.Builder newCustomValidatorBuilder() {
         return ValidatorImpl.builder();
     }
 }

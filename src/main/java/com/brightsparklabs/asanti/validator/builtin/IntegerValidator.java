@@ -1,16 +1,17 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 
 /**
@@ -18,8 +19,7 @@ import java.util.Set;
  *
  * @author brightSPARK Labs
  */
-public class IntegerValidator extends PrimitiveBuiltinTypeValidator
-{
+public class IntegerValidator extends PrimitiveBuiltinTypeValidator {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -34,7 +34,7 @@ public class IntegerValidator extends PrimitiveBuiltinTypeValidator
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private IntegerValidator() {}
 
@@ -43,10 +43,8 @@ public class IntegerValidator extends PrimitiveBuiltinTypeValidator
      *
      * @return a singleton instance of this class
      */
-    public static IntegerValidator getInstance()
-    {
-        if (instance == null)
-        {
+    public static IntegerValidator getInstance() {
+        if (instance == null) {
             instance = new IntegerValidator();
         }
         return instance;
@@ -57,15 +55,13 @@ public class IntegerValidator extends PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------
 
     @Override
-    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
-    {
+    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes) {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        if (bytes.length == 0)
-        {
+        if (bytes.length == 0) {
             final String error = String.format(EMPTY_BYTE_ARRAY_VALIDATION_ERROR, "INTEGER");
-            final ByteValidationFailure failure = new ByteValidationFailure(bytes.length,
-                    FailureType.DataIncorrectlyFormatted,
-                    error);
+            final ByteValidationFailure failure =
+                    new ByteValidationFailure(
+                            bytes.length, FailureType.DataIncorrectlyFormatted, error);
             failures.add(failure);
         }
         return ImmutableSet.copyOf(failures);

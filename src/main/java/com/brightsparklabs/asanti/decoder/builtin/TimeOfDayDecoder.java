@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -11,7 +13,6 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
-
 import java.time.OffsetDateTime;
 
 /**
@@ -19,8 +20,7 @@ import java.time.OffsetDateTime;
  *
  * @author brightSPARK Labs
  */
-public class TimeOfDayDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime>
-{
+public class TimeOfDayDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public class TimeOfDayDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private TimeOfDayDecoder() {}
 
@@ -44,10 +44,8 @@ public class TimeOfDayDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime>
      *
      * @return a singleton instance of this class
      */
-    public static TimeOfDayDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static TimeOfDayDecoder getInstance() {
+        if (instance == null) {
             instance = new TimeOfDayDecoder();
         }
         return instance;
@@ -58,10 +56,9 @@ public class TimeOfDayDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime>
     // -------------------------------------------------------------------------
 
     @Override
-    public OffsetDateTime decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsTimeOfDay(
-                bytes);
+    public OffsetDateTime decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsTimeOfDay(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
         // TODO: ASN-107 implement
         return null;

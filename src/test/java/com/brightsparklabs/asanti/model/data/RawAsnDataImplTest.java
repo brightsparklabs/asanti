@@ -1,58 +1,55 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.model.data;
 
 import static org.junit.Assert.*;
-
-import org.junit.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import org.junit.Test;
 
 /**
  * Unit test for {@link RawAsnDataImpl}
  *
  * @author brightSPARK Labs
  */
-public class RawAsnDataImplTest
-{
+public class RawAsnDataImplTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
 
     /** default data to construct instance from */
-    final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]>builder()
-            .put("/0/0/0", "/0/0/0".getBytes(Charsets.UTF_8))
-            .put("/0/1/0", "/0/1/0".getBytes(Charsets.UTF_8))
-            .put("/1/0/1", "/1/0/1".getBytes(Charsets.UTF_8))
-            .put("/2/2/0", "/2/2/0".getBytes(Charsets.UTF_8))
-            .put("/99/0", "/99/0".getBytes(Charsets.UTF_8))
-            .build();
+    final ImmutableMap<String, byte[]> tagsToData =
+            ImmutableMap.<String, byte[]>builder()
+                    .put("/0/0/0", "/0/0/0".getBytes(Charsets.UTF_8))
+                    .put("/0/1/0", "/0/1/0".getBytes(Charsets.UTF_8))
+                    .put("/1/0/1", "/1/0/1".getBytes(Charsets.UTF_8))
+                    .put("/2/2/0", "/2/2/0".getBytes(Charsets.UTF_8))
+                    .put("/99/0", "/99/0".getBytes(Charsets.UTF_8))
+                    .build();
 
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
     @Test
-    public void testAsnDataDefault() throws Exception
-    {
-        try
-        {
+    public void testAsnDataDefault() throws Exception {
+        try {
             new RawAsnDataImpl(null);
             fail("NullPointerException not thrown");
-        }
-        catch (final NullPointerException ex)
-        {
+        } catch (final NullPointerException ex) {
         }
     }
 
     @Test
-    public void testGetRawTags() throws Exception
-    {
+    public void testGetRawTags() throws Exception {
         RawAsnData instance = new RawAsnDataImpl(tagsToData);
         ImmutableSet<String> tags = instance.getRawTags();
         assertEquals(tags.size(), 5);
@@ -68,8 +65,7 @@ public class RawAsnDataImplTest
     }
 
     @Test
-    public void testGetBytesString() throws Exception
-    {
+    public void testGetBytesString() throws Exception {
         RawAsnData instance = new RawAsnDataImpl(tagsToData);
         assertArrayEquals(instance.getBytes("/0/0/0").get(), "/0/0/0".getBytes(Charsets.UTF_8));
         assertArrayEquals(instance.getBytes("/0/1/0").get(), "/0/1/0".getBytes(Charsets.UTF_8));
@@ -88,8 +84,7 @@ public class RawAsnDataImplTest
     }
 
     @Test
-    public void testGetBytes() throws Exception
-    {
+    public void testGetBytes() throws Exception {
         RawAsnData instance = new RawAsnDataImpl(tagsToData);
         ImmutableMap<String, byte[]> data = instance.getBytes();
         assertEquals(data.size(), 5);

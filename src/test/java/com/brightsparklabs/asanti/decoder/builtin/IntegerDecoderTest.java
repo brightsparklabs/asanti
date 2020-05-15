@@ -1,28 +1,28 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
-import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
-import java.util.Optional;
-import org.junit.Test;
-
-import java.math.BigInteger;
-
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
+
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
+import java.math.BigInteger;
+import java.util.Optional;
+import org.junit.Test;
 
 /**
  * Units tests for {@link IntegerDecoder}
  *
  * @author brightSPARK Labs
  */
-public class IntegerDecoderTest
-{
+public class IntegerDecoderTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -35,24 +35,21 @@ public class IntegerDecoderTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testDecode() throws Exception
-    {
+    public void testDecode() throws Exception {
         AsantiAsnData data = mock(AsantiAsnData.class);
 
         // run through all the one byte values.
         byte[] bytes = new byte[1];
-        for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--)
-        {
-            bytes[0] = (byte)b;
+        for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--) {
+            bytes[0] = (byte) b;
             BigInteger big = instance.decode(bytes);
             assertEquals(b, big.longValue());
 
             // test other overload
-            final String tag = "tag"+b;
+            final String tag = "tag" + b;
             when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
             assertEquals(b, instance.decode(tag, data).longValue());
         }
-
 
         {
             // check that we can have a leading 0 followed by a byte with a 1 for most significant
@@ -69,11 +66,65 @@ public class IntegerDecoderTest
             byte[] b3 = {(byte) 0xff, (byte) 0xff, (byte) 0xff};
             byte[] b4 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             byte[] b5 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b6 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b7 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b8 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b16 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b17 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+            byte[] b6 = {
+                (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff
+            };
+            byte[] b7 = {
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b8 = {
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b16 = {
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b17 = {
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
 
             BigInteger big1 = instance.decode(b1);
             BigInteger big2 = instance.decode(b2);
@@ -111,12 +162,76 @@ public class IntegerDecoderTest
             byte[] b3 = {(byte) 0x80, (byte) 0x00, (byte) 0x00};
             byte[] b4 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
             byte[] b5 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b6 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b7 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b8 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b9 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b16 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b17 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+            byte[] b6 = {
+                (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
+            };
+            byte[] b7 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
+            byte[] b8 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
+            byte[] b9 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
+            byte[] b16 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
+            byte[] b17 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
 
             BigInteger big1 = instance.decode(b1);
             BigInteger big2 = instance.decode(b2);
@@ -130,16 +245,21 @@ public class IntegerDecoderTest
             BigInteger big16 = instance.decode(b16);
             BigInteger big17 = instance.decode(b17);
 
-            assertEquals(-128L, big1.longValue());assertEquals(Byte.MIN_VALUE, big1.longValue());
-            assertEquals(-32768L, big2.longValue());assertEquals(Short.MIN_VALUE, big2.longValue());
+            assertEquals(-128L, big1.longValue());
+            assertEquals(Byte.MIN_VALUE, big1.longValue());
+            assertEquals(-32768L, big2.longValue());
+            assertEquals(Short.MIN_VALUE, big2.longValue());
             assertEquals(-8388608L, big3.longValue());
-            assertEquals(-2147483648L, big4.longValue());assertEquals(Integer.MIN_VALUE, big4.longValue());
+            assertEquals(-2147483648L, big4.longValue());
+            assertEquals(Integer.MIN_VALUE, big4.longValue());
             assertEquals(-549755813888L, big5.longValue());
             assertEquals(-140737488355328L, big6.longValue());
             assertEquals(-36028797018963968L, big7.longValue());
-            assertEquals(-9223372036854775808L, big8.longValue());assertEquals(Long.MIN_VALUE, big8.longValue());
+            assertEquals(-9223372036854775808L, big8.longValue());
+            assertEquals(Long.MIN_VALUE, big8.longValue());
 
-            // from here on we run out of primitive type language support (ie they are now bigger than 64 bit)
+            // from here on we run out of primitive type language support (ie they are now bigger
+            // than 64 bit)
             // so go straight to BigInteger.
             assertEquals(new BigInteger("-2361183241434822606848"), big9);
             assertEquals(new BigInteger("-170141183460469231731687303715884105728"), big16);
@@ -153,12 +273,76 @@ public class IntegerDecoderTest
             byte[] b3 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff};
             byte[] b4 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             byte[] b5 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b6 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b7 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b8 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b9 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b16 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b17 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+            byte[] b6 = {
+                (byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff
+            };
+            byte[] b7 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b8 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b9 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b16 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b17 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
 
             BigInteger big1 = instance.decode(b1);
             BigInteger big2 = instance.decode(b2);
@@ -172,16 +356,21 @@ public class IntegerDecoderTest
             BigInteger big16 = instance.decode(b16);
             BigInteger big17 = instance.decode(b17);
 
-            assertEquals(127L, big1.longValue());assertEquals(Byte.MAX_VALUE, big1.longValue());
-            assertEquals(32767L, big2.longValue());assertEquals(Short.MAX_VALUE, big2.longValue());
+            assertEquals(127L, big1.longValue());
+            assertEquals(Byte.MAX_VALUE, big1.longValue());
+            assertEquals(32767L, big2.longValue());
+            assertEquals(Short.MAX_VALUE, big2.longValue());
             assertEquals(8388607L, big3.longValue());
-            assertEquals(2147483647L, big4.longValue());assertEquals(Integer.MAX_VALUE, big4.longValue());
+            assertEquals(2147483647L, big4.longValue());
+            assertEquals(Integer.MAX_VALUE, big4.longValue());
             assertEquals(549755813887L, big5.longValue());
             assertEquals(140737488355327L, big6.longValue());
             assertEquals(36028797018963967L, big7.longValue());
-            assertEquals(9223372036854775807L, big8.longValue());assertEquals(Long.MAX_VALUE, big8.longValue());
+            assertEquals(9223372036854775807L, big8.longValue());
+            assertEquals(Long.MAX_VALUE, big8.longValue());
 
-            // from here on we run out of primitive type language support (ie they are now bigger than 64 bit)
+            // from here on we run out of primitive type language support (ie they are now bigger
+            // than 64 bit)
             // so go straight to BigInteger.
             assertEquals(new BigInteger("2361183241434822606847"), big9);
             assertEquals(new BigInteger("170141183460469231731687303715884105727"), big16);
@@ -189,31 +378,24 @@ public class IntegerDecoderTest
         }
 
         // test empty byte array
-        try
-        {
+        try {
 
-            byte [] b1 = { };
+            byte[] b1 = {};
             instance.decode(b1);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
         // test null
-        try
-        {
+        try {
             instance.decode(null);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
     }
 
     @Test
-    public void testDecodeAsString() throws Exception
-    {
+    public void testDecodeAsString() throws Exception {
         byte[] bytes = new byte[1];
         AsantiAsnData data = mock(AsantiAsnData.class);
         for (int b = Byte.MAX_VALUE; b >= Byte.MIN_VALUE; b--) {
@@ -222,7 +404,7 @@ public class IntegerDecoderTest
             assertEquals(Long.toString((long) b), big);
 
             // test other overload
-            final String tag = "tag"+b;
+            final String tag = "tag" + b;
             when(data.getBytes(eq(tag))).thenReturn(Optional.of(bytes));
             assertEquals(Long.toString((long) b), instance.decodeAsString(tag, data));
         }
@@ -234,11 +416,65 @@ public class IntegerDecoderTest
             byte[] b3 = {(byte) 0xff, (byte) 0xff, (byte) 0xff};
             byte[] b4 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             byte[] b5 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b6 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b7 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b8 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b16 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b17 = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+            byte[] b6 = {
+                (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff
+            };
+            byte[] b7 = {
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b8 = {
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b16 = {
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b17 = {
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
 
             String big1 = instance.decodeAsString(b1);
             String big2 = instance.decodeAsString(b2);
@@ -270,12 +506,76 @@ public class IntegerDecoderTest
             byte[] b3 = {(byte) 0x80, (byte) 0x00, (byte) 0x00};
             byte[] b4 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
             byte[] b5 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b6 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b7 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b8 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b9 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b16 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            byte[] b17 = {(byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+            byte[] b6 = {
+                (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
+            };
+            byte[] b7 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
+            byte[] b8 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
+            byte[] b9 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
+            byte[] b16 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
+            byte[] b17 = {
+                (byte) 0x80,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00,
+                (byte) 0x00
+            };
 
             String big1 = instance.decodeAsString(b1);
             String big2 = instance.decodeAsString(b2);
@@ -310,12 +610,76 @@ public class IntegerDecoderTest
             byte[] b3 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff};
             byte[] b4 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             byte[] b5 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b6 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b7 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b8 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b9 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b16 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] b17 = {(byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+            byte[] b6 = {
+                (byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff
+            };
+            byte[] b7 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b8 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b9 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b16 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
+            byte[] b17 = {
+                (byte) 0x7f,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff,
+                (byte) 0xff
+            };
 
             String big1 = instance.decodeAsString(b1);
             String big2 = instance.decodeAsString(b2);
@@ -344,25 +708,19 @@ public class IntegerDecoderTest
         }
 
         // test empty byte array
-        try
-        {
+        try {
 
             byte[] b1 = {};
             instance.decodeAsString(b1);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
         // test null
-        try
-        {
+        try {
             instance.decodeAsString(null);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
     }
 }

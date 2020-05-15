@@ -1,34 +1,34 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
-
-import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.google.common.base.Charsets;
-import org.junit.Test;
-
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.google.common.base.Charsets;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Calendar;
+import java.util.Optional;
+import org.junit.Test;
+
 /**
  * Units tests for {@link UtcTimeDecoder}
  *
  * @author brightSPARK Labs
  */
-public class UtcTimeDecoderTest
-{
+public class UtcTimeDecoderTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -44,91 +44,64 @@ public class UtcTimeDecoderTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testDecodeErrors() throws Exception
-    {
-        try
-        {
-            String time = "700101";   // not enough bytes - no hours
+    public void testDecodeErrors() throws Exception {
+        try {
+            String time = "700101"; // not enough bytes - no hours
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decode(bytes);
 
             fail("Should have thrown DecodeException");
+        } catch (DecodeException e) {
         }
-        catch (DecodeException e)
-        {
-        }
-        try
-        {
-            String time = "15022901";   // not a leap year
+        try {
+            String time = "15022901"; // not a leap year
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decode(bytes);
 
             fail("Should have thrown DecodeException");
-        }
-        catch (DecodeException e)
-        {
+        } catch (DecodeException e) {
         }
 
-        try
-        {
+        try {
             instance.decode(null);
             fail("Should have thrown DecodeExceptions");
+        } catch (DecodeException e) {
         }
-        catch (DecodeException e)
-        {
-        }
-        try
-        {
+        try {
             instance.decodeAsString(null);
             fail("Should have thrown DecodeExceptions");
-        }
-        catch (DecodeException e)
-        {
+        } catch (DecodeException e) {
         }
 
         // null for tag and AsantiAsnData
-        try
-        {
+        try {
             AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decode(null, data);
             fail("Should have thrown NullPointerException");
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e)
-        {
-        }
-        try
-        {
+        try {
             AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decode("someTag", null);
             fail("Should have thrown NullPointerException");
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e)
-        {
-        }
-        try
-        {
+        try {
             AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decodeAsString(null, data);
             fail("Should have thrown NullPointerException");
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e)
-        {
-        }
-        try
-        {
+        try {
             AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decodeAsString("someTag", null);
             fail("Should have thrown NullPointerException");
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e)
-        {
-        }
-
     }
 
     @Test
-    public void testDecode() throws Exception
-    {
+    public void testDecode() throws Exception {
         final Calendar calendar = Calendar.getInstance();
         final int rawOffset = -1 * calendar.getTimeZone().getRawOffset();
 
@@ -172,15 +145,18 @@ public class UtcTimeDecoderTest
         time = "850416141516+1031";
         bytes = time.getBytes(Charsets.UTF_8);
         decoded = instance.decode(bytes);
-        expectedMs = 482508916000L - (long) (ONE_HOUR_IN_MILLI_SECONDS * 10.5)
-                - ONE_MINUTE_IN_MILLI_SECONDS;
+        expectedMs =
+                482508916000L
+                        - (long) (ONE_HOUR_IN_MILLI_SECONDS * 10.5)
+                        - ONE_MINUTE_IN_MILLI_SECONDS;
         assertEquals(expectedMs, decoded.toInstant().toEpochMilli());
 
         // Maximum values (Local time)
         time = "991231235959Z";
         expectedTime = OffsetDateTime.of(1999, 12, 31, 23, 59, 59, 0, ZoneOffset.UTC);
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime.toInstant().toEpochMilli(),
+        assertEquals(
+                expectedTime.toInstant().toEpochMilli(),
                 instance.decode(bytes).toInstant().toEpochMilli());
 
         // Another valid time (Local summer time)
@@ -190,7 +166,9 @@ public class UtcTimeDecoderTest
         final ZoneOffset offset2 = ZoneId.systemDefault().getRules().getOffset(of2);
         expectedTime = OffsetDateTime.of(2018, 11, 11, 11, 0, 0, 0, offset2);
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime.toInstant().toEpochMilli(), instance.decode(bytes).toInstant().toEpochMilli());
+        assertEquals(
+                expectedTime.toInstant().toEpochMilli(),
+                instance.decode(bytes).toInstant().toEpochMilli());
 
         // Another valid time (Local winter time)
         time = "180611110000";
@@ -199,13 +177,17 @@ public class UtcTimeDecoderTest
         final ZoneOffset offset3 = ZoneId.systemDefault().getRules().getOffset(of3);
         expectedTime = OffsetDateTime.of(2018, 6, 11, 11, 0, 0, 0, offset3);
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime.toInstant().toEpochMilli(), instance.decode(bytes).toInstant().toEpochMilli());
+        assertEquals(
+                expectedTime.toInstant().toEpochMilli(),
+                instance.decode(bytes).toInstant().toEpochMilli());
 
         // Test pivot year 2000 minimum (1950)
         time = "500101000000Z";
         expectedTime = OffsetDateTime.of(1950, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime.toInstant().toEpochMilli(), instance.decode(bytes).toInstant().toEpochMilli());
+        assertEquals(
+                expectedTime.toInstant().toEpochMilli(),
+                instance.decode(bytes).toInstant().toEpochMilli());
 
         // Test pivot year 2000 minimum (1950)
         time = "500101000000";
@@ -213,14 +195,18 @@ public class UtcTimeDecoderTest
         final ZoneOffset offset4 = ZoneId.systemDefault().getRules().getOffset(of4);
         expectedTime = OffsetDateTime.of(1950, 1, 1, 0, 0, 0, 0, offset4);
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime.toInstant().toEpochMilli(), instance.decode(bytes).toInstant().toEpochMilli());
+        assertEquals(
+                expectedTime.toInstant().toEpochMilli(),
+                instance.decode(bytes).toInstant().toEpochMilli());
 
         // Test pivot year 2000 maximum (2049)
         time = "491231235959Z";
-        //expectedTime = Timestamp.valueOf("2049-12-31 23:59:59");
+        // expectedTime = Timestamp.valueOf("2049-12-31 23:59:59");
         expectedTime = OffsetDateTime.of(2049, 12, 31, 23, 59, 59, 0, ZoneOffset.UTC);
         bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime.toInstant().toEpochMilli(), instance.decode(bytes).toInstant().toEpochMilli());
+        assertEquals(
+                expectedTime.toInstant().toEpochMilli(),
+                instance.decode(bytes).toInstant().toEpochMilli());
 
         // Zero Unix Epoch (Universal time)
         time = "7001010000Z";
@@ -228,39 +214,29 @@ public class UtcTimeDecoderTest
         assertEquals(0, instance.decode(bytes).toInstant().toEpochMilli());
 
         // null
-        try
-        {
+        try {
             instance.decode(null);
             fail("DecodeException not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
         // test our specific validation bits
-        try
-        {
+        try {
             instance.decode("0001010000z".getBytes(Charsets.UTF_8)); // should be upper case
             fail("DecodeException not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
-        try
-        {
-            bytes = new byte[] { 0x1F, '8', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0' };
+        try {
+            bytes = new byte[] {0x1F, '8', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0'};
             instance.decode(bytes); // not a valid VisibleString
             fail("DecodeException not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
     }
 
     @Test
-    public void testDecodeAsString() throws Exception
-    {
+    public void testDecodeAsString() throws Exception {
         // The expected behaviour is that decodeAsString should throw if validation fails,
         // otherwise it should return the "raw" input string.
         String time = "700101000000";
@@ -290,29 +266,22 @@ public class UtcTimeDecoderTest
         time = "181111110000Z";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
 
-        try
-        {
-            instance.decodeAsString("27111100".getBytes(Charsets.UTF_8));    // Too short
+        try {
+            instance.decodeAsString("27111100".getBytes(Charsets.UTF_8)); // Too short
             fail("DecodeException not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
         // test null
-        try
-        {
+        try {
             instance.decodeAsString(null);
             fail("DecodeException not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
     }
 
     @Test
-    public void testDecodeAsStringOverload() throws Exception
-    {
+    public void testDecodeAsStringOverload() throws Exception {
         AsantiAsnData data = mock(AsantiAsnData.class);
         when(data.getBytes(anyString())).thenReturn(Optional.empty());
 
@@ -339,16 +308,13 @@ public class UtcTimeDecoderTest
         assertEquals(time4, instance.decodeAsString(tag4, data));
 
         // empty bytes
-        try
-        {
+        try {
             final String tagEmpty = "tagEmpty";
             final byte[] bytesEmpty = new byte[0];
             when(data.getBytes(eq(tagEmpty))).thenReturn(Optional.of(bytesEmpty));
             instance.decodeAsString(tagEmpty, data);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException e)
-        {
+        } catch (DecodeException e) {
         }
     }
 }

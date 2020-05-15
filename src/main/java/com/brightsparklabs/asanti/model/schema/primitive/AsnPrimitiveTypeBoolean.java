@@ -1,3 +1,10 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.model.schema.primitive;
 
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
@@ -10,21 +17,18 @@ import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
  *
  * @author brightSPARK Labs
  */
-public class AsnPrimitiveTypeBoolean implements AsnPrimitiveType.Boolean
-{
+public class AsnPrimitiveTypeBoolean implements AsnPrimitiveType.Boolean {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnPrimitiveType
     // -------------------------------------------------------------------------
 
     @Override
-    public AsnBuiltinType getBuiltinType()
-    {
+    public AsnBuiltinType getBuiltinType() {
         return AsnBuiltinType.Boolean;
     }
 
     @Override
-    public Object accept(AsnPrimitiveTypeVisitor<?> visitor)
-    {
+    public Object accept(AsnPrimitiveTypeVisitor<?> visitor) {
         return visitor.visit(this);
     }
 }

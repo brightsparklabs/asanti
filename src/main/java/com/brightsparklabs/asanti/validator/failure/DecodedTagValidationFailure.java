@@ -1,14 +1,17 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.validator.failure;
+
+import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.assam.validator.FailureType;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
  * Represents a validation failure from validating a {@link DecodedTag} against its associated
@@ -16,8 +19,7 @@ import static com.google.common.base.Preconditions.*;
  *
  * @author brightSPARK Labs
  */
-public class DecodedTagValidationFailure extends AbstractValidationFailure
-{
+public class DecodedTagValidationFailure extends AbstractValidationFailure {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -32,20 +34,13 @@ public class DecodedTagValidationFailure extends AbstractValidationFailure
     /**
      * Default constructor.
      *
-     * @param tag
-     *         the name of the tag the validation failure occurred on
-     * @param failureType
-     *         the type of failure that occurred
-     * @param failureReason
-     *         the reason for the failure
-     *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
-     * @throws IllegalArgumentException
-     *         if location or failureReason are empty
+     * @param tag the name of the tag the validation failure occurred on
+     * @param failureType the type of failure that occurred
+     * @param failureReason the reason for the failure
+     * @throws NullPointerException if parameters are {@code null}
+     * @throws IllegalArgumentException if location or failureReason are empty
      */
-    public DecodedTagValidationFailure(String tag, FailureType failureType, String failureReason)
-    {
+    public DecodedTagValidationFailure(String tag, FailureType failureType, String failureReason) {
         super(failureType, failureReason);
         checkNotNull(tag);
         this.tag = tag.trim();
@@ -57,8 +52,7 @@ public class DecodedTagValidationFailure extends AbstractValidationFailure
     // -------------------------------------------------------------------------
 
     @Override
-    public String getFailureTag()
-    {
+    public String getFailureTag() {
         return tag;
     }
 }

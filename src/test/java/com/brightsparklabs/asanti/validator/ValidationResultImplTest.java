@@ -1,59 +1,65 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.validator;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.mocks.validator.MockDecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
 import com.brightsparklabs.assam.validator.FailureType;
 import org.junit.Test;
-
-import com.brightsparklabs.asanti.mocks.validator.MockDecodedTagValidationFailure;
 
 /**
  * Unit tests for {@link ValidationResultImpl}
  *
  * @author brightSPARK Labs
  */
-public class ValidationResultImplTest
-{
+public class ValidationResultImplTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
 
-    private static final ValidationResultImpl noFailures = ValidationResultImpl
-            .builder()
-            .build();
+    private static final ValidationResultImpl noFailures = ValidationResultImpl.builder().build();
 
-    private static final ValidationResultImpl oneFailure = ValidationResultImpl
-            .builder()
-            .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG1",
-                    FailureType.MandatoryFieldMissing,
-                    "Field missing"))
-            .build();
+    private static final ValidationResultImpl oneFailure =
+            ValidationResultImpl.builder()
+                    .add(
+                            MockDecodedTagValidationFailure.createFailedValidationResult(
+                                    "TEST_TAG1",
+                                    FailureType.MandatoryFieldMissing,
+                                    "Field missing"))
+                    .build();
 
-    private static final ValidationResultImpl multipleFailures = ValidationResultImpl
-            .builder()
-            .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG1",
-                    FailureType.MandatoryFieldMissing,
-                    "Field missing"))
-            .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG1",
-                    FailureType.MandatoryFieldMissing,
-                    "Field missing"))
-            .add(MockDecodedTagValidationFailure.createFailedValidationResult("TEST_TAG3",
-                    FailureType.MandatoryFieldMissing,
-                    "Field missing"))
-            .build();
+    private static final ValidationResultImpl multipleFailures =
+            ValidationResultImpl.builder()
+                    .add(
+                            MockDecodedTagValidationFailure.createFailedValidationResult(
+                                    "TEST_TAG1",
+                                    FailureType.MandatoryFieldMissing,
+                                    "Field missing"))
+                    .add(
+                            MockDecodedTagValidationFailure.createFailedValidationResult(
+                                    "TEST_TAG1",
+                                    FailureType.MandatoryFieldMissing,
+                                    "Field missing"))
+                    .add(
+                            MockDecodedTagValidationFailure.createFailedValidationResult(
+                                    "TEST_TAG3",
+                                    FailureType.MandatoryFieldMissing,
+                                    "Field missing"))
+                    .build();
 
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
     @Test
-    public void testHasFailures() throws Exception
-    {
+    public void testHasFailures() throws Exception {
         // empty results / no failures
         assertEquals(false, noFailures.hasFailures());
 
@@ -65,8 +71,7 @@ public class ValidationResultImplTest
     }
 
     @Test
-    public void testHasFailuresString() throws Exception
-    {
+    public void testHasFailuresString() throws Exception {
         // empty results / no failures
         assertEquals(false, noFailures.hasFailures("TEST_TAG1"));
         assertEquals(false, noFailures.hasFailures("TEST_TAG2"));
@@ -84,46 +89,32 @@ public class ValidationResultImplTest
     }
 
     @Test
-    public void testGetFailures() throws Exception
-    {
+    public void testGetFailures() throws Exception {
         // empty results / no failures
-        assertEquals(0, noFailures.getFailures()
-                .size());
+        assertEquals(0, noFailures.getFailures().size());
 
         // one failure
-        assertEquals(1, oneFailure.getFailures()
-                .size());
+        assertEquals(1, oneFailure.getFailures().size());
 
         // multiple failures
-        assertEquals(3, multipleFailures.getFailures()
-                .size());
+        assertEquals(3, multipleFailures.getFailures().size());
     }
 
     @Test
-    public void testGetFailuresString() throws Exception
-    {
+    public void testGetFailuresString() throws Exception {
         // empty results / no failures
-        assertEquals(0, noFailures.getFailures("TEST_TAG1")
-                .size());
-        assertEquals(0, noFailures.getFailures("TEST_TAG2")
-                .size());
-        assertEquals(0, noFailures.getFailures("TEST_TAG3")
-                .size());
+        assertEquals(0, noFailures.getFailures("TEST_TAG1").size());
+        assertEquals(0, noFailures.getFailures("TEST_TAG2").size());
+        assertEquals(0, noFailures.getFailures("TEST_TAG3").size());
 
         // one failure
-        assertEquals(1, oneFailure.getFailures("TEST_TAG1")
-                .size());
-        assertEquals(0, oneFailure.getFailures("TEST_TAG2")
-                .size());
-        assertEquals(0, oneFailure.getFailures("TEST_TAG3")
-                .size());
+        assertEquals(1, oneFailure.getFailures("TEST_TAG1").size());
+        assertEquals(0, oneFailure.getFailures("TEST_TAG2").size());
+        assertEquals(0, oneFailure.getFailures("TEST_TAG3").size());
 
         // multiple failures
-        assertEquals(2, multipleFailures.getFailures("TEST_TAG1")
-                .size());
-        assertEquals(0, multipleFailures.getFailures("TEST_TAG2")
-                .size());
-        assertEquals(1, multipleFailures.getFailures("TEST_TAG3")
-                .size());
+        assertEquals(2, multipleFailures.getFailures("TEST_TAG1").size());
+        assertEquals(0, multipleFailures.getFailures("TEST_TAG2").size());
+        assertEquals(1, multipleFailures.getFailures("TEST_TAG3").size());
     }
 }

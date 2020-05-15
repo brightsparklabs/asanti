@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -17,8 +19,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class ObjectClassFieldDecoder extends AbstractBuiltinTypeDecoder<String>
-{
+public class ObjectClassFieldDecoder extends AbstractBuiltinTypeDecoder<String> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -33,7 +34,7 @@ public class ObjectClassFieldDecoder extends AbstractBuiltinTypeDecoder<String>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private ObjectClassFieldDecoder() {}
 
@@ -42,10 +43,8 @@ public class ObjectClassFieldDecoder extends AbstractBuiltinTypeDecoder<String>
      *
      * @return a singleton instance of this class
      */
-    public static ObjectClassFieldDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static ObjectClassFieldDecoder getInstance() {
+        if (instance == null) {
             instance = new ObjectClassFieldDecoder();
         }
         return instance;
@@ -56,10 +55,9 @@ public class ObjectClassFieldDecoder extends AbstractBuiltinTypeDecoder<String>
     // -------------------------------------------------------------------------
 
     @Override
-    public String decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures
-                = AsnByteValidator.validateAsObjectClassField(bytes);
+    public String decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsObjectClassField(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
         // TODO: ASN-107 implement
         return null;

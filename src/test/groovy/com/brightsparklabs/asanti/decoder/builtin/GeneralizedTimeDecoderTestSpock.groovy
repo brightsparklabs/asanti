@@ -1,3 +1,10 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.decoder.builtin
 
 import com.brightsparklabs.assam.exception.DecodeException
@@ -131,5 +138,4 @@ class GeneralizedTimeDecoderTestSpock extends Specification {
         "1970010100Z"                                                                                       || "1970010100Z"
         "19181111110000.123456789123456789123456789123456789123456789123456789123456789123456789123456789Z" || "19181111110000.123456789123456789123456789123456789123456789123456789123456789123456789123456789Z"
     }
-
 }

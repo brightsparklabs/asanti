@@ -1,27 +1,32 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.model.schema.type;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
-import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.text.ParseException;
+import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.text.ParseException;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for {@link AsnSchemaTypePlaceholder}
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypePlaceholderTest
-{
+public class AsnSchemaTypePlaceholderTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -37,8 +42,7 @@ public class AsnSchemaTypePlaceholderTest
     // -------------------------------------------------------------------------
 
     @Before
-    public void setUpBeforeTest() throws Exception
-    {
+    public void setUpBeforeTest() throws Exception {
 
         indirectType = mock(AsnSchemaType.class);
         // For the sake of testing that the Collection is delegating to the element type make it
@@ -48,23 +52,25 @@ public class AsnSchemaTypePlaceholderTest
         AsnSchemaConstraint constraint2 = mock(AsnSchemaConstraint.class);
 
         when(indirectType.getPrimitiveType()).thenReturn(AsnPrimitiveTypes.SEQUENCE);
-        when(indirectType.getAllComponents()).thenReturn(ImmutableList.of(mock(
-                AsnSchemaComponentType.class), mock(AsnSchemaComponentType.class)));
+        when(indirectType.getAllComponents())
+                .thenReturn(
+                        ImmutableList.of(
+                                mock(AsnSchemaComponentType.class),
+                                mock(AsnSchemaComponentType.class)));
 
         AsnSchemaComponentType component = mock(AsnSchemaComponentType.class);
 
-        when(indirectType.getMatchingChild(eq("0[0]"), any(DecodingSession.class))).thenReturn(
-                Optional.of(component));
+        when(indirectType.getMatchingChild(eq("0[0]"), any(DecodingSession.class)))
+                .thenReturn(Optional.of(component));
         when(indirectType.getConstraints()).thenReturn(ImmutableSet.of(constraint1, constraint2));
 
         instance = new AsnSchemaTypePlaceholder("Module", "Type", AsnSchemaConstraint.NULL);
-
     }
 
     @After
-    public void validate()
-    {
-        // forces Mockito to cause the failure (for verify) on the failing test, rather than the next one!
+    public void validate() {
+        // forces Mockito to cause the failure (for verify) on the failing test, rather than the
+        // next one!
         validateMockitoUsage();
     }
 
@@ -73,51 +79,37 @@ public class AsnSchemaTypePlaceholderTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testAsnSchemaTypePlaceholderConstructorPreconditions() throws Exception
-    {
+    public void testAsnSchemaTypePlaceholderConstructorPreconditions() throws Exception {
         // null moduleName
-        try
-        {
+        try {
             new AsnSchemaTypePlaceholder(null, "Type", AsnSchemaConstraint.NULL);
-        }
-        catch (final NullPointerException ex)
-        {
+        } catch (final NullPointerException ex) {
             fail("Module name can be null");
         }
         // blank moduleName
-        try
-        {
+        try {
             new AsnSchemaTypePlaceholder("", "Type", AsnSchemaConstraint.NULL);
-        }
-        catch (final NullPointerException ex)
-        {
+        } catch (final NullPointerException ex) {
             fail("Module name can be null");
         }
 
         // null Type
-        try
-        {
+        try {
             new AsnSchemaTypePlaceholder("Module", null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
-        }
-        catch (final NullPointerException ex)
-        {
+        } catch (final NullPointerException ex) {
         }
 
         // blank type
-        try
-        {
+        try {
             new AsnSchemaTypePlaceholder("Module", "", AsnSchemaConstraint.NULL);
             fail("IllegalArgumentException not thrown");
-        }
-        catch (final IllegalArgumentException ex)
-        {
+        } catch (final IllegalArgumentException ex) {
         }
     }
 
     @Test
-    public void testGetModuleName() throws Exception
-    {
+    public void testGetModuleName() throws Exception {
         assertEquals("Module", instance.getModuleName());
         verifyZeroInteractions(indirectType);
 
@@ -127,8 +119,7 @@ public class AsnSchemaTypePlaceholderTest
     }
 
     @Test
-    public void testGetTypeName() throws Exception
-    {
+    public void testGetTypeName() throws Exception {
         assertEquals("Type", instance.getTypeName());
         verifyZeroInteractions(indirectType);
 
@@ -138,8 +129,7 @@ public class AsnSchemaTypePlaceholderTest
     }
 
     @Test
-    public void testSetIndirectType() throws Exception
-    {
+    public void testSetIndirectType() throws Exception {
         // test that if the placeholder is not resolved it does not delegate
         assertEquals(AsnPrimitiveTypes.INVALID, instance.getPrimitiveType());
         // TODO INC-53
@@ -153,8 +143,7 @@ public class AsnSchemaTypePlaceholderTest
     }
 
     @Test
-    public void testGetConstraints() throws Exception
-    {
+    public void testGetConstraints() throws Exception {
         // test that if the placeholder is not resolved it does not delegate
         assertEquals(1, instance.getConstraints().size());
         verify(indirectType, never()).getConstraints();
@@ -166,8 +155,7 @@ public class AsnSchemaTypePlaceholderTest
     }
 
     @Test
-    public void testGetAllComponents()
-    {
+    public void testGetAllComponents() {
         // test that if the placeholder is not resolved it does not delegate
         assertEquals(0, instance.getAllComponents().size());
         // TODO INC-53
@@ -181,8 +169,7 @@ public class AsnSchemaTypePlaceholderTest
     }
 
     @Test
-    public void testGetIndirectType()
-    {
+    public void testGetIndirectType() {
         // test that if the placeholder is not resolved it does not delegate
         assertEquals(AsnSchemaType.NULL, instance.getIndirectType());
 
@@ -195,8 +182,7 @@ public class AsnSchemaTypePlaceholderTest
     }
 
     @Test
-    public void testGetMatchingChild()
-    {
+    public void testGetMatchingChild() {
         // test that if the placeholder is not resolved it does not delegate
         DecodingSession decodingSession = mock(DecodingSession.class);
         assertFalse(instance.getMatchingChild("0[0]", decodingSession).isPresent());
@@ -209,8 +195,7 @@ public class AsnSchemaTypePlaceholderTest
     }
 
     @Test
-    public void testVisitor() throws ParseException
-    {
+    public void testVisitor() throws ParseException {
         AsnSchemaTypeVisitor v = BaseAsnSchemaTypeTest.getVisitor();
 
         Object o = instance.accept(v);

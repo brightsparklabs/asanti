@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
@@ -10,7 +12,6 @@ import com.brightsparklabs.asanti.decoder.builtin.GeneralizedTimeDecoder;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
-
 import java.time.OffsetDateTime;
 
 /**
@@ -18,8 +19,7 @@ import java.time.OffsetDateTime;
  *
  * @author brightSPARK Labs
  */
-public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
-{
+public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -34,7 +34,7 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private GeneralizedTimeValidator() {}
 
@@ -43,10 +43,8 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
      *
      * @return a singleton instance of this class
      */
-    public static GeneralizedTimeValidator getInstance()
-    {
-        if (instance == null)
-        {
+    public static GeneralizedTimeValidator getInstance() {
+        if (instance == null) {
             instance = new GeneralizedTimeValidator();
         }
         return instance;
@@ -57,11 +55,10 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------
 
     @Override
-    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
-    {
+    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes) {
 
-        final OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result
-                = GeneralizedTimeDecoder.validateAndDecode(bytes);
+        final OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result =
+                GeneralizedTimeDecoder.validateAndDecode(bytes);
 
         return result.getFailureReason().orElse(ImmutableSet.of());
     }

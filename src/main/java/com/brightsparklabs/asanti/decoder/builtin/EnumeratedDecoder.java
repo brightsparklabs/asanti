@@ -1,9 +1,13 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
+
+import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.common.DecodeExceptions;
 import com.brightsparklabs.asanti.common.OperationResult;
@@ -19,15 +23,12 @@ import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.google.common.base.Preconditions.*;
-
 /**
  * Decoder for data of type {@link AsnBuiltinType#Enumerated}
  *
  * @author brightSPARK Labs
  */
-public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
-{
+public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -45,7 +46,7 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private EnumeratedDecoder() {}
 
@@ -54,10 +55,8 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
      *
      * @return a singleton instance of this class
      */
-    public static EnumeratedDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static EnumeratedDecoder getInstance() {
+        if (instance == null) {
             instance = new EnumeratedDecoder();
         }
         return instance;
@@ -68,34 +67,31 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String>
     // -------------------------------------------------------------------------
 
     @Override
-    public String decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsEnumerated(
-                bytes);
+    public String decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsEnumerated(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
 
         return AsnByteDecoder.decodeAsInteger(bytes).toString();
     }
 
     @Override
-    public String decode(final String tag, final AsantiAsnData asnData) throws DecodeException
-    {
+    public String decode(final String tag, final AsantiAsnData asnData) throws DecodeException {
         checkNotNull(tag);
         checkNotNull(asnData);
-        final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result
-                = EnumeratedValidator.getInstance().validateAndDecode(tag, asnData);
-        if (!result.wasSuccessful())
-        {
-            DecodeExceptions.throwIfHasFailures(result.getFailureReason()
-                    .orElse(ImmutableSet.of()));
+        final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result =
+                EnumeratedValidator.getInstance().validateAndDecode(tag, asnData);
+        if (!result.wasSuccessful()) {
+            DecodeExceptions.throwIfHasFailures(
+                    result.getFailureReason().orElse(ImmutableSet.of()));
         }
 
         return result.getOutput();
     }
 
     @Override
-    public String decodeAsString(final String tag, final AsantiAsnData asnData) throws DecodeException
-    {
+    public String decodeAsString(final String tag, final AsantiAsnData asnData)
+            throws DecodeException {
         return decode(tag, asnData);
     }
 }

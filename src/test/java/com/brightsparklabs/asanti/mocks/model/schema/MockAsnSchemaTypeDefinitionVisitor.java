@@ -1,7 +1,10 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
@@ -12,25 +15,21 @@ import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
  *
  * @author brightSPARK Labs
  */
-public class MockAsnSchemaTypeDefinitionVisitor implements AsnPrimitiveTypeVisitor<String>
-{
+public class MockAsnSchemaTypeDefinitionVisitor implements AsnPrimitiveTypeVisitor<String> {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
     /** singleton instance */
-    private static final MockAsnSchemaTypeDefinitionVisitor instance
-            = new MockAsnSchemaTypeDefinitionVisitor();
+    private static final MockAsnSchemaTypeDefinitionVisitor instance =
+            new MockAsnSchemaTypeDefinitionVisitor();
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
-    /**
-     * Default constructor. This is private, use {@link #getInstance()} instead.
-     */
-    private MockAsnSchemaTypeDefinitionVisitor()
-    {
+    /** Default constructor. This is private, use {@link #getInstance()} instead. */
+    private MockAsnSchemaTypeDefinitionVisitor() {
         // private constructor
     }
 
@@ -39,8 +38,7 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnPrimitiveTypeVisit
      *
      * @return a singleton instance
      */
-    public static MockAsnSchemaTypeDefinitionVisitor getInstance()
-    {
+    public static MockAsnSchemaTypeDefinitionVisitor getInstance() {
         return instance;
     }
 
@@ -49,188 +47,157 @@ public class MockAsnSchemaTypeDefinitionVisitor implements AsnPrimitiveTypeVisit
     // -------------------------------------------------------------------------
 
     @Override
-    public String visit(AsnPrimitiveType.Invalid visitable)
-    {
+    public String visit(AsnPrimitiveType.Invalid visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.BitString visitable)
-    {
+    public String visit(AsnPrimitiveType.BitString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.BmpString visitable)
-    {
+    public String visit(AsnPrimitiveType.BmpString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Boolean visitable)
-    {
+    public String visit(AsnPrimitiveType.Boolean visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.CharacterString visitable)
-    {
+    public String visit(AsnPrimitiveType.CharacterString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Choice visitable)
-    {
+    public String visit(AsnPrimitiveType.Choice visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.EmbeddedPdv visitable)
-    {
+    public String visit(AsnPrimitiveType.EmbeddedPdv visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Enumerated visitable)
-    {
+    public String visit(AsnPrimitiveType.Enumerated visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.GeneralizedTime visitable)
-    {
+    public String visit(AsnPrimitiveType.GeneralizedTime visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Real visitable)
-    {
+    public String visit(AsnPrimitiveType.Real visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.GeneralString visitable)
-    {
+    public String visit(AsnPrimitiveType.GeneralString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.GraphicString visitable)
-    {
+    public String visit(AsnPrimitiveType.GraphicString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.IA5String visitable)
-    {
+    public String visit(AsnPrimitiveType.IA5String visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Integer visitable)
-    {
+    public String visit(AsnPrimitiveType.Integer visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Null visitable)
-    {
+    public String visit(AsnPrimitiveType.Null visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.NumericString visitable)
-    {
+    public String visit(AsnPrimitiveType.NumericString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.ObjectDescriptor visitable)
-    {
+    public String visit(AsnPrimitiveType.ObjectDescriptor visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.OctetString visitable)
-    {
+    public String visit(AsnPrimitiveType.OctetString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Oid visitable)
-    {
+    public String visit(AsnPrimitiveType.Oid visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.PrintableString visitable)
-    {
+    public String visit(AsnPrimitiveType.PrintableString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.RelativeOid visitable)
-    {
+    public String visit(AsnPrimitiveType.RelativeOid visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Sequence visitable)
-    {
+    public String visit(AsnPrimitiveType.Sequence visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.SequenceOf visitable)
-    {
+    public String visit(AsnPrimitiveType.SequenceOf visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Set visitable)
-    {
+    public String visit(AsnPrimitiveType.Set visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.SetOf visitable)
-    {
+    public String visit(AsnPrimitiveType.SetOf visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.TeletexString visitable)
-    {
+    public String visit(AsnPrimitiveType.TeletexString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.UniversalString visitable)
-    {
+    public String visit(AsnPrimitiveType.UniversalString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.UtcTime visitable)
-    {
+    public String visit(AsnPrimitiveType.UtcTime visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.Utf8String visitable)
-    {
+    public String visit(AsnPrimitiveType.Utf8String visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.VideotexString visitable)
-    {
+    public String visit(AsnPrimitiveType.VideotexString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 
     @Override
-    public String visit(AsnPrimitiveType.VisibleString visitable)
-    {
+    public String visit(AsnPrimitiveType.VisibleString visitable) {
         return visitable.getClass().getCanonicalName();
     }
 }

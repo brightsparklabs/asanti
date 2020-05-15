@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.rule;
@@ -13,17 +15,16 @@ import org.junit.Test;
  *
  * @author brightSPARK Labs
  */
-public class PrimitiveValidationRuleTest
-{
+public class PrimitiveValidationRuleTest {
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
     @Test
-    public void testValidate() throws Exception
-    {
+    public void testValidate() throws Exception {
         // TODO: ASN-93
-        //final PrimitiveBuiltinTypeValidator instance = new PrimitiveBuiltinTypeValidator(AsnSchemaConstraint.NULL);
-        //instance.validate(tag, decodedAsnData);
+        // final PrimitiveBuiltinTypeValidator instance = new
+        // PrimitiveBuiltinTypeValidator(AsnSchemaConstraint.NULL);
+        // instance.validate(tag, decodedAsnData);
     }
 }

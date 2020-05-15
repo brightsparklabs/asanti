@@ -1,3 +1,10 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.common
 
 import spock.lang.Shared
@@ -22,10 +29,10 @@ class ByteArraysTest extends Specification {
         where:
         input || expected
         null  || ""
-        (byte[]) [] || ""
-        (byte[]) [0] || "0x00"
-        (byte[]) [0, 1, 2, 3, 4, 5] || "0x000102030405"
-        (byte[]) [ 'h', 'e', 'l', 'l', 'o' ] || "0x68656C6C6F (\"hello\")"
+        (byte[]) []|| ""
+        (byte[]) [0]|| "0x00"
+        (byte[]) [0, 1, 2, 3, 4, 5]|| "0x000102030405"
+        (byte[]) ['h', 'e', 'l', 'l', 'o']|| "0x68656C6C6F (\"hello\")"
     }
 
     def "test containsNonPrintableChars: #input"() {
@@ -36,22 +43,21 @@ class ByteArraysTest extends Specification {
         where:
         input || expected
         null  || false
-        (byte[]) [] || false
-        (byte[]) [ ' ', 'a'] || false
-        (byte[]) [ 0 ] || true
-        (byte[]) [ 'h', 'e', 'l', 'l', 0 ] || true
-        (byte[]) [ 'h', 'e', 'l', 'l', 'p' ] || false
+        (byte[]) []|| false
+        (byte[]) [' ', 'a']|| false
+        (byte[]) [0]|| true
+        (byte[]) ['h', 'e', 'l', 'l', 0]|| true
+        (byte[]) ['h', 'e', 'l', 'l', 'p']|| false
     }
-/*
-    def "test toString"() {
-        given:
-
-        when:
-        // TODO implement stimulus
-        then:
-        // TODO implement assertions
-    }
-*/
+    /*
+     def "test toString"() {
+     given:
+     when:
+     // TODO implement stimulus
+     then:
+     // TODO implement assertions
+     }
+     */
     @Unroll
     def "test toHexString: #input"() {
         when:
@@ -62,10 +68,9 @@ class ByteArraysTest extends Specification {
         where:
         input || expected
         null  || ""
-        (byte[]) [] || ""
-        (byte[]) [0] || "0x00"
-        (byte[]) [0, 1, 2, 3, 4, 5] || "0x000102030405"
-        (byte[]) [ 'h', 'e', 'l', 'l', 'o' ] || "0x68656C6C6F"
+        (byte[]) []|| ""
+        (byte[]) [0]|| "0x00"
+        (byte[]) [0, 1, 2, 3, 4, 5]|| "0x000102030405"
+        (byte[]) ['h', 'e', 'l', 'l', 'o']|| "0x68656C6C6F"
     }
-
 }

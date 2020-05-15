@@ -1,26 +1,27 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.model.schema;
+
+import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
+import java.text.ParseException;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.text.ParseException;
-
-import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link AsnSchemaModule}
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaModuleTest
-{
+public class AsnSchemaModuleTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -33,8 +34,7 @@ public class AsnSchemaModuleTest
     // -------------------------------------------------------------------------
 
     @BeforeClass
-    public static void setUpBeforeClass() throws ParseException
-    {
+    public static void setUpBeforeClass() throws ParseException {
         instance = MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu().build();
     }
 
@@ -43,51 +43,39 @@ public class AsnSchemaModuleTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testBuilder() throws Exception
-    {
+    public void testBuilder() throws Exception {
 
         // test standard build works
         final Builder builder = AsnSchemaModule.builder();
         builder.setName("TEST").build();
 
         // test null name
-        try
-        {
+        try {
             builder.setName(null).build();
             fail("NullPointerException not thrown");
-        }
-        catch (final NullPointerException ex)
-        {
+        } catch (final NullPointerException ex) {
         }
 
         // test empty name
-        try
-        {
+        try {
             builder.setName("").build();
             fail("IllegalArgumentException not thrown");
+        } catch (final IllegalArgumentException ex) {
         }
-        catch (final IllegalArgumentException ex)
-        {
-        }
-        try
-        {
+        try {
             builder.setName(" ").build();
             fail("IllegalArgumentException not thrown");
-        }
-        catch (final IllegalArgumentException ex)
-        {
+        } catch (final IllegalArgumentException ex) {
         }
     }
 
     @Test
-    public void testGetName() throws Exception
-    {
+    public void testGetName() throws Exception {
         assertEquals("Document-PDU", instance.getName());
     }
 
     @Test
-    public void testGetType() throws Exception
-    {
+    public void testGetType() throws Exception {
         // test known
         assertEquals("Document", instance.getType("Document").getName());
         assertEquals("Header", instance.getType("Header").getName());
@@ -112,8 +100,7 @@ public class AsnSchemaModuleTest
     }
 
     @Test
-    public void testGetImportedModuleFor() throws Exception
-    {
+    public void testGetImportedModuleFor() throws Exception {
         // test imports
         assertEquals("People-Protocol", instance.getImportedModuleFor("People"));
         assertEquals("People-Protocol", instance.getImportedModuleFor("Person"));

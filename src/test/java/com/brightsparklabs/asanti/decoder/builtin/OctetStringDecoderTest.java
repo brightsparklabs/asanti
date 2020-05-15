@@ -1,25 +1,26 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
 import java.util.Optional;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 /**
  * Units tests for {@link OctetStringDecoder}
  *
  * @author brightSPARK Labs
  */
-public class OctetStringDecoderTest
-{
+public class OctetStringDecoderTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -32,24 +33,19 @@ public class OctetStringDecoderTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testDecode() throws Exception
-    {
+    public void testDecode() throws Exception {
         // test valid
         byte[] bytes = new byte[Byte.MAX_VALUE - Byte.MIN_VALUE];
-        for (int i = 0; i < bytes.length; i++)
-        {
+        for (int i = 0; i < bytes.length; i++) {
             bytes[i] = (byte) (i + Byte.MIN_VALUE);
         }
         assertArrayEquals(bytes, instance.decode(bytes));
 
         // test null
-        try
-        {
+        try {
             instance.decode(null);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
         // test empty
@@ -58,22 +54,18 @@ public class OctetStringDecoderTest
     }
 
     @Test
-    public void testDecodeAsString() throws Exception
-    {
+    public void testDecodeAsString() throws Exception {
         // test valid
-        byte[] bytes = new byte[] { 0x54, 0x45, 0x53, 0x54 };
+        byte[] bytes = new byte[] {0x54, 0x45, 0x53, 0x54};
         assertEquals("TEST", instance.decodeAsString(bytes));
-        bytes = new byte[] { 0x00, 0x54, 0x45, 0x53, 0x54, 0x00 };
+        bytes = new byte[] {0x00, 0x54, 0x45, 0x53, 0x54, 0x00};
         assertEquals("0x005445535400", instance.decodeAsString(bytes));
 
         // test null
-        try
-        {
+        try {
             instance.decodeAsString(null);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
         // test empty
@@ -82,16 +74,15 @@ public class OctetStringDecoderTest
     }
 
     @Test
-    public void testDecodeAsStringOverload() throws Exception
-    {
+    public void testDecodeAsStringOverload() throws Exception {
         AsantiAsnData data = mock(AsantiAsnData.class);
         when(data.getBytes(anyString())).thenReturn(Optional.empty());
 
         final String tagIsAscii = "IsAscii";
-        final byte[] bytesIsAscii = new byte[] { 0x54, 0x45, 0x53, 0x54, 0x0D, 0x0A, 0x31 };
+        final byte[] bytesIsAscii = new byte[] {0x54, 0x45, 0x53, 0x54, 0x0D, 0x0A, 0x31};
         when(data.getBytes(eq(tagIsAscii))).thenReturn(Optional.of(bytesIsAscii));
         final String tagNotAscii = "NotAscii";
-        final byte[] bytesNotAscii = new byte[] { 0x00, 0x54, 0x45, 0x53, 0x54, 0x00 };
+        final byte[] bytesNotAscii = new byte[] {0x00, 0x54, 0x45, 0x53, 0x54, 0x00};
         when(data.getBytes(eq(tagNotAscii))).thenReturn(Optional.of(bytesNotAscii));
         final String tagEmpty = "Empty";
         final byte[] bytesEmpty = new byte[0];
@@ -103,31 +94,22 @@ public class OctetStringDecoderTest
 
         assertEquals("", instance.decodeAsString(tagEmpty, data));
         // test null
-        try
-        {
+        try {
             instance.decodeAsString(null, data);
             fail("NullPointerException not thrown");
+        } catch (NullPointerException ex) {
         }
-        catch (NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             instance.decodeAsString("someTag", null);
             fail("NullPointerException not thrown");
-        }
-        catch (NullPointerException ex)
-        {
+        } catch (NullPointerException ex) {
         }
 
-        try
-        {
+        try {
             // this will produce a null for getBytes
             assertEquals("", instance.decodeAsString("badTag", data));
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException e)
-        {
+        } catch (DecodeException e) {
         }
     }
 }

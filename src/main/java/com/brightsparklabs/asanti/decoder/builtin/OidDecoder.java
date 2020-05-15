@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -17,8 +19,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class OidDecoder extends AbstractBuiltinTypeDecoder<String>
-{
+public class OidDecoder extends AbstractBuiltinTypeDecoder<String> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -33,7 +34,7 @@ public class OidDecoder extends AbstractBuiltinTypeDecoder<String>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private OidDecoder() {}
 
@@ -42,10 +43,8 @@ public class OidDecoder extends AbstractBuiltinTypeDecoder<String>
      *
      * @return a singleton instance of this class
      */
-    public static OidDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static OidDecoder getInstance() {
+        if (instance == null) {
             instance = new OidDecoder();
         }
         return instance;
@@ -56,8 +55,7 @@ public class OidDecoder extends AbstractBuiltinTypeDecoder<String>
     // -------------------------------------------------------------------------
 
     @Override
-    public String decode(final byte[] bytes) throws DecodeException
-    {
+    public String decode(final byte[] bytes) throws DecodeException {
         final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsOid(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
 
@@ -73,14 +71,12 @@ public class OidDecoder extends AbstractBuiltinTypeDecoder<String>
 
         // The remaining ids may be encoded on one byte (within range 0x00 - 0x7F), or multiple
         // bytes (where signed bit indicates another octet follows).
-        for (int i = 1; i < bytes.length; i++)
-        {
+        for (int i = 1; i < bytes.length; i++) {
             int currentByte = bytes[i] & 0xFF;
             currentSID = (currentSID << 7) | (currentByte & 0x7F);
             // SID may be encoded across multiple octets. If 7th bit is not set, this is the last
             // (or only) encoded octet.
-            if ((currentByte & 0x80) == 0)
-            {
+            if ((currentByte & 0x80) == 0) {
                 oidBuilder.append(".");
                 oidBuilder.append(currentSID);
 

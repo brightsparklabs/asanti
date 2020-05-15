@@ -1,12 +1,14 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
 
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -14,8 +16,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class OctetStringValidator extends PrimitiveBuiltinTypeValidator
-{
+public class OctetStringValidator extends PrimitiveBuiltinTypeValidator {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -30,7 +31,7 @@ public class OctetStringValidator extends PrimitiveBuiltinTypeValidator
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private OctetStringValidator() {}
 
@@ -39,10 +40,8 @@ public class OctetStringValidator extends PrimitiveBuiltinTypeValidator
      *
      * @return a singleton instance of this class
      */
-    public static OctetStringValidator getInstance()
-    {
-        if (instance == null)
-        {
+    public static OctetStringValidator getInstance() {
+        if (instance == null) {
             instance = new OctetStringValidator();
         }
         return instance;
@@ -53,8 +52,7 @@ public class OctetStringValidator extends PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------
 
     @Override
-    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
-    {
+    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes) {
         // no validation required
         return ImmutableSet.of();
     }

@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -18,8 +20,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
-{
+public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -34,7 +35,7 @@ public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private Ia5StringDecoder() {}
 
@@ -43,10 +44,8 @@ public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
      *
      * @return a singleton instance of this class
      */
-    public static Ia5StringDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static Ia5StringDecoder getInstance() {
+        if (instance == null) {
             instance = new Ia5StringDecoder();
         }
         return instance;
@@ -57,10 +56,9 @@ public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String>
     // -------------------------------------------------------------------------
 
     @Override
-    public String decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsIa5String(
-                bytes);
+    public String decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsIa5String(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
         return new String(bytes, Charsets.UTF_8);
     }

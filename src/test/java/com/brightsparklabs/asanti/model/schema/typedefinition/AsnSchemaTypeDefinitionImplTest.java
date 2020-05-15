@@ -1,7 +1,10 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.model.schema.typedefinition;
 
 import static org.junit.Assert.*;
@@ -14,60 +17,48 @@ import org.junit.Test;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeDefinitionImplTest
-{
+public class AsnSchemaTypeDefinitionImplTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
-
 
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
     @Test
-    public void testAsnSchemaTypeDefinition() throws Exception
-    {
+    public void testAsnSchemaTypeDefinition() throws Exception {
         // test null
-        try
-        {
+        try {
             new AsnSchemaTypeDefinitionImpl(null, AsnSchemaType.NULL);
             fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
         }
-        catch (final NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             new AsnSchemaTypeDefinitionImpl("TYPE_NAME", null);
             fail("NullPointerException not thrown");
-        }
-        catch (final NullPointerException ex)
-        {
+        } catch (final NullPointerException ex) {
         }
 
         // test blank
-        try
-        {
+        try {
             new AsnSchemaTypeDefinitionImpl("", AsnSchemaType.NULL);
             fail("IllegalArgumentException not thrown");
-        }
-        catch (final IllegalArgumentException ex)
-        {
+        } catch (final IllegalArgumentException ex) {
         }
     }
 
     @Test
-    public void testGetName() throws Exception
-    {
-        final AsnSchemaTypeDefinition instance = new AsnSchemaTypeDefinitionImpl("NAME", AsnSchemaType.NULL);
+    public void testGetName() throws Exception {
+        final AsnSchemaTypeDefinition instance =
+                new AsnSchemaTypeDefinitionImpl("NAME", AsnSchemaType.NULL);
         assertEquals("NAME", instance.getName());
     }
 
     @Test
-    public void testGetType() throws Exception
-    {
-        final AsnSchemaTypeDefinition instance = new AsnSchemaTypeDefinitionImpl("NAME", AsnSchemaType.NULL);
+    public void testGetType() throws Exception {
+        final AsnSchemaTypeDefinition instance =
+                new AsnSchemaTypeDefinitionImpl("NAME", AsnSchemaType.NULL);
         assertEquals(AsnSchemaType.NULL, instance.getType());
     }
 }

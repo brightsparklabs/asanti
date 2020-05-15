@@ -1,16 +1,17 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 
 /**
@@ -18,8 +19,7 @@ import java.util.Set;
  *
  * @author brightSPARK Labs
  */
-public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
-{
+public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -34,7 +34,7 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private PrintableStringValidator() {}
 
@@ -43,10 +43,8 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
      *
      * @return a singleton instance of this class
      */
-    public static PrintableStringValidator getInstance()
-    {
-        if (instance == null)
-        {
+    public static PrintableStringValidator getInstance() {
+        if (instance == null) {
             instance = new PrintableStringValidator();
         }
         return instance;
@@ -57,19 +55,15 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------
 
     @Override
-    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
-    {
+    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes) {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
-        for (int i = 0; i < bytes.length; i++)
-        {
+        for (int i = 0; i < bytes.length; i++) {
             byte b = bytes[i];
 
-            if (!isPrintableByte(b))
-            {
+            if (!isPrintableByte(b)) {
                 final String error = PRINTABLESTRING_VALIDATION_ERROR + String.format("0x%02X ", b);
-                final ByteValidationFailure failure = new ByteValidationFailure(i,
-                        FailureType.DataIncorrectlyFormatted,
-                        error);
+                final ByteValidationFailure failure =
+                        new ByteValidationFailure(i, FailureType.DataIncorrectlyFormatted, error);
                 failures.add(failure);
             }
         }
@@ -83,22 +77,17 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator
      *
      * @return true if byte is within the range conforming to PrintableString format
      */
-    private boolean isPrintableByte(final byte b)
-    {
-        if ((b >= 'A') && (b <= 'Z'))
-        {
+    private boolean isPrintableByte(final byte b) {
+        if ((b >= 'A') && (b <= 'Z')) {
             return true;
         }
-        if ((b >= 'a') && (b <= 'z'))
-        {
+        if ((b >= 'a') && (b <= 'z')) {
             return true;
         }
-        if ((b >= '0') && (b <= '9'))
-        {
+        if ((b >= '0') && (b <= '9')) {
             return true;
         }
-        switch (b)
-        {
+        switch (b) {
             case ' ':
             case '\'':
             case '(':

@@ -1,8 +1,14 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.model.data;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
@@ -12,24 +18,19 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.regex.Pattern;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Unit tests for public class {@link AsantiAsnDataImpl}
  *
  * @author brightSPARK Labs
  */
-public class AsantiAsnDataImplTest
-{
+public class AsantiAsnDataImplTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -45,19 +46,18 @@ public class AsantiAsnDataImplTest
     // -------------------------------------------------------------------------
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception
-    {
+    public static void setUpBeforeClass() throws Exception {
         /** data to construct rawAsnData from */
-        final ImmutableMap<String, byte[]> tagsToData = ImmutableMap.<String, byte[]>builder().put(
-                "0[1]/0[0]/1[1]",
-                "/1/0/1".getBytes(Charsets.UTF_8))
-                .put("1[2]/0[0]/0[0]", "/2/0/0".getBytes(Charsets.UTF_8))
-                .put("1[2]/1[1]/0[1]", "/2/1/1".getBytes(Charsets.UTF_8))
-                .put("1[2]/2[2]/0[1]", "/2/2/1".getBytes(Charsets.UTF_8))
-                .put("2[3]/0[0]/0[UNIVERSAL 16]/0[1]", "/3/0/1".getBytes(Charsets.UTF_8))
-                .put("1[2]/0[0]/0[99]", "/2/0/99".getBytes(Charsets.UTF_8))
-                .put("0[99]/0[1]/0[1]", "/99/1/1".getBytes(Charsets.UTF_8))
-                .build();
+        final ImmutableMap<String, byte[]> tagsToData =
+                ImmutableMap.<String, byte[]>builder()
+                        .put("0[1]/0[0]/1[1]", "/1/0/1".getBytes(Charsets.UTF_8))
+                        .put("1[2]/0[0]/0[0]", "/2/0/0".getBytes(Charsets.UTF_8))
+                        .put("1[2]/1[1]/0[1]", "/2/1/1".getBytes(Charsets.UTF_8))
+                        .put("1[2]/2[2]/0[1]", "/2/2/1".getBytes(Charsets.UTF_8))
+                        .put("2[3]/0[0]/0[UNIVERSAL 16]/0[1]", "/3/0/1".getBytes(Charsets.UTF_8))
+                        .put("1[2]/0[0]/0[99]", "/2/0/99".getBytes(Charsets.UTF_8))
+                        .put("0[99]/0[1]/0[1]", "/99/1/1".getBytes(Charsets.UTF_8))
+                        .build();
 
         // create instance
         final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
@@ -74,80 +74,54 @@ public class AsantiAsnDataImplTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testDecodedAsnDataDefault() throws Exception
-    {
+    public void testDecodedAsnDataDefault() throws Exception {
         final RawAsnData mockData = mock(RawAsnData.class);
         final AsnSchema mockSchema = mock(AsnSchema.class);
 
-        try
-        {
+        try {
             new AsantiAsnDataImpl(null, null, null);
             fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
         }
-        catch (final NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             new AsantiAsnDataImpl(null, null, "Test");
             fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
         }
-        catch (final NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             new AsantiAsnDataImpl(null, mockSchema, null);
             fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
         }
-        catch (final NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             new AsantiAsnDataImpl(null, mockSchema, "Test");
             fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
         }
-        catch (final NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             new AsantiAsnDataImpl(mockData, null, null);
             fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
         }
-        catch (final NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             new AsantiAsnDataImpl(mockData, null, "Test");
             fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
         }
-        catch (final NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             new AsantiAsnDataImpl(mockData, mockSchema, null);
             fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
         }
-        catch (final NullPointerException ex)
-        {
-        }
-        try
-        {
+        try {
             new AsantiAsnDataImpl(mockData, mockSchema, "");
             fail("IllegalArgumentException not thrown");
-        }
-        catch (final IllegalArgumentException ex)
-        {
+        } catch (final IllegalArgumentException ex) {
         }
     }
 
     @Test
-    public void testGetTags() throws Exception
-    {
+    public void testGetTags() throws Exception {
         ImmutableSet<String> tags = instance.getTags();
         assertEquals(tags.size(), 5);
         assertTrue(tags.contains("/Document/header/published/date"));
@@ -161,8 +135,7 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetTagsMatching() throws Exception
-    {
+    public void testGetTagsMatching() throws Exception {
         // test can match all tags
         final Pattern patternMatchAllTags = Pattern.compile("/\\Document.*");
         final ImmutableSet<String> matchingAllTags = instance.getTagsMatching(patternMatchAllTags);
@@ -170,7 +143,8 @@ public class AsantiAsnDataImplTest
 
         // test can match some tags
         final Pattern patternMatchDocumentBodyTags = Pattern.compile("/\\Document/body/.*");
-        final ImmutableSet<String> matchingDocumentBodyTags = instance.getTagsMatching(patternMatchDocumentBodyTags);
+        final ImmutableSet<String> matchingDocumentBodyTags =
+                instance.getTagsMatching(patternMatchDocumentBodyTags);
         assertEquals(4, matchingDocumentBodyTags.size());
 
         // test match no tags
@@ -184,8 +158,7 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetUnmappedTags() throws Exception
-    {
+    public void testGetUnmappedTags() throws Exception {
         ImmutableSet<String> tags = instance.getUnmappedTags();
         assertEquals(tags.size(), 2);
         assertTrue(tags.contains("/Document/body/content/0[99]"));
@@ -196,8 +169,7 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testContains() throws Exception
-    {
+    public void testContains() throws Exception {
         assertTrue(instance.contains("/Document/header/published/date"));
         assertTrue(instance.contains("/Document/body/lastModified/date"));
         assertTrue(instance.contains("/Document/body/prefix/text"));
@@ -238,30 +210,36 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetBytes() throws Exception
-    {
-        assertArrayEquals("/1/0/1".getBytes(Charsets.UTF_8),
+    public void testGetBytes() throws Exception {
+        assertArrayEquals(
+                "/1/0/1".getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/header/published/date").get());
-        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8),
+        assertArrayEquals(
+                "/2/0/0".getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/body/lastModified/date").get());
-        assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8),
+        assertArrayEquals(
+                "/2/1/1".getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/body/prefix/text").get());
-        assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8),
+        assertArrayEquals(
+                "/2/2/1".getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/body/content/text").get());
-        assertArrayEquals("/3/0/1".getBytes(Charsets.UTF_8),
+        assertArrayEquals(
+                "/3/0/1".getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
-        assertArrayEquals("/2/0/99".getBytes(Charsets.UTF_8),
+        assertArrayEquals(
+                "/2/0/99".getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/body/content/0[99]").get());
-        assertArrayEquals("/99/1/1".getBytes(Charsets.UTF_8),
+        assertArrayEquals(
+                "/99/1/1".getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/0[99]/0[1]/0[1]").get());
 
         // test raw tags
-        assertArrayEquals("/2/0/99".getBytes(Charsets.UTF_8),
-                instance.getBytes("1[2]/0[0]/0[99]").get());
-        assertArrayEquals("/99/1/1".getBytes(Charsets.UTF_8),
-                instance.getBytes("0[99]/0[1]/0[1]").get());
+        assertArrayEquals(
+                "/2/0/99".getBytes(Charsets.UTF_8), instance.getBytes("1[2]/0[0]/0[99]").get());
+        assertArrayEquals(
+                "/99/1/1".getBytes(Charsets.UTF_8), instance.getBytes("0[99]/0[1]/0[1]").get());
 
         // test unknown tags
         assertFalse(instance.getBytes("").isPresent());
@@ -274,30 +252,29 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetBytesMatching() throws Exception
-    {
+    public void testGetBytesMatching() throws Exception {
         Pattern regex = Pattern.compile("/Document/body/.+");
         ImmutableMap<String, byte[]> result = instance.getBytesMatching(regex);
         assertEquals(4, result.size());
-        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8),
-                result.get("/Document/body/lastModified/date"));
-        assertArrayEquals("/2/1/1".getBytes(Charsets.UTF_8),
-                result.get("/Document/body/prefix/text"));
-        assertArrayEquals("/2/2/1".getBytes(Charsets.UTF_8),
-                result.get("/Document/body/content/text"));
-        assertArrayEquals("/2/0/99".getBytes(Charsets.UTF_8),
-                result.get("/Document/body/content/0[99]"));
+        assertArrayEquals(
+                "/2/0/0".getBytes(Charsets.UTF_8), result.get("/Document/body/lastModified/date"));
+        assertArrayEquals(
+                "/2/1/1".getBytes(Charsets.UTF_8), result.get("/Document/body/prefix/text"));
+        assertArrayEquals(
+                "/2/2/1".getBytes(Charsets.UTF_8), result.get("/Document/body/content/text"));
+        assertArrayEquals(
+                "/2/0/99".getBytes(Charsets.UTF_8), result.get("/Document/body/content/0[99]"));
         assertFalse(instance.getBytes("/Document/1[2]/0[0]/0[99]").isPresent());
 
         result = emptyInstance.getBytesMatching(regex);
         assertEquals(0, result.size());
 
-        //regex = Pattern.compile("/Document/\\d+/1/\\d{1}");
+        // regex = Pattern.compile("/Document/\\d+/1/\\d{1}");
         regex = Pattern.compile("/Document/.*?/0\\[1\\]/.*");
         result = instance.getBytesMatching(regex);
         assertEquals(1, result.size());
-        assertArrayEquals("/99/1/1".getBytes(Charsets.UTF_8),
-                result.get("/Document/0[99]/0[1]/0[1]"));
+        assertArrayEquals(
+                "/99/1/1".getBytes(Charsets.UTF_8), result.get("/Document/0[99]/0[1]/0[1]"));
 
         result = emptyInstance.getBytesMatching(regex);
         assertEquals(0, result.size());
@@ -318,15 +295,15 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetHexString() throws Exception
-    {
-        assertEquals("2F312F302F31",
-                instance.getHexString("/Document/header/published/date").get());
-        assertEquals("2F322F302F30",
-                instance.getHexString("/Document/body/lastModified/date").get());
+    public void testGetHexString() throws Exception {
+        assertEquals(
+                "2F312F302F31", instance.getHexString("/Document/header/published/date").get());
+        assertEquals(
+                "2F322F302F30", instance.getHexString("/Document/body/lastModified/date").get());
         assertEquals("2F322F312F31", instance.getHexString("/Document/body/prefix/text").get());
         assertEquals("2F322F322F31", instance.getHexString("/Document/body/content/text").get());
-        assertEquals("2F332F302F31",
+        assertEquals(
+                "2F332F302F31",
                 instance.getHexString("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
@@ -338,7 +315,8 @@ public class AsantiAsnDataImplTest
         assertEquals("2F39392F312F31", instance.getHexString("0[99]/0[1]/0[1]").get());
 
         // test unmapped is the same as respective raw
-        assertEquals(instance.getHexString("/Document/body/content/0[99]").get(),
+        assertEquals(
+                instance.getHexString("/Document/body/content/0[99]").get(),
                 instance.getHexString("1[2]/0[0]/0[99]").get());
 
         // test unknown tags
@@ -352,8 +330,7 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetHexStringsMatching() throws Exception
-    {
+    public void testGetHexStringsMatching() throws Exception {
         Pattern regex = Pattern.compile("/Document/bod[x-z]/.+");
         ImmutableMap<String, String> result = instance.getHexStringsMatching(regex);
         assertEquals(4, result.size());
@@ -390,19 +367,21 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetPrintableString() throws Exception
-    {
-        assertEquals(MockAsnSchema.getPublishDate().toString(),
+    public void testGetPrintableString() throws Exception {
+        assertEquals(
+                MockAsnSchema.getPublishDate().toString(),
                 instance.getPrintableString("/Document/header/published/date").get());
 
-        assertEquals(MockAsnSchema.getLastModifiedDate().toString(),
+        assertEquals(
+                MockAsnSchema.getLastModifiedDate().toString(),
                 instance.getPrintableString("/Document/body/lastModified/date").get());
 
-        assertEquals("prefix text",
-                instance.getPrintableString("/Document/body/prefix/text").get());
-        assertEquals("content text",
-                instance.getPrintableString("/Document/body/content/text").get());
-        assertEquals("firstName",
+        assertEquals(
+                "prefix text", instance.getPrintableString("/Document/body/prefix/text").get());
+        assertEquals(
+                "content text", instance.getPrintableString("/Document/body/content/text").get());
+        assertEquals(
+                "firstName",
                 instance.getPrintableString("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
@@ -420,13 +399,12 @@ public class AsantiAsnDataImplTest
 
         assertFalse(emptyInstance.getPrintableString("").isPresent());
         assertFalse(emptyInstance.getPrintableString("/0/0/0").isPresent());
-        assertFalse(emptyInstance.getPrintableString("/Document/header/published/date")
-                .isPresent());
+        assertFalse(
+                emptyInstance.getPrintableString("/Document/header/published/date").isPresent());
     }
 
     @Test
-    public void testGetPrintableStringsMatching() throws Exception
-    {
+    public void testGetPrintableStringsMatching() throws Exception {
         Pattern regex = Pattern.compile(".+text");
         ImmutableMap<String, String> result = instance.getPrintableStringsMatching(regex);
         assertEquals(2, result.size());
@@ -450,17 +428,21 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetType() throws Exception
-    {
-        assertEquals(AsnBuiltinType.GeneralizedTime,
+    public void testGetType() throws Exception {
+        assertEquals(
+                AsnBuiltinType.GeneralizedTime,
                 instance.getType("/Document/header/published/date").get().getBuiltinType());
-        assertEquals(AsnBuiltinType.GeneralizedTime,
+        assertEquals(
+                AsnBuiltinType.GeneralizedTime,
                 instance.getType("/Document/body/lastModified/date").get().getBuiltinType());
-        assertEquals(AsnBuiltinType.Utf8String,
+        assertEquals(
+                AsnBuiltinType.Utf8String,
                 instance.getType("/Document/body/prefix/text").get().getBuiltinType());
-        assertEquals(AsnBuiltinType.Utf8String,
+        assertEquals(
+                AsnBuiltinType.Utf8String,
                 instance.getType("/Document/body/content/text").get().getBuiltinType());
-        assertEquals(AsnBuiltinType.Utf8String,
+        assertEquals(
+                AsnBuiltinType.Utf8String,
                 instance.getType("/Document/footer/authors[0]/firstName").get().getBuiltinType());
 
         // test unmapped tags
@@ -469,7 +451,8 @@ public class AsantiAsnDataImplTest
 
         // test raw tags (demonstrating two different usages or Optional)
         assertFalse(instance.getType("/2/2/99").isPresent());
-        assertEquals(AsnBuiltinType.Null,
+        assertEquals(
+                AsnBuiltinType.Null,
                 instance.getType("/99/1/1").orElse(AsnSchemaType.NULL).getBuiltinType());
 
         // test unknown tags
@@ -484,72 +467,76 @@ public class AsantiAsnDataImplTest
     }
 
     @Test
-    public void testGetDecodedObjectWithType() throws Exception
-    {
-        assertEquals(MockAsnSchema.getPublishDate(),
+    public void testGetDecodedObjectWithType() throws Exception {
+        assertEquals(
+                MockAsnSchema.getPublishDate(),
                 instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class)
                         .get());
-        assertEquals(MockAsnSchema.getLastModifiedDate(),
+        assertEquals(
+                MockAsnSchema.getLastModifiedDate(),
                 instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class)
                         .get());
-        assertEquals("prefix text",
+        assertEquals(
+                "prefix text",
                 instance.getDecodedObject("/Document/body/prefix/text", String.class).get());
-        assertEquals("content text",
+        assertEquals(
+                "content text",
                 instance.getDecodedObject("/Document/body/content/text", String.class).get());
-        assertEquals("firstName",
+        assertEquals(
+                "firstName",
                 instance.getDecodedObject("/Document/footer/authors[0]/firstName", String.class)
                         .get());
 
-        try
-        {
+        try {
             instance.getDecodedObject("/Document/header/published/date", String.class);
             fail("Should have thrown ClassCastException");
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             // expected
         }
-        try
-        {
+        try {
             instance.getDecodedObject("/Document/body/prefix/text", BigInteger.class);
             fail("Should have thrown ClassCastException");
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             // expected
         }
 
         // test unmapped tags, where it should not matter if the type is wrong
         // (the fact that they are unmapped means that there is no known type)
-        assertFalse(instance.getDecodedObject("/Document/body/content/99", String.class)
-                .isPresent());
-        assertFalse(instance.getDecodedObject("/Document/body/content/99", Timestamp.class)
-                .isPresent());
-        assertFalse(instance.getDecodedObject("/Document/body/content/99", BigInteger.class)
-                .isPresent());
+        assertFalse(
+                instance.getDecodedObject("/Document/body/content/99", String.class).isPresent());
+        assertFalse(
+                instance.getDecodedObject("/Document/body/content/99", Timestamp.class)
+                        .isPresent());
+        assertFalse(
+                instance.getDecodedObject("/Document/body/content/99", BigInteger.class)
+                        .isPresent());
         assertFalse(instance.getDecodedObject("/Document/99/1/1", String.class).isPresent());
     }
 
     @Test
-    public void testGetDecodedObject() throws Exception
-    {
-        assertEquals(MockAsnSchema.getPublishDate(),
+    public void testGetDecodedObject() throws Exception {
+        assertEquals(
+                MockAsnSchema.getPublishDate(),
                 instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class)
                         .get());
-        assertEquals(MockAsnSchema.getLastModifiedDate(),
+        assertEquals(
+                MockAsnSchema.getLastModifiedDate(),
                 instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class)
                         .get());
-        assertEquals("prefix text",
+        assertEquals(
+                "prefix text",
                 instance.getDecodedObject("/Document/body/prefix/text", String.class).get());
-        assertEquals("content text",
+        assertEquals(
+                "content text",
                 instance.getDecodedObject("/Document/body/content/text", String.class).get());
-        assertEquals("firstName",
+        assertEquals(
+                "firstName",
                 instance.getDecodedObject("/Document/footer/authors[0]/firstName", String.class)
                         .get());
 
         // test unmapped tags
-        assertFalse(instance.getDecodedObject("/Document/body/content/99", String.class)
-                .isPresent());
+        assertFalse(
+                instance.getDecodedObject("/Document/body/content/99", String.class).isPresent());
         assertFalse(instance.getDecodedObject("/Document/99/1/1", String.class).isPresent());
 
         // test raw tags
@@ -563,17 +550,19 @@ public class AsantiAsnDataImplTest
 
         assertFalse(emptyInstance.getDecodedObject("", String.class).isPresent());
         assertFalse(emptyInstance.getDecodedObject("/0/0/0", String.class).isPresent());
-        assertFalse(emptyInstance.getDecodedObject("/Document/header/published/date", String.class)
-                .isPresent());
+        assertFalse(
+                emptyInstance
+                        .getDecodedObject("/Document/header/published/date", String.class)
+                        .isPresent());
     }
 
     @Test
-    public void testGetDecodedObjectsMatching() throws Exception
-    {
+    public void testGetDecodedObjectsMatching() throws Exception {
         Pattern regex = Pattern.compile(".+dy.+");
         ImmutableMap<String, Object> result = instance.getDecodedObjectsMatching(regex);
         assertEquals(3, result.size());
-        assertEquals(MockAsnSchema.getLastModifiedDate(),
+        assertEquals(
+                MockAsnSchema.getLastModifiedDate(),
                 result.get("/Document/body/lastModified/date"));
         assertEquals("prefix text", result.get("/Document/body/prefix/text"));
         assertEquals("content text", result.get("/Document/body/content/text"));

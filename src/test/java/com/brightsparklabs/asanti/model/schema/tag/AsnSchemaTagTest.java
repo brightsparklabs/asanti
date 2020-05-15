@@ -1,19 +1,22 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.model.schema.tag;
+
+import static org.junit.Assert.*;
 
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-/**
- * Created by Michael on 7/07/2015.
- */
-public class AsnSchemaTagTest
-{
+/** Created by Michael on 7/07/2015. */
+public class AsnSchemaTagTest {
 
     @Test
-    public void testCreate() throws Exception
-    {
+    public void testCreate() throws Exception {
 
         AsnSchemaTag tag = AsnSchemaTag.create(null);
         assertEquals("", tag.getRawTag());
@@ -24,12 +27,11 @@ public class AsnSchemaTagTest
     }
 
     @Test
-    public void testCreateHelpers() throws Exception
-    {
+    public void testCreateHelpers() throws Exception {
         AsnSchemaTag tag = AsnSchemaTag.create("0[1]");
         assertEquals("0[1]", tag.getRawTag());
 
-        tag = AsnSchemaTag.create(1,"2");
+        tag = AsnSchemaTag.create(1, "2");
         assertEquals("1[2]", tag.getRawTag());
         tag = AsnSchemaTag.create("2", AsnBuiltinType.Integer);
         assertEquals("2[UNIVERSAL 2]", tag.getRawTag());
@@ -41,12 +43,10 @@ public class AsnSchemaTagTest
 
         tag = AsnSchemaTag.create(AsnSchemaTag.createRawTagUniversal(4, 31));
         assertEquals("", tag.getRawTag());
-
     }
 
     @Test
-    public void testToStringAndGetRawTag() throws Exception
-    {
+    public void testToStringAndGetRawTag() throws Exception {
         AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("1[0]", tag.toString());
 
@@ -76,8 +76,7 @@ public class AsnSchemaTagTest
     }
 
     @Test
-    public void testGetTagIndex() throws Exception
-    {
+    public void testGetTagIndex() throws Exception {
         AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("1", tag.getTagIndex());
 
@@ -98,8 +97,7 @@ public class AsnSchemaTagTest
     }
 
     @Test
-    public void testGetTagContextSpecific() throws Exception
-    {
+    public void testGetTagContextSpecific() throws Exception {
         AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("0", tag.getTagContextSpecific());
 
@@ -120,8 +118,7 @@ public class AsnSchemaTagTest
     }
 
     @Test
-    public void testGetTagUniversal() throws Exception
-    {
+    public void testGetTagUniversal() throws Exception {
         AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("", tag.getTagUniversal());
 
@@ -142,8 +139,7 @@ public class AsnSchemaTagTest
     }
 
     @Test
-    public void testGetTagPortion() throws Exception
-    {
+    public void testGetTagPortion() throws Exception {
         AsnSchemaTag tag = AsnSchemaTag.create("1[0]");
         assertEquals("0", tag.getTagPortion());
 
@@ -164,8 +160,7 @@ public class AsnSchemaTagTest
     }
 
     @Test
-    public void testGetBuiltInTypeForUniversalTag()
-    {
+    public void testGetBuiltInTypeForUniversalTag() {
         assertEquals(AsnBuiltinType.Integer, AsnSchemaTag.getBuiltInTypeForUniversalTag(2).get());
         assertFalse(AsnSchemaTag.getBuiltInTypeForUniversalTag(31).isPresent());
     }

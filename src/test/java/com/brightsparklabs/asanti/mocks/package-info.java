@@ -4,9 +4,8 @@
  */
 
 /**
- * This package contains utility methods for obtaining instances of mocked
- * objects. This simplifies creation of mocked objects for use across unit
- * tests.
+ * This package contains utility methods for obtaining instances of mocked objects. This simplifies
+ * creation of mocked objects for use across unit tests.
  *
  * @author brightSPARK Labs
  */

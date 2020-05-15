@@ -4,8 +4,8 @@
  */
 
 /**
- * This package contains tests that are end-to-end, or integration.
- * That is these tests are NOT Unit level, and they will NOT use mocking.
+ * This package contains tests that are end-to-end, or integration. That is these tests are NOT Unit
+ * level, and they will NOT use mocking.
  *
  * @author brightSPARK Labs
  */

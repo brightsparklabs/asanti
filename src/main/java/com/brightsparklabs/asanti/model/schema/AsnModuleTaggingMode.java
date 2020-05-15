@@ -1,3 +1,10 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.model.schema;
 
 /**
@@ -5,8 +12,7 @@ package com.brightsparklabs.asanti.model.schema;
  *
  * @author brightSPARK Labs
  */
-public enum AsnModuleTaggingMode
-{
+public enum AsnModuleTaggingMode {
     IMPLICIT,
     EXPLICIT,
     AUTOMATIC,

@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.model.schema.typedefinition;
@@ -13,8 +15,7 @@ import static com.google.common.base.Preconditions.*;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaNamedTag
-{
+public class AsnSchemaNamedTag {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -32,21 +33,14 @@ public class AsnSchemaNamedTag
     /**
      * Default constructor.
      *
-     * @param tagName
-     *         name of this component type (i.e. tag name)
-     * @param tag
-     *         tag of this component type.
-     *
-     * @throws NullPointerException
-     *         if {@code tagName} or {@code tag} are {@code null}
-     * @throws IllegalArgumentException
-     *         if {@code tagName} or {@code tag} are blank
+     * @param tagName name of this component type (i.e. tag name)
+     * @param tag tag of this component type.
+     * @throws NullPointerException if {@code tagName} or {@code tag} are {@code null}
+     * @throws IllegalArgumentException if {@code tagName} or {@code tag} are blank
      */
-    public AsnSchemaNamedTag(String tagName, String tag)
-    {
+    public AsnSchemaNamedTag(String tagName, String tag) {
         checkNotNull(tagName);
         checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
-
 
         checkNotNull(tag);
         checkArgument(!tag.trim().isEmpty(), "Tag must be specified");
@@ -64,8 +58,7 @@ public class AsnSchemaNamedTag
      *
      * @return the name of the component type (i.e. tag name)
      */
-    public String getTagName()
-    {
+    public String getTagName() {
         return tagName;
     }
 
@@ -74,8 +67,7 @@ public class AsnSchemaNamedTag
      *
      * @return the tag of the component type
      */
-    public String getTag()
-    {
+    public String getTag() {
         return tag;
     }
 }

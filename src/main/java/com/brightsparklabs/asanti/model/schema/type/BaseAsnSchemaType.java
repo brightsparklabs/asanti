@@ -1,16 +1,22 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.brightsparklabs.asanti.model.schema.type;
+
+import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
 import java.text.ParseException;
-
-import static com.google.common.base.Preconditions.*;
+import java.util.Optional;
 
 /**
  * A concrete implementation of class that can model the types for objects within ASN.1 schema.
@@ -19,8 +25,7 @@ import static com.google.common.base.Preconditions.*;
  *
  * @author brightSPARK Labs
  */
-public class BaseAsnSchemaType implements AsnSchemaType
-{
+public class BaseAsnSchemaType implements AsnSchemaType {
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -39,31 +44,22 @@ public class BaseAsnSchemaType implements AsnSchemaType
     /**
      * Default constructor.
      *
-     * @param primitiveType
-     *         the underlying primitiveType of the defined primitiveType
-     * @param constraint
-     *         The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no constraint.
-     *
-     *         <p> Example 1
-     *
-     *         <br> For {@code SET (SIZE (1..100) OF OCTET STRING (SIZE (10))} this would be {@code
-     *         (SIZE (10)}.
-     *
-     *         <p> Example 2
-     *
-     *         <br> For {@code INTEGER (1..256)} this would be {@code (1..256)}.
-     *
-     * @throws NullPointerException
-     *         if {@code primitiveType} is {@code null}
+     * @param primitiveType the underlying primitiveType of the defined primitiveType
+     * @param constraint The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no
+     *     constraint.
+     *     <p>Example 1 <br>
+     *     For {@code SET (SIZE (1..100) OF OCTET STRING (SIZE (10))} this would be {@code (SIZE
+     *     (10)}.
+     *     <p>Example 2 <br>
+     *     For {@code INTEGER (1..256)} this would be {@code (1..256)}.
+     * @throws NullPointerException if {@code primitiveType} is {@code null}
      */
-    public BaseAsnSchemaType(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint)
-    {
+    public BaseAsnSchemaType(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint) {
         checkNotNull(primitiveType);
 
         this.primitiveType = primitiveType;
-        this.constraints = ImmutableSet.of((constraint == null) ?
-                AsnSchemaConstraint.NULL :
-                constraint);
+        this.constraints =
+                ImmutableSet.of((constraint == null) ? AsnSchemaConstraint.NULL : constraint);
     }
 
     // -------------------------------------------------------------------------
@@ -71,41 +67,35 @@ public class BaseAsnSchemaType implements AsnSchemaType
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableList<AsnSchemaComponentType> getAllComponents()
-    {
+    public ImmutableList<AsnSchemaComponentType> getAllComponents() {
         return ImmutableList.of();
     }
 
     @Override
-    public AsnBuiltinType getBuiltinType()
-    {
+    public AsnBuiltinType getBuiltinType() {
         // getPrimitiveType may be overridden in some derived classes.
         // by calling it here it means we are less likely to need to override this function too.
         return getPrimitiveType().getBuiltinType();
     }
 
     @Override
-    public ImmutableSet<AsnSchemaConstraint> getConstraints()
-    {
+    public ImmutableSet<AsnSchemaConstraint> getConstraints() {
         return constraints;
     }
 
     @Override
-    public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
-            DecodingSession decodingSession)
-    {
+    public Optional<AsnSchemaComponentType> getMatchingChild(
+            String tag, DecodingSession decodingSession) {
         return Optional.empty();
     }
 
     @Override
-    public AsnPrimitiveType getPrimitiveType()
-    {
+    public AsnPrimitiveType getPrimitiveType() {
         return primitiveType;
     }
 
     @Override
-    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
-    {
+    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException {
         return visitor.visit(this);
     }
 }

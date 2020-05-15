@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -17,8 +19,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class BitStringDecoder extends AbstractBuiltinTypeDecoder<String>
-{
+public class BitStringDecoder extends AbstractBuiltinTypeDecoder<String> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -33,7 +34,7 @@ public class BitStringDecoder extends AbstractBuiltinTypeDecoder<String>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private BitStringDecoder() {}
 
@@ -42,10 +43,8 @@ public class BitStringDecoder extends AbstractBuiltinTypeDecoder<String>
      *
      * @return a singleton instance of this class
      */
-    public static BitStringDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static BitStringDecoder getInstance() {
+        if (instance == null) {
             instance = new BitStringDecoder();
         }
         return instance;
@@ -56,10 +55,9 @@ public class BitStringDecoder extends AbstractBuiltinTypeDecoder<String>
     // -------------------------------------------------------------------------
 
     @Override
-    public String decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsBitString(
-                bytes);
+    public String decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsBitString(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
 
         // first byte is always the length of unused bits
@@ -67,12 +65,12 @@ public class BitStringDecoder extends AbstractBuiltinTypeDecoder<String>
 
         // loop through all bytes after first byte and append binary string
         final StringBuilder bitStringBuilder = new StringBuilder();
-        for (int i = 1; i < bytes.length; i++)
-        {
+        for (int i = 1; i < bytes.length; i++) {
             // convert to unsigned byte while using Integer.toBinaryString method and pad with zeros
             // to ensure 8 bits in length
-            bitStringBuilder.append(String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF))
-                    .replace(' ', '0'));
+            bitStringBuilder.append(
+                    String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF))
+                            .replace(' ', '0'));
         }
 
         // remove unused bits from final string

@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -11,7 +13,6 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableSet;
-
 import java.math.BigInteger;
 
 /**
@@ -19,8 +20,7 @@ import java.math.BigInteger;
  *
  * @author brightSPARK Labs
  */
-public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger>
-{
+public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private IntegerDecoder() {}
 
@@ -44,10 +44,8 @@ public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger>
      *
      * @return a singleton instance of this class
      */
-    public static IntegerDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static IntegerDecoder getInstance() {
+        if (instance == null) {
             instance = new IntegerDecoder();
         }
         return instance;
@@ -58,10 +56,9 @@ public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger>
     // -------------------------------------------------------------------------
 
     @Override
-    public BigInteger decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsInteger(
-                bytes);
+    public BigInteger decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsInteger(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
         // The Java BigInteger aligns with the ASN.1 concept of Integer, in that
         // it can be arbitrarily many bytes, and is by default signed.

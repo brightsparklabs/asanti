@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.model.schema.type;
@@ -11,11 +13,10 @@ import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.brightsparklabs.assam.visitor.VisitableThrowing;
-import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
 import java.text.ParseException;
+import java.util.Optional;
 
 /**
  * A base type used to model the types for objects within ASN.1 schema. These objects can be either
@@ -24,8 +25,7 @@ import java.text.ParseException;
  *
  * @author brightSPARK Labs
  */
-public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>, ParseException>
-{
+public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>, ParseException> {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -38,7 +38,7 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
      * if there are none
      *
      * @return all the {@code AsnSchemaComponentType} objects owned by this object, or an empty list
-     * if there are none
+     *     if there are none
      */
     ImmutableList<AsnSchemaComponentType> getAllComponents();
 
@@ -51,7 +51,7 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
     AsnBuiltinType getBuiltinType();
 
     /**
-     * Returns the constraints of this type definition.  This will be all the constraints the create
+     * Returns the constraints of this type definition. This will be all the constraints the create
      * this type (i.e. this and all the parent types)
      *
      * @return the constraints of this type definition.
@@ -62,13 +62,11 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
      * Returns the {@code AsnSchemaComponentType} for the tag, or {@link Optional#empty()} if none
      * found
      *
-     * @param tag
-     *         a tag within this construct
-     * @param decodingSession
-     *         The {@link DecodingSession} used to maintain state while decoding a PDU of tags
-     *
+     * @param tag a tag within this construct
+     * @param decodingSession The {@link DecodingSession} used to maintain state while decoding a
+     *     PDU of tags
      * @return the {@code AsnSchemaComponentType} for the tag, or {@link Optional#empty()} if none
-     * found
+     *     found
      */
     Optional<AsnSchemaComponentType> getMatchingChild(String tag, DecodingSession decodingSession);
 
@@ -84,12 +82,12 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AsnSchemaType}. <p> NOTE: This is not named {@code
-     * AsnSchemaTypeDefinitionNull} because that is the name used to model an actual ASN.1 {@code
-     * NULL} Type Definition.
+     * Null instance of {@link AsnSchemaType}.
+     *
+     * <p>NOTE: This is not named {@code AsnSchemaTypeDefinitionNull} because that is the name used
+     * to model an actual ASN.1 {@code NULL} Type Definition.
      */
-    class Null implements AsnSchemaType
-    {
+    class Null implements AsnSchemaType {
         // ---------------------------------------------------------------------
         // CONSTRUCTION
         // ---------------------------------------------------------------------
@@ -98,48 +96,40 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
          * Default constructor. This is private. Use {@link AsnSchemaType#NULL} to obtain an
          * instance.
          */
-        private Null()
-        {
-        }
+        private Null() {}
 
         // ---------------------------------------------------------------------
         // IMPLEMENTATION: AsnSchemaType
         // ---------------------------------------------------------------------
 
         @Override
-        public ImmutableList<AsnSchemaComponentType> getAllComponents()
-        {
+        public ImmutableList<AsnSchemaComponentType> getAllComponents() {
             return ImmutableList.of();
         }
 
         @Override
-        public AsnBuiltinType getBuiltinType()
-        {
+        public AsnBuiltinType getBuiltinType() {
             return getPrimitiveType().getBuiltinType();
         }
 
         @Override
-        public ImmutableSet<AsnSchemaConstraint> getConstraints()
-        {
+        public ImmutableSet<AsnSchemaConstraint> getConstraints() {
             return ImmutableSet.of();
         }
 
         @Override
-        public Optional<AsnSchemaComponentType> getMatchingChild(String tag,
-                DecodingSession decodingSession)
-        {
+        public Optional<AsnSchemaComponentType> getMatchingChild(
+                String tag, DecodingSession decodingSession) {
             return Optional.empty();
         }
 
         @Override
-        public AsnPrimitiveType getPrimitiveType()
-        {
+        public AsnPrimitiveType getPrimitiveType() {
             return AsnPrimitiveTypes.INVALID;
         }
 
         @Override
-        public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException
-        {
+        public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException {
             return visitor.visit(this);
         }
     }

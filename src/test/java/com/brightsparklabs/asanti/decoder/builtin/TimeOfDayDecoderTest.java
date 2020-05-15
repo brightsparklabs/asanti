@@ -1,22 +1,23 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
 
+import static org.junit.Assert.*;
+
 import com.brightsparklabs.assam.exception.DecodeException;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Units tests for {@link TimeOfDayDecoder}
  *
  * @author brightSPARK Labs
  */
-public class TimeOfDayDecoderTest
-{
+public class TimeOfDayDecoderTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -29,8 +30,7 @@ public class TimeOfDayDecoderTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testDecode() throws Exception
-    {
+    public void testDecode() throws Exception {
         // TODO: ASN-107 implement
         /*
         // test valid
@@ -57,19 +57,15 @@ public class TimeOfDayDecoderTest
         */
 
         // test null
-        try
-        {
+        try {
             instance.decode(null);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
     }
 
     @Test
-    public void testDecodeAsString() throws Exception
-    {
+    public void testDecodeAsString() throws Exception {
         // TODO: ASN-107 implement
         /*
         // test valid
@@ -92,13 +88,10 @@ public class TimeOfDayDecoderTest
         */
 
         // test null
-        try
-        {
+        try {
             instance.decodeAsString(null);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
     }
 }

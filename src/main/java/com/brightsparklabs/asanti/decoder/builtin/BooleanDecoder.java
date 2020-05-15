@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -17,8 +19,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean>
-{
+public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -33,7 +34,7 @@ public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private BooleanDecoder() {}
 
@@ -42,10 +43,8 @@ public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean>
      *
      * @return a singleton instance of this class
      */
-    public static BooleanDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static BooleanDecoder getInstance() {
+        if (instance == null) {
             instance = new BooleanDecoder();
         }
         return instance;
@@ -56,10 +55,9 @@ public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean>
     // -------------------------------------------------------------------------
 
     @Override
-    public Boolean decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsBoolean(
-                bytes);
+    public Boolean decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsBoolean(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
         return bytes[0] != 0;
     }

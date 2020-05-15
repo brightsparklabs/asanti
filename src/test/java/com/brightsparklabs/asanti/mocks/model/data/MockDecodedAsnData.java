@@ -1,19 +1,17 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
 package com.brightsparklabs.asanti.mocks.model.data;
+
+import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import java.util.Optional;
-
-import static org.mockito.Mockito.*;
 
 /**
  * Utility class for obtaining mocked instances of {@link AsantiAsnData} which conform to the test
@@ -21,8 +19,7 @@ import static org.mockito.Mockito.*;
  *
  * @author brightSPARK Labs
  */
-public class MockDecodedAsnData
-{
+public class MockDecodedAsnData {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -30,24 +27,19 @@ public class MockDecodedAsnData
     /**
      * Return a builder for creating mocked instances of {@link AsantiAsnData}.
      *
-     * By default the returned builder will include the following two tags:
+     * <p>By default the returned builder will include the following two tags:
      *
      * <ul>
-     *
-     * <li>"/null" which returns {@code null} when {@link AsantiAsnData#getBytes(String)} is
-     * called</li>
-     *
-     * <li>"/empty" which returns an empty byte array when {@link AsantiAsnData#getBytes(String)}
-     * is called</li>
-     *
+     *   <li>"/null" which returns {@code null} when {@link AsantiAsnData#getBytes(String)} is
+     *       called
+     *   <li>"/empty" which returns an empty byte array when {@link AsantiAsnData#getBytes(String)}
+     *       is called
      * </ul>
      *
-     * @param type
-     *         the ASN.1 Type Definition to return for all calls to {@link
-     *         AsantiAsnData#getType(String)}
+     * @param type the ASN.1 Type Definition to return for all calls to {@link
+     *     AsantiAsnData#getType(String)}
      */
-    public static Builder builder(AsnSchemaType type) throws Exception
-    {
+    public static Builder builder(AsnSchemaType type) throws Exception {
         return new Builder(type);
     }
 
@@ -60,8 +52,7 @@ public class MockDecodedAsnData
      *
      * @author brightSPARK Labs
      */
-    public static class Builder
-    {
+    public static class Builder {
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
@@ -76,12 +67,10 @@ public class MockDecodedAsnData
         /**
          * Default constructor
          *
-         * @param type
-         *         the ASN.1 Type Definition to return for all calls of {@link
-         *         AsantiAsnData#getType(String)}
+         * @param type the ASN.1 Type Definition to return for all calls of {@link
+         *     AsantiAsnData#getType(String)}
          */
-        private Builder(AsnSchemaType type)
-        {
+        private Builder(AsnSchemaType type) {
             when(mockedInstance.getType(anyString())).thenReturn(Optional.of(type));
             when(mockedInstance.getBytes("/empty")).thenReturn(Optional.of(new byte[0]));
             when(mockedInstance.getType("/null")).thenReturn(Optional.of(type));
@@ -95,23 +84,18 @@ public class MockDecodedAsnData
         /**
          * Sets the constraint on this definition
          *
-         * @param constraint
-         *         constraint to use
-         *
+         * @param constraint constraint to use
          * @return this builder
          */
         /**
          * Adds the specified bytes to the mocked instance
          *
-         * @param tag
-         *         tag the bytes are associated with (e.g. {@code "/Document/header/published/date"})
-         * @param bytes
-         *         bytes to return for the specified tag
-         *
+         * @param tag tag the bytes are associated with (e.g. {@code
+         *     "/Document/header/published/date"})
+         * @param bytes bytes to return for the specified tag
          * @return this instance
          */
-        public Builder addBytes(String tag, byte[] bytes)
-        {
+        public Builder addBytes(String tag, byte[] bytes) {
             when(mockedInstance.getBytes(tag)).thenReturn(Optional.of(bytes));
             return this;
         }
@@ -121,8 +105,7 @@ public class MockDecodedAsnData
          *
          * @return a mocked instance of {@link AsantiAsnData}
          */
-        public AsantiAsnData build()
-        {
+        public AsantiAsnData build() {
             return mockedInstance;
         }
     }

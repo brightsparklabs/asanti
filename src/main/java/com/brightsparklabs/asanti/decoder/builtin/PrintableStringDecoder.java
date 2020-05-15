@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -18,8 +20,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class PrintableStringDecoder extends AbstractBuiltinTypeDecoder<String>
-{
+public class PrintableStringDecoder extends AbstractBuiltinTypeDecoder<String> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -34,7 +35,7 @@ public class PrintableStringDecoder extends AbstractBuiltinTypeDecoder<String>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private PrintableStringDecoder() {}
 
@@ -43,10 +44,8 @@ public class PrintableStringDecoder extends AbstractBuiltinTypeDecoder<String>
      *
      * @return a singleton instance of this class
      */
-    public static PrintableStringDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static PrintableStringDecoder getInstance() {
+        if (instance == null) {
             instance = new PrintableStringDecoder();
         }
         return instance;
@@ -57,10 +56,9 @@ public class PrintableStringDecoder extends AbstractBuiltinTypeDecoder<String>
     // -------------------------------------------------------------------------
 
     @Override
-    public String decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures
-                = AsnByteValidator.validateAsPrintableString(bytes);
+    public String decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsPrintableString(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
         return new String(bytes, Charsets.UTF_8);
     }

@@ -1,26 +1,23 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
 package com.brightsparklabs.asanti.validator.failure;
+
+import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.assam.validator.ValidationFailure;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
  * Convenience class for implementing {@link ValidationFailure}.
  *
  * @author brightSPARK Labs
  */
-public class AbstractValidationFailure implements ValidationFailure
-{
+public class AbstractValidationFailure implements ValidationFailure {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -38,18 +35,12 @@ public class AbstractValidationFailure implements ValidationFailure
     /**
      * Default constructor.
      *
-     * @param failureType
-     *         the type of failure that occurred
-     * @param failureReason
-     *         the reason for the failure
-     *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
-     * @throws IllegalArgumentException
-     *         if location or failureReason are empty
+     * @param failureType the type of failure that occurred
+     * @param failureReason the reason for the failure
+     * @throws NullPointerException if parameters are {@code null}
+     * @throws IllegalArgumentException if location or failureReason are empty
      */
-    public AbstractValidationFailure(FailureType failureType, String failureReason)
-    {
+    public AbstractValidationFailure(FailureType failureType, String failureReason) {
         checkNotNull(failureType);
         checkNotNull(failureReason);
         this.failureType = failureType;
@@ -62,20 +53,17 @@ public class AbstractValidationFailure implements ValidationFailure
     // -------------------------------------------------------------------------
 
     @Override
-    public FailureType getFailureType()
-    {
+    public FailureType getFailureType() {
         return failureType;
     }
 
     @Override
-    public String getFailureReason()
-    {
+    public String getFailureReason() {
         return failureReason;
     }
 
     @Override
-    public String getFailureTag()
-    {
+    public String getFailureTag() {
         return "";
     }
 }

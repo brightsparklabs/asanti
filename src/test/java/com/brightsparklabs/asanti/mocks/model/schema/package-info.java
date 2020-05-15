@@ -4,8 +4,7 @@
  */
 
 /**
- * Mocked instances of classes from the package:
- * com.brightsparklabs.asanti.model.schema
+ * Mocked instances of classes from the package: com.brightsparklabs.asanti.model.schema
  *
  * @author brightSPARK Labs
  */

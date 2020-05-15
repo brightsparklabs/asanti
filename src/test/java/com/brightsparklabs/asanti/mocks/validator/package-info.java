@@ -4,8 +4,7 @@
  */
 
 /**
- * Mocked instances of classes from the package:
- * com.brightsparklabs.asanti.validator
+ * Mocked instances of classes from the package: com.brightsparklabs.asanti.validator
  *
  * @author brightSPARK Labs
  */

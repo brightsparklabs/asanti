@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti;
@@ -15,7 +17,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -24,8 +25,7 @@ import java.util.List;
  *
  * @author brightSPARK Labs
  */
-public class Asanti
-{
+public class Asanti {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -34,21 +34,15 @@ public class Asanti
      * Decodes the supplied ASN.1 binary data against the specified schema as objects of the
      * specified top level type
      *
-     * @param source
-     *         ASN.1 BER binary data to decode
-     * @param schema
-     *         ASN.1 schema to decode data against
-     * @param topLevelType
-     *         top level type in the schema to decode objects as
-     *
+     * @param source ASN.1 BER binary data to decode
+     * @param schema ASN.1 schema to decode data against
+     * @param topLevelType top level type in the schema to decode objects as
      * @return all decoded ASN.1 data as per the schema
-     *
-     * @throws IOException
-     *         if any errors occur reading from the file
+     * @throws IOException if any errors occur reading from the file
      */
-    public static ImmutableList<AsantiAsnData> decodeAsnData(final ByteSource source,
-            final CharSource schema, final String topLevelType) throws IOException
-    {
+    public static ImmutableList<AsantiAsnData> decodeAsnData(
+            final ByteSource source, final CharSource schema, final String topLevelType)
+            throws IOException {
         // TODO: ASN-78 - cache schema
         final AsnSchema asnSchema = AsnSchemaReader.read(schema);
         return decodeAsnData(source, asnSchema, topLevelType);
@@ -58,25 +52,18 @@ public class Asanti
      * Decodes the supplied ASN.1 Data against the specified schema as an object of the specified
      * top level type
      *
-     * @param source
-     *         ASN.1 BER binary data to decode
-     * @param asnSchema
-     *         schema to decode data against
-     * @param topLevelType
-     *         top level type in the schema to decode object as
-     *
+     * @param source ASN.1 BER binary data to decode
+     * @param asnSchema schema to decode data against
+     * @param topLevelType top level type in the schema to decode object as
      * @return the decoded ASN.1 data as per the schema
-     *
-     * @throws IOException
-     *         if any errors occur reading the data
+     * @throws IOException if any errors occur reading the data
      */
-    public static ImmutableList<AsantiAsnData> decodeAsnData(final ByteSource source,
-            final AsnSchema asnSchema, final String topLevelType) throws IOException
-    {
+    public static ImmutableList<AsantiAsnData> decodeAsnData(
+            final ByteSource source, final AsnSchema asnSchema, final String topLevelType)
+            throws IOException {
         final ImmutableList<RawAsnData> allRawAsnData = readAsnBerData(source);
         final List<AsantiAsnData> allAsnData = Lists.newArrayList();
-        for (final RawAsnData rawAsnData : allRawAsnData)
-        {
+        for (final RawAsnData rawAsnData : allRawAsnData) {
             final AsantiAsnData asnData = decodeAsnData(rawAsnData, asnSchema, topLevelType);
             allAsnData.add(asnData);
         }
@@ -87,38 +74,27 @@ public class Asanti
      * Decodes the supplied ASN.1 Data against the specified schema as an object of the specified
      * top level type
      *
-     * @param rawAsnData
-     *         data from an ASN.1 binary file
-     * @param asnSchema
-     *         schema to decode data against
-     * @param topLevelType
-     *         top level type in the schema to decode object as
-     *
+     * @param rawAsnData data from an ASN.1 binary file
+     * @param asnSchema schema to decode data against
+     * @param topLevelType top level type in the schema to decode object as
      * @return the decoded ASN.1 data as per the schema
-     *
-     * @throws IOException
-     *         if any errors occur reading from the file
+     * @throws IOException if any errors occur reading from the file
      */
-    public static AsantiAsnData decodeAsnData(final RawAsnData rawAsnData,
-            final AsnSchema asnSchema, final String topLevelType) throws IOException
-    {
+    public static AsantiAsnData decodeAsnData(
+            final RawAsnData rawAsnData, final AsnSchema asnSchema, final String topLevelType)
+            throws IOException {
         return new AsantiAsnDataImpl(rawAsnData, asnSchema, topLevelType);
     }
 
     /**
      * Reads the supplied ASN.1 BER/DER binary data
      *
-     * @param source
-     *         data to read
-     *
+     * @param source data to read
      * @return list of {@link RawAsnData} objects found in the file
-     *
-     * @throws IOException
-     *         if any errors occur reading from the file
+     * @throws IOException if any errors occur reading from the file
      */
     public static ImmutableList<RawAsnData> readAsnBerData(final ByteSource source)
-            throws IOException
-    {
+            throws IOException {
         return AsnBerDataReader.read(source);
     }
 
@@ -126,20 +102,14 @@ public class Asanti
      * Reads the supplied ASN.1 BER/DER binary file and stops reading when it has read the specified
      * number of items
      *
-     * @param source
-     *         file to decode
-     * @param maxPDUs
-     *         number of PDUs to read from the file. The returned list will be less than or equal to
-     *         this value. To read all items call {@link #readAsnBerData(ByteSource)}) instead.
-     *
+     * @param source file to decode
+     * @param maxPDUs number of PDUs to read from the file. The returned list will be less than or
+     *     equal to this value. To read all items call {@link #readAsnBerData(ByteSource)}) instead.
      * @return list of {@link RawAsnData} objects found in the file
-     *
-     * @throws IOException
-     *         if any errors occur reading from the file
+     * @throws IOException if any errors occur reading from the file
      */
     public static ImmutableList<RawAsnData> readAsnBerData(final ByteSource source, int maxPDUs)
-            throws IOException
-    {
+            throws IOException {
         return AsnBerDataReader.read(source, maxPDUs);
     }
 }

@@ -1,34 +1,34 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
-
-import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.google.common.base.Charsets;
-import org.junit.Test;
-
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+import com.brightsparklabs.asanti.model.data.AsantiAsnData;
+import com.brightsparklabs.assam.exception.DecodeException;
+import com.google.common.base.Charsets;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Calendar;
+import java.util.Optional;
+import org.junit.Test;
+
 /**
  * Units tests for {@link GeneralizedTimeDecoder}
  *
  * @author brightSPARK Labs
  */
-public class GeneralizedTimeDecoderTest
-{
+public class GeneralizedTimeDecoderTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -44,113 +44,84 @@ public class GeneralizedTimeDecoderTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testDecodeErrors() throws Exception
-    {
-        try
-        {
-            String time = "19700101";   // not enough bytes - no hours
+    public void testDecodeErrors() throws Exception {
+        try {
+            String time = "19700101"; // not enough bytes - no hours
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decode(bytes);
 
             fail("Should have thrown DecodeExceptions");
+        } catch (DecodeException e) {
         }
-        catch (DecodeException e)
-        {
-        }
-        try
-        {
-            String time = "19700101";   // not enough bytes - no hours
+        try {
+            String time = "19700101"; // not enough bytes - no hours
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decodeAsString(bytes);
 
             fail("Should have thrown DecodeExceptions");
+        } catch (DecodeException e) {
         }
-        catch (DecodeException e)
-        {
-        }
-        try
-        {
-            String time = "2015022901";   // not a leap year
+        try {
+            String time = "2015022901"; // not a leap year
             byte[] bytes = time.getBytes(Charsets.UTF_8);
             instance.decode(bytes);
 
             fail("Should have thrown DecodeExceptions");
-        }
-        catch (DecodeException e)
-        {
+        } catch (DecodeException e) {
         }
 
-        try
-        {
+        try {
             instance.decode(null);
             fail("Should have thrown DecodeExceptions");
+        } catch (DecodeException e) {
         }
-        catch (DecodeException e)
-        {
-        }
-        try
-        {
+        try {
             instance.decodeAsString(null);
             fail("Should have thrown DecodeExceptions");
-        }
-        catch (DecodeException e)
-        {
+        } catch (DecodeException e) {
         }
 
         // null for tag and AsantiAsnData
-        try
-        {
+        try {
             AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decode(null, data);
             fail("Should have thrown NullPointerException");
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e)
-        {
-        }
-        try
-        {
+        try {
             AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decode("someTag", null);
             fail("Should have thrown NullPointerException");
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e)
-        {
-        }
-        try
-        {
+        try {
             AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decodeAsString(null, data);
             fail("Should have thrown NullPointerException");
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e)
-        {
-        }
-        try
-        {
+        try {
             AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decodeAsString("someTag", null);
             fail("Should have thrown NullPointerException");
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e)
-        {
-        }
-
     }
 
     @Test
-    public void testDecode() throws Exception
-    {
+    public void testDecode() throws Exception {
 
         final Calendar calendar = Calendar.getInstance();
         final int rawOffset = -1 * calendar.getTimeZone().getRawOffset();
 
         // Minimum values (Local time)
         String time = "19700101000000.0";
-        //Timestamp expectedTime = Timestamp.valueOf("1970-01-01 00:00:00.0");
+        // Timestamp expectedTime = Timestamp.valueOf("1970-01-01 00:00:00.0");
         final Instant of = Instant.parse("1970-01-01T00:00:00Z");
         final ZoneOffset offset = ZoneId.systemDefault().getRules().getOffset(of);
         OffsetDateTime expectedTime = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, offset);
-        //final OffsetDateTime expectedTime = OffsetDateTime.of(1970, 01, 01, 0, 0, 0, 0, OffsetDateTime.now().getOffset());
+        // final OffsetDateTime expectedTime = OffsetDateTime.of(1970, 01, 01, 0, 0, 0, 0,
+        // OffsetDateTime.now().getOffset());
         byte[] bytes = time.getBytes(Charsets.UTF_8);
         long ms = expectedTime.toInstant().toEpochMilli();
         assertEquals(ms, rawOffset);
@@ -197,8 +168,10 @@ public class GeneralizedTimeDecoderTest
         time = "19850416141516.123+1031";
         bytes = time.getBytes(Charsets.UTF_8);
         decoded = instance.decode(bytes);
-        expectedMs = 482508916123L - (long) (ONE_HOUR_IN_MILLI_SECONDS * 10.5)
-                - ONE_MINUTE_IN_MILLI_SECONDS;
+        expectedMs =
+                482508916123L
+                        - (long) (ONE_HOUR_IN_MILLI_SECONDS * 10.5)
+                        - ONE_MINUTE_IN_MILLI_SECONDS;
         assertEquals(expectedMs, decoded.toInstant().toEpochMilli());
 
         // Maximum values (Local time)
@@ -212,100 +185,92 @@ public class GeneralizedTimeDecoderTest
         expectedTime = OffsetDateTime.of(1918, 11, 11, 11, 0, 0, 123456789, ZoneOffset.UTC);
         bytes = time.getBytes(Charsets.UTF_8);
         assertEquals(expectedTime.toInstant(), instance.decode(bytes).toInstant());
-/*
-        // Zero Unix Epoch (Universal time)
-        time = "1970010100Z";
-        bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(0, instance.decode(bytes).toInstant().toEpochMilli());
+        /*
+                // Zero Unix Epoch (Universal time)
+                time = "1970010100Z";
+                bytes = time.getBytes(Charsets.UTF_8);
+                assertEquals(0, instance.decode(bytes).toInstant().toEpochMilli());
 
-        // Sub milliseconds
-        time = "19181111110000.123456789";
-        expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123456789");
-        bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime, instance.decode(bytes));
+                // Sub milliseconds
+                time = "19181111110000.123456789";
+                expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123456789");
+                bytes = time.getBytes(Charsets.UTF_8);
+                assertEquals(expectedTime, instance.decode(bytes));
 
-        time = "19181111110000.123456789+01";
-        expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123456789");
+                time = "19181111110000.123456789+01";
+                expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123456789");
 
-        ms = expectedTime.getTime();
-        int ns = expectedTime.getNanos();
-        expectedTime = new Timestamp(ms - rawOffset - ONE_HOUR_IN_MILLI_SECONDS);
-        expectedTime.setNanos(ns);
-        bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime, instance.decode(bytes));
+                ms = expectedTime.getTime();
+                int ns = expectedTime.getNanos();
+                expectedTime = new Timestamp(ms - rawOffset - ONE_HOUR_IN_MILLI_SECONDS);
+                expectedTime.setNanos(ns);
+                bytes = time.getBytes(Charsets.UTF_8);
+                assertEquals(expectedTime, instance.decode(bytes));
 
-        time = "19181111110000.123456789Z";
-        expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123456789");
+                time = "19181111110000.123456789Z";
+                expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123456789");
 
-        ms = expectedTime.getTime();
-        ns = expectedTime.getNanos();
-        expectedTime = new Timestamp(ms - rawOffset);
-        expectedTime.setNanos(ns);
-        bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime, instance.decode(bytes));
+                ms = expectedTime.getTime();
+                ns = expectedTime.getNanos();
+                expectedTime = new Timestamp(ms - rawOffset);
+                expectedTime.setNanos(ns);
+                bytes = time.getBytes(Charsets.UTF_8);
+                assertEquals(expectedTime, instance.decode(bytes));
 
-        // Sub milliseconds
-        // ensure we don't throw with lots of decimals, but for now we can only handle nano second
-        // precision
-        time
-                = "19181111110000.123456789123456789123456789123456789123456789123456789123456789123456789123456789";
-        expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123456789");
-        bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime, instance.decode(bytes));
+                // Sub milliseconds
+                // ensure we don't throw with lots of decimals, but for now we can only handle nano second
+                // precision
+                time
+                        = "19181111110000.123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+                expectedTime = Timestamp.valueOf("1918-11-11 11:00:00.123456789");
+                bytes = time.getBytes(Charsets.UTF_8);
+                assertEquals(expectedTime, instance.decode(bytes));
 
-        // More than 18 decimal places - minutes
-        // Note that we discard everything after milliseconds...
-        time
-                = "191811111100.123456789123456789123456789123456789123456789123456789123456789123456789123456789";
-        expectedTime = Timestamp.valueOf("1918-11-11 11:00:07.407");
-        bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime, instance.decode(bytes));
+                // More than 18 decimal places - minutes
+                // Note that we discard everything after milliseconds...
+                time
+                        = "191811111100.123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+                expectedTime = Timestamp.valueOf("1918-11-11 11:00:07.407");
+                bytes = time.getBytes(Charsets.UTF_8);
+                assertEquals(expectedTime, instance.decode(bytes));
 
-        // time than 18 decimal places - hours
-        // Note that we discard everything after milliseconds...
-        time
-                = "1918111111.123456789123456789123456789123456789123456789123456789123456789123456789123456789";
-        // my manual calculation thinks that it should be 444 milliseconds.  Joda seems to disagree...
-        expectedTime = Timestamp.valueOf("1918-11-11 11:07:24.443");
-        bytes = time.getBytes(Charsets.UTF_8);
-        assertEquals(expectedTime, instance.decode(bytes));
-*/
+                // time than 18 decimal places - hours
+                // Note that we discard everything after milliseconds...
+                time
+                        = "1918111111.123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+                // my manual calculation thinks that it should be 444 milliseconds.  Joda seems to disagree...
+                expectedTime = Timestamp.valueOf("1918-11-11 11:07:24.443");
+                bytes = time.getBytes(Charsets.UTF_8);
+                assertEquals(expectedTime, instance.decode(bytes));
+        */
         // null
-        try
-        {
+        try {
             instance.decode(null);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
         // test our specific validation bits
-        try
-        {
+        try {
             instance.decode("1900010100z".getBytes(Charsets.UTF_8)); // should be upper case
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
-        try
-        {
-            bytes = new byte[] { 0x1F, '9', '1', '8', '1', '1', '1', '1', '1', '1', '0', '0', '0',
-                                 '0', '.', '1', '1' };
+        try {
+            bytes =
+                    new byte[] {
+                        0x1F, '9', '1', '8', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0', '.',
+                        '1', '1'
+                    };
             instance.decode(bytes); // not a valid VisibleString
             fail("DecodeExceptions not thrown");
+        } catch (DecodeException ex) {
         }
-        catch (DecodeException ex)
-        {
-        }
-
     }
 
     @Test
-    public void testDecodeAsString() throws Exception
-    {
+    public void testDecodeAsString() throws Exception {
 
         // The expected behaviour is that decodeAsString should throw if validation fails,
         // otherwise it should return the "raw" input string.
@@ -341,33 +306,26 @@ public class GeneralizedTimeDecoderTest
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
         time = "19181111110000.123456789Z";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
-        time
-                = "19181111110000.123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+        time =
+                "19181111110000.123456789123456789123456789123456789123456789123456789123456789123456789123456789";
         assertEquals(time, instance.decodeAsString(time.getBytes(Charsets.UTF_8)));
 
-        try
-        {
-            instance.decodeAsString("19271111".getBytes(Charsets.UTF_8));    // Too short
+        try {
+            instance.decodeAsString("19271111".getBytes(Charsets.UTF_8)); // Too short
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
 
         // test null
-        try
-        {
+        try {
             instance.decodeAsString(null);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException ex)
-        {
+        } catch (DecodeException ex) {
         }
     }
 
     @Test
-    public void testDecodeAsStringOverload() throws Exception
-    {
+    public void testDecodeAsStringOverload() throws Exception {
         AsantiAsnData data = mock(AsantiAsnData.class);
         when(data.getBytes(anyString())).thenReturn(Optional.empty());
 
@@ -394,16 +352,13 @@ public class GeneralizedTimeDecoderTest
         assertEquals(time4, instance.decodeAsString(tag4, data));
 
         // empty bytes
-        try
-        {
+        try {
             final String tagEmpty = "tagEmpty";
             final byte[] bytesEmpty = new byte[0];
             when(data.getBytes(eq(tagEmpty))).thenReturn(Optional.of(bytesEmpty));
             instance.decodeAsString(tagEmpty, data);
             fail("DecodeExceptions not thrown");
-        }
-        catch (DecodeException e)
-        {
+        } catch (DecodeException e) {
         }
     }
 }

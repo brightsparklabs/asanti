@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.reader.parser;
@@ -12,7 +14,6 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
@@ -24,8 +25,7 @@ import java.util.regex.Pattern;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaParser
-{
+public class AsnSchemaParser {
     // -------------------------------------------------------------------------
     // CONSTANTS
     // -------------------------------------------------------------------------
@@ -34,8 +34,8 @@ public class AsnSchemaParser
     private static final Pattern PATTERN_CARRIAGE_RETURN = Pattern.compile("\\r");
 
     /** pattern to match comments that are started with -- and end with newline */
-    private static final Pattern PATTERN_ENDLINE_COMMENTS
-            = Pattern.compile("[\\t ]*--.*?(\\n|\\z)");
+    private static final Pattern PATTERN_ENDLINE_COMMENTS =
+            Pattern.compile("[\\t ]*--.*?(\\n|\\z)");
 
     /** pattern to match comments that are started and ended with -- */
     private static final Pattern PATTERN_INLINE_COMMENTS = Pattern.compile("[\\t ]*--.*?--");
@@ -50,8 +50,8 @@ public class AsnSchemaParser
     private static final Pattern PATTERN_TABS_SPACES = Pattern.compile("[\\t ]+");
 
     /** pattern to match module header keywords */
-    private static final Pattern PATTERN_SCHEMA_KEYWORDS = Pattern.compile(
-            "(DEFINITIONS|BEGIN|EXPORTS|IMPORTS|END)");
+    private static final Pattern PATTERN_SCHEMA_KEYWORDS =
+            Pattern.compile("(DEFINITIONS|BEGIN|EXPORTS|IMPORTS|END)");
 
     /** pattern to match semicolons */
     private static final Pattern PATTERN_SEMICOLONS = Pattern.compile(";");
@@ -72,18 +72,12 @@ public class AsnSchemaParser
     /**
      * Parses the supplied ASN.1 schema text
      *
-     * @param asnSchema
-     *         all text from the ASN.1 schema
-     *
+     * @param asnSchema all text from the ASN.1 schema
      * @return the parsed schema
-     *
-     * @throws ParseException
-     *         if any errors occur while parsing the schema
+     * @throws ParseException if any errors occur while parsing the schema
      */
-    public static AsnSchema parse(String asnSchema) throws ParseException
-    {
-        if (Strings.isNullOrEmpty(asnSchema))
-        {
+    public static AsnSchema parse(String asnSchema) throws ParseException {
+        if (Strings.isNullOrEmpty(asnSchema)) {
             throw new ParseException(ERROR_EMPTY_FILE, -1);
         }
 
@@ -95,12 +89,10 @@ public class AsnSchemaParser
 
         // parse each module in the schema
         final List<String> moduleLines = Lists.newArrayList();
-        while (lineIterator.hasNext())
-        {
+        while (lineIterator.hasNext()) {
             final String line = lineIterator.next();
             moduleLines.add(line);
-            if ("END".equals(line))
-            {
+            if ("END".equals(line)) {
                 // keep track of all the ModuleBuilders so that we can resolve all the
                 // imports and placeholders at the end.
                 moduleBuilders.add(AsnSchemaModuleParser.parse(moduleLines));
@@ -108,32 +100,28 @@ public class AsnSchemaParser
             }
         }
 
-        if (!moduleLines.isEmpty())
-        {
+        if (!moduleLines.isEmpty()) {
             throw new ParseException(ERROR_MISSING_END_KEYWORD, -1);
         }
 
         // resolve all the placeholders and imports.
-        for (AsnSchemaModule.Builder builder : moduleBuilders)
-        {
+        for (AsnSchemaModule.Builder builder : moduleBuilders) {
             builder.resolveTypes(moduleBuilders);
         }
 
-        for (AsnSchemaModule.Builder builder : moduleBuilders)
-        {
+        for (AsnSchemaModule.Builder builder : moduleBuilders) {
             builder.performTagging();
         }
 
         // do the final build, which will also calculate all the tags, which can't be done until
-        // all the types are known (even across module boundaries), which is not until the above loop
-        for (AsnSchemaModule.Builder builder : moduleBuilders)
-        {
+        // all the types are known (even across module boundaries), which is not until the above
+        // loop
+        for (AsnSchemaModule.Builder builder : moduleBuilders) {
             builder.checkForDuplicates();
             final AsnSchemaModule module = builder.build();
             modules.put(module.getName(), module);
 
-            if (primaryModule == null)
-            {
+            if (primaryModule == null) {
                 primaryModule = module.getName();
             }
         }
@@ -152,58 +140,33 @@ public class AsnSchemaParser
      * on their own line. Lines generally appear in the following order:
      *
      * <ul>
-     *
-     * <li>module name and identification</li>
-     *
-     * <li>'DEFINITIONS' keyword</li>
-     *
-     * <ul>
-     *
-     * <li>tagging environment definition</li>
-     *
-     * <li>extensibility environment definition</li>
-     *
+     *   <li>module name and identification
+     *   <li>'DEFINITIONS' keyword
+     *       <ul>
+     *         <li>tagging environment definition
+     *         <li>extensibility environment definition
+     *       </ul>
+     *   <li>'BEGIN' keyword
+     *       <ul>
+     *         <li>'EXPORTS' keyword
+     *             <ul>
+     *               <li>export statements
+     *               <li>semicolon
+     *             </ul>
+     *         <li>'IMPORTS' keyword
+     *             <ul>
+     *               <li>import statements
+     *               <li>semicolon
+     *             </ul>
+     *         <li>value/type definitions
+     *       </ul>
+     *   <li>'END' keyword
      * </ul>
      *
-     * <li>'BEGIN' keyword</li>
-     *
-     * <ul>
-     *
-     * <li>'EXPORTS' keyword</li>
-     *
-     * <ul>
-     *
-     * <li>export statements</li>
-     *
-     * <li>semicolon</li>
-     *
-     * </ul>
-     *
-     * <li>'IMPORTS' keyword</li>
-     *
-     * <ul>
-     *
-     * <li>import statements</li>
-     *
-     * <li>semicolon</li>
-     *
-     * </ul>
-     *
-     * <li>value/type definitions</li>
-     *
-     * </ul>
-     *
-     * <li>'END' keyword</li>
-     *
-     * </ul>
-     *
-     * @param asnSchema
-     *         schema to parse
-     *
+     * @param asnSchema schema to parse
      * @return the lines from the schema
      */
-    private static Iterator<String> getLines(String asnSchema)
-    {
+    private static Iterator<String> getLines(String asnSchema) {
         // cull comments and collapse whitespace
         asnSchema = PATTERN_CARRIAGE_RETURN.matcher(asnSchema).replaceAll("");
         asnSchema = PATTERN_ENDLINE_COMMENTS.matcher(asnSchema).replaceAll("\n");
@@ -216,10 +179,8 @@ public class AsnSchemaParser
         asnSchema = PATTERN_SCHEMA_KEYWORDS.matcher(asnSchema).replaceAll("\n$1\n");
         asnSchema = PATTERN_SEMICOLONS.matcher(asnSchema).replaceAll("\n;\n");
 
-        final Iterable<String> lines = Splitter.on("\n")
-                .trimResults()
-                .omitEmptyStrings()
-                .split(asnSchema);
+        final Iterable<String> lines =
+                Splitter.on("\n").trimResults().omitEmptyStrings().split(asnSchema);
         return lines.iterator();
     }
 }

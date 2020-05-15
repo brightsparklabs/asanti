@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.decoder.builtin;
@@ -18,8 +20,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author brightSPARK Labs
  */
-public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
-{
+public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -34,7 +35,7 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private OctetStringDecoder() {}
 
@@ -43,10 +44,8 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
      *
      * @return a singleton instance of this class
      */
-    public static OctetStringDecoder getInstance()
-    {
-        if (instance == null)
-        {
+    public static OctetStringDecoder getInstance() {
+        if (instance == null) {
             instance = new OctetStringDecoder();
         }
         return instance;
@@ -57,20 +56,18 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
     // -------------------------------------------------------------------------
 
     @Override
-    public String decodeAsString(final byte[] bytes) throws DecodeException
-    {
+    public String decodeAsString(final byte[] bytes) throws DecodeException {
         final byte[] validatedBytes = decode(bytes);
 
-        return isAsciiPresentable(validatedBytes) ?
-                ByteArrays.toString(validatedBytes) :
-                ByteArrays.toHexString(validatedBytes);
+        return isAsciiPresentable(validatedBytes)
+                ? ByteArrays.toString(validatedBytes)
+                : ByteArrays.toHexString(validatedBytes);
     }
 
     @Override
-    public byte[] decode(final byte[] bytes) throws DecodeException
-    {
-        final ImmutableSet<ByteValidationFailure> failures = AsnByteValidator.validateAsOctetString(
-                bytes);
+    public byte[] decode(final byte[] bytes) throws DecodeException {
+        final ImmutableSet<ByteValidationFailure> failures =
+                AsnByteValidator.validateAsOctetString(bytes);
         DecodeExceptions.throwIfHasFailures(failures);
         return bytes;
     }
@@ -80,23 +77,19 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
     // -------------------------------------------------------------------------
 
     /**
-     * Returns whether the input bytes are presentable as ASCII.  This differs from the {@link
+     * Returns whether the input bytes are presentable as ASCII. This differs from the {@link
      * ByteArrays#containsNonPrintableChars} method in that it also considers carriage return and
      * life feed acceptable characters
      *
-     * @param bytes
-     *         input bytes to check
-     *
+     * @param bytes input bytes to check
      * @return the if this can be converted to an ASCII string, false otherwise
      */
-    private boolean isAsciiPresentable(final byte[] bytes)
-    {
-        if (bytes != null)
-        {
-            for (byte x : bytes)
-            {
-                if ((x < 32 || x > 126) && // <space> to ~
-                        ((x != 0x0D) && (x != 0x0A)))    // CR and LF
+    private boolean isAsciiPresentable(final byte[] bytes) {
+        if (bytes != null) {
+            for (byte x : bytes) {
+                if ((x < 32 || x > 126)
+                        && // <space> to ~
+                        ((x != 0x0D) && (x != 0x0A))) // CR and LF
                 {
                     // byte is outside printable range
                     return false;
@@ -105,5 +98,4 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]>
         }
         return true;
     }
-
 }

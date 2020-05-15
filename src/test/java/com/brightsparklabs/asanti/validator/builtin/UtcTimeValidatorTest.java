@@ -1,9 +1,13 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
+
+import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
@@ -19,15 +23,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Units tests for {@link UtcTimeValidator}
  *
  * @author brightSPARK Labs
  */
-public class UtcTimeValidatorTest
-{
+public class UtcTimeValidatorTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -40,24 +41,24 @@ public class UtcTimeValidatorTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testValidateTag() throws Exception
-    {
+    public void testValidateTag() throws Exception {
         // setup mock
-        final AsnSchemaType type
-                = MockAsnSchemaType.createMockedAsnSchemaType(AsnPrimitiveTypes.UTC_TIME,
-                AsnSchemaConstraint.NULL);
+        final AsnSchemaType type =
+                MockAsnSchemaType.createMockedAsnSchemaType(
+                        AsnPrimitiveTypes.UTC_TIME, AsnSchemaConstraint.NULL);
 
         String validTime = "181111110000";
         String invalidTime = "181111110000.1";
 
-        final AsantiAsnData mockAsnData = MockDecodedAsnData.builder(type)
-                .addBytes("/valid", validTime.getBytes(Charsets.UTF_8))
-                .addBytes("/invalid/bytes", invalidTime.getBytes(Charsets.UTF_8))
-                .build();
+        final AsantiAsnData mockAsnData =
+                MockDecodedAsnData.builder(type)
+                        .addBytes("/valid", validTime.getBytes(Charsets.UTF_8))
+                        .addBytes("/invalid/bytes", invalidTime.getBytes(Charsets.UTF_8))
+                        .build();
 
         // test valid
-        ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",
-                mockAsnData);
+        ImmutableSet<DecodedTagValidationFailure> failures =
+                instance.validate("/valid", mockAsnData);
         assertEquals(0, failures.size());
 
         // test invalid - bytes
@@ -74,21 +75,17 @@ public class UtcTimeValidatorTest
         failures = instance.validate("/null", mockAsnData);
         assertEquals(1, failures.size());
         boolean byteErrorPresent = false;
-        for (DecodedTagValidationFailure nullFailure : failures)
-        {
+        for (DecodedTagValidationFailure nullFailure : failures) {
             assertEquals(FailureType.DataMissing, nullFailure.getFailureType());
-            if (nullFailure.getFailureReason().equals("No bytes present to validate"))
-            {
+            if (nullFailure.getFailureReason().equals("No bytes present to validate")) {
                 byteErrorPresent = true;
             }
         }
         assertTrue(byteErrorPresent);
-
     }
 
     @Test
-    public void testValidateBytes() throws Exception
-    {
+    public void testValidateBytes() throws Exception {
         // Minimum values (Local time)
         String time = "700101000000";
         byte[] bytes = time.getBytes(Charsets.UTF_8);
@@ -127,25 +124,24 @@ public class UtcTimeValidatorTest
         bytes = time.getBytes(Charsets.UTF_8);
         assertEquals(1, instance.validate(bytes).size());
 
-        ImmutableList<byte[]> rawDates = ImmutableList.<byte[]>builder()
-                //.add("45050823".getBytes(Charsets.UTF_8))
-                .add("4505082314".getBytes(Charsets.UTF_8))
-                .add("450508231415".getBytes(Charsets.UTF_8))
-                .add("450508231415Z".getBytes(Charsets.UTF_8))
-                .add("450508231415+10".getBytes(Charsets.UTF_8))
-                .add("450508231415+1030".getBytes(Charsets.UTF_8))
-                .add("450508231415-1030".getBytes(Charsets.UTF_8))
-                .build();
+        ImmutableList<byte[]> rawDates =
+                ImmutableList.<byte[]>builder()
+                        // .add("45050823".getBytes(Charsets.UTF_8))
+                        .add("4505082314".getBytes(Charsets.UTF_8))
+                        .add("450508231415".getBytes(Charsets.UTF_8))
+                        .add("450508231415Z".getBytes(Charsets.UTF_8))
+                        .add("450508231415+10".getBytes(Charsets.UTF_8))
+                        .add("450508231415+1030".getBytes(Charsets.UTF_8))
+                        .add("450508231415-1030".getBytes(Charsets.UTF_8))
+                        .build();
 
-        for (byte[] dateString : rawDates)
-        {
+        for (byte[] dateString : rawDates) {
             assertEquals(0, instance.validate(dateString).size());
         }
 
         // Minimal
         String rawDateTime = "8501021314";
         assertEquals(0, instance.validate(rawDateTime.getBytes(Charsets.UTF_8)).size());
-
 
         // with Zulu
         rawDateTime = "8501021314Z";
@@ -181,9 +177,9 @@ public class UtcTimeValidatorTest
 
         // Valid/Invalid times (not VisibleString)
         // 181111110000
-        bytes = new byte[] { '1', '8', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0' };
+        bytes = new byte[] {'1', '8', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0'};
         assertEquals(0, instance.validate(bytes).size());
-        bytes = new byte[] { 0x1F, '8', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0' };
+        bytes = new byte[] {0x1F, '8', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0'};
         assertEquals(1, instance.validate(bytes).size());
 
         // Decimal places

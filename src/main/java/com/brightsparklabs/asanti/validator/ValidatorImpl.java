@@ -1,6 +1,8 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator;
@@ -16,18 +18,16 @@ import com.brightsparklabs.assam.exception.DecodeException;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
 import com.brightsparklabs.assam.validator.*;
 import com.google.common.collect.*;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 /**
  * Default implementation of {@link Validator}.
  *
  * @author brightSPARK Labs
  */
-public class ValidatorImpl implements Validator
-{
+public class ValidatorImpl implements Validator {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
@@ -52,11 +52,9 @@ public class ValidatorImpl implements Validator
     /**
      * Private constructor. Use @link{Builder} instead.
      *
-     * @param customRules
-     *         custom validation rules to apply to various tags
+     * @param customRules custom validation rules to apply to various tags
      */
-    public ValidatorImpl(Multimap<String, ValidationRule> customRules)
-    {
+    public ValidatorImpl(Multimap<String, ValidationRule> customRules) {
         this.customRules = ImmutableSetMultimap.copyOf(customRules);
     }
 
@@ -65,8 +63,7 @@ public class ValidatorImpl implements Validator
      *
      * @return a builder for creating instances of this class.
      */
-    public static Builder builder()
-    {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -75,16 +72,13 @@ public class ValidatorImpl implements Validator
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationResult validate(AsnData asnData)
-    {
+    public ValidationResult validate(AsnData asnData) {
         final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
 
         // validate each mapped tag
-        if (asnData instanceof AsantiAsnData)
-        {
+        if (asnData instanceof AsantiAsnData) {
             final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
-            for (final String tag : tags)
-            {
+            for (final String tag : tags) {
                 // default validation
                 Set<ValidationFailure> failures = validateDefault(tag, (AsantiAsnData) asnData);
                 builder.addAll(failures);
@@ -93,19 +87,17 @@ public class ValidatorImpl implements Validator
                 failures = validateCustom(tag, asnData);
                 builder.addAll(failures);
             }
-        }
-        else
-        {
-            // TODO: ASN-167 we wouldn't need to handle the instance of if we could just use AsnData directly
+        } else {
+            // TODO: ASN-167 we wouldn't need to handle the instance of if we could just use AsnData
+            // directly
             logger.warn("Asanti cannot be used to validate AsnData produced by another library");
         }
 
         // add a failure for each unmapped tag
-        for (final String tag : asnData.getUnmappedTags())
-        {
-            final DecodedTagValidationFailure failure = new DecodedTagValidationFailure(tag,
-                    FailureType.UnknownTag,
-                    "Tag could not be decoded against schema");
+        for (final String tag : asnData.getUnmappedTags()) {
+            final DecodedTagValidationFailure failure =
+                    new DecodedTagValidationFailure(
+                            tag, FailureType.UnknownTag, "Tag could not be decoded against schema");
             builder.add(failure);
         }
 
@@ -119,21 +111,16 @@ public class ValidatorImpl implements Validator
     /**
      * Validates the supplied data using the default ASN.1 schema rules
      *
-     * @param asnData
-     *         data to validate
-     *
+     * @param asnData data to validate
      * @return the results from validating the data
      */
-    private Set<ValidationFailure> validateDefault(String tag, AsantiAsnData asnData)
-    {
+    private Set<ValidationFailure> validateDefault(String tag, AsantiAsnData asnData) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
-        final AsnPrimitiveType type = asnData
-                .getPrimitiveType(tag)
-                .orElse(AsnPrimitiveTypes.INVALID);
-        final BuiltinTypeValidator tagValidator = (BuiltinTypeValidator) type.accept(
-                validationVisitor);
-        if (tagValidator != null)
-        {
+        final AsnPrimitiveType type =
+                asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
+        final BuiltinTypeValidator tagValidator =
+                (BuiltinTypeValidator) type.accept(validationVisitor);
+        if (tagValidator != null) {
             failures.addAll(tagValidator.validate(tag, asnData));
         }
         return failures;
@@ -142,26 +129,21 @@ public class ValidatorImpl implements Validator
     /**
      * Validates the supplied tag using any custom rules in this decoder
      *
-     * @param asnData
-     *         data to validate
-     *
+     * @param asnData data to validate
      * @return the results from validating the data
      */
-    private Set<ValidationFailure> validateCustom(String tag, AsnData asnData)
-    {
+    private Set<ValidationFailure> validateCustom(String tag, AsnData asnData) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
         final ImmutableSet<ValidationRule> rules = customRules.get(tag);
-        for (ValidationRule rule : rules)
-        {
-            try
-            {
+        for (ValidationRule rule : rules) {
+            try {
                 failures.addAll(rule.validate(tag, asnData));
-            }
-            catch (DecodeException ex)
-            {
-                final ValidationFailure failure = new DecodedTagValidationFailure(tag,
-                        FailureType.CustomValidationFailed,
-                        "Data was not in the expected format: " + ex.getMessage());
+            } catch (DecodeException ex) {
+                final ValidationFailure failure =
+                        new DecodedTagValidationFailure(
+                                tag,
+                                FailureType.CustomValidationFailed,
+                                "Data was not in the expected format: " + ex.getMessage());
                 failures.add(failure);
             }
         }
@@ -172,11 +154,8 @@ public class ValidatorImpl implements Validator
     // INTERNAL CLASSES
     // -------------------------------------------------------------------------
 
-    /**
-     * Builder for creating instances of this class
-     */
-    public static class Builder
-    {
+    /** Builder for creating instances of this class */
+    public static class Builder {
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
@@ -188,13 +167,11 @@ public class ValidatorImpl implements Validator
         // PUBLIC METHODS
         // ---------------------------------------------------------------------
 
-        public Validator build()
-        {
+        public Validator build() {
             return new ValidatorImpl(customRules);
         }
 
-        public Builder withValidationRule(ValidationRule rule, String tag)
-        {
+        public Builder withValidationRule(ValidationRule rule, String tag) {
             customRules.put(tag, rule);
             return this;
         }

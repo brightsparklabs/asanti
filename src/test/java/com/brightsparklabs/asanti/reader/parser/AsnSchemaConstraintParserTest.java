@@ -1,29 +1,29 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.reader.parser;
+
+import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.model.schema.constraint.*;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link AsnSchemaConstraintParser}
  *
  * @author brightSPARK Labs
  */
-
-public class AsnSchemaConstraintParserTest
-{
+public class AsnSchemaConstraintParserTest {
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
     @Test
-    public void testParse() throws Exception
-    {
+    public void testParse() throws Exception {
         // test null
         AsnSchemaConstraint result = AsnSchemaConstraintParser.parse(null);
         assertEquals(AsnSchemaConstraint.NULL, result);
@@ -38,8 +38,7 @@ public class AsnSchemaConstraintParserTest
     }
 
     @Test
-    public void testParse_SizeConstraint() throws Exception
-    {
+    public void testParse_SizeConstraint() throws Exception {
         // sunny day case
         AsnSchemaConstraint result = AsnSchemaConstraintParser.parse("SIZE (1..256)");
         assertTrue(result instanceof AsnSchemaSizeConstraint);
@@ -61,8 +60,7 @@ public class AsnSchemaConstraintParserTest
     }
 
     @Test
-    public void testParse_ExactSizeConstraint() throws Exception
-    {
+    public void testParse_ExactSizeConstraint() throws Exception {
         // sunny day case
         AsnSchemaConstraint result = AsnSchemaConstraintParser.parse("SIZE (1)");
         assertTrue(result instanceof AsnSchemaExactSizeConstraint);
@@ -77,8 +75,7 @@ public class AsnSchemaConstraintParserTest
     }
 
     @Test
-    public void testParse_NumericValueConstraint() throws Exception
-    {
+    public void testParse_NumericValueConstraint() throws Exception {
         // sunny day case
         AsnSchemaConstraint result = AsnSchemaConstraintParser.parse("1..256");
         assertTrue(result instanceof AsnSchemaNumericValueConstraint);
@@ -106,8 +103,7 @@ public class AsnSchemaConstraintParserTest
     }
 
     @Test
-    public void testParse_ExactNumericValueConstraint() throws Exception
-    {
+    public void testParse_ExactNumericValueConstraint() throws Exception {
         // sunny day case
         AsnSchemaConstraint result = AsnSchemaConstraintParser.parse("1");
         assertTrue(result instanceof AsnSchemaExactNumericValueConstraint);

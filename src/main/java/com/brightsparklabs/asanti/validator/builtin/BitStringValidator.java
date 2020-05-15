@@ -1,16 +1,17 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
 
+import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 
 /**
@@ -18,8 +19,7 @@ import java.util.Set;
  *
  * @author brightSPARK Labs
  */
-public class BitStringValidator extends PrimitiveBuiltinTypeValidator
-{
+public class BitStringValidator extends PrimitiveBuiltinTypeValidator {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -34,7 +34,7 @@ public class BitStringValidator extends PrimitiveBuiltinTypeValidator
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance</p>
+     * <p>This is private, use {@link #getInstance()} to obtain an instance
      */
     private BitStringValidator() {}
 
@@ -43,10 +43,8 @@ public class BitStringValidator extends PrimitiveBuiltinTypeValidator
      *
      * @return a singleton instance of this class
      */
-    public static BitStringValidator getInstance()
-    {
-        if (instance == null)
-        {
+    public static BitStringValidator getInstance() {
+        if (instance == null) {
             instance = new BitStringValidator();
         }
         return instance;
@@ -57,29 +55,22 @@ public class BitStringValidator extends PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------
 
     @Override
-    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes)
-    {
+    protected ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes) {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
 
-        if (bytes.length > 0)
-        {
+        if (bytes.length > 0) {
             int firstByte = bytes[0] & 0xFF;
-            if (firstByte > 0x07)
-            {
-                final String error = BIT_STRING_VALIDATION_ERROR + String.format("0x%02X ",
-                        firstByte);
-                final ByteValidationFailure failure = new ByteValidationFailure(0,
-                        FailureType.DataIncorrectlyFormatted,
-                        error);
+            if (firstByte > 0x07) {
+                final String error =
+                        BIT_STRING_VALIDATION_ERROR + String.format("0x%02X ", firstByte);
+                final ByteValidationFailure failure =
+                        new ByteValidationFailure(0, FailureType.DataIncorrectlyFormatted, error);
                 failures.add(failure);
             }
-        }
-        else
-        {
+        } else {
             final String error = String.format(EMPTY_BYTE_ARRAY_VALIDATION_ERROR, "BIT STRING");
-            final ByteValidationFailure failure = new ByteValidationFailure(0,
-                    FailureType.DataIncorrectlyFormatted,
-                    error);
+            final ByteValidationFailure failure =
+                    new ByteValidationFailure(0, FailureType.DataIncorrectlyFormatted, error);
             failures.add(failure);
         }
 

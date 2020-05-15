@@ -1,7 +1,10 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
+
 package com.brightsparklabs.asanti.validator;
 
 import static org.junit.Assert.*;
@@ -13,15 +16,13 @@ import org.junit.Test;
  *
  * @author brightSPARK Labs
  */
-public class ValidatorImplTest
-{
+public class ValidatorImplTest {
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
 
     @Test
-    public void testValidate() throws Exception
-    {
+    public void testValidate() throws Exception {
         // TODO ASN-91 require a full test schema
         // final ValidatorImpl instance = new ValidatorImpl();
         // final ValidationResults results = instance.validate(decodedAsnData);

@@ -1,12 +1,10 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
-/*
- * Created by brightSPARK Labs
- * www.brightsparklabs.com
- */
 package com.brightsparklabs.asanti.validator.failure;
 
 import com.brightsparklabs.assam.validator.FailureType;
@@ -16,8 +14,7 @@ import com.brightsparklabs.assam.validator.FailureType;
  *
  * @author brightSPARK Labs
  */
-public class ByteValidationFailure extends AbstractValidationFailure
-{
+public class ByteValidationFailure extends AbstractValidationFailure {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -32,20 +29,13 @@ public class ByteValidationFailure extends AbstractValidationFailure
     /**
      * Default constructor.
      *
-     * @param failureIndex
-     *         the index in the array that the validation failure occurred on
-     * @param failureType
-     *         the type of failure that occurred
-     * @param failureReason
-     *         the reason for the failure
-     *
-     * @throws NullPointerException
-     *         if parameters are {@code null}
-     * @throws IllegalArgumentException
-     *         if location or failureReason are empty
+     * @param failureIndex the index in the array that the validation failure occurred on
+     * @param failureType the type of failure that occurred
+     * @param failureReason the reason for the failure
+     * @throws NullPointerException if parameters are {@code null}
+     * @throws IllegalArgumentException if location or failureReason are empty
      */
-    public ByteValidationFailure(int failureIndex, FailureType failureType, String failureReason)
-    {
+    public ByteValidationFailure(int failureIndex, FailureType failureType, String failureReason) {
         super(failureType, failureReason);
         this.failureIndex = failureIndex;
     }
@@ -59,8 +49,7 @@ public class ByteValidationFailure extends AbstractValidationFailure
      *
      * @return the index in the array that the validation failure occurred on
      */
-    public int getFailureIndex()
-    {
+    public int getFailureIndex() {
         return failureIndex;
     }
 }

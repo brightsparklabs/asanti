@@ -1,9 +1,13 @@
 /*
- * Created by brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
  */
 
 package com.brightsparklabs.asanti.validator.builtin;
+
+import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.mocks.model.data.MockDecodedAsnData;
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaType;
@@ -11,21 +15,18 @@ import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaSizeConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
+import com.brightsparklabs.assam.validator.FailureType;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Units tests for {@link PrintableStringValidator}
  *
  * @author brightSPARK Labs
  */
-public class PrintableStringValidatorTest
-{
+public class PrintableStringValidatorTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
@@ -38,21 +39,21 @@ public class PrintableStringValidatorTest
     // -------------------------------------------------------------------------
 
     @Test
-    public void testValidateTag() throws Exception
-    {
+    public void testValidateTag() throws Exception {
         // setup mock
-        final AsnSchemaType type = MockAsnSchemaType.createMockedAsnSchemaType(
-                AsnPrimitiveTypes.PRINTABLE_STRING,
-                new AsnSchemaSizeConstraint(1, 4));
-        final AsantiAsnData mockAsnData = MockDecodedAsnData.builder(type)
-                .addBytes("/valid", new byte[] { '1', '2', '3', '4' })
-                .addBytes("/invalid/bytes", new byte[] { '%' })
-                .addBytes("/invalid/constraint", new byte[] { '1', '2', '3', '4', '5' })
-                .build();
+        final AsnSchemaType type =
+                MockAsnSchemaType.createMockedAsnSchemaType(
+                        AsnPrimitiveTypes.PRINTABLE_STRING, new AsnSchemaSizeConstraint(1, 4));
+        final AsantiAsnData mockAsnData =
+                MockDecodedAsnData.builder(type)
+                        .addBytes("/valid", new byte[] {'1', '2', '3', '4'})
+                        .addBytes("/invalid/bytes", new byte[] {'%'})
+                        .addBytes("/invalid/constraint", new byte[] {'1', '2', '3', '4', '5'})
+                        .build();
 
         // test valid
-        ImmutableSet<DecodedTagValidationFailure> failures = instance.validate("/valid",
-                mockAsnData);
+        ImmutableSet<DecodedTagValidationFailure> failures =
+                instance.validate("/valid", mockAsnData);
         assertEquals(0, failures.size());
 
         // test invalid - bytes
@@ -60,7 +61,8 @@ public class PrintableStringValidatorTest
         assertEquals(1, failures.size());
         DecodedTagValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-        assertEquals(BuiltinTypeValidator.PRINTABLESTRING_VALIDATION_ERROR + "0x25",
+        assertEquals(
+                BuiltinTypeValidator.PRINTABLESTRING_VALIDATION_ERROR + "0x25",
                 failure.getFailureReason());
 
         // test invalid - constraint
@@ -82,16 +84,13 @@ public class PrintableStringValidatorTest
         assertEquals(2, failures.size());
         boolean byteErrorPresent = false;
         boolean constraintErrorPresent = false;
-        for (DecodedTagValidationFailure nullFailure : failures)
-        {
+        for (DecodedTagValidationFailure nullFailure : failures) {
             assertEquals(FailureType.DataMissing, nullFailure.getFailureType());
-            if (nullFailure.getFailureReason()
-                    .equals("No data found to validate against constraint"))
-            {
+            if (nullFailure
+                    .getFailureReason()
+                    .equals("No data found to validate against constraint")) {
                 constraintErrorPresent = true;
-            }
-            else if (nullFailure.getFailureReason().equals("No bytes present to validate"))
-            {
+            } else if (nullFailure.getFailureReason().equals("No bytes present to validate")) {
                 byteErrorPresent = true;
             }
         }
@@ -100,22 +99,18 @@ public class PrintableStringValidatorTest
     }
 
     @Test
-    public void testValidateBytes() throws Exception
-    {
+    public void testValidateBytes() throws Exception {
         // test valid
         byte[] bytes = new byte[1];
-        for (int b = 'Z'; b >= 'A'; b--)
-        {
+        for (int b = 'Z'; b >= 'A'; b--) {
             bytes[0] = (byte) b;
             assertEquals(0, instance.validate(bytes).size());
         }
-        for (int b = 'z'; b >= 'a'; b--)
-        {
+        for (int b = 'z'; b >= 'a'; b--) {
             bytes[0] = (byte) b;
             assertEquals(0, instance.validate(bytes).size());
         }
-        for (int b = '9'; b >= '0'; b--)
-        {
+        for (int b = '9'; b >= '0'; b--) {
             bytes[0] = (byte) b;
             assertEquals(0, instance.validate(bytes).size());
         }
@@ -158,8 +153,7 @@ public class PrintableStringValidatorTest
         // test invalid
         final String errorPrefix = BuiltinTypeValidator.PRINTABLESTRING_VALIDATION_ERROR;
 
-        for (byte b = Byte.MIN_VALUE; b < 32; b++)
-        {
+        for (byte b = Byte.MIN_VALUE; b < 32; b++) {
             bytes[0] = b;
             final ImmutableSet<ByteValidationFailure> failures = instance.validate(bytes);
             assertEquals(1, failures.size());
@@ -174,8 +168,8 @@ public class PrintableStringValidatorTest
             assertEquals(1, failures.size());
             final ByteValidationFailure failure = failures.iterator().next();
             assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
-            assertEquals(errorPrefix + String.format("0x%02X", bytes[0]),
-                    failure.getFailureReason());
+            assertEquals(
+                    errorPrefix + String.format("0x%02X", bytes[0]), failure.getFailureReason());
         }
 
         // test empty
