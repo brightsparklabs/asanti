@@ -51,7 +51,7 @@ public class ValidatorImpl implements Validator {
     // -------------------------------------------------------------------------
 
     /** custom validation rules */
-    private final ImmutableMap<Selector, ValidationRule> customRules;
+    private final ImmutableMap<ValidationRule, Selector> customRules;
 
     /** visitor to determine which {@link ValidationRule} to apply to a tag */
     private final ValidationVisitor validationVisitor = new ValidationVisitor();
@@ -65,7 +65,7 @@ public class ValidatorImpl implements Validator {
      *
      * @param customRules custom validation rules to apply to various tags
      */
-    public ValidatorImpl(Map<Selector, ValidationRule> customRules) {
+    public ValidatorImpl(Map<ValidationRule, Selector> customRules) {
         this.customRules = ImmutableMap.copyOf(customRules);
     }
 
@@ -153,12 +153,12 @@ public class ValidatorImpl implements Validator {
         final ImmutableSet<ValidationRule> rules =
                 customRules
                         .entrySet()
-                        .parallelStream()
-                        .filter(e -> e.getKey().matches(tag, type, asnData))
-                        .map(Entry::getValue)
+                        .stream()
+                        .filter(e -> e.getValue().matches(tag, type, asnData))
+                        .map(Entry::getKey)
                         .collect(ImmutableSet.toImmutableSet());
 
-        for (ValidationRule rule : rules) {
+        rules.forEach(rule -> {
             try {
                 failures.addAll(rule.validate(tag, asnData));
             } catch (DecodeException ex) {
@@ -169,7 +169,7 @@ public class ValidatorImpl implements Validator {
                                 "Data was not in the expected format: " + ex.getMessage());
                 failures.add(failure);
             }
-        }
+        });
         return failures;
     }
 
@@ -184,7 +184,7 @@ public class ValidatorImpl implements Validator {
         // ---------------------------------------------------------------------
 
         /** custom validation rules */
-        private final ImmutableMap.Builder<Selector, ValidationRule> customRules =
+        private final ImmutableMap.Builder<ValidationRule, Selector> customRules =
                 ImmutableMap.builder();
 
         // ---------------------------------------------------------------------
@@ -201,14 +201,14 @@ public class ValidatorImpl implements Validator {
         }
 
         /**
-         * Register a validation rule which applies to the specified tag.
+         * Register a validation rule which applies to the specified selector.
          *
          * @param rule Rule to apply when a match occurs.
          * @param selector Selector to match on.
          * @return This builder.
          */
         public Builder withValidationRule(ValidationRule rule, Selector selector) {
-            customRules.put(selector, rule);
+            customRules.put(rule, selector);
             return this;
         }
 
@@ -218,11 +218,22 @@ public class ValidatorImpl implements Validator {
          * @param rule Rule to apply when a match occurs.
          * @param tag Tag to match on.
          * @return This builder.
-         * @deprecated Use {@link #withValidationRule(ValidationRule, String)}.
+         * @deprecated Use {@link #withValidationRule(ValidationRule, Selector)}.
          */
         @Deprecated
         public Builder withValidationRule(ValidationRule rule, String tag) {
             return withValidationRule(rule, new SelectorByTagMatch(tag));
+        }
+
+        /**
+         * Register all the supplied validation rules.
+         *
+         * @param rules Rules to register.
+         * @return This builder.
+         */
+        public Builder withValidationRules(Map<ValidationRule, Selector> rules) {
+            customRules.putAll(rules);
+            return this;
         }
     }
 }
