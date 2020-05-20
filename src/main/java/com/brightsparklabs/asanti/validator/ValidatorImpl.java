@@ -10,14 +10,25 @@ package com.brightsparklabs.asanti.validator;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
+import com.brightsparklabs.asanti.selector.SelectorByTagMatch;
 import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
 import com.brightsparklabs.assam.data.AsnData;
 import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.assam.schema.AsnBuiltinType;
 import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.validator.*;
-import com.google.common.collect.*;
+import com.brightsparklabs.assam.selector.Selector;
+import com.brightsparklabs.assam.validator.FailureType;
+import com.brightsparklabs.assam.validator.ValidationFailure;
+import com.brightsparklabs.assam.validator.ValidationResult;
+import com.brightsparklabs.assam.validator.ValidationRule;
+import com.brightsparklabs.assam.validator.Validator;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +51,7 @@ public class ValidatorImpl implements Validator {
     // -------------------------------------------------------------------------
 
     /** custom validation rules */
-    private final ImmutableSetMultimap<String, ValidationRule> customRules;
+    private final ImmutableMap<Selector, ValidationRule> customRules;
 
     /** visitor to determine which {@link ValidationRule} to apply to a tag */
     private final ValidationVisitor validationVisitor = new ValidationVisitor();
@@ -54,8 +65,8 @@ public class ValidatorImpl implements Validator {
      *
      * @param customRules custom validation rules to apply to various tags
      */
-    public ValidatorImpl(Multimap<String, ValidationRule> customRules) {
-        this.customRules = ImmutableSetMultimap.copyOf(customRules);
+    public ValidatorImpl(Map<Selector, ValidationRule> customRules) {
+        this.customRules = ImmutableMap.copyOf(customRules);
     }
 
     /**
@@ -75,22 +86,23 @@ public class ValidatorImpl implements Validator {
     public ValidationResult validate(AsnData asnData) {
         final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
 
-        // validate each mapped tag
-        if (asnData instanceof AsantiAsnData) {
-            final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
-            for (final String tag : tags) {
-                // default validation
-                Set<ValidationFailure> failures = validateDefault(tag, (AsantiAsnData) asnData);
-                builder.addAll(failures);
-
-                // custom validation
-                failures = validateCustom(tag, asnData);
-                builder.addAll(failures);
-            }
-        } else {
+        if (!(asnData instanceof AsantiAsnData)) {
             // TODO: ASN-167 we wouldn't need to handle the instance of if we could just use AsnData
             // directly
             logger.warn("Asanti cannot be used to validate AsnData produced by another library");
+            return builder.build();
+        }
+
+        // validate each mapped tag
+        final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
+        for (final String tag : tags) {
+            // default validation
+            Set<ValidationFailure> failures = validateDefault(tag, (AsantiAsnData) asnData);
+            builder.addAll(failures);
+
+            // custom validation
+            failures = validateCustom(tag, asnData);
+            builder.addAll(failures);
         }
 
         // add a failure for each unmapped tag
@@ -134,7 +146,18 @@ public class ValidatorImpl implements Validator {
      */
     private Set<ValidationFailure> validateCustom(String tag, AsnData asnData) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
-        final ImmutableSet<ValidationRule> rules = customRules.get(tag);
+        final AsnPrimitiveType primitiveType =
+                asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
+        final AsnBuiltinType type = primitiveType.getBuiltinType();
+
+        final ImmutableSet<ValidationRule> rules =
+                customRules
+                        .entrySet()
+                        .parallelStream()
+                        .filter(e -> e.getKey().matches(tag, type, asnData))
+                        .map(Entry::getValue)
+                        .collect(ImmutableSet.toImmutableSet());
+
         for (ValidationRule rule : rules) {
             try {
                 failures.addAll(rule.validate(tag, asnData));
@@ -161,19 +184,45 @@ public class ValidatorImpl implements Validator {
         // ---------------------------------------------------------------------
 
         /** custom validation rules */
-        private final HashMultimap<String, ValidationRule> customRules = HashMultimap.create();
+        private final ImmutableMap.Builder<Selector, ValidationRule> customRules =
+                ImmutableMap.builder();
 
         // ---------------------------------------------------------------------
         // PUBLIC METHODS
         // ---------------------------------------------------------------------
 
+        /**
+         * Builds and returns the Validator.
+         *
+         * @return The built Validator.
+         */
         public Validator build() {
-            return new ValidatorImpl(customRules);
+            return new ValidatorImpl(customRules.build());
         }
 
-        public Builder withValidationRule(ValidationRule rule, String tag) {
-            customRules.put(tag, rule);
+        /**
+         * Register a validation rule which applies to the specified tag.
+         *
+         * @param rule Rule to apply when a match occurs.
+         * @param selector Selector to match on.
+         * @return This builder.
+         */
+        public Builder withValidationRule(ValidationRule rule, Selector selector) {
+            customRules.put(selector, rule);
             return this;
+        }
+
+        /**
+         * Register a validation rule which applies to the specified tag.
+         *
+         * @param rule Rule to apply when a match occurs.
+         * @param tag Tag to match on.
+         * @return This builder.
+         * @deprecated Use {@link #withValidationRule(ValidationRule, String)}.
+         */
+        @Deprecated
+        public Builder withValidationRule(ValidationRule rule, String tag) {
+            return withValidationRule(rule, new SelectorByTagMatch(tag));
         }
     }
 }
