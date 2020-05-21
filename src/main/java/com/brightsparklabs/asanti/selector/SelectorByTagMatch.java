@@ -8,6 +8,7 @@
 package com.brightsparklabs.asanti.selector;
 
 import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Selector which matches if a tag is an exact match.
@@ -20,7 +21,7 @@ public class SelectorByTagMatch extends CachableSelector {
     // -------------------------------------------------------------------------
 
     /** The tag to match. */
-    private final String tagToMatch;
+    private final ImmutableSet<String> tagsToMatch;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -29,10 +30,19 @@ public class SelectorByTagMatch extends CachableSelector {
     /**
      * Default constructor.
      *
-     * @param tag The tag to match.
+     * @param tags Tags which trigger a match.
+     */
+    public SelectorByTagMatch(final Iterable<String> tags) {
+        this.tagsToMatch = ImmutableSet.copyOf(tags);
+    }
+
+    /**
+     * Creates a selector which only matches a single tag.
+     *
+     * @param tag Tag which triggers a match.
      */
     public SelectorByTagMatch(final String tag) {
-        this.tagToMatch = tag;
+        this(ImmutableSet.of(tag));
     }
 
     // -------------------------------------------------------------------------
@@ -41,6 +51,6 @@ public class SelectorByTagMatch extends CachableSelector {
 
     @Override
     public boolean matches(final String tag, final AsnBuiltinType type) {
-        return tagToMatch.equals(tag);
+        return tagsToMatch.contains(tag);
     }
 }
