@@ -9,7 +9,7 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import static org.junit.Assert.*;
 
-import com.brightsparklabs.assam.exception.DecodeException;
+import com.brightsparklabs.asanti.exception.DecodeException;
 import com.google.common.base.Charsets;
 import org.junit.Test;
 

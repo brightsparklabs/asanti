@@ -7,8 +7,8 @@
 
 package com.brightsparklabs.asanti.validator.result;
 
-import com.brightsparklabs.assam.validator.ValidationFailure;
-import com.brightsparklabs.assam.validator.ValidationResult;
+import com.brightsparklabs.asanti.validator.ValidationFailure;
+import com.brightsparklabs.asanti.validator.ValidationResult;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 

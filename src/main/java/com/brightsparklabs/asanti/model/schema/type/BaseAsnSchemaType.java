@@ -11,8 +11,8 @@ import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.text.ParseException;

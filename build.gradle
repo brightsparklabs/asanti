@@ -1,5 +1,5 @@
 /*
- * Created brightSPARK Labs
+ * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
  */
 
@@ -48,7 +48,6 @@ dependencies {
         slf4j: "1.7.30"
     ]
 
-    api 'com.brightsparklabs:assam:0.7.1'
     implementation "com.google.guava:guava:29.0-jre"
     implementation "org.bouncycastle:bcprov-jdk15on:1.65"
     implementation "org.slf4j:slf4j-api:${versions.slf4j}"

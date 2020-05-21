@@ -7,8 +7,8 @@
 
 package com.brightsparklabs.asanti.model.schema.primitive;
 
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveTypeVisitor;
 
 /**
  * A base type used to represent the primitive builtin types within ASN.1 This class is used as a
@@ -140,7 +140,7 @@ public interface AsnPrimitiveTypes {
      * <p>NOTE: This is not named {@code AsnSchemaPrimitiveTypeNull} because that is the name used
      * to model an actual ASN.1 {@code NULL} Type.
      */
-    class Invalid implements com.brightsparklabs.assam.schema.AsnPrimitiveType.Invalid {
+    class Invalid implements com.brightsparklabs.asanti.schema.AsnPrimitiveType.Invalid {
         @Override
         public AsnBuiltinType getBuiltinType() {
             return AsnBuiltinType.Null;

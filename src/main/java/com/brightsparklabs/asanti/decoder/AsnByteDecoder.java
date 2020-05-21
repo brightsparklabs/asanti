@@ -8,8 +8,8 @@
 package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.exception.DecodeException;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import java.math.BigInteger;
 import java.time.OffsetDateTime;
 

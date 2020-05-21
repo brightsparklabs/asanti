@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.*;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.google.common.collect.ImmutableMap;
 import java.text.ParseException;
 

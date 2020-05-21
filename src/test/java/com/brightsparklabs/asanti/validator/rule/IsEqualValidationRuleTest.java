@@ -10,10 +10,10 @@ package com.brightsparklabs.asanti.validator.rule;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import com.brightsparklabs.asanti.data.AsnData;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.data.AsnData;
-import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.assam.validator.ValidationFailure;
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.google.common.collect.ImmutableSet;
 import java.math.BigInteger;
 import java.sql.Timestamp;

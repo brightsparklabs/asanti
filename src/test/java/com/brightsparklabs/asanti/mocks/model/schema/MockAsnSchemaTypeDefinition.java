@@ -11,7 +11,7 @@ import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableList;
 
 /**

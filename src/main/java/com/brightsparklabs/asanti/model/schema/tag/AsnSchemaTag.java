@@ -7,7 +7,7 @@
 
 package com.brightsparklabs.asanti.model.schema.tag;
 
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import java.util.Optional;

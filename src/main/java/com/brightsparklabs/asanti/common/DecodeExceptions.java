@@ -7,8 +7,8 @@
 
 package com.brightsparklabs.asanti.common;
 
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.brightsparklabs.assam.validator.ValidationFailure;
+import com.brightsparklabs.asanti.exception.DecodeException;
+import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.google.common.collect.Iterables;
 
 /**

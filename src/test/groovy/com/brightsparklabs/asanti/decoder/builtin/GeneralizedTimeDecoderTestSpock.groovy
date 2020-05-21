@@ -7,7 +7,7 @@
 
 package com.brightsparklabs.asanti.decoder.builtin
 
-import com.brightsparklabs.assam.exception.DecodeException
+import com.brightsparklabs.asanti.exception.DecodeException
 import com.google.common.base.Charsets
 import spock.lang.Shared
 import spock.lang.Specification

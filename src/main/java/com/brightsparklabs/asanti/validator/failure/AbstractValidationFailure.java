@@ -9,8 +9,8 @@ package com.brightsparklabs.asanti.validator.failure;
 
 import static com.google.common.base.Preconditions.*;
 
-import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.assam.validator.ValidationFailure;
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.ValidationFailure;
 
 /**
  * Convenience class for implementing {@link ValidationFailure}.

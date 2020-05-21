@@ -7,9 +7,9 @@
 
 package com.brightsparklabs.asanti.validator.rule
 
-import com.brightsparklabs.assam.data.AsnData
-import com.brightsparklabs.assam.validator.FailureType
-import com.brightsparklabs.assam.validator.ValidationFailure
+import com.brightsparklabs.asanti.data.AsnData
+import com.brightsparklabs.asanti.validator.FailureType
+import com.brightsparklabs.asanti.validator.ValidationFailure
 import com.google.common.collect.ImmutableSet
 import spock.lang.Specification
 import spock.lang.Unroll

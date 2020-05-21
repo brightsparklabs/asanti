@@ -8,8 +8,8 @@
 package com.brightsparklabs.asanti.decoder;
 
 import com.brightsparklabs.asanti.decoder.builtin.*;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveTypeVisitor;
 
 /**
  * Visitor that visits {@link AsnPrimitiveType} objects and returns the most appropriate {@link

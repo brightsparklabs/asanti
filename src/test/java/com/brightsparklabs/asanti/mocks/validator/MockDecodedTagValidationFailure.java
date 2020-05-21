@@ -9,9 +9,9 @@ package com.brightsparklabs.asanti.mocks.validator;
 
 import static org.mockito.Mockito.*;
 
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.assam.validator.ValidationFailure;
 
 /**
  * Utility class for obtaining mocked instances of {@link DecodedTagValidationFailure}

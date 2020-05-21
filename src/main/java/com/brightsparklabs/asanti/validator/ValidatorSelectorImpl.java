@@ -7,11 +7,9 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.assam.data.AsnData;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.brightsparklabs.assam.selector.Selector;
-import com.brightsparklabs.assam.validator.ValidationRule;
-import com.brightsparklabs.assam.validator.ValidatorSelector;
+import com.brightsparklabs.asanti.data.AsnData;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.selector.Selector;
 
 /** @author brightSPARK Labs */
 public class ValidatorSelectorImpl implements ValidatorSelector {

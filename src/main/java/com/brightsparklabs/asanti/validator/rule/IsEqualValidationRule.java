@@ -9,12 +9,12 @@ package com.brightsparklabs.asanti.validator.rule;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.brightsparklabs.asanti.data.AsnData;
+import com.brightsparklabs.asanti.exception.DecodeException;
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.ValidationFailure;
+import com.brightsparklabs.asanti.validator.ValidationRule;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.brightsparklabs.assam.data.AsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.assam.validator.ValidationFailure;
-import com.brightsparklabs.assam.validator.ValidationRule;
 import com.google.common.collect.ImmutableSet;
 import java.util.Optional;
 

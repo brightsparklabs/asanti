@@ -7,14 +7,13 @@
 
 package com.brightsparklabs.asanti.validator;
 
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveTypeVisitor;
 import com.brightsparklabs.asanti.validator.builtin.*;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
-import com.brightsparklabs.assam.validator.ValidationRule;
 
 /**
  * Visitor that visits {@link AsnPrimitiveTypeVisitor} objects and returns the most appropriate
- * {@link ValidationRule} pertaining to it.
+ * {@link com.brightsparklabs.asanti.validator.ValidationRule} pertaining to it.
  *
  * @author brightSPARK Labs
  */

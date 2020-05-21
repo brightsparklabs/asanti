@@ -7,8 +7,6 @@
 
 package com.brightsparklabs.asanti.selector;
 
-import com.brightsparklabs.assam.selector.Selector;
-
 /** @author brightSPARK Labs */
 public abstract class NonCachableSelector implements Selector {
     // -------------------------------------------------------------------------

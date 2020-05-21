@@ -11,14 +11,14 @@ import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
+import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveTypeVisitor;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import java.time.OffsetDateTime;

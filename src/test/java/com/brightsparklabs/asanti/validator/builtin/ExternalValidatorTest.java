@@ -9,8 +9,8 @@ package com.brightsparklabs.asanti.validator.builtin;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
-import com.brightsparklabs.assam.validator.FailureType;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 

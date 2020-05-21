@@ -10,8 +10,8 @@ package com.brightsparklabs.asanti.decoder.builtin;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
 import java.util.Optional;
 import org.junit.Test;
 

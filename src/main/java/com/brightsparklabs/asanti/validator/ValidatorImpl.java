@@ -7,23 +7,18 @@
 
 package com.brightsparklabs.asanti.validator;
 
+import com.brightsparklabs.asanti.data.AsnData;
+import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.selector.Selector;
 import com.brightsparklabs.asanti.selector.SelectorByTagMatch;
 import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
-import com.brightsparklabs.assam.data.AsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.selector.Selector;
-import com.brightsparklabs.assam.validator.FailureType;
-import com.brightsparklabs.assam.validator.ValidationFailure;
-import com.brightsparklabs.assam.validator.ValidationResult;
-import com.brightsparklabs.assam.validator.ValidationRule;
-import com.brightsparklabs.assam.validator.Validator;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -34,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default implementation of {@link Validator}.
+ * Default implementation of {@link com.brightsparklabs.asanti.validator.Validator}.
  *
  * @author brightSPARK Labs
  */
@@ -53,7 +48,10 @@ public class ValidatorImpl implements Validator {
     /** custom validation rules */
     private final ImmutableMap<ValidationRule, Selector> customRules;
 
-    /** visitor to determine which {@link ValidationRule} to apply to a tag */
+    /**
+     * visitor to determine which {@link com.brightsparklabs.asanti.validator.ValidationRule} to
+     * apply to a tag
+     */
     private final ValidationVisitor validationVisitor = new ValidationVisitor();
 
     // -------------------------------------------------------------------------

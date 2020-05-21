@@ -9,7 +9,7 @@ package com.brightsparklabs.asanti.selector;
 
 import static com.google.common.base.Preconditions.*;
 
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 
 /**
  * Class that with criteria is that tag type matches specific schema type.
