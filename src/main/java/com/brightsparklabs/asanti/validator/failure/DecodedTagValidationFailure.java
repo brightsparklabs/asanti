@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
-import com.brightsparklabs.assam.validator.FailureType;
+import com.brightsparklabs.asanti.validator.FailureType;
 
 /**
  * Represents a validation failure from validating a {@link DecodedTag} against its associated

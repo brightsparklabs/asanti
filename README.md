@@ -1,6 +1,7 @@
 # Asanti
 
 [![Build Status](https://travis-ci.org/brightsparklabs/asanti.svg?branch=master)](https://travis-ci.org/brightsparklabs/asanti)
+[![Download](https://api.bintray.com/packages/brightsparklabs/maven/asanti/images/download.svg)](https://bintray.com/brightsparklabs/maven/asanti/_latestVersion)
 
 A dynamic ASN.1 Parser for decoding tagged BER/DER data. Asanti allows a schema
 to be layered on top of parsed data rather than forcing the schema to be
@@ -15,11 +16,7 @@ non-conforming data.
 
 git clone git@github.com:brightsparklabs/asanti.git
 cd asanti
-./gradlew -x signArchives build
-# generate eclipse classpath (optional)
-./gradlew eclipse
-# generate intellij classpath (optional)
-./gradlew idea
+./gradlew build
 
 # parse a schema
 ./gradlew installDist

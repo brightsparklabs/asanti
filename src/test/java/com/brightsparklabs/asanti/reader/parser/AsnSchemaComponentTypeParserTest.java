@@ -14,7 +14,7 @@ import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableList;
 import java.text.ParseException;
 import java.util.List;

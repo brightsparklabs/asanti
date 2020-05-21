@@ -17,7 +17,7 @@ import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.google.common.collect.ImmutableList;
 import java.text.ParseException;
 import java.util.Optional;

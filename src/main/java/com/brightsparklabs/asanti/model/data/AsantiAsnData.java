@@ -16,7 +16,7 @@ import java.util.Optional;
  *
  * @author brightSPARK Labs
  */
-public interface AsantiAsnData extends com.brightsparklabs.assam.data.AsnData {
+public interface AsantiAsnData extends com.brightsparklabs.asanti.data.AsnData {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------

@@ -10,7 +10,6 @@ package com.brightsparklabs.asanti.validator;
 import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.brightsparklabs.assam.validator.FailureType;
 import org.junit.Test;
 
 /**

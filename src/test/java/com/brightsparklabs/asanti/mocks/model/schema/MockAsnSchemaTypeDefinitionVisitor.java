@@ -7,8 +7,8 @@
 
 package com.brightsparklabs.asanti.mocks.model.schema;
 
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveTypeVisitor;
 
 /**
  * A simple visitor which returns the canonical class name of the object it visits

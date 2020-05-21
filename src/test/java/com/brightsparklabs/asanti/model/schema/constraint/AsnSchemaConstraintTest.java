@@ -9,8 +9,8 @@ package com.brightsparklabs.asanti.model.schema.constraint;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
-import com.brightsparklabs.assam.validator.FailureType;
 import com.google.common.collect.ImmutableSet;
 
 /**

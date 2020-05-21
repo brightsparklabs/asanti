@@ -7,12 +7,9 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.assam.data.AsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.validator.ValidationFailure;
-import com.brightsparklabs.assam.validator.ValidationRule;
-import com.brightsparklabs.assam.validator.ValidatorSelector;
+import com.brightsparklabs.asanti.data.AsnData;
+import com.brightsparklabs.asanti.exception.DecodeException;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.Optional;

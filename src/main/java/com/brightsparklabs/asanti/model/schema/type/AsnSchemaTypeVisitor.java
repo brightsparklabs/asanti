@@ -7,7 +7,7 @@
 
 package com.brightsparklabs.asanti.model.schema.type;
 
-import com.brightsparklabs.assam.visitor.Visitor;
+import com.brightsparklabs.asanti.visitor.Visitor;
 import java.text.ParseException;
 
 /**

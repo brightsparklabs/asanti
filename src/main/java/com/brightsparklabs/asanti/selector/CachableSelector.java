@@ -7,9 +7,8 @@
 
 package com.brightsparklabs.asanti.selector;
 
-import com.brightsparklabs.assam.data.AsnData;
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.brightsparklabs.assam.selector.Selector;
+import com.brightsparklabs.asanti.data.AsnData;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 
 /** @author brightSPARK Labs */
 public abstract class CachableSelector implements Selector {

@@ -11,7 +11,6 @@ import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.mocks.validator.MockDecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
-import com.brightsparklabs.assam.validator.FailureType;
 import org.junit.Test;
 
 /**

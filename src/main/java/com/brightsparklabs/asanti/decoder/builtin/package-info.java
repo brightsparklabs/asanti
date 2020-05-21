@@ -4,7 +4,7 @@
  */
 
 /**
- * Classes for decoding bytes from various {@link com.brightsparklabs.assam.schema.AsnBuiltinType
+ * Classes for decoding bytes from various {@link com.brightsparklabs.asanti.schema.AsnBuiltinType
  * ASN.1 Built-in Types}.
  *
  * @author brightSPARK Labs

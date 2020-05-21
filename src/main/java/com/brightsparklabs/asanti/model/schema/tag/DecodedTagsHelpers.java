@@ -10,8 +10,8 @@ package com.brightsparklabs.asanti.model.schema.tag;
 import static com.google.common.base.Preconditions.*;
 import static com.google.common.collect.Collections2.*;
 
+import com.brightsparklabs.asanti.data.AsnData;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.data.AsnData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;

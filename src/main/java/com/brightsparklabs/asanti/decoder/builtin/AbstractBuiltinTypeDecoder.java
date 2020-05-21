@@ -9,8 +9,8 @@ package com.brightsparklabs.asanti.decoder.builtin;
 
 import static com.google.common.base.Preconditions.*;
 
+import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
 import java.util.Optional;
 
 /**

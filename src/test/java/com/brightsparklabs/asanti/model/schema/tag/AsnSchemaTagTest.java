@@ -9,7 +9,7 @@ package com.brightsparklabs.asanti.model.schema.tag;
 
 import static org.junit.Assert.*;
 
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import org.junit.Test;
 
 /** Created by Michael on 7/07/2015. */

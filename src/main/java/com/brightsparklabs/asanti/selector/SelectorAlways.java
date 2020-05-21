@@ -7,7 +7,7 @@
 
 package com.brightsparklabs.asanti.selector;
 
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 
 /**
  * A class always meets the criteria

@@ -9,10 +9,10 @@ package com.brightsparklabs.asanti.common;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.mocks.validator.MockDecodedTagValidationFailure;
+import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.brightsparklabs.assam.exception.DecodeException;
-import com.brightsparklabs.assam.validator.FailureType;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 

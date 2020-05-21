@@ -7,9 +7,9 @@
 
 package com.brightsparklabs.asanti.model.schema.primitive;
 
-import com.brightsparklabs.assam.schema.AsnBuiltinType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveType;
-import com.brightsparklabs.assam.schema.AsnPrimitiveTypeVisitor;
+import com.brightsparklabs.asanti.schema.AsnBuiltinType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveTypeVisitor;
 
 /**
  * A type used to represent the primitive builtin type Generalized Time within ASN.1 This class is

@@ -7,11 +7,11 @@
 
 package com.brightsparklabs.asanti.validator;
 
-import com.brightsparklabs.assam.data.AsnData;
-import com.brightsparklabs.assam.validator.Validator;
+import com.brightsparklabs.asanti.data.AsnData;
 
 /**
- * Static utility methods pertaining to {@link Validator} instances.
+ * Static utility methods pertaining to {@link com.brightsparklabs.asanti.validator.Validator}
+ * instances.
  *
  * @author brightSPARK Labs
  */

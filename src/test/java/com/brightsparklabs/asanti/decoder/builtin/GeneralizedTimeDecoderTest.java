@@ -12,8 +12,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.assam.exception.DecodeException;
 import com.google.common.base.Charsets;
 import java.time.Instant;
 import java.time.OffsetDateTime;
