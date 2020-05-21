@@ -11,7 +11,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.brightsparklabs.asanti.validator.rule.IsEqualValidationRule;
 import com.brightsparklabs.assam.data.AsnData;
 import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.assam.validator.ValidationFailure;
@@ -23,7 +22,7 @@ import org.hamcrest.core.StringStartsWith;
 import org.junit.Test;
 
 /**
- * Units tests for {@link IsEqualValidationRule}
+ * Units tests for {@link com.brightsparklabs.asanti.validator.rule.IsEqualValidationRule}
  *
  * @author brightSPARK Labs
  */

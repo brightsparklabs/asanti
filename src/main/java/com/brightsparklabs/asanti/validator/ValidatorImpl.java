@@ -151,25 +151,24 @@ public class ValidatorImpl implements Validator {
         final AsnBuiltinType type = primitiveType.getBuiltinType();
 
         final ImmutableSet<ValidationRule> rules =
-                customRules
-                        .entrySet()
-                        .stream()
+                customRules.entrySet().stream()
                         .filter(e -> e.getValue().matches(tag, type, asnData))
                         .map(Entry::getKey)
                         .collect(ImmutableSet.toImmutableSet());
 
-        rules.forEach(rule -> {
-            try {
-                failures.addAll(rule.validate(tag, asnData));
-            } catch (DecodeException ex) {
-                final ValidationFailure failure =
-                        new DecodedTagValidationFailure(
-                                tag,
-                                FailureType.CustomValidationFailed,
-                                "Data was not in the expected format: " + ex.getMessage());
-                failures.add(failure);
-            }
-        });
+        rules.forEach(
+                rule -> {
+                    try {
+                        failures.addAll(rule.validate(tag, asnData));
+                    } catch (DecodeException ex) {
+                        final ValidationFailure failure =
+                                new DecodedTagValidationFailure(
+                                        tag,
+                                        FailureType.CustomValidationFailed,
+                                        "Data was not in the expected format: " + ex.getMessage());
+                        failures.add(failure);
+                    }
+                });
         return failures;
     }
 

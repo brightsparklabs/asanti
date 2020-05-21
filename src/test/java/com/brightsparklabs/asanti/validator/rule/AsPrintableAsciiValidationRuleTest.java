@@ -10,7 +10,6 @@ package com.brightsparklabs.asanti.validator.rule;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import com.brightsparklabs.asanti.validator.rule.AsPrintableAsciiValidationRule;
 import com.brightsparklabs.assam.data.AsnData;
 import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.assam.validator.ValidationFailure;
@@ -20,7 +19,7 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 /**
- * Units tests for {@link AsPrintableAsciiValidationRule}
+ * Units tests for {@link com.brightsparklabs.asanti.validator.rule.AsPrintableAsciiValidationRule}
  *
  * @author brightSPARK Labs
  */

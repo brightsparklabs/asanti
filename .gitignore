@@ -35,6 +35,7 @@ local.properties
 .project
 
 ### Intellij ###
+/out/
 .idea/
 *.iml
 *.iws

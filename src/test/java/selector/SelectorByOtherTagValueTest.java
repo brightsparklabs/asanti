@@ -6,9 +6,9 @@
  */
 
 package selector; /*
-                                              * Created by brightSPARK Labs
-                                              * www.brightsparklabs.com
-                                              */
+                   * Created by brightSPARK Labs
+                   * www.brightsparklabs.com
+                   */
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

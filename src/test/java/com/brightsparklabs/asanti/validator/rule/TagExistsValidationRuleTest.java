@@ -10,7 +10,6 @@ package com.brightsparklabs.asanti.validator.rule;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import com.brightsparklabs.asanti.validator.rule.TagExistsValidationRule;
 import com.brightsparklabs.assam.data.AsnData;
 import com.brightsparklabs.assam.validator.FailureType;
 import com.brightsparklabs.assam.validator.ValidationFailure;
@@ -18,7 +17,7 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 /**
- * Units tests for {@link TagExistsValidationRule}
+ * Units tests for {@link com.brightsparklabs.asanti.validator.rule.TagExistsValidationRule}
  *
  * @author brightSPARK Labs
  */
