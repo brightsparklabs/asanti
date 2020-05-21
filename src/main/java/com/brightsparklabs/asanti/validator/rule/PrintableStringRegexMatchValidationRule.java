@@ -30,8 +30,11 @@ public class PrintableStringRegexMatchValidationRule implements ValidationRule {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** regex to use to match value */
+    /** Regex to use to match value. */
     private final Pattern pattern;
+
+    /** Failure reason to include when validation fails. */
+    private final String failureReason;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -41,10 +44,22 @@ public class PrintableStringRegexMatchValidationRule implements ValidationRule {
      * Default constructor.
      *
      * @param pattern Regex to use to match data.
+     * @param failureReason Failure reason to use when validation fails.
+     */
+    public PrintableStringRegexMatchValidationRule(Pattern pattern, String failureReason) {
+        checkNotNull(pattern);
+        checkNotNull(failureReason);
+        this.pattern = pattern;
+        this.failureReason = failureReason;
+    }
+
+    /**
+     * Default constructor.
+     *
+     * @param pattern Regex to use to match data.
      */
     public PrintableStringRegexMatchValidationRule(Pattern pattern) {
-        checkNotNull(pattern);
-        this.pattern = pattern;
+        this(pattern, "Value found does not match regex [" + pattern.toString() + "]");
     }
 
     // -------------------------------------------------------------------------
@@ -62,11 +77,7 @@ public class PrintableStringRegexMatchValidationRule implements ValidationRule {
 
         final ValidationFailure failure =
                 new DecodedTagValidationFailure(
-                        tag,
-                        FailureType.CustomValidationFailed,
-                        "No value found when expecting a string which matches regex ["
-                                + pattern.toString()
-                                + "]");
+                        tag, FailureType.CustomValidationFailed, failureReason);
         return ImmutableSet.of(failure);
     }
 }
