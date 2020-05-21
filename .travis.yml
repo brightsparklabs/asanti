@@ -8,17 +8,11 @@ language: java
 jdk:
   - openjdk8
 
-sudo: false
-
 notifications:
   email:
     on_success: never
     recipients:
       - support.insilico@brightsparklabs.com
-
-# there is no signatory on build server, so exclude the 'signArchives' task
-install:
-  - ./gradlew assemble -x signArchives
 
 # cache dependencies to speed up builds
 cache:
@@ -26,3 +20,10 @@ cache:
     - $HOME/.gradle/caches
     - $HOME/.gradle/wrapper
 
+jobs:
+  include:
+    - stage: unit tests
+      script: ./gradlew build
+    - stage: publish
+      if: branch = master
+      script: ./gradlew -i bintrayUpload
