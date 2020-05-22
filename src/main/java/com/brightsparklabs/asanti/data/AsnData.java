@@ -158,7 +158,8 @@ public interface AsnData {
      *     <p>Note: There is no inherit type safety with this method. The type of object returned
      *     will match the tag. If the caller mis-aligns the return type with the actual type
      *     dictated by the schema then on result.get() (from the returned optional) a
-     *     ClassCastException will likely be thrown.
+     *     ClassCastException will likely be thrown (i.e. it is thrown when get() is called not when
+     *     the Optional is created).
      *     <p>The expected Java object type for each ASN.1 schema type is:
      *     <ul>
      *       <li><b>BitString</b>: String
