@@ -8,7 +8,6 @@
 package com.brightsparklabs.asanti.reader.parser;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
@@ -21,6 +20,7 @@ import java.util.List;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.hamcrest.MockitoHamcrest;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -207,11 +207,11 @@ public class AsnSchemaParserTest {
         PowerMockito.mockStatic(AsnSchemaModuleParser.class);
         final Matcher<Iterable<String>> documentPduMatcher =
                 org.hamcrest.Matchers.iterableWithSize(EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT);
-        when(AsnSchemaModuleParser.parse(argThat(documentPduMatcher)))
+        when(AsnSchemaModuleParser.parse(MockitoHamcrest.argThat(documentPduMatcher)))
                 .thenReturn(expectedDocumentPduSchemaModule);
         final Matcher<Iterable<String>> peopleProtocolMatcher =
                 org.hamcrest.Matchers.iterableWithSize(EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT);
-        when(AsnSchemaModuleParser.parse(argThat(peopleProtocolMatcher)))
+        when(AsnSchemaModuleParser.parse(MockitoHamcrest.argThat(peopleProtocolMatcher)))
                 .thenReturn(expectedPeopleProtocolSchemaModule);
 
         // parse the example schema

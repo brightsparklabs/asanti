@@ -509,18 +509,17 @@ public class MockAsnSchemaType {
             // two forms, "2" or "2[0]", the latter being for Collections
             // where the [0] is the index in the collection and could be any number.
             // We want to match either, so we need to make a specific ArgumentMatcher.
-            class TagMatcher extends ArgumentMatcher<String> {
-                private Pattern pattern = Pattern.compile("^([0-9]+)(\\[([a-zA-Z0-9 ]+)\\])$");
+            class TagMatcher implements ArgumentMatcher<String> {
+                private final Pattern pattern =
+                        Pattern.compile("^([0-9]+)(\\[([a-zA-Z0-9 ]+)\\])$");
 
                 @Override
-                public boolean matches(final Object argument) {
-                    String arg = Strings.nullToEmpty((String) argument);
-                    Matcher m = pattern.matcher(arg);
+                public boolean matches(final String argument) {
+                    final String arg = Strings.nullToEmpty(argument);
+                    final Matcher m = pattern.matcher(arg);
                     if (m.matches()) {
-                        String tag = Strings.nullToEmpty(m.group(3));
-                        if (tag.equals(theTag)) {
-                            return true;
-                        }
+                        final String tag = Strings.nullToEmpty(m.group(3));
+                        return tag.equals(theTag);
                     }
                     return false;
                 }
