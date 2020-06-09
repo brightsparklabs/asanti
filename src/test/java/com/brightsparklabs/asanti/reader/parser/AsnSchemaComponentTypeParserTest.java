@@ -104,28 +104,31 @@ public class AsnSchemaComponentTypeParserTest {
 
         // check that the AsnSchemaTypeParser got called the right number of times with the right
         // inputs
-        List<String> callArguments = typeArgument.getAllValues();
-        assertEquals(6, callArguments.size());
-        assertEquals("Header", callArguments.get(0));
-        assertEquals("Body", callArguments.get(1));
-        assertEquals("Footer", callArguments.get(2));
-        assertEquals("Date-Due", callArguments.get(3));
+        final List<String> initialCallArguments = typeArgument.getAllValues();
+        assertEquals(6, initialCallArguments.size());
+        assertEquals("Header", initialCallArguments.get(0));
+        assertEquals("Body", initialCallArguments.get(1));
+        assertEquals("Footer", initialCallArguments.get(2));
+        assertEquals("Date-Due", initialCallArguments.get(3));
         assertEquals(
                 "SEQUENCE { majorVersion [0] INTEGER, minorVersion [1] INTEGER }",
-                callArguments.get(4));
+                initialCallArguments.get(4));
         assertEquals(
-                "SET { numberLines [0] INTEGER, summary [1] OCTET STRING }", callArguments.get(5));
+                "SET { numberLines [0] INTEGER, summary [1] OCTET STRING }",
+                initialCallArguments.get(5));
 
         // Body type
         actualComponents =
                 AsnSchemaComponentTypeParser.parse(
                         "lastModified [0] ModificationMetadata, prefix [1] Section-Note OPTIONAL, content [2] Section-Main, suffix [3] Section-Note OPTIONAL",
                         AsnModuleTaggingMode.DEFAULT);
-        assertEquals(6 + 4, callArguments.size());
-        assertEquals("ModificationMetadata", callArguments.get(6));
-        assertEquals("Section-Note", callArguments.get(7));
-        assertEquals("Section-Main", callArguments.get(8));
-        assertEquals("Section-Note", callArguments.get(9));
+        final List<String> callArgumentsWithBody = typeArgument.getAllValues();
+
+        assertEquals(6 + 4, callArgumentsWithBody.size());
+        assertEquals("ModificationMetadata", callArgumentsWithBody.get(6));
+        assertEquals("Section-Note", callArgumentsWithBody.get(7));
+        assertEquals("Section-Main", callArgumentsWithBody.get(8));
+        assertEquals("Section-Note", callArgumentsWithBody.get(9));
 
         compareAsnSchemaComponentTypes(
                 MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForBody(),
@@ -140,14 +143,16 @@ public class AsnSchemaComponentTypeParserTest {
         compareAsnSchemaComponentTypes(
                 MockAsnSchemaComponentType.createMockedAsnSchemaComponentTypesForSectionMain(),
                 actualComponents);
+        final List<String> callArgumentsWithBodyAndSectionMain = typeArgument.getAllValues();
 
         // check that the AsnSchemaTypeParser got called the right number of times with the right
         // inputs
-        assertEquals(10 + 3, callArguments.size());
-        assertEquals("OCTET STRING", callArguments.get(10));
-        assertEquals("SEQUENCE OF Paragraph", callArguments.get(11));
+        assertEquals(10 + 3, callArgumentsWithBodyAndSectionMain.size());
+        assertEquals("OCTET STRING", callArgumentsWithBodyAndSectionMain.get(10));
+        assertEquals("SEQUENCE OF Paragraph", callArgumentsWithBodyAndSectionMain.get(11));
         assertEquals(
-                "SET OF SET { number [1] INTEGER, text [2] OCTET STRING }", callArguments.get(12));
+                "SET OF SET { number [1] INTEGER, text [2] OCTET STRING }",
+                callArgumentsWithBodyAndSectionMain.get(12));
     }
 
     @Test

@@ -1,12 +1,12 @@
 ##
- # Created by brightSPARK Labs
- # www.brightsparklabs.com
- ##
+# Created by brightSPARK Labs
+# www.brightsparklabs.com
+##
 
 language: java
 
 jdk:
-  - openjdk8
+  - openjdk11
 
 notifications:
   email:

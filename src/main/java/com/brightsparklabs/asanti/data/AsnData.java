@@ -205,6 +205,7 @@ public interface AsnData {
      * @deprecated please use the other overload - {@link #getDecodedObject(String, Class)} for
      *     better type safety.
      */
+    @Deprecated
     <T> Optional<T> getDecodedObject(String tag) throws DecodeException;
 
     /**
