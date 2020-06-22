@@ -222,32 +222,6 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
     }
 
     @Override
-    public <T> Optional<T> getDecodedObject(final String tag) throws DecodeException {
-        final DecodedTag decodedTag = decodedTags.get(tag);
-        if (decodedTag == null) {
-            return Optional.empty();
-        }
-
-        final AsnSchemaType schemaType = decodedTag.getType();
-        final AsnPrimitiveType type = schemaType.getPrimitiveType();
-        final BuiltinTypeDecoder<?> decoder = (BuiltinTypeDecoder<?>) type.accept(decoderVisitor);
-
-        // The implementation is getting an object from our decoder, based on a text tag, that is
-        // of a type unknowable at compile-time.  This essentially means that somewhere along the
-        // chain, no matter what we do we can't prevent type mismatches.  For example if a user
-        // asks for tag "x/y/z" then we need to return something.  When we decode "x/y/z", at
-        // run-time, we can know its ASN.1 type, and therefore even the type it will decode to.
-        // What we can't do is stop the client software from asking for "/x/y/z" as a String when
-        // at run-time we know it is a BigInteger or Timestamp.  All we can do is provide the best
-        // documentation we can, and ensure that we throw.
-        // So, even though this goes against best practice, we will suppress the compiler warning
-        // here as it is something we already know about.
-        @SuppressWarnings("unchecked")
-        final T result = (T) decoder.decode(tag, this);
-        return Optional.of(result);
-    }
-
-    @Override
     public <T> Optional<T> getDecodedObject(final String tag, final Class<T> classOfT)
             throws DecodeException, ClassCastException {
         final DecodedTag decodedTag = decodedTags.get(tag);
@@ -268,7 +242,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
             throws DecodeException {
         final Map<String, Object> result = Maps.newHashMap();
         for (final String tag : getTagsMatching(regex)) {
-            getDecodedObject(tag).ifPresent(o -> result.put(tag, o));
+            getDecodedObject(tag, Object.class).ifPresent(o -> result.put(tag, o));
         }
 
         return ImmutableMap.copyOf(result);
