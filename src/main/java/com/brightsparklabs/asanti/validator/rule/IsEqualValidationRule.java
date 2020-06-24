@@ -22,7 +22,7 @@ import java.util.Optional;
  * Validates that the value of a given tag is equal to a particular value. Equality is tested via
  * {@link Object#equals(Object)}.
  *
- * @param <T> the expected type of the data as returned by {@link AsnData#getDecodedObject(String)}
+ * @param <T> the expected type of the data as returned by {@link AsnData#getDecodedObject}
  * @author brightSPARK Labs
  */
 public class IsEqualValidationRule<T> implements ValidationRule {
