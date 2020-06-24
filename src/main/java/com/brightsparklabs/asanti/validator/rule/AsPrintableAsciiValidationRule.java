@@ -16,6 +16,7 @@ import com.brightsparklabs.asanti.validator.ValidationRule;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /** @author brightSPARK Labs */
@@ -52,7 +53,7 @@ public class AsPrintableAsciiValidationRule implements ValidationRule {
 
         final ImmutableMap<String, Object> decoded = asnData.getDecodedObjectsMatching(pattern);
 
-        for (ImmutableMap.Entry<String, Object> entry : decoded.entrySet()) {
+        for (Map.Entry<String, Object> entry : decoded.entrySet()) {
             final String key = entry.getKey();
             final Object element = entry.getValue();
 

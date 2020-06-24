@@ -12,7 +12,7 @@ import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 /**
  * A Type Definition is a named type that can be used to replace a primitive type when declaring
  * other objects within an ASN.1 Schema, where those objects can be either other Type Definitions or
- * component types. It is essentially a Name and a (@code AsnSchemaType)
+ * component types. It is essentially a Name and a {@code AsnSchemaType}.
  *
  * @author brightSPARK Labs
  */

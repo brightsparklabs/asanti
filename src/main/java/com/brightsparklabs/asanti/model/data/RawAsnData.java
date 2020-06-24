@@ -28,7 +28,7 @@ public interface RawAsnData {
      * @param tag tag to check
      * @return {@code true} if the tag is in the data; {@code false} otherwise
      */
-    public boolean contains(String tag);
+    boolean contains(String tag);
 
     /**
      * Determines whether the data contains any tags matching the supplied regular expression
@@ -36,7 +36,7 @@ public interface RawAsnData {
      * @param regex regular expression to match tags against
      * @return {@code true} if the tag is in the data; {@code false} otherwise
      */
-    public boolean contains(Pattern regex);
+    boolean contains(Pattern regex);
 
     /**
      * Returns all tags found in the ASN data as a set of XPath like strings. The format of a singe
@@ -49,7 +49,7 @@ public interface RawAsnData {
      *
      * @return all tags in the data
      */
-    public ImmutableSet<String> getRawTags();
+    ImmutableSet<String> getRawTags();
 
     /**
      * Returns the data (bytes) associated with the specified tag
@@ -58,7 +58,7 @@ public interface RawAsnData {
      * @return data associated with the specified tag or {@link Optional#empty()} if the tag does
      *     not exist
      */
-    public Optional<byte[]> getBytes(String rawTag);
+    Optional<byte[]> getBytes(String rawTag);
 
     /**
      * Returns a mapping of all tags to the data (bytes) associated with them
@@ -67,7 +67,7 @@ public interface RawAsnData {
      *
      * @return mapping of all tags to their associated data
      */
-    public ImmutableMap<String, byte[]> getBytes();
+    ImmutableMap<String, byte[]> getBytes();
 
     /**
      * Returns the data (bytes) from all tags matching the supplied regular expression
@@ -77,7 +77,7 @@ public interface RawAsnData {
      * "[0x00, 0x01]", "/0[1]/2[1]/1[2]" =&gt; "[0x00, 0x01]" } </code>
      *
      * @param regex regular expression to match tags against
-     * @return data associated with the matching tags. Map is of form: {@code tag =&gt; data}
+     * @return data associated with the matching tags. Map is of form: {@code tag -> data}
      */
-    public ImmutableMap<String, byte[]> getBytesMatching(Pattern regex);
+    ImmutableMap<String, byte[]> getBytesMatching(Pattern regex);
 }

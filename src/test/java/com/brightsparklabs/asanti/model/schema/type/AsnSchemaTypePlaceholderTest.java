@@ -84,13 +84,13 @@ public class AsnSchemaTypePlaceholderTest {
         try {
             new AsnSchemaTypePlaceholder(null, "Type", AsnSchemaConstraint.NULL);
         } catch (final NullPointerException ex) {
-            fail("Module name can be null");
+            throw new AssertionError("Module name can be null", ex);
         }
         // blank moduleName
         try {
             new AsnSchemaTypePlaceholder("", "Type", AsnSchemaConstraint.NULL);
         } catch (final NullPointerException ex) {
-            fail("Module name can be null");
+            throw new AssertionError("Module name can be null", ex);
         }
 
         // null Type

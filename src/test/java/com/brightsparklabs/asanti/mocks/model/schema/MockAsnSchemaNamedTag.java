@@ -84,7 +84,7 @@ public class MockAsnSchemaNamedTag {
      * Creates mock {@link AsnSchemaNamedTag} instances conforming to the {@code Date-Due} type
      * definition in the test ASN.1 schema defined in the {@linkplain README.md} file
      *
-     * @return
+     * @return mock {@link AsnSchemaNamedTag}.
      */
     public static ImmutableList<AsnSchemaNamedTag> createMockedAsnNamedTagsForDateDue() {
         final ImmutableList.Builder<AsnSchemaNamedTag> listBuilder = ImmutableList.builder();

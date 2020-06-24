@@ -20,8 +20,6 @@ import com.brightsparklabs.asanti.validator.builtin.EnumeratedValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Decoder for data of type {@link AsnBuiltinType#Enumerated}
@@ -32,9 +30,6 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(EnumeratedDecoder.class);
 
     /** singleton instance */
     private static EnumeratedDecoder instance;

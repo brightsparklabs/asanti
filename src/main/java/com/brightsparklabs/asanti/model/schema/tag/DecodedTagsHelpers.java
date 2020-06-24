@@ -144,7 +144,7 @@ public class DecodedTagsHelpers {
     public static String stripIndex(String tag) {
         checkNotNull(tag);
         final Matcher matcher = PATTERN_HAS_INDEX.matcher(tag);
-        return (matcher.matches()) ? matcher.replaceFirst("$1") : tag;
+        return matcher.matches() ? matcher.replaceFirst("$1") : tag;
     }
 
     // -------------------------------------------------------------------------

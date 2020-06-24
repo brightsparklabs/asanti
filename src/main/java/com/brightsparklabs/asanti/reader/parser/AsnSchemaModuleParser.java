@@ -11,10 +11,13 @@ import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import java.text.ParseException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -115,7 +118,7 @@ public class AsnSchemaModuleParser {
             Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
             throws ParseException {
         try {
-            final String moduleName = lineIterator.next().split(" ")[0];
+            final String moduleName = Iterables.get(Splitter.on(' ').split(lineIterator.next()), 0);
             logger.debug("Found module: {}", moduleName);
             moduleBuilder.setName(moduleName);
 
@@ -129,10 +132,10 @@ public class AsnSchemaModuleParser {
 
             AsnModuleTaggingMode result = AsnModuleTaggingMode.DEFAULT;
             // split to make the regex easier
-            final String[] a = lines.toString().split("DEFINITIONS ");
-            if (a.length == 2) // it is optional
+            final List<String> a = Splitter.on("DEFINITIONS ").splitToList(lines.toString());
+            if (a.size() == 2) // it is optional
             {
-                final Matcher matcher = PATTERN_DEFINITIONS.matcher(a[1]);
+                final Matcher matcher = PATTERN_DEFINITIONS.matcher(a.get(1));
                 if (matcher.matches()) {
                     final String mode = matcher.group(2);
                     if (!Strings.isNullOrEmpty(mode)) {
@@ -294,7 +297,7 @@ public class AsnSchemaModuleParser {
             // check if content is a value assignment
             matcher = PATTERN_VALUE_ASSIGNMENT.matcher(content);
             if (matcher.matches()) {
-                parseValueAssignment(matcher, moduleBuilder);
+                parseValueAssignment(matcher);
                 continue;
             }
 
@@ -322,10 +325,8 @@ public class AsnSchemaModuleParser {
      *
      * @param valueAssignmentMatcher the matcher that identified the content as a value assignment
      *     (generated from {@link #PATTERN_VALUE_ASSIGNMENT})
-     * @param moduleBuilder builder to use to construct module from the parsed information
      */
-    private static void parseValueAssignment(
-            Matcher valueAssignmentMatcher, AsnSchemaModule.Builder moduleBuilder) {
+    private static void parseValueAssignment(Matcher valueAssignmentMatcher) {
         final String name = valueAssignmentMatcher.group(1);
         final String value = valueAssignmentMatcher.group(5);
         logger.trace("Found value assignment: {} - {}", name, value);

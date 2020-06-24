@@ -11,7 +11,6 @@ import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
-import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -25,9 +24,7 @@ public class MockAsnSchemaTypeDefinition {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * Default constructor. This is hidden, use {@link #builder(String, AsnBuiltinType)} instead.
-     */
+    /** Default constructor. */
     private MockAsnSchemaTypeDefinition() {
         // private constructor
     }
@@ -138,7 +135,7 @@ public class MockAsnSchemaTypeDefinition {
      *
      * @param name value to return for {@link AsnSchemaTypeDefinition#getName()} method
      * @param type value to return for {@link AsnSchemaTypeDefinition#getType()} method
-     * @return
+     * @return a mocked instance of {@link AsnSchemaTypeDefinition}
      */
     public static AsnSchemaTypeDefinition createMockedAsnSchemaTypeDefinition(
             String name, AsnSchemaType type) {

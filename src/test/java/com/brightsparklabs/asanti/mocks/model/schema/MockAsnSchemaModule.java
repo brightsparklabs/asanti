@@ -8,7 +8,6 @@
 package com.brightsparklabs.asanti.mocks.model.schema;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -118,7 +117,7 @@ public class MockAsnSchemaModule {
      * @return mocked instance
      */
     public static AsnSchemaModule.Builder createMockedAsnSchemaModuleForDocumentPdu() {
-        final Builder moduleBuilder = AsnSchemaModule.builder();
+        final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
         moduleBuilder
                 .setName("Document-PDU")
                 .addImport("People", "People-Protocol")
@@ -138,7 +137,7 @@ public class MockAsnSchemaModule {
      * @return mocked instance
      */
     public static AsnSchemaModule.Builder createMockedAsnSchemaModuleForPeopleProtocol() {
-        final Builder moduleBuilder = AsnSchemaModule.builder();
+        final AsnSchemaModule.Builder moduleBuilder = AsnSchemaModule.builder();
         moduleBuilder.setName("People-Protocol");
         final ImmutableList<AsnSchemaTypeDefinition> typeDefinitions =
                 MockAsnSchemaTypeDefinition.createMockedAsnSchemaTypeDefinitionsForPeopleProtocol();

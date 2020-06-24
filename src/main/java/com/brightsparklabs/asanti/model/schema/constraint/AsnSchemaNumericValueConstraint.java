@@ -67,7 +67,7 @@ public class AsnSchemaNumericValueConstraint extends AbstractAsnSchemaConstraint
         try {
             final BigInteger value = new BigInteger(bytes);
             final boolean conforms =
-                    (value.compareTo(minimumValue) > -1) && (value.compareTo(maximumValue) < 1);
+                    (value.compareTo(minimumValue) >= 0) && (value.compareTo(maximumValue) <= 0);
             if (conforms) {
                 return ImmutableSet.of();
             } else {

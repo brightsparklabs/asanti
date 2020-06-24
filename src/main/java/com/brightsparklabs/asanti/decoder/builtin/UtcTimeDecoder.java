@@ -25,8 +25,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.DateTimeParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Decoder for data of type {@link AsnBuiltinType#UtcTime}
@@ -37,9 +35,6 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(UtcTimeDecoder.class);
 
     /** singleton instance */
     private static UtcTimeDecoder instance;

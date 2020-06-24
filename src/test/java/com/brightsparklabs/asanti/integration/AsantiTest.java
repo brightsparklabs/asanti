@@ -213,6 +213,5 @@ public class AsantiTest {
         final FailureType failureType = failure.getFailureType();
         assertEquals(FailureType.MandatoryFieldMissing, failureType);
         assertEquals("/Human/b", failure.getFailureTag());
-        int breakpoint = 0;
     }
 }

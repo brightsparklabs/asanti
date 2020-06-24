@@ -21,8 +21,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import org.bouncycastle.asn1.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Reads data from ASN.1 BER/DER binary files
@@ -33,9 +31,6 @@ public class AsnBerDataReader {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
-
-    /** class logger */
-    private static final Logger logger = LoggerFactory.getLogger(AsnBerDataReader.class);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS

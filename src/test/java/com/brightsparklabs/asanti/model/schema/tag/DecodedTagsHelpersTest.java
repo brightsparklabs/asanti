@@ -56,7 +56,7 @@ public class DecodedTagsHelpersTest {
         instance = mock(AsantiAsnData.class);
 
         when(instance.getTags()).thenReturn(decodedTags);
-        when(instance.getUnmappedTags()).thenReturn((unmappedTags));
+        when(instance.getUnmappedTags()).thenReturn(unmappedTags);
 
         emptyInstance = mock(AsantiAsnData.class);
         when(emptyInstance.getTags()).thenReturn(ImmutableSet.of());

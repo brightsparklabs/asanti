@@ -81,7 +81,6 @@ public class UtcTimeDecoderTest {
         } catch (NullPointerException e) {
         }
         try {
-            AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decode("someTag", null);
             fail("Should have thrown NullPointerException");
         } catch (NullPointerException e) {
@@ -93,7 +92,6 @@ public class UtcTimeDecoderTest {
         } catch (NullPointerException e) {
         }
         try {
-            AsantiAsnData data = mock(AsantiAsnData.class);
             instance.decodeAsString("someTag", null);
             fail("Should have thrown NullPointerException");
         } catch (NullPointerException e) {

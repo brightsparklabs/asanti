@@ -83,6 +83,15 @@ project.ext.url = 'https://github.com/brightsparklabs/asanti'
 project.ext.scm = 'scm:git@github.com:brightsparklabs/asanti.git'
 
 // -----------------------------------------------------------------------------
+// CONFIGURE: ErrorProne
+// -----------------------------------------------------------------------------
+
+project.tasks.named("compileJava").configure {
+    options.errorprone.disable("MissingSummary")
+    options.errorprone.disable("JavaLangClash")
+}
+
+// -----------------------------------------------------------------------------
 // CREATE START SCRIPTS (via application)
 // -----------------------------------------------------------------------------
 

@@ -63,7 +63,7 @@ public class AsnSchemaTag {
      * @param tagIndex tag index component of the raw tag
      * @param tagContextSpecific tag context-specific component of the raw tag. Set to {@code null}
      *     if no context-specific component.
-     * @param tagUniversal tag universal component of the raw tag. Set to (@code null} if no
+     * @param tagUniversal tag universal component of the raw tag. Set to {@code null} if no
      *     universal component.
      */
     private AsnSchemaTag(String tagIndex, String tagContextSpecific, String tagUniversal) {
@@ -95,7 +95,7 @@ public class AsnSchemaTag {
      * Creates an instance, deriving the Universal type from the type passed in
      *
      * @param tagIndex tag index component of the raw tag
-     * @param type tag universal component of the raw tag. Set to (@code null} if no universal
+     * @param type tag universal component of the raw tag. Set to {@code null} if no universal
      *     component.
      * @return a new AsnSchemaTag
      */
@@ -157,7 +157,7 @@ public class AsnSchemaTag {
     public static String createUniversalPortion(AsnBuiltinType type) {
         // Some AsnBuiltinType's don't translate to a UNIVERSAL tag, eg Choice
         final String universalType = getUniversalTagForBuiltInType(type);
-        return (universalType.isEmpty()) ? "" : ("UNIVERSAL " + universalType);
+        return universalType.isEmpty() ? "" : ("UNIVERSAL " + universalType);
     }
 
     // ---------------------------------------------------------------------

@@ -1088,7 +1088,7 @@ public class AsnSchemaParserTest {
 
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
-        debugPdus((pdus));
+        debugPdus(pdus);
 
         assertEquals("A", pdus.get(0).getDecodedObject("/Human/lastName", String.class).get());
         assertEquals("U", pdus.get(0).getDecodedObject("/Human/firstName", String.class).get());
@@ -1111,7 +1111,7 @@ public class AsnSchemaParserTest {
 
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
-        debugPdus((pdus));
+        debugPdus(pdus);
         String tag = "/Human/payload/lastName";
         assertEquals("Smith", pdus.get(0).getDecodedObject(tag, String.class).get());
         tag = "/Human/payload/firstName";
@@ -1135,7 +1135,7 @@ public class AsnSchemaParserTest {
 
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
-        debugPdus((pdus));
+        debugPdus(pdus);
         String tag = "/Human/payload/a";
         assertEquals(
                 BigInteger.valueOf(10), pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
@@ -1188,7 +1188,7 @@ public class AsnSchemaParserTest {
 
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
-        debugPdus((pdus));
+        debugPdus(pdus);
 
         String tag = "/Human/c";
         assertEquals("A", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -1212,7 +1212,7 @@ public class AsnSchemaParserTest {
 
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
-        debugPdus((pdus));
+        debugPdus(pdus);
 
         String tag = "/Human/c";
         assertEquals("A", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -1237,7 +1237,7 @@ public class AsnSchemaParserTest {
 
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
-        debugPdus((pdus));
+        debugPdus(pdus);
 
         String tag = "/Human/c";
         assertEquals("A", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -1262,7 +1262,7 @@ public class AsnSchemaParserTest {
 
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
-        debugPdus((pdus));
+        debugPdus(pdus);
 
         String tag = "/Human/b";
         assertEquals(
@@ -1286,7 +1286,7 @@ public class AsnSchemaParserTest {
             final ImmutableList<AsantiAsnData> pdus =
                     Asanti.decodeAsnData(berData, schema, topLevelType);
 
-            debugPdus((pdus));
+            debugPdus(pdus);
 
             String tag = "/Human/payload/name";
             assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -1303,7 +1303,7 @@ public class AsnSchemaParserTest {
             final ImmutableList<AsantiAsnData> pdus =
                     Asanti.decodeAsnData(berData, schema, topLevelType);
 
-            debugPdus((pdus));
+            debugPdus(pdus);
 
             String tag = "/Human/payload/name";
             assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -1332,7 +1332,7 @@ public class AsnSchemaParserTest {
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
 
-        debugPdus((pdus));
+        debugPdus(pdus);
 
         String tag = "/Human/name[0]/a";
         assertEquals(
@@ -1357,7 +1357,7 @@ public class AsnSchemaParserTest {
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
 
-        debugPdus((pdus));
+        debugPdus(pdus);
 
         String tag = "/Human/name[0][0]/a";
         assertEquals(
@@ -1386,7 +1386,7 @@ public class AsnSchemaParserTest {
             final ImmutableList<AsantiAsnData> pdus =
                     Asanti.decodeAsnData(berData, schema, topLevelType);
 
-            debugPdus((pdus));
+            debugPdus(pdus);
 
             String tag = "/Human/selection/optA/ints[0]";
             assertEquals(BigInteger.ONE, pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
@@ -1407,7 +1407,7 @@ public class AsnSchemaParserTest {
             final ImmutableList<AsantiAsnData> pdus =
                     Asanti.decodeAsnData(berData, schema, topLevelType);
 
-            debugPdus((pdus));
+            debugPdus(pdus);
 
             String tag = "/Human/selection/optB/namesInline[0]/first";
             assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -1431,7 +1431,7 @@ public class AsnSchemaParserTest {
             final ImmutableList<AsantiAsnData> pdus =
                     Asanti.decodeAsnData(berData, schema, topLevelType);
 
-            debugPdus((pdus));
+            debugPdus(pdus);
 
             String tag = "/Human/selection/optC/names[0]/first";
             assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -1462,7 +1462,7 @@ public class AsnSchemaParserTest {
             final ImmutableList<AsantiAsnData> pdus =
                     Asanti.decodeAsnData(berData, schema, topLevelType);
 
-            debugPdus((pdus));
+            debugPdus(pdus);
 
             String tag = "/Human/selection/optA/ints[0]";
             assertEquals(BigInteger.ONE, pdus.get(0).getDecodedObject(tag, BigInteger.class).get());
@@ -1483,7 +1483,7 @@ public class AsnSchemaParserTest {
             final ImmutableList<AsantiAsnData> pdus =
                     Asanti.decodeAsnData(berData, schema, topLevelType);
 
-            debugPdus((pdus));
+            debugPdus(pdus);
 
             String tag = "/Human/selection/optB/namesInline[0]/first";
             assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -1507,7 +1507,7 @@ public class AsnSchemaParserTest {
             final ImmutableList<AsantiAsnData> pdus =
                     Asanti.decodeAsnData(berData, schema, topLevelType);
 
-            debugPdus((pdus));
+            debugPdus(pdus);
 
             String tag = "/Human/selection/optC/names[0]/first";
             assertEquals("Adam", pdus.get(0).getDecodedObject(tag, String.class).get());
@@ -2015,8 +2015,7 @@ public class AsnSchemaParserTest {
                 assertEquals(0, pdus.get(i).getUnmappedTags().size());
                 final ValidationResult validationresult = validator.validate(pdus.get(i));
                 if (validationresult.hasFailures()) {
-                    final ImmutableSet<ValidationFailure> failures = validationresult.getFailures();
-                    int breakpoint = 0;
+                    validationresult.getFailures();
                 }
                 assertFalse(validationresult.hasFailures());
             }
@@ -2200,9 +2199,9 @@ public class AsnSchemaParserTest {
         try {
             tag = "/Human/name";
             // There is no casting issue here, only validation, so this will work
-            BigInteger bigInt = AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag).get());
+            AsnByteDecoder.decodeAsInteger(pdu.getBytes(tag).get());
             // this is castign from String to BigInteger, which will throw
-            bigInt = pdu.getDecodedObject(tag, BigInteger.class).get();
+            pdu.getDecodedObject(tag, BigInteger.class).get();
             fail("Should have thrown ClassCastException");
         } catch (ClassCastException e) {
         }
@@ -2210,7 +2209,7 @@ public class AsnSchemaParserTest {
         try {
             tag = "/Human/age";
             AsnByteDecoder.decodeAsUtf8String(pdu.getBytes(tag).get());
-            String s = pdu.getDecodedObject(tag, String.class).get();
+            pdu.getDecodedObject(tag, String.class).get();
             fail("Should have thrown ClassCastException");
         } catch (ClassCastException e) {
         }

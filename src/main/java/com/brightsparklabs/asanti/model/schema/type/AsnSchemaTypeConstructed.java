@@ -283,7 +283,7 @@ public class AsnSchemaTypeConstructed extends BaseAsnSchemaType {
                 // otherwise use the Universal tag
                 final String originalTag = componentType.getTag();
                 final String rawTag =
-                        (autoTag)
+                        autoTag
                                 ? String.valueOf(index)
                                 : Strings.isNullOrEmpty(originalTag)
                                         ? AsnSchemaTag.createUniversalPortion(

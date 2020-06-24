@@ -59,7 +59,7 @@ public class NumericStringValidator extends PrimitiveBuiltinTypeValidator {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
         for (int i = 0; i < bytes.length; i++) {
             byte b = bytes[i];
-            if (b != ' ' && b < '0' || b > '9') {
+            if ((b != ' ') && (b < '0' || b > '9')) {
                 final String error = NUMERICSTRING_VALIDATION_ERROR + String.format("0x%02X ", b);
                 final ByteValidationFailure failure =
                         new ByteValidationFailure(i, FailureType.DataIncorrectlyFormatted, error);

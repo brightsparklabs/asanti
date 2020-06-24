@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,7 @@ public class ValidatorImpl implements Validator {
     // -------------------------------------------------------------------------
 
     /**
-     * Private constructor. Use @link{Builder} instead.
+     * Private constructor. Use {@link Builder} instead.
      *
      * @param customRules custom validation rules to apply to various tags
      */
@@ -151,7 +150,7 @@ public class ValidatorImpl implements Validator {
         final ImmutableSet<ValidationRule> rules =
                 customRules.entrySet().stream()
                         .filter(e -> e.getValue().matches(tag, type, asnData))
-                        .map(Entry::getKey)
+                        .map(Map.Entry::getKey)
                         .collect(ImmutableSet.toImmutableSet());
 
         rules.forEach(

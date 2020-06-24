@@ -10,7 +10,6 @@ package com.brightsparklabs.asanti.model.schema;
 import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
-import com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefinition;
 import java.text.ParseException;
 import org.junit.BeforeClass;
@@ -46,7 +45,7 @@ public class AsnSchemaModuleTest {
     public void testBuilder() throws Exception {
 
         // test standard build works
-        final Builder builder = AsnSchemaModule.builder();
+        final AsnSchemaModule.Builder builder = AsnSchemaModule.builder();
         builder.setName("TEST").build();
 
         // test null name
