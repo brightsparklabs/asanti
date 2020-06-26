@@ -9,6 +9,10 @@ modelled with concrete classes. This allows data to be validated for conformance
 against a schema, whilst still allowing the ability to process and manipulate
 non-conforming data.
 
+## Prerequisites
+
+- Java 11 or higher
+
 ## Setup, Build and Run
 
 ```bash
@@ -447,4 +451,5 @@ This project makes use of the following libraries:
 - [PowerMock](https://code.google.com/p/powermock/)
 
 ## Contributing
+
 Contributions are welcome. Simply fork the repository and create a pull request with your suggested changes.
