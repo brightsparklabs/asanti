@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -125,6 +127,9 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator {
             } else {
                 return OperationResult.createSuccessfulInstance(tagName);
             }
+        } catch (NoSuchElementException e) {
+            // In this case one of the optional.get calls above did not return a value.
+            // However, the super.validate above will have caught and handled this.
         } catch (ParseException | DecodeException e) {
             tagFailures.add(
                     new DecodedTagValidationFailure(
