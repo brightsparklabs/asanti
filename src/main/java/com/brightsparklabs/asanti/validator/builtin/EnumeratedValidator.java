@@ -22,7 +22,6 @@ import com.google.common.collect.Sets;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 
 /**

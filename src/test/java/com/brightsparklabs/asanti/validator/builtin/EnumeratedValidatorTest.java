@@ -119,15 +119,13 @@ public class EnumeratedValidatorTest {
         // testing for the enum not having any bytes.
         when(data.getBytes(eq(tag))).thenReturn(Optional.empty());
 
-        final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>>
-                result = instance.validateAndDecode(tag, data);
+        final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result =
+                instance.validateAndDecode(tag, data);
 
         assertFalse(result.wasSuccessful());
 
         final ImmutableSet<DecodedTagValidationFailure> validate = instance.validate(tag, data);
         assertEquals(1, validate.size());
-        assertEquals(
-                FailureType.DataMissing,
-                validate.asList().get(0).getFailureType());
+        assertEquals(FailureType.DataMissing, validate.asList().get(0).getFailureType());
     }
 }
