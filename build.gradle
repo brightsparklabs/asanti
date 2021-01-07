@@ -44,7 +44,7 @@ repositories {
 
 dependencies {
     def versions = [
-        powermock: "2.0.7",
+        powermock: "2.0.9",
         slf4j: "1.7.30"
     ]
 
