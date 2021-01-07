@@ -1,12 +1,12 @@
 version: 2
 updates:
-  - package-ecosystem: gradle
-    directory: "/"
-    schedule:
-      #Defaults to monday 5am UTC
-      interval: weekly
-    open-pull-requests-limit: 20
-    reviewers:
-      - "al-jeyapal"
-    labels:
-      - "dependencies"
+- package-ecosystem: gradle
+  directory: /
+  schedule:
+    # Defaults to Monday 5am UTC.
+    interval: weekly
+  open-pull-requests-limit: 20
+  reviewers:
+  - al-jeyapal
+  labels:
+  - dependencies
