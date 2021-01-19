@@ -7,12 +7,18 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
-import com.brightsparklabs.asanti.model.schema.type.*;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeCollection;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePlaceholder;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeWithNamedTags;
+import com.brightsparklabs.asanti.model.schema.type.BaseAsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.google.common.base.Strings;
@@ -46,7 +52,7 @@ public class AsnSchemaTypeParser {
 
     /** pattern to match a SET OF type definition */
     private static final Pattern PATTERN_TYPE_COLLECTION =
-            Pattern.compile("^(SEQUENCE|SET)(( SIZE)? \\(.+?\\)\\)?)? OF (.+)$");
+            Pattern.compile("^(SEQUENCE|SET)(( SIZE)? ?\\(.+?\\)\\)?)? OF (.+)$");
 
     /** all valid 'collection' types */
     private static final ImmutableMap<String, AsnPrimitiveType> collectionTypes =

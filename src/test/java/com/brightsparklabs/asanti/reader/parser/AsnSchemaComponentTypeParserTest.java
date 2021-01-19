@@ -7,8 +7,10 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
@@ -202,6 +204,21 @@ public class AsnSchemaComponentTypeParserTest {
                 assertEquals("Gender", callArguments.get(3));
                 assertEquals("CHOICE { Married [0], Single [1] }", callArguments.get(4));
         */
+    }
+
+    @Test
+    public void testParse_NoSpacesAfterSize() throws Exception {
+        // Throws an exception if unsuccessful, which results in the test failing.
+
+        // No space needed after SIZE.
+        AsnSchemaComponentTypeParser.parse(
+                "identifiers [1] SEQUENCE SIZE(1..MAX) OF PTCIdentifiers",
+                AsnModuleTaggingMode.DEFAULT);
+
+        // One space allowed after SIZE.
+        AsnSchemaComponentTypeParser.parse(
+                "identifiers [1] SEQUENCE SIZE (1..MAX) OF PTCIdentifiers",
+                AsnModuleTaggingMode.DEFAULT);
     }
 
     /**

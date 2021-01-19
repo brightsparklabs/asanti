@@ -107,4 +107,25 @@ public class EnumeratedValidatorTest {
                 FailureType.DataIncorrectlyFormatted,
                 instance.validate(tag, dataBad).asList().get(0).getFailureType());
     }
+
+    @Test
+    public void testValidateDataMissing() throws Exception {
+        final AsnSchemaTypeWithNamedTags type = mock(AsnSchemaTypeWithNamedTags.class);
+        when(type.getConstraints()).thenReturn(ImmutableSet.of());
+
+        String tag = "/Foo";
+        AsantiAsnData data = mock(AsantiAsnData.class);
+        when(data.getType(eq(tag))).thenReturn(Optional.of(type));
+        // testing for the enum not having any bytes.
+        when(data.getBytes(eq(tag))).thenReturn(Optional.empty());
+
+        final OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> result =
+                instance.validateAndDecode(tag, data);
+
+        assertFalse(result.wasSuccessful());
+
+        final ImmutableSet<DecodedTagValidationFailure> validate = instance.validate(tag, data);
+        assertEquals(1, validate.size());
+        assertEquals(FailureType.DataMissing, validate.asList().get(0).getFailureType());
+    }
 }

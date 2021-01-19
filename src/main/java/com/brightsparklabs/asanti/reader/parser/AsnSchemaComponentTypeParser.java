@@ -7,7 +7,8 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
@@ -43,7 +44,7 @@ public class AsnSchemaComponentTypeParser {
      */
     private static final Pattern PATTERN_RAW_TYPE =
             Pattern.compile(
-                    "(((SET)|(SEQUENCE))(( SIZE)? \\(.+?\\)?)? OF )?([a-zA-Z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
+                    "(((SET)|(SEQUENCE))(( SIZE)? ?\\(.+?\\)?)? OF )?([a-zA-Z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
