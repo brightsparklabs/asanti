@@ -28,7 +28,7 @@ import java.util.Optional;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeCollection extends BaseAsnSchemaType {
+public class AsnSchemaTypeCollection extends AbstractAsnSchemaType {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------

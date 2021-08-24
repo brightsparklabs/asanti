@@ -10,9 +10,12 @@ package com.brightsparklabs.asanti.reader.parser;
 import com.brightsparklabs.asanti.model.schema.constraint.*;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -43,6 +46,10 @@ public class AsnSchemaConstraintParser {
     /** pattern to match an exact numeric value constraint */
     private static final Pattern PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT =
             Pattern.compile("\\(?\\s*(-?\\d+)\\s*\\)?");
+
+    /** pattern to match a Containing constraint */
+    private static final Pattern PATTERN_CONTAINING_CONSTRAINT =
+            Pattern.compile("\\(?\\s*CONTAINING\\s*(.*)\\s*\\)?");
 
     /** error message if an unsupported constraint definition is found */
     private static final String ERROR_UNSUPPORTED_CONSTRAINT =
@@ -97,6 +104,11 @@ public class AsnSchemaConstraintParser {
         matcher = PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT.matcher(constraintText);
         if (matcher.matches()) {
             return parseExactNumericValueConstraint(matcher);
+        }
+
+        matcher = PATTERN_CONTAINING_CONSTRAINT.matcher(constraintText);
+        if (matcher.matches()) {
+            return parseContainingConstraint(matcher);
         }
 
         final String error = ERROR_UNSUPPORTED_CONSTRAINT + constraintText;
@@ -195,5 +207,21 @@ public class AsnSchemaConstraintParser {
                             matcher.group(1));
             throw new ParseException(error, -1);
         }
+    }
+
+    private static AsnSchemaContainsConstraint parseContainingConstraint(final Matcher matcher)
+            throws ParseException {
+        final String value = matcher.group(1);
+        final List<String> values = Lists.newArrayList(Splitter.on(".").split(value));
+
+        if (values.size() != 1 && values.size() != 2) {
+            throw new ParseException(
+                    "Unable to parse the constrained type:" + matcher.group(0), -1);
+        }
+
+        final String module = values.size() == 1 ? "" : values.get(0);
+        final String type = values.size() == 1 ? values.get(0) : values.get(1);
+
+        return new AsnSchemaContainsConstraint(module, type);
     }
 }

@@ -186,6 +186,9 @@ public class MockAsnSchema {
 
         instance = mock(AsnSchema.class);
 
+        String topLevelTypeName = "Document";
+
+        when(instance.getType(eq(topLevelTypeName))).thenReturn(Optional.empty());
         when(instance.getType(anyString())).thenReturn(Optional.empty());
 
         ImmutableSet<OperationResult<DecodedTag, String>> results =
@@ -248,7 +251,6 @@ public class MockAsnSchema {
                                         ""))
                         .build();
 
-        String topLevelTypeName = "Document";
         when(instance.getDecodedTags(ImmutableSet.copyOf(rawTags), topLevelTypeName))
                 .thenReturn(results);
 

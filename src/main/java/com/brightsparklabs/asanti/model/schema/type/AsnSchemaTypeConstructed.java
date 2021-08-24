@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeConstructed extends BaseAsnSchemaType {
+public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
