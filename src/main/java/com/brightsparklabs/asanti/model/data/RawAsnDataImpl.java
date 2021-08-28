@@ -94,7 +94,7 @@ public class RawAsnDataImpl implements RawAsnData {
             return ImmutableMap.of();
         }
 
-        final Map<String, byte[]> tags = Maps.newHashMap();
+        final Map<String, byte[]> tags = Maps.newLinkedHashMap();
         for (final String tag : tagsToData.keySet()) {
             if (regex.matcher(tag).matches()) {
                 tags.put(tag, tagsToData.get(tag));

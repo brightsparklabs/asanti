@@ -66,16 +66,24 @@ public class Decoder {
      * @return the result of the decode attempt containing the decoded tags for each of the rawTags
      */
     public static ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(
-            final Iterable<String> rawTags, String topLevelTypeName, AsnSchema schema) {
-        DecodingSession session = new DecodingSessionImpl();
+            final Iterable<String> rawTags, final String topLevelTypeName, final AsnSchema schema) {
 
         final Optional<AsnSchemaType> type = schema.getType(topLevelTypeName);
+        if (type.isEmpty()) {
+            throw new RuntimeException("type [" + topLevelTypeName + "] does not exist in schema");
+        }
+        return getDecodedTags(rawTags, type.get());
+    }
+
+    public static ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(
+            final Iterable<String> rawTags, final AsnSchemaType rootType) {
+        DecodingSession session = new DecodingSessionImpl();
 
         // use LinkedHashSet to preserve insertion order
         final Set<OperationResult<DecodedTag, String>> results = Sets.newLinkedHashSet();
         for (String rawTag : rawTags) {
             final OperationResult<DecodedTag, String> decodeResult =
-                    getDecodedTag(rawTag, type.get(), session, Optional.of("/" + topLevelTypeName));
+                    getDecodedTag(rawTag, rootType, session);
 
             results.add(decodeResult);
         }
@@ -91,12 +99,10 @@ public class Decoder {
      * @param type the top level type from which to begin decoding the raw tag
      * @param session the session state that tracks the ordering and stateful part of decoding a
      *     complete set of asn data.
-     * @param prefix any prefix to add to decoded tags, useful if parsing from part way through the
-     *     tree.
      * @return the result of the decode attempt containing the decoded tag
      */
     public static OperationResult<DecodedTag, String> getDecodedTag(
-            String rawTag, AsnSchemaType type, DecodingSession session, Optional<String> prefix) {
+            String rawTag, AsnSchemaType type, DecodingSession session) {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(), type, session);
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
@@ -115,10 +121,6 @@ public class Decoder {
             }
         }
 
-        prefix.ifPresent(
-                p -> {
-                    decodedTags.add(0, p);
-                });
         // The raw tags create a new '/' for collection elements (eg .../foo/[0])
         // and we would rather have .../foo[0]
         final String decodedTagPath = tagJoiner.join(decodedTags).replaceAll("/\\[", "\\[");

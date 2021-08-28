@@ -209,7 +209,7 @@ public class AsnSchemaConstraintParser {
         }
     }
 
-    private static AsnSchemaContainsConstraint parseContainingConstraint(final Matcher matcher)
+    private static AsnSchemaContainingConstraint parseContainingConstraint(final Matcher matcher)
             throws ParseException {
         final String value = matcher.group(1);
         final List<String> values = Lists.newArrayList(Splitter.on(".").split(value));
@@ -222,6 +222,6 @@ public class AsnSchemaConstraintParser {
         final String module = values.size() == 1 ? "" : values.get(0);
         final String type = values.size() == 1 ? values.get(0) : values.get(1);
 
-        return new AsnSchemaContainsConstraint(module, type);
+        return new AsnSchemaContainingConstraint(module, type);
     }
 }

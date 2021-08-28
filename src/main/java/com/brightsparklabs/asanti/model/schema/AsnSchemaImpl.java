@@ -9,7 +9,6 @@ package com.brightsparklabs.asanti.model.schema;
 
 import static com.google.common.base.Preconditions.*;
 
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.model.schema.tag.DecodedTagsHelpers;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
@@ -70,13 +69,6 @@ public class AsnSchemaImpl implements AsnSchema {
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(
-            final Iterable<String> rawTags, String topLevelTypeName) {
-
-        return Decoder.getDecodedTags(rawTags, topLevelTypeName, this);
-    }
-
-    @Override
     public Optional<AsnSchemaType> getType(String tag) {
         final Optional<AsnSchemaType> cacheHit = tagCache.get(tag);
         // ignore the warning about Optional being compared to null.
@@ -87,6 +79,12 @@ public class AsnSchemaImpl implements AsnSchema {
         }
 
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
+        if (tags.isEmpty()) {
+            final Optional<AsnSchemaType> result = Optional.empty();
+            tagCache.put(tag, result);
+            return result;
+        }
+
         final Iterator<String> it = tags.iterator();
 
         final AsnSchemaTypeDefinition typeDefinition = primaryModule.getType(it.next());

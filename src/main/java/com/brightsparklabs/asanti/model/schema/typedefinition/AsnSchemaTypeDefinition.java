@@ -77,7 +77,7 @@ public interface AsnSchemaTypeDefinition {
 
         @Override
         public AsnSchemaType getType() {
-            return null;
+            return AsnSchemaType.NULL;
         }
     }
 }

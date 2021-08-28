@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaContainsConstraint;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaContainingConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
@@ -98,7 +98,7 @@ public class AsnSchemaTypeParser {
     /** pattern to match a type with distinguished values */
     private static final Pattern PATTERN_TYPE_WITH_NAMED_VALUES =
             Pattern.compile(
-                    "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
+                    "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?(.+?))? ?(\\((.+?)\\))?$");
 
     /** all valid 'distinguished value' types */
     private static final ImmutableMap<String, AsnPrimitiveType> distinguishedValuesTypes =
@@ -383,8 +383,8 @@ public class AsnSchemaTypeParser {
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        if (constraint instanceof AsnSchemaContainsConstraint) {
-            AsnSchemaContainsConstraint c = (AsnSchemaContainsConstraint) constraint;
+        if (constraint instanceof AsnSchemaContainingConstraint) {
+            AsnSchemaContainingConstraint c = (AsnSchemaContainingConstraint) constraint;
             return new AsnSchemaTypePrimitiveAliased(
                     primitiveType, constraint, c.getModule(), c.getType());
         }
