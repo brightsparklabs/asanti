@@ -13,6 +13,7 @@ import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.DecodedTag;
+import com.brightsparklabs.asanti.model.schema.Decoder;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
@@ -225,7 +226,7 @@ public class AsantiCli {
             final String rawTag = reader.readLine();
 
             ImmutableSet<OperationResult<DecodedTag, String>> results =
-                    asnSchema.getDecodedTags(ImmutableList.of(rawTag), "PS-PDU");
+                    Decoder.getDecodedTags(ImmutableList.of(rawTag), "PS-PDU", asnSchema);
             OperationResult<DecodedTag, String> result = results.iterator().next();
             logger.info(
                     "\t{}:\t decode {} => {}",

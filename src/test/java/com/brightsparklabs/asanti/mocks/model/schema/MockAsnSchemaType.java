@@ -199,13 +199,13 @@ public class MockAsnSchemaType {
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
-    public static BaseAsnSchemaType createMockedAsnSchemaType(AsnPrimitiveType primitiveType) {
+    public static AbstractAsnSchemaType createMockedAsnSchemaType(AsnPrimitiveType primitiveType) {
         return createMockedAsnSchemaType(primitiveType, AsnSchemaConstraint.NULL);
     }
 
-    public static BaseAsnSchemaType createMockedAsnSchemaType(
+    public static AbstractAsnSchemaType createMockedAsnSchemaType(
             AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint) {
-        final BaseAsnSchemaType mockedInstance = mock(BaseAsnSchemaType.class);
+        final AbstractAsnSchemaType mockedInstance = mock(AbstractAsnSchemaType.class);
 
         final ImmutableSet<AsnSchemaConstraint> constraints =
                 ImmutableSet.of((constraint == null) ? AsnSchemaConstraint.NULL : constraint);

@@ -11,14 +11,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
+import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaContainingConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeCollection;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePlaceholder;
-import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeWithNamedTags;
-import com.brightsparklabs.asanti.model.schema.type.BaseAsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.*;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.google.common.base.Strings;
@@ -103,7 +98,7 @@ public class AsnSchemaTypeParser {
     /** pattern to match a type with distinguished values */
     private static final Pattern PATTERN_TYPE_WITH_NAMED_VALUES =
             Pattern.compile(
-                    "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?\\{(.+?)\\})? ?(\\((.+?)\\))?$");
+                    "^(BIT STRING|INTEGER) ?(\\{(.+?)\\})? ?(DEFAULT ?(.+?))? ?(\\((.+?)\\))?$");
 
     /** all valid 'distinguished value' types */
     private static final ImmutableMap<String, AsnPrimitiveType> distinguishedValuesTypes =
@@ -363,31 +358,37 @@ public class AsnSchemaTypeParser {
      * Parses a type of the form Typename, eg "^GeneralizedTime$"
      *
      * @param matcher matcher which matched on a corresponding "generic" matcher
-     * @return an {@link BaseAsnSchemaType} representing the parsed data
+     * @return an {@link AbstractAsnSchemaType} representing the parsed data
      * @throws ParseException if any errors occur while parsing the type
      */
-    private static BaseAsnSchemaType parseWithoutConstraints(Matcher matcher)
+    private static AbstractAsnSchemaType parseWithoutConstraints(Matcher matcher)
             throws ParseException {
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, noConstraintsTypes);
 
-        return new BaseAsnSchemaType(primitiveType, AsnSchemaConstraint.NULL);
+        return new AsnSchemaTypePrimitive(primitiveType, AsnSchemaConstraint.NULL);
     }
 
     /**
      * Parses a type of the form Typename Constraint, eg "INTEGER (1..100)"
      *
      * @param matcher matcher which matched on a corresponding "generic" matcher
-     * @return an {@link BaseAsnSchemaType} representing the parsed data
+     * @return an {@link AbstractAsnSchemaType} representing the parsed data
      * @throws ParseException if any errors occur while parsing the type
      */
-    private static BaseAsnSchemaType parseWithConstraints(Matcher matcher) throws ParseException {
+    private static AbstractAsnSchemaType parseWithConstraints(Matcher matcher)
+            throws ParseException {
 
         final AsnPrimitiveType primitiveType = getPrimitiveType(matcher, constrainedTypes);
 
         final String constraintText = Strings.nullToEmpty(matcher.group(3));
         final AsnSchemaConstraint constraint = AsnSchemaConstraintParser.parse(constraintText);
 
-        return new BaseAsnSchemaType(primitiveType, constraint);
+        if (constraint instanceof AsnSchemaContainingConstraint) {
+            AsnSchemaContainingConstraint c = (AsnSchemaContainingConstraint) constraint;
+            return new AsnSchemaTypePrimitiveAliased(
+                    primitiveType, constraint, c.getModule(), c.getType());
+        }
+        return new AsnSchemaTypePrimitive(primitiveType, constraint);
     }
 
     /**

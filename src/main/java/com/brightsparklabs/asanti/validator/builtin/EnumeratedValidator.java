@@ -160,7 +160,13 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator {
             }
 
             @Override
-            public String visit(final BaseAsnSchemaType visitable) throws ParseException {
+            public String visit(final AsnSchemaTypePrimitive visitable) throws ParseException {
+                return "";
+            }
+
+            @Override
+            public String visit(final AsnSchemaTypePrimitiveAliased visitable)
+                    throws ParseException {
                 return "";
             }
 

@@ -18,7 +18,7 @@ import java.text.ParseException;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link BaseAsnSchemaType}
+ * Unit tests for {@link AbstractAsnSchemaType}
  *
  * @author brightSPARK Labs
  */
@@ -31,16 +31,32 @@ public class BaseAsnSchemaTypeTest {
     @Test
     public void testAsnSchemaType() throws Exception {
         try {
-            new BaseAsnSchemaType(null, AsnSchemaConstraint.NULL);
+            new AsnSchemaTypePrimitive(null, AsnSchemaConstraint.NULL);
             fail("NullPointerException not thrown");
         } catch (final NullPointerException ex) {
         }
-
-        BaseAsnSchemaType type =
-                new BaseAsnSchemaType(AsnPrimitiveTypes.INVALID, AsnSchemaConstraint.NULL);
+        try {
+            new AsnSchemaTypePrimitiveAliased(null, AsnSchemaConstraint.NULL, "", "");
+            fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
+        }
+        try {
+            new AsnSchemaTypePrimitiveAliased(
+                    AsnPrimitiveTypes.OCTET_STRING, AsnSchemaConstraint.NULL, null, "");
+            fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
+        }
+        try {
+            new AsnSchemaTypePrimitiveAliased(
+                    AsnPrimitiveTypes.OCTET_STRING, AsnSchemaConstraint.NULL, "", null);
+            fail("NullPointerException not thrown");
+        } catch (final NullPointerException ex) {
+        }
+        AbstractAsnSchemaType type =
+                new AsnSchemaTypePrimitive(AsnPrimitiveTypes.INVALID, AsnSchemaConstraint.NULL);
         assertEquals(AsnPrimitiveTypes.INVALID, type.getPrimitiveType());
 
-        type = new BaseAsnSchemaType(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
+        type = new AsnSchemaTypePrimitive(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
         assertEquals(AsnPrimitiveTypes.INTEGER, type.getPrimitiveType());
         assertEquals(AsnBuiltinType.Integer, type.getBuiltinType());
 
@@ -51,34 +67,40 @@ public class BaseAsnSchemaTypeTest {
 
     @Test
     public void testGetAllComponents() {
-        BaseAsnSchemaType type =
-                new BaseAsnSchemaType(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
+        AbstractAsnSchemaType type =
+                new AsnSchemaTypePrimitive(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
 
         assertEquals(0, type.getAllComponents().size());
     }
 
     @Test
     public void testVisitor() throws ParseException {
-        AsnSchemaTypeVisitor v = getVisitor();
+        AsnSchemaTypeVisitor<String> v = getVisitor();
 
-        BaseAsnSchemaType instance =
-                new BaseAsnSchemaType(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
+        AbstractAsnSchemaType instance =
+                new AsnSchemaTypePrimitive(AsnPrimitiveTypes.INTEGER, AsnSchemaConstraint.NULL);
 
         Object o = instance.accept(v);
-        assertEquals("Got BaseAsnSchemaType", o);
+        assertEquals("Got AsnSchemaTypePrimitive", o);
     }
 
     /** @return a helper/test Visitor to determine what Type was visited */
-    public static AsnSchemaTypeVisitor getVisitor() {
-        return new AsnSchemaTypeVisitor<String>() {
+    public static AsnSchemaTypeVisitor<String> getVisitor() {
+        return new AsnSchemaTypeVisitor<>() {
             @Override
             public String visit(final AsnSchemaTypeConstructed visitable) throws ParseException {
                 return "Got AsnSchemaTypeConstructed";
             }
 
             @Override
-            public String visit(final BaseAsnSchemaType visitable) throws ParseException {
-                return "Got BaseAsnSchemaType";
+            public String visit(final AsnSchemaTypePrimitive visitable) throws ParseException {
+                return "Got AsnSchemaTypePrimitive";
+            }
+
+            @Override
+            public String visit(final AsnSchemaTypePrimitiveAliased visitable)
+                    throws ParseException {
+                return "Got AsnSchemaTypePrimitiveAliased";
             }
 
             @Override

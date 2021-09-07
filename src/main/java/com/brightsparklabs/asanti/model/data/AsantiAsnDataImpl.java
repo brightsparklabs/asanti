@@ -13,17 +13,22 @@ import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.exception.DecodeException;
-import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.DecodedTag;
+import com.brightsparklabs.asanti.model.schema.*;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePrimitiveAliased;
+import com.brightsparklabs.asanti.reader.AsnBerDataReader;
 import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.io.BaseEncoding;
+import com.google.common.io.ByteSource;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of {@link AsantiAsnData}
@@ -31,6 +36,14 @@ import java.util.regex.Pattern;
  * @author brightSPARK Labs
  */
 public class AsantiAsnDataImpl implements AsantiAsnData {
+
+    // -------------------------------------------------------------------------
+    // CLASS VARIABLES
+    // -------------------------------------------------------------------------
+
+    /** class logger */
+    private static final Logger logger = LoggerFactory.getLogger(AsantiAsnDataImpl.class);
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -76,23 +89,40 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
         checkNotNull(topLevelTypeName);
         checkArgument(!topLevelTypeName.trim().isEmpty(), "Top level type name must be specified");
 
-        this.rawAsnData = checkNotNull(rawAsnData);
+        // The RawAsnData is where we get the data (byte array) associated with a raw tag.
+        // Since INS-434 we are supporting "CONTAINS" constraints, that appear in the schema as
+        // an octet string, but we should treat as an aliased type.
+        // Our current mechanism for handling this is to extract the bytes of the octet string
+        // and parse it with our BER/DER parser.  This then produces a new RawAsnData that we
+        // slot in to the appropriate spot in the "tree".  We then perform the normal mapping
+        // of raw tags to the schema to produce decoded tags.
+        final Map<String, byte[]> rawAsnDataBuilder = Maps.newLinkedHashMap();
+        rawAsnDataBuilder.putAll(rawAsnData.getBytes());
+
+        final Optional<AsnSchemaType> rootType = asnSchema.getType(topLevelTypeName);
+        if (rootType.isEmpty()) {
+            throw new RuntimeException("type [" + topLevelTypeName + "] does not exist in schema");
+        }
+
+        final String decodedTagRootPrefix = "/" + topLevelTypeName;
+        final String rawTagRootPrefix = "";
 
         // decode the tags in the data, use LinkedHashMap to preserve insertion order
         final Map<String, DecodedTag> decodedToRawTags = Maps.newLinkedHashMap();
         final Map<String, DecodedTag> unmappedTags = Maps.newLinkedHashMap();
 
-        final ImmutableSet<OperationResult<DecodedTag, String>> results =
-                asnSchema.getDecodedTags(rawAsnData.getRawTags(), topLevelTypeName);
-        for (final OperationResult<DecodedTag, String> decodeResult : results) {
-            final DecodedTag decodedTag = decodeResult.getOutput();
-            if (decodeResult.wasSuccessful()) {
-                decodedToRawTags.put(decodedTag.getTag(), decodedTag);
-            } else {
-                // could not decode tag
-                unmappedTags.put(decodedTag.getTag(), decodedTag);
-            }
-        }
+        // Decode (match up raw tags to schema), in a way that may need to recurse if we encounter
+        // "aliased" types, eg OCTET STRING (CONTAINS otherType)
+        recursiveDecode(
+                rawAsnData,
+                rootType.get(),
+                decodedTagRootPrefix,
+                rawTagRootPrefix,
+                rawAsnDataBuilder,
+                decodedToRawTags,
+                unmappedTags);
+
+        this.rawAsnData = new RawAsnDataImpl(rawAsnDataBuilder);
 
         this.asnSchema = asnSchema;
         this.decodedTags = ImmutableMap.copyOf(decodedToRawTags);
@@ -248,12 +278,132 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
         return ImmutableMap.copyOf(result);
     }
 
+    @Override
+    public Optional<AsnSchemaType> getType(final String tag) {
+        return asnSchema.getType(tag);
+    }
+
     // -------------------------------------------------------------------------
     // PRIVATE
     // -------------------------------------------------------------------------
 
-    @Override
-    public Optional<AsnSchemaType> getType(final String tag) {
-        return asnSchema.getType(tag);
+    /**
+     * The process of Decoding is matching the raw data provided with the schema provided. This may
+     * need to be recursive in the case of some schema constructs, eg:
+     *
+     * <p>OCTET STRING (CONTAINS otherType)
+     *
+     * @param rawAsnData the raw data from (BER) parsing of the binary that this will decode
+     * @param rootType the type from the schema that the rawAsnData should align to
+     * @param decodedPrefix any prefix that should be applied to decoded tags to "fully qualify"
+     *     them
+     * @param rawPrefix any prefix that should be applied to raw tags to "fully qualify" them
+     * @param rawAsnDataBuilder [OUTPUT] the existing mapping of raw tag to bytes, that will be
+     *     appended to
+     * @param decodedToRawTags [OUTPUT] the existing mapping of decoded to raw tags, that will be
+     *     appended to
+     * @param unmappedTags [OUTPUT] the existing mapping of unmapped tags, that will be appended to
+     */
+    private void recursiveDecode(
+            final RawAsnData rawAsnData,
+            final AsnSchemaType rootType,
+            final String decodedPrefix,
+            final String rawPrefix,
+            final Map<String, byte[]> rawAsnDataBuilder,
+            final Map<String, DecodedTag> decodedToRawTags,
+            final Map<String, DecodedTag> unmappedTags) {
+        // TODO - passing in a few parameters that we modify, specifically
+        // rawAsnDataBuilder, decodedToRawTags and unmappedTags
+        final ImmutableSet<OperationResult<DecodedTag, String>> results =
+                Decoder.getDecodedTags(rawAsnData.getRawTags(), rootType);
+
+        for (final OperationResult<DecodedTag, String> decodeResult : results) {
+            final DecodedTag decodedTag = decodeResult.getOutput();
+
+            // We may be decoding at the "root" or somewhere part way through the schema
+            // hierarchy, so we need to be able to establish the fully qualified parth
+            // for both decoded and raw tags.
+            final DecodedTag fullyQualifiedTag =
+                    new DecodedTag(
+                            decodedPrefix + "/" + decodedTag.getTag(),
+                            rawPrefix + decodedTag.getRawTag(),
+                            decodedTag.getType(),
+                            decodedTag.isFullyDecoded());
+
+            if (decodeResult.wasSuccessful()) {
+
+                final AsnSchemaType type = decodeResult.getOutput().getType();
+                if (type instanceof AsnSchemaTypePrimitiveAliased) {
+                    final Optional<byte[]> bytes =
+                            rawAsnData.getBytes(fullyQualifiedTag.getRawTag());
+                    decodeAliased(
+                            bytes.orElse(new byte[0]),
+                            fullyQualifiedTag,
+                            rawAsnDataBuilder,
+                            decodedToRawTags,
+                            unmappedTags);
+                }
+                // TODO INS-434: we can decide if this should be "hidden" if decodeAliased
+                // was called and successful.
+                decodedToRawTags.put(fullyQualifiedTag.getTag(), fullyQualifiedTag);
+            } else {
+                // could not decode tag
+                unmappedTags.put(fullyQualifiedTag.getTag(), fullyQualifiedTag);
+            }
+        }
+    }
+
+    /**
+     * Takes the bytes from an OCTET STRING that is an alias for another type and parses them and
+     * then decodes.
+     *
+     * @param bytes the bytes from the OCTET STRING
+     * @param parentTag the tag that the bytes came from
+     * @param rawAsnDataBuilder [OUTPUT] add the newly parsed data to this
+     * @param decodedToRawTags [OUTPUT] add to this with new decode mappings
+     * @param unmappedTags [OUTPUT] add to this with new unmapped tags
+     */
+    private void decodeAliased(
+            final byte[] bytes,
+            final DecodedTag parentTag,
+            final Map<String, byte[]> rawAsnDataBuilder,
+            final Map<String, DecodedTag> decodedToRawTags,
+            final Map<String, DecodedTag> unmappedTags) {
+        // Now attempt to re-parse the bytes, and realign with the type...
+        final ByteSource byteSource = ByteSource.wrap(bytes);
+        try {
+            final ImmutableList<RawAsnData> readPdus = AsnBerDataReader.read(byteSource);
+            // TODO INS-434: should we ever expect anything other than 1 PDU from this???
+            // what if the CONTAINS is a collection?
+            if (readPdus.isEmpty()) {
+                throw new DecodeException(
+                        "No pdus found when parsing aliased bytes from " + parentTag.getTag());
+            }
+            for (final RawAsnData rawAsnData : readPdus) {
+                // Tack all these onto this raw tag.
+                final ImmutableMap<String, byte[]> bytesMatching = rawAsnData.getBytes();
+                final String baseTag = parentTag.getRawTag();
+                for (final Map.Entry<String, byte[]> e : bytesMatching.entrySet()) {
+                    final String fullQualifiedTag = baseTag + e.getKey();
+                    rawAsnDataBuilder.put(fullQualifiedTag, e.getValue());
+                }
+
+                recursiveDecode(
+                        rawAsnData,
+                        parentTag.getType(),
+                        parentTag.getTag(),
+                        parentTag.getRawTag(),
+                        rawAsnDataBuilder,
+                        decodedToRawTags,
+                        unmappedTags);
+            }
+        } catch (Exception e) {
+            // If we had issues processing the bytes and aligning it to the aliased type
+            // then we should attempt to deal with that as a validation issue as opposed
+            // to just throwing
+            // The AsnSchemaContainsConstraint will also attempt to parse the bytes, so should
+            // create a validation failure for issues with that.
+            logger.error("Exception while processing aliased type at {}", parentTag.getTag(), e);
+        }
     }
 }

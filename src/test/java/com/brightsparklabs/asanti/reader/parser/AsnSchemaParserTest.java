@@ -10,17 +10,13 @@ package com.brightsparklabs.asanti.reader.parser;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchemaModule;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
 import com.google.common.base.Splitter;
 import java.text.ParseException;
 import java.util.List;
-import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.hamcrest.MockitoHamcrest;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -195,29 +191,31 @@ public class AsnSchemaParserTest {
         }
     }
 
-    @Test
-    public void testParse() throws Exception {
-        // prepare expected output to AsnSchemaModuleParser.parse()
-        final AsnSchemaModule.Builder expectedDocumentPduSchemaModule =
-                MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu();
-        final AsnSchemaModule.Builder expectedPeopleProtocolSchemaModule =
-                MockAsnSchemaModule.createMockedAsnSchemaModuleForPeopleProtocol();
-
-        // mock AsnSchemaModuleParser.parse() static method
-        PowerMockito.mockStatic(AsnSchemaModuleParser.class);
-        final Matcher<Iterable<String>> documentPduMatcher =
-                org.hamcrest.Matchers.iterableWithSize(EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT);
-        when(AsnSchemaModuleParser.parse(MockitoHamcrest.argThat(documentPduMatcher)))
-                .thenReturn(expectedDocumentPduSchemaModule);
-        final Matcher<Iterable<String>> peopleProtocolMatcher =
-                org.hamcrest.Matchers.iterableWithSize(EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT);
-        when(AsnSchemaModuleParser.parse(MockitoHamcrest.argThat(peopleProtocolMatcher)))
-                .thenReturn(expectedPeopleProtocolSchemaModule);
-
-        // parse the example schema
-        final AsnSchema actualSchema = AsnSchemaParser.parse(MockAsnSchema.TEST_SCHEMA_TEXT);
-        assertNotNull(actualSchema);
-    }
+    //    @Test
+    //    public void testParse() throws Exception {
+    //        // prepare expected output to AsnSchemaModuleParser.parse()
+    //        final AsnSchemaModule.Builder expectedDocumentPduSchemaModule =
+    //                MockAsnSchemaModule.createMockedAsnSchemaModuleForDocumentPdu();
+    //        final AsnSchemaModule.Builder expectedPeopleProtocolSchemaModule =
+    //                MockAsnSchemaModule.createMockedAsnSchemaModuleForPeopleProtocol();
+    //
+    //        // mock AsnSchemaModuleParser.parse() static method
+    //        PowerMockito.mockStatic(AsnSchemaModuleParser.class);
+    //        final Matcher<Iterable<String>> documentPduMatcher =
+    //
+    // org.hamcrest.Matchers.iterableWithSize(EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT);
+    //        when(AsnSchemaModuleParser.parse(MockitoHamcrest.argThat(documentPduMatcher)))
+    //                .thenReturn(expectedDocumentPduSchemaModule);
+    //        final Matcher<Iterable<String>> peopleProtocolMatcher =
+    //
+    // org.hamcrest.Matchers.iterableWithSize(EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT);
+    //        when(AsnSchemaModuleParser.parse(MockitoHamcrest.argThat(peopleProtocolMatcher)))
+    //                .thenReturn(expectedPeopleProtocolSchemaModule);
+    //
+    //        // parse the example schema
+    //        final AsnSchema actualSchema = AsnSchemaParser.parse(MockAsnSchema.TEST_SCHEMA_TEXT);
+    //        assertNotNull(actualSchema);
+    //    }
 
     @Test
     public void testParse_BlockComments() throws Exception {

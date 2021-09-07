@@ -9,12 +9,15 @@ package com.brightsparklabs.asanti.model.schema.type;
 
 import static com.google.common.base.Preconditions.*;
 
+import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaNamedTag;
 import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.text.ParseException;
+import java.util.Optional;
 
 /**
  * A type used to model the types for objects within ASN.1 schema that may contain Named Values, for
@@ -23,7 +26,7 @@ import java.text.ParseException;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType {
+public class AsnSchemaTypeWithNamedTags extends AbstractAsnSchemaType {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -79,6 +82,17 @@ public class AsnSchemaTypeWithNamedTags extends BaseAsnSchemaType {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BaseAsnSchemaType
     // -------------------------------------------------------------------------
+
+    @Override
+    public ImmutableList<AsnSchemaComponentType> getAllComponents() {
+        return ImmutableList.of();
+    }
+
+    @Override
+    public Optional<AsnSchemaComponentType> getMatchingChild(
+            final String tag, final DecodingSession decodingSession) {
+        return Optional.empty();
+    }
 
     @Override
     public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException {

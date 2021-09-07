@@ -7,16 +7,12 @@
 
 package com.brightsparklabs.asanti.model.schema.type;
 
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.*;
 
-import com.brightsparklabs.asanti.model.schema.DecodingSession;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import java.text.ParseException;
-import java.util.Optional;
 
 /**
  * A concrete implementation of class that can model the types for objects within ASN.1 schema.
@@ -25,7 +21,7 @@ import java.util.Optional;
  *
  * @author brightSPARK Labs
  */
-public class BaseAsnSchemaType implements AsnSchemaType {
+public abstract class AbstractAsnSchemaType implements AsnSchemaType {
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -54,10 +50,10 @@ public class BaseAsnSchemaType implements AsnSchemaType {
      *     For {@code INTEGER (1..256)} this would be {@code (1..256)}.
      * @throws NullPointerException if {@code primitiveType} is {@code null}
      */
-    public BaseAsnSchemaType(AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint) {
-        checkNotNull(primitiveType);
+    protected AbstractAsnSchemaType(
+            AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint) {
 
-        this.primitiveType = primitiveType;
+        this.primitiveType = requireNonNull(primitiveType);
         this.constraints =
                 ImmutableSet.of((constraint == null) ? AsnSchemaConstraint.NULL : constraint);
     }
@@ -65,11 +61,6 @@ public class BaseAsnSchemaType implements AsnSchemaType {
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: AsnSchemaType
     // -------------------------------------------------------------------------
-
-    @Override
-    public ImmutableList<AsnSchemaComponentType> getAllComponents() {
-        return ImmutableList.of();
-    }
 
     @Override
     public AsnBuiltinType getBuiltinType() {
@@ -84,18 +75,7 @@ public class BaseAsnSchemaType implements AsnSchemaType {
     }
 
     @Override
-    public Optional<AsnSchemaComponentType> getMatchingChild(
-            String tag, DecodingSession decodingSession) {
-        return Optional.empty();
-    }
-
-    @Override
     public AsnPrimitiveType getPrimitiveType() {
         return primitiveType;
-    }
-
-    @Override
-    public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException {
-        return visitor.visit(this);
     }
 }
