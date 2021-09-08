@@ -191,7 +191,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("GeneralizedTime", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.GeneralizedTime, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("GeneralString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.GeneralString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -207,7 +207,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("GraphicString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.GraphicString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -215,7 +215,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("IA5String", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Ia5String, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -264,7 +264,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("NULL", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Null, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -272,14 +272,14 @@ public class AsnSchemaTypeParserTest {
         AsnSchemaType result =
                 AsnSchemaTypeParser.parse("NumericString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
 
         //
         result =
                 AsnSchemaTypeParser.parse(
                         "NumericString (SIZE(1..100))", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
         // Ensure that the right text got passed to the constraints parser
         assertEquals("SIZE(1..100)", constraintArgument.getValue());
     }
@@ -289,7 +289,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("ObjectDescriptor", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.ObjectDescriptor, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -297,7 +297,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("OCTET STRING", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.OctetString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -305,7 +305,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("OBJECT IDENTIFIER", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Oid, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -313,7 +313,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("PrintableString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.PrintableString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -321,7 +321,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("REAL", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Real, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -329,7 +329,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("RELATIVE-OID", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.RelativeOid, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -390,7 +390,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("TeletexString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.TeletexString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -398,7 +398,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("UniversalString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.UniversalString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -406,7 +406,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("UTCTime", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.UtcTime, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -414,7 +414,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("UTF8String", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.Utf8String, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -422,7 +422,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("VideotexString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.VideotexString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test
@@ -430,7 +430,7 @@ public class AsnSchemaTypeParserTest {
         final AsnSchemaType result =
                 AsnSchemaTypeParser.parse("VisibleString", AsnModuleTaggingMode.DEFAULT);
         assertEquals(AsnBuiltinType.VisibleString, result.getBuiltinType());
-        assertThat(result, instanceOf(BaseAsnSchemaType.class));
+        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
     }
 
     @Test

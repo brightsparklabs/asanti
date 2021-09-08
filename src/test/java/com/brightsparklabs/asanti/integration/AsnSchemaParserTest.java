@@ -11,13 +11,11 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.brightsparklabs.asanti.Asanti;
-import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.AsnByteDecoder;
 import com.brightsparklabs.asanti.decoder.builtin.EnumeratedDecoder;
 import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
-import com.brightsparklabs.asanti.model.schema.DecodedTag;
 import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypes;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.brightsparklabs.asanti.reader.parser.AsnSchemaParser;
@@ -28,7 +26,6 @@ import com.brightsparklabs.asanti.validator.Validator;
 import com.brightsparklabs.asanti.validator.Validators;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
@@ -447,120 +444,123 @@ public class AsnSchemaParserTest {
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
-    @Test
-    public void testAsantiSample() throws Exception {
-        // loads the AsantiSample test schema and checks all the tag decoding.
-        final CharSource schemaData =
-                Resources.asCharSource(getClass().getResource("/AsantiSample.asn"), Charsets.UTF_8);
-        AsnSchema instance = AsnSchemaReader.read(schemaData);
-
-        ImmutableMap<String, String> tags =
-                ImmutableMap.<String, String>builder()
-                        .put("", "/Document")
-                        .put("0[1]", "/Document/header")
-                        .put("0[1]/0[0]", "/Document/header/published")
-                        .put("0[1]/0[0]/1[1]", "/Document/header/published/date")
-                        .put("0[1]/0[0]/2[2]", "/Document/header/published/country")
-                        .put("1[2]", "/Document/body")
-                        .put("1[2]/0[0]", "/Document/body/lastModified")
-                        .put("1[2]/0[0]/0[0]", "/Document/body/lastModified/date")
-                        .put(
-                                "1[2]/0[0]/1[1]/0[1]",
-                                "/Document/body/lastModified/modifiedBy/firstName")
-                        .put(
-                                "1[2]/0[0]/1[1]/1[2]",
-                                "/Document/body/lastModified/modifiedBy/lastName")
-                        .put("1[2]/0[0]/1[1]/2[3]", "/Document/body/lastModified/modifiedBy/title")
-                        .put("1[2]/1[1]/0[1]", "/Document/body/prefix/text")
-                        .put("1[2]/2[2]/0[1]", "/Document/body/content/text")
-                        .put(
-                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/0[1]",
-                                "/Document/body/content/paragraphs[0]/title")
-                        .put(
-                                "1[2]/2[2]/1[2]/1[UNIVERSAL 16]/0[1]",
-                                "/Document/body/content/paragraphs[1]/title")
-                        .put(
-                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/0[1]",
-                                "/Document/body/content/paragraphs[0]/contributor/firstName")
-                        .put(
-                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/1[2]",
-                                "/Document/body/content/paragraphs[0]/contributor/lastName")
-                        .put(
-                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/2[3]",
-                                "/Document/body/content/paragraphs[0]/contributor/title")
-                        .put(
-                                "1[2]/2[2]/1[2]/99[UNIVERSAL 16]/0[1]",
-                                "/Document/body/content/paragraphs[99]/title")
-                        .put(
-                                "1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/0[1]",
-                                "/Document/body/content/paragraphs[99]/contributor/firstName")
-                        .put(
-                                "1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/1[2]",
-                                "/Document/body/content/paragraphs[99]/contributor/lastName")
-                        .put(
-                                "1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/2[3]",
-                                "/Document/body/content/paragraphs[99]/contributor/title")
-                        .put(
-                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]",
-                                "/Document/body/content/paragraphs[0]/points")
-                        .put(
-                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]/0[UNIVERSAL 12]",
-                                "/Document/body/content/paragraphs[0]/points[0]")
-                        .put(
-                                "1[2]/2[2]/1[2]/11[UNIVERSAL 16]/0[1]",
-                                "/Document/body/content/paragraphs[11]/title")
-                        .put(
-                                "1[2]/2[2]/1[2]/11[UNIVERSAL 16]/3[3]/44[UNIVERSAL 12]",
-                                "/Document/body/content/paragraphs[11]/points[44]")
-                        .put("1[2]/3[3]/0[1]", "/Document/body/suffix/text")
-                        .put("2[3]", "/Document/footer")
-                        .put("2[3]/0[0]", "/Document/footer/authors")
-                        .put(
-                                "2[3]/0[0]/0[UNIVERSAL 16]/0[1]",
-                                "/Document/footer/authors[0]/firstName")
-                        .put(
-                                "2[3]/0[0]/0[UNIVERSAL 16]/1[2]",
-                                "/Document/footer/authors[0]/lastName")
-                        .put("3[4]", "/Document/dueDate")
-                        .put("4[5]", "/Document/version")
-                        .put("4[5]/0[0]", "/Document/version/majorVersion")
-                        .put("4[5]/1[1]", "/Document/version/minorVersion")
-                        .put("5[6]", "/Document/description")
-                        .put("5[6]/0[0]", "/Document/description/numberLines")
-                        .put("5[6]/1[1]", "/Document/description/summary")
-                        .build();
-
-        final ImmutableSet<OperationResult<DecodedTag, String>> decodedTags =
-                instance.getDecodedTags(tags.keySet(), "Document");
-
-        for (OperationResult<DecodedTag, String> decodedTag : decodedTags) {
-            logger.debug(
-                    "{} -  {} => {}",
-                    decodedTag.wasSuccessful(),
-                    decodedTag.getOutput().getRawTag(),
-                    decodedTag.getOutput().getTag());
-            assertTrue(decodedTag.wasSuccessful());
-
-            final DecodedTag output = decodedTag.getOutput();
-            assertEquals(tags.get(output.getRawTag()), output.getTag());
-        }
-
-        final ImmutableMap<String, String> tagsBad =
-                ImmutableMap.<String, String>builder()
-                        .put("0[1]/0[0]/99[99]/98[98]", "/Document/header/published/99[99]/98[98]")
-                        .put("99[99]/98[98]", "/Document/99[99]/98[98]")
-                        .build();
-
-        final ImmutableSet<OperationResult<DecodedTag, String>> decodedTagsBad =
-                instance.getDecodedTags(tagsBad.keySet(), "Document");
-
-        for (OperationResult<DecodedTag, String> decodedTag : decodedTagsBad) {
-            assertFalse(decodedTag.wasSuccessful());
-
-            final DecodedTag output = decodedTag.getOutput();
-            assertEquals(tagsBad.get(output.getRawTag()), output.getTag());
-        }
-    }
+    //    @Test
+    //    public void testAsantiSample() throws Exception {
+    //        // loads the AsantiSample test schema and checks all the tag decoding.
+    //        final CharSource schemaData =
+    //                Resources.asCharSource(getClass().getResource("/AsantiSample.asn"),
+    // Charsets.UTF_8);
+    //        AsnSchema instance = AsnSchemaReader.read(schemaData);
+    //
+    //        ImmutableMap<String, String> tags =
+    //                ImmutableMap.<String, String>builder()
+    //                        .put("", "/Document")
+    //                        .put("0[1]", "/Document/header")
+    //                        .put("0[1]/0[0]", "/Document/header/published")
+    //                        .put("0[1]/0[0]/1[1]", "/Document/header/published/date")
+    //                        .put("0[1]/0[0]/2[2]", "/Document/header/published/country")
+    //                        .put("1[2]", "/Document/body")
+    //                        .put("1[2]/0[0]", "/Document/body/lastModified")
+    //                        .put("1[2]/0[0]/0[0]", "/Document/body/lastModified/date")
+    //                        .put(
+    //                                "1[2]/0[0]/1[1]/0[1]",
+    //                                "/Document/body/lastModified/modifiedBy/firstName")
+    //                        .put(
+    //                                "1[2]/0[0]/1[1]/1[2]",
+    //                                "/Document/body/lastModified/modifiedBy/lastName")
+    //                        .put("1[2]/0[0]/1[1]/2[3]",
+    // "/Document/body/lastModified/modifiedBy/title")
+    //                        .put("1[2]/1[1]/0[1]", "/Document/body/prefix/text")
+    //                        .put("1[2]/2[2]/0[1]", "/Document/body/content/text")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/0[1]",
+    //                                "/Document/body/content/paragraphs[0]/title")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/1[UNIVERSAL 16]/0[1]",
+    //                                "/Document/body/content/paragraphs[1]/title")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/0[1]",
+    //                                "/Document/body/content/paragraphs[0]/contributor/firstName")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/1[2]",
+    //                                "/Document/body/content/paragraphs[0]/contributor/lastName")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/1[2]/2[3]",
+    //                                "/Document/body/content/paragraphs[0]/contributor/title")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/99[UNIVERSAL 16]/0[1]",
+    //                                "/Document/body/content/paragraphs[99]/title")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/0[1]",
+    //                                "/Document/body/content/paragraphs[99]/contributor/firstName")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/1[2]",
+    //                                "/Document/body/content/paragraphs[99]/contributor/lastName")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/99[UNIVERSAL 16]/1[2]/2[3]",
+    //                                "/Document/body/content/paragraphs[99]/contributor/title")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]",
+    //                                "/Document/body/content/paragraphs[0]/points")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/0[UNIVERSAL 16]/3[3]/0[UNIVERSAL 12]",
+    //                                "/Document/body/content/paragraphs[0]/points[0]")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/11[UNIVERSAL 16]/0[1]",
+    //                                "/Document/body/content/paragraphs[11]/title")
+    //                        .put(
+    //                                "1[2]/2[2]/1[2]/11[UNIVERSAL 16]/3[3]/44[UNIVERSAL 12]",
+    //                                "/Document/body/content/paragraphs[11]/points[44]")
+    //                        .put("1[2]/3[3]/0[1]", "/Document/body/suffix/text")
+    //                        .put("2[3]", "/Document/footer")
+    //                        .put("2[3]/0[0]", "/Document/footer/authors")
+    //                        .put(
+    //                                "2[3]/0[0]/0[UNIVERSAL 16]/0[1]",
+    //                                "/Document/footer/authors[0]/firstName")
+    //                        .put(
+    //                                "2[3]/0[0]/0[UNIVERSAL 16]/1[2]",
+    //                                "/Document/footer/authors[0]/lastName")
+    //                        .put("3[4]", "/Document/dueDate")
+    //                        .put("4[5]", "/Document/version")
+    //                        .put("4[5]/0[0]", "/Document/version/majorVersion")
+    //                        .put("4[5]/1[1]", "/Document/version/minorVersion")
+    //                        .put("5[6]", "/Document/description")
+    //                        .put("5[6]/0[0]", "/Document/description/numberLines")
+    //                        .put("5[6]/1[1]", "/Document/description/summary")
+    //                        .build();
+    //
+    //        final ImmutableSet<OperationResult<DecodedTag, String>> decodedTags =
+    //                instance.getDecodedTags(tags.keySet(), "Document");
+    //
+    //        for (OperationResult<DecodedTag, String> decodedTag : decodedTags) {
+    //            logger.debug(
+    //                    "{} -  {} => {}",
+    //                    decodedTag.wasSuccessful(),
+    //                    decodedTag.getOutput().getRawTag(),
+    //                    decodedTag.getOutput().getTag());
+    //            assertTrue(decodedTag.wasSuccessful());
+    //
+    //            final DecodedTag output = decodedTag.getOutput();
+    //            assertEquals(tags.get(output.getRawTag()), output.getTag());
+    //        }
+    //
+    //        final ImmutableMap<String, String> tagsBad =
+    //                ImmutableMap.<String, String>builder()
+    //                        .put("0[1]/0[0]/99[99]/98[98]",
+    // "/Document/header/published/99[99]/98[98]")
+    //                        .put("99[99]/98[98]", "/Document/99[99]/98[98]")
+    //                        .build();
+    //
+    //        final ImmutableSet<OperationResult<DecodedTag, String>> decodedTagsBad =
+    //                instance.getDecodedTags(tagsBad.keySet(), "Document");
+    //
+    //        for (OperationResult<DecodedTag, String> decodedTag : decodedTagsBad) {
+    //            assertFalse(decodedTag.wasSuccessful());
+    //
+    //            final DecodedTag output = decodedTag.getOutput();
+    //            assertEquals(tagsBad.get(output.getRawTag()), output.getTag());
+    //        }
+    //    }
 
     @Test
     public void testParse_NoRoot() throws Exception {

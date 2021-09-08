@@ -34,7 +34,16 @@ public interface AsnSchemaTypeVisitor<T> extends Visitor {
      * @return the results from processing the supplied object
      * @throws ParseException dependent on visitor implementation
      */
-    T visit(BaseAsnSchemaType visitable) throws ParseException;
+    T visit(AsnSchemaTypePrimitive visitable) throws ParseException;
+
+    /**
+     * Processes the supplied object with this visitor
+     *
+     * @param visitable the object to process
+     * @return the results from processing the supplied object
+     * @throws ParseException dependent on visitor implementation
+     */
+    T visit(AsnSchemaTypePrimitiveAliased visitable) throws ParseException;
 
     /**
      * Processes the supplied object with this visitor

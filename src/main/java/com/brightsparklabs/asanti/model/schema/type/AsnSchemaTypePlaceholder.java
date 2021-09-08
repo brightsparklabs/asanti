@@ -27,7 +27,7 @@ import java.util.Optional;
  *
  * @author brightSPARK Labs
  */
-public class AsnSchemaTypePlaceholder extends BaseAsnSchemaType {
+public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------

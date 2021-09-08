@@ -10,7 +10,7 @@ package com.brightsparklabs.asanti.model.data;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import com.brightsparklabs.asanti.mocks.model.schema.MockAsnSchema;
+import com.brightsparklabs.asanti.mocks.model.schema.TestAsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
@@ -18,9 +18,13 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.google.common.io.BaseEncoding;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.regex.Pattern;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,27 +45,58 @@ public class AsantiAsnDataImplTest {
     /** empty instance to test */
     private static AsantiAsnData emptyInstance;
 
+    private static final String PUBLISHED_DATE_STRING = "20150101000000.00Z";
+    private static final String ALIASED_PUBLISHED_DATE_STRING = "202101010000Z";
+    private static final String MODIFIED_DATE_STRING = "20150102000000.00Z";
+    private static final String PREFIX_TEXT = "prefix text";
+    private static final String CONTENT_TEXT = "content text";
+    private static final String FIRST_NAME = "firstName";
+
+    private static final OffsetDateTime publishDateZ =
+            OffsetDateTime.of(2015, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+    private static final OffsetDateTime publishDate =
+            OffsetDateTime.ofInstant(publishDateZ.toInstant(), ZoneId.systemDefault());
+
+    private static final OffsetDateTime aliasedPublishDateZ =
+            OffsetDateTime.of(2021, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+    private static final OffsetDateTime aliasedPublishDate =
+            OffsetDateTime.ofInstant(aliasedPublishDateZ.toInstant(), ZoneId.systemDefault());
+
+    private static final OffsetDateTime modifiedDateZ =
+            OffsetDateTime.of(2015, 1, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+
+    private static final OffsetDateTime modifiedDate =
+            OffsetDateTime.ofInstant(modifiedDateZ.toInstant(), ZoneId.systemDefault());
+
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        /** data to construct rawAsnData from */
+        /* data to construct rawAsnData from */
+
+        // This byte array should parse as BER
+        final byte[] aliasedBytes =
+                BaseEncoding.base16()
+                        // .decode("A00F810D3230323130313031303030305A");
+                        .decode("A00F810D3230323130313031303030305A810101");
+
         final ImmutableMap<String, byte[]> tagsToData =
                 ImmutableMap.<String, byte[]>builder()
-                        .put("0[1]/0[0]/1[1]", "/1/0/1".getBytes(Charsets.UTF_8))
-                        .put("1[2]/0[0]/0[0]", "/2/0/0".getBytes(Charsets.UTF_8))
-                        .put("1[2]/1[1]/0[1]", "/2/1/1".getBytes(Charsets.UTF_8))
-                        .put("1[2]/2[2]/0[1]", "/2/2/1".getBytes(Charsets.UTF_8))
-                        .put("2[3]/0[0]/0[UNIVERSAL 16]/0[1]", "/3/0/1".getBytes(Charsets.UTF_8))
+                        .put("0[1]/0[0]/1[1]", PUBLISHED_DATE_STRING.getBytes(Charsets.UTF_8))
+                        .put("1[2]/0[0]/0[0]", MODIFIED_DATE_STRING.getBytes(Charsets.UTF_8))
                         .put("1[2]/0[0]/0[99]", "/2/0/99".getBytes(Charsets.UTF_8))
+                        .put("1[2]/1[1]/0[1]", PREFIX_TEXT.getBytes(Charsets.UTF_8))
+                        .put("1[2]/2[2]/0[1]", CONTENT_TEXT.getBytes(Charsets.UTF_8))
+                        .put("2[3]/0[0]/0[UNIVERSAL 16]/0[1]", FIRST_NAME.getBytes(Charsets.UTF_8))
+                        .put("6[7]", aliasedBytes)
                         .put("0[99]/0[1]/0[1]", "/99/1/1".getBytes(Charsets.UTF_8))
                         .build();
 
         // create instance
         final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
-        final AsnSchema asnSchema = MockAsnSchema.getInstance();
+        final AsnSchema asnSchema = TestAsnSchema.getInstance();
         instance = new AsantiAsnDataImpl(rawAsnData, asnSchema, "Document");
 
         // create empty instance
@@ -123,8 +158,10 @@ public class AsantiAsnDataImplTest {
     @Test
     public void testGetTags() throws Exception {
         ImmutableSet<String> tags = instance.getTags();
-        assertEquals(tags.size(), 5);
+        assertEquals(7, tags.size());
         assertTrue(tags.contains("/Document/header/published/date"));
+        assertTrue(tags.contains("/Document/aliasHeader/published/date"));
+        assertTrue(tags.contains("/Document/aliasHeader")); // The OCTET STRING itself
         assertTrue(tags.contains("/Document/body/lastModified/date"));
         assertTrue(tags.contains("/Document/body/prefix/text"));
         assertTrue(tags.contains("/Document/body/content/text"));
@@ -139,7 +176,7 @@ public class AsantiAsnDataImplTest {
         // test can match all tags
         final Pattern patternMatchAllTags = Pattern.compile("/\\Document.*");
         final ImmutableSet<String> matchingAllTags = instance.getTagsMatching(patternMatchAllTags);
-        assertEquals(7, matchingAllTags.size());
+        assertEquals(10, matchingAllTags.size());
 
         // test can match some tags
         final Pattern patternMatchDocumentBodyTags = Pattern.compile("/\\Document/body/.*");
@@ -160,8 +197,9 @@ public class AsantiAsnDataImplTest {
     @Test
     public void testGetUnmappedTags() throws Exception {
         ImmutableSet<String> tags = instance.getUnmappedTags();
-        assertEquals(tags.size(), 2);
-        assertTrue(tags.contains("/Document/body/content/0[99]"));
+        assertEquals(3, tags.size());
+        assertTrue(tags.contains("/Document/aliasHeader/0[1]"));
+        assertTrue(tags.contains("/Document/body/lastModified/0[99]"));
         assertTrue(tags.contains("/Document/0[99]/0[1]/0[1]"));
 
         tags = emptyInstance.getUnmappedTags();
@@ -177,7 +215,7 @@ public class AsantiAsnDataImplTest {
         assertTrue(instance.contains("/Document/footer/authors[0]/firstName"));
 
         // test unmapped tags
-        assertTrue(instance.contains("/Document/body/content/0[99]"));
+        assertTrue(instance.contains("/Document/body/lastModified/0[99]"));
         assertTrue(instance.contains("/Document/0[99]/0[1]/0[1]"));
 
         // test raw tags
@@ -211,26 +249,31 @@ public class AsantiAsnDataImplTest {
 
     @Test
     public void testGetBytes() throws Exception {
+
         assertArrayEquals(
-                "/1/0/1".getBytes(Charsets.UTF_8),
+                PUBLISHED_DATE_STRING.getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/header/published/date").get());
         assertArrayEquals(
-                "/2/0/0".getBytes(Charsets.UTF_8),
+                MODIFIED_DATE_STRING.getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/body/lastModified/date").get());
         assertArrayEquals(
-                "/2/1/1".getBytes(Charsets.UTF_8),
+                ALIASED_PUBLISHED_DATE_STRING.getBytes(Charsets.UTF_8),
+                instance.getBytes("/Document/aliasHeader/published/date").get());
+
+        assertArrayEquals(
+                PREFIX_TEXT.getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/body/prefix/text").get());
         assertArrayEquals(
-                "/2/2/1".getBytes(Charsets.UTF_8),
+                CONTENT_TEXT.getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/body/content/text").get());
         assertArrayEquals(
-                "/3/0/1".getBytes(Charsets.UTF_8),
+                FIRST_NAME.getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
         assertArrayEquals(
                 "/2/0/99".getBytes(Charsets.UTF_8),
-                instance.getBytes("/Document/body/content/0[99]").get());
+                instance.getBytes("/Document/body/lastModified/0[99]").get());
         assertArrayEquals(
                 "/99/1/1".getBytes(Charsets.UTF_8),
                 instance.getBytes("/Document/0[99]/0[1]/0[1]").get());
@@ -257,13 +300,15 @@ public class AsantiAsnDataImplTest {
         ImmutableMap<String, byte[]> result = instance.getBytesMatching(regex);
         assertEquals(4, result.size());
         assertArrayEquals(
-                "/2/0/0".getBytes(Charsets.UTF_8), result.get("/Document/body/lastModified/date"));
+                MODIFIED_DATE_STRING.getBytes(Charsets.UTF_8),
+                result.get("/Document/body/lastModified/date"));
         assertArrayEquals(
-                "/2/1/1".getBytes(Charsets.UTF_8), result.get("/Document/body/prefix/text"));
+                PREFIX_TEXT.getBytes(Charsets.UTF_8), result.get("/Document/body/prefix/text"));
         assertArrayEquals(
-                "/2/2/1".getBytes(Charsets.UTF_8), result.get("/Document/body/content/text"));
+                CONTENT_TEXT.getBytes(Charsets.UTF_8), result.get("/Document/body/content/text"));
         assertArrayEquals(
-                "/2/0/99".getBytes(Charsets.UTF_8), result.get("/Document/body/content/0[99]"));
+                "/2/0/99".getBytes(Charsets.UTF_8),
+                result.get("/Document/body/lastModified/0[99]"));
         assertFalse(instance.getBytes("/Document/1[2]/0[0]/0[99]").isPresent());
 
         result = emptyInstance.getBytesMatching(regex);
@@ -282,7 +327,8 @@ public class AsantiAsnDataImplTest {
         regex = Pattern.compile("1\\[2\\]/0\\[0\\]/.+");
         result = instance.getBytesMatching(regex);
         assertEquals(2, result.size());
-        assertArrayEquals("/2/0/0".getBytes(Charsets.UTF_8), result.get("1[2]/0[0]/0[0]"));
+        assertArrayEquals(
+                MODIFIED_DATE_STRING.getBytes(Charsets.UTF_8), result.get("1[2]/0[0]/0[0]"));
         assertArrayEquals("/2/0/99".getBytes(Charsets.UTF_8), result.get("1[2]/0[0]/0[99]"));
         result = emptyInstance.getBytesMatching(regex);
         assertEquals(0, result.size());
@@ -296,18 +342,26 @@ public class AsantiAsnDataImplTest {
 
     @Test
     public void testGetHexString() throws Exception {
+        final BaseEncoding enc = BaseEncoding.base16();
         assertEquals(
-                "2F312F302F31", instance.getHexString("/Document/header/published/date").get());
+                enc.encode(PUBLISHED_DATE_STRING.getBytes(StandardCharsets.UTF_8)),
+                instance.getHexString("/Document/header/published/date").get());
         assertEquals(
-                "2F322F302F30", instance.getHexString("/Document/body/lastModified/date").get());
-        assertEquals("2F322F312F31", instance.getHexString("/Document/body/prefix/text").get());
-        assertEquals("2F322F322F31", instance.getHexString("/Document/body/content/text").get());
+                enc.encode(MODIFIED_DATE_STRING.getBytes(StandardCharsets.UTF_8)),
+                instance.getHexString("/Document/body/lastModified/date").get());
         assertEquals(
-                "2F332F302F31",
+                enc.encode(PREFIX_TEXT.getBytes(StandardCharsets.UTF_8)),
+                instance.getHexString("/Document/body/prefix/text").get());
+        assertEquals(
+                enc.encode(CONTENT_TEXT.getBytes(StandardCharsets.UTF_8)),
+                instance.getHexString("/Document/body/content/text").get());
+        assertEquals(
+                enc.encode(FIRST_NAME.getBytes(StandardCharsets.UTF_8)),
                 instance.getHexString("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
-        assertEquals("2F322F302F3939", instance.getHexString("/Document/body/content/0[99]").get());
+        assertEquals(
+                "2F322F302F3939", instance.getHexString("/Document/body/lastModified/0[99]").get());
         assertEquals("2F39392F312F31", instance.getHexString("/Document/0[99]/0[1]/0[1]").get());
 
         // test raw tags
@@ -316,7 +370,7 @@ public class AsantiAsnDataImplTest {
 
         // test unmapped is the same as respective raw
         assertEquals(
-                instance.getHexString("/Document/body/content/0[99]").get(),
+                instance.getHexString("/Document/body/lastModified/0[99]").get(),
                 instance.getHexString("1[2]/0[0]/0[99]").get());
 
         // test unknown tags
@@ -331,13 +385,22 @@ public class AsantiAsnDataImplTest {
 
     @Test
     public void testGetHexStringsMatching() throws Exception {
+        final BaseEncoding enc = BaseEncoding.base16();
         Pattern regex = Pattern.compile("/Document/bod[x-z]/.+");
         ImmutableMap<String, String> result = instance.getHexStringsMatching(regex);
+
         assertEquals(4, result.size());
-        assertEquals("2F322F302F30", result.get("/Document/body/lastModified/date"));
-        assertEquals("2F322F312F31", result.get("/Document/body/prefix/text"));
-        assertEquals("2F322F322F31", result.get("/Document/body/content/text"));
-        assertEquals("2F322F302F3939", result.get("/Document/body/content/0[99]"));
+        assertEquals(
+                enc.encode(MODIFIED_DATE_STRING.getBytes(StandardCharsets.UTF_8)),
+                result.get("/Document/body/lastModified/date"));
+        assertEquals(
+                enc.encode(PREFIX_TEXT.getBytes(StandardCharsets.UTF_8)),
+                result.get("/Document/body/prefix/text"));
+        assertEquals(
+                enc.encode(CONTENT_TEXT.getBytes(StandardCharsets.UTF_8)),
+                result.get("/Document/body/content/text"));
+        assertEquals("2F322F302F3939", result.get("/Document/body/lastModified/0[99]"));
+
         result = emptyInstance.getHexStringsMatching(regex);
         assertEquals(0, result.size());
 
@@ -352,7 +415,9 @@ public class AsantiAsnDataImplTest {
         regex = Pattern.compile("1\\[2\\]/0\\[0\\]/.+");
         result = instance.getHexStringsMatching(regex);
         assertEquals(2, result.size());
-        assertEquals("2F322F302F30", result.get("1[2]/0[0]/0[0]"));
+        assertEquals(
+                enc.encode(MODIFIED_DATE_STRING.getBytes(StandardCharsets.UTF_8)),
+                result.get("1[2]/0[0]/0[0]"));
         assertEquals("2F322F302F3939", result.get("1[2]/0[0]/0[99]"));
         result = emptyInstance.getHexStringsMatching(regex);
         assertEquals(0, result.size());
@@ -369,23 +434,26 @@ public class AsantiAsnDataImplTest {
     @Test
     public void testGetPrintableString() throws Exception {
         assertEquals(
-                MockAsnSchema.getPublishDate().toString(),
+                PUBLISHED_DATE_STRING,
                 instance.getPrintableString("/Document/header/published/date").get());
 
         assertEquals(
-                MockAsnSchema.getLastModifiedDate().toString(),
+                MODIFIED_DATE_STRING,
                 instance.getPrintableString("/Document/body/lastModified/date").get());
 
         assertEquals(
-                "prefix text", instance.getPrintableString("/Document/body/prefix/text").get());
+                ALIASED_PUBLISHED_DATE_STRING,
+                instance.getPrintableString("/Document/aliasHeader/published/date").get());
+
+        assertEquals(PREFIX_TEXT, instance.getPrintableString("/Document/body/prefix/text").get());
         assertEquals(
-                "content text", instance.getPrintableString("/Document/body/content/text").get());
+                CONTENT_TEXT, instance.getPrintableString("/Document/body/content/text").get());
         assertEquals(
-                "firstName",
+                FIRST_NAME,
                 instance.getPrintableString("/Document/footer/authors[0]/firstName").get());
 
         // test unmapped tags
-        assertFalse(instance.getPrintableString("/Document/body/content/0[99]").isPresent());
+        assertFalse(instance.getPrintableString("/Document/body/lastModified/0[99]").isPresent());
         assertFalse(instance.getPrintableString("/Document/99/1/1").isPresent());
 
         // test raw tags
@@ -408,8 +476,8 @@ public class AsantiAsnDataImplTest {
         Pattern regex = Pattern.compile(".+text");
         ImmutableMap<String, String> result = instance.getPrintableStringsMatching(regex);
         assertEquals(2, result.size());
-        assertEquals("prefix text", result.get("/Document/body/prefix/text"));
-        assertEquals("content text", result.get("/Document/body/content/text"));
+        assertEquals(PREFIX_TEXT, result.get("/Document/body/prefix/text"));
+        assertEquals(CONTENT_TEXT, result.get("/Document/body/content/text"));
         result = emptyInstance.getPrintableStringsMatching(regex);
         assertEquals(0, result.size());
 
@@ -418,7 +486,7 @@ public class AsantiAsnDataImplTest {
         assertEquals(0, result.size());
         result = emptyInstance.getPrintableStringsMatching(regex);
         assertEquals(0, result.size());
-        regex = Pattern.compile(".*/a[^/]+");
+        regex = Pattern.compile(".*/z[^/]+");
         result = instance.getPrintableStringsMatching(regex);
         assertEquals(0, result.size());
         result = emptyInstance.getPrintableStringsMatching(regex);
@@ -436,13 +504,13 @@ public class AsantiAsnDataImplTest {
                 AsnBuiltinType.GeneralizedTime,
                 instance.getType("/Document/body/lastModified/date").get().getBuiltinType());
         assertEquals(
-                AsnBuiltinType.Utf8String,
+                AsnBuiltinType.OctetString,
                 instance.getType("/Document/body/prefix/text").get().getBuiltinType());
         assertEquals(
                 AsnBuiltinType.Utf8String,
                 instance.getType("/Document/body/content/text").get().getBuiltinType());
         assertEquals(
-                AsnBuiltinType.Utf8String,
+                AsnBuiltinType.VisibleString,
                 instance.getType("/Document/footer/authors[0]/firstName").get().getBuiltinType());
 
         // test unmapped tags
@@ -469,16 +537,25 @@ public class AsantiAsnDataImplTest {
     @Test
     public void testGetDecodedObjectWithType() throws Exception {
         assertEquals(
-                MockAsnSchema.getPublishDate(),
+                publishDate,
                 instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class)
                         .get());
         assertEquals(
-                MockAsnSchema.getLastModifiedDate(),
+                modifiedDate,
                 instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class)
                         .get());
+
         assertEquals(
-                "prefix text",
-                instance.getDecodedObject("/Document/body/prefix/text", String.class).get());
+                aliasedPublishDate,
+                instance.getDecodedObject(
+                                "/Document/aliasHeader/published/date", OffsetDateTime.class)
+                        .get());
+
+        byte[] b1 = new byte[0];
+        final Class<? extends byte[]> aClass = b1.getClass();
+        assertArrayEquals(
+                PREFIX_TEXT.getBytes(StandardCharsets.UTF_8),
+                instance.getDecodedObject("/Document/body/prefix/text", aClass).get());
         assertEquals(
                 "content text",
                 instance.getDecodedObject("/Document/body/content/text", String.class).get());
@@ -516,21 +593,29 @@ public class AsantiAsnDataImplTest {
     @Test
     public void testGetDecodedObject() throws Exception {
         assertEquals(
-                MockAsnSchema.getPublishDate(),
+                publishDate,
                 instance.getDecodedObject("/Document/header/published/date", OffsetDateTime.class)
                         .get());
         assertEquals(
-                MockAsnSchema.getLastModifiedDate(),
+                modifiedDate,
                 instance.getDecodedObject("/Document/body/lastModified/date", OffsetDateTime.class)
                         .get());
         assertEquals(
-                "prefix text",
-                instance.getDecodedObject("/Document/body/prefix/text", String.class).get());
+                aliasedPublishDate,
+                instance.getDecodedObject(
+                                "/Document/aliasHeader/published/date", OffsetDateTime.class)
+                        .get());
+
+        byte[] b1 = new byte[0];
+        final Class<? extends byte[]> aClass = b1.getClass();
+        assertArrayEquals(
+                PREFIX_TEXT.getBytes(StandardCharsets.UTF_8),
+                instance.getDecodedObject("/Document/body/prefix/text", aClass).get());
         assertEquals(
-                "content text",
+                CONTENT_TEXT,
                 instance.getDecodedObject("/Document/body/content/text", String.class).get());
         assertEquals(
-                "firstName",
+                FIRST_NAME,
                 instance.getDecodedObject("/Document/footer/authors[0]/firstName", String.class)
                         .get());
 
@@ -561,11 +646,12 @@ public class AsantiAsnDataImplTest {
         Pattern regex = Pattern.compile(".+dy.+");
         ImmutableMap<String, Object> result = instance.getDecodedObjectsMatching(regex);
         assertEquals(3, result.size());
-        assertEquals(
-                MockAsnSchema.getLastModifiedDate(),
-                result.get("/Document/body/lastModified/date"));
-        assertEquals("prefix text", result.get("/Document/body/prefix/text"));
-        assertEquals("content text", result.get("/Document/body/content/text"));
+        assertEquals(modifiedDate, result.get("/Document/body/lastModified/date"));
+
+        assertArrayEquals(
+                PREFIX_TEXT.getBytes(StandardCharsets.UTF_8),
+                (byte[]) result.get("/Document/body/prefix/text"));
+        assertEquals(CONTENT_TEXT, result.get("/Document/body/content/text"));
         result = emptyInstance.getDecodedObjectsMatching(regex);
         assertEquals(0, result.size());
 

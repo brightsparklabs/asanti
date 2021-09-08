@@ -56,11 +56,6 @@ public class DecodedTag {
         this.type = type;
         this.isFullyDecoded = isFullyDecoded;
 
-        checkArgument(!this.tag.isEmpty(), "Decoded tag cannot be blank");
-
-        // the rawTag can be blank because we also have to pass the topLevelType
-        // so we should be able to get something that is a typedef INTEGER for example at the root.
-
         checkNotNull(this.type);
     }
 

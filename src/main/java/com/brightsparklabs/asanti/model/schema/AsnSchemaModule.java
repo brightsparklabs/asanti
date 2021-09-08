@@ -335,7 +335,39 @@ public class AsnSchemaModule {
             }
 
             @Override
-            public Void visit(BaseAsnSchemaType visitable) throws ParseException {
+            public Void visit(AsnSchemaTypePrimitive visitable) throws ParseException {
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypePrimitiveAliased visitable) throws ParseException {
+                // this is where we can see we have what we think is a leaf node, but is
+                // something we should treat as a some other type.
+                // eg someField OCTET STRING (CONTAINING otherType)
+
+                final String moduleName = visitable.getModule();
+                final String typeName = visitable.getType();
+
+                // If there is a module specified then try import from that first.
+                // Otherwise try locally, and if that doesn't find it then try the imports without
+                // knowing from which module.
+                final AsnSchemaTypeDefinition newTypeDefinition =
+                        Strings.isNullOrEmpty(moduleName)
+                                ? types.get(typeName)
+                                : getImportedTypeDefinition(moduleName, typeName, otherModules);
+
+                final AsnSchemaType newType = newTypeDefinition.getType();
+                if (newType == AsnSchemaType.NULL) {
+                    final String errorString =
+                            String.format(
+                                    "Unable to resolve placeholder.  TypeDefinition {%s} is badly formed",
+                                    typeName);
+                    logger.warn(errorString);
+                    throw new ParseException(errorString, -1);
+                }
+
+                // we now have the actual type this placeholder was holding out for, so add it.
+                visitable.setAliasedType(newType);
                 return null;
             }
 
@@ -478,7 +510,12 @@ public class AsnSchemaModule {
             }
 
             @Override
-            public Void visit(BaseAsnSchemaType visitable) throws ParseException {
+            public Void visit(AsnSchemaTypePrimitive visitable) throws ParseException {
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypePrimitiveAliased visitable) throws ParseException {
                 return null;
             }
 
@@ -532,7 +569,12 @@ public class AsnSchemaModule {
             }
 
             @Override
-            public Void visit(BaseAsnSchemaType visitable) throws ParseException {
+            public Void visit(AsnSchemaTypePrimitive visitable) throws ParseException {
+                return null;
+            }
+
+            @Override
+            public Void visit(AsnSchemaTypePrimitiveAliased visitable) throws ParseException {
                 return null;
             }
 
