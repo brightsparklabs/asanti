@@ -7,13 +7,14 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
  * Convenience class to simplify implementing {@link AsnSchemaConstraint}. Sub-classes should
- * override {@link #applyToNonNullBytes(byte[])}.
+ * override {@link #applyToNonNullBytes(byte[], AsnPrimitiveType)}.
  *
  * @author brightSPARK Labs
  */
@@ -23,7 +24,8 @@ public abstract class AbstractAsnSchemaConstraint implements AsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes) {
+    public ImmutableSet<SchemaConstraintValidationFailure> apply(
+            final byte[] bytes, final AsnPrimitiveType type) {
         if (bytes == null) {
             final SchemaConstraintValidationFailure failure =
                     new SchemaConstraintValidationFailure(
@@ -31,7 +33,7 @@ public abstract class AbstractAsnSchemaConstraint implements AsnSchemaConstraint
                             "No data found to validate against constraint");
             return ImmutableSet.of(failure);
         }
-        return applyToNonNullBytes(bytes);
+        return applyToNonNullBytes(bytes, type);
     }
 
     // -------------------------------------------------------------------------
@@ -46,5 +48,5 @@ public abstract class AbstractAsnSchemaConstraint implements AsnSchemaConstraint
      * @return any failures encountered in applying the constraint to the supplied bytes
      */
     protected abstract ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(
-            byte[] bytes);
+            byte[] bytes, AsnPrimitiveType type);
 }

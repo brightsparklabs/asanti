@@ -9,6 +9,8 @@ package com.brightsparklabs.asanti.model.schema.constraint;
 
 import static org.junit.Assert.*;
 
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeOctetString;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
@@ -31,7 +33,13 @@ public class AsnSchemaConstraintTest {
      * @param bytes bytes to test
      */
     public static void checkSuccess(AsnSchemaConstraint constraint, byte[] bytes) {
-        final ImmutableSet<SchemaConstraintValidationFailure> failures = constraint.apply(bytes);
+        checkSuccess(constraint, bytes, new AsnPrimitiveTypeOctetString());
+    }
+
+    public static void checkSuccess(
+            AsnSchemaConstraint constraint, byte[] bytes, AsnPrimitiveType type) {
+        final ImmutableSet<SchemaConstraintValidationFailure> failures =
+                constraint.apply(bytes, type);
         assertEquals(true, failures.isEmpty());
     }
 
@@ -46,7 +54,16 @@ public class AsnSchemaConstraintTest {
      */
     public static void checkFailure(
             AsnSchemaConstraint constraint, byte[] bytes, String expectedFailureReason) {
-        final ImmutableSet<SchemaConstraintValidationFailure> failures = constraint.apply(bytes);
+        checkFailure(constraint, bytes, expectedFailureReason, new AsnPrimitiveTypeOctetString());
+    }
+
+    public static void checkFailure(
+            AsnSchemaConstraint constraint,
+            byte[] bytes,
+            String expectedFailureReason,
+            AsnPrimitiveType type) {
+        final ImmutableSet<SchemaConstraintValidationFailure> failures =
+                constraint.apply(bytes, type);
         assertEquals(1, failures.size());
         final SchemaConstraintValidationFailure failure = failures.iterator().next();
         assertEquals(FailureType.SchemaConstraint, failure.getFailureType());

@@ -49,7 +49,7 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
         final ImmutableSet<AsnSchemaConstraint> constraints = type.getConstraints();
         final Set<SchemaConstraintValidationFailure> constraintFailures = Sets.newHashSet();
         for (AsnSchemaConstraint constraint : constraints) {
-            constraintFailures.addAll(constraint.apply(bytes));
+            constraintFailures.addAll(constraint.apply(bytes, type.getPrimitiveType()));
         }
         for (SchemaConstraintValidationFailure constraintFailure : constraintFailures) {
             final DecodedTagValidationFailure tagFailure =

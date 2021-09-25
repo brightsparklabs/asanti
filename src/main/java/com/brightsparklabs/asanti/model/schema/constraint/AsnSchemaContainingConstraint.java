@@ -9,6 +9,7 @@ package com.brightsparklabs.asanti.model.schema.constraint;
 
 import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.brightsparklabs.asanti.reader.AsnBerDataReader;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableList;
@@ -54,7 +55,7 @@ public class AsnSchemaContainingConstraint extends AbstractAsnSchemaConstraint {
 
     @Override
     protected ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(
-            final byte[] bytes) {
+            final byte[] bytes, final AsnPrimitiveType type) {
         // This CONTAINING constraint means that we should be able to parse the bytes
         // as valid ber/der.  The decode will try to do that.  The decode part will deal
         // with alignment to schema, but this constraint should verify that the bytes are

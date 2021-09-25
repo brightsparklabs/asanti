@@ -7,6 +7,12 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
+import static org.junit.Assert.*;
+
+import com.brightsparklabs.asanti.model.schema.primitive.AsnPrimitiveTypeBitString;
+import com.brightsparklabs.asanti.validator.FailureType;
+import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 /**
@@ -58,5 +64,47 @@ public class AsnSchemaSizeConstraintTest {
                 instance, new byte[255], "Expected a value between 5 and -5, but found: 255");
         AsnSchemaConstraintTest.checkFailure(
                 instance, new byte[256], "Expected a value between 5 and -5, but found: 256");
+    }
+
+    @Test
+    public void testBitStringOk() throws Exception {
+
+        // 2 bytes that decodes to "111" (length 3)
+        byte[] bytes = {(byte) 0x05, (byte) 0xE0};
+
+        AsnSchemaSizeConstraint instance = new AsnSchemaSizeConstraint(2, 3);
+        ImmutableSet<SchemaConstraintValidationFailure> failures =
+                instance.apply(bytes, new AsnPrimitiveTypeBitString());
+        assertTrue(failures.isEmpty());
+    }
+
+    @Test
+    public void testBitStringSizeBad() throws Exception {
+
+        // test valid values of unused bits with two byte bit string
+        byte[] bytes = {(byte) 0x00, (byte) 0xAA, (byte) 0x80};
+        // decodes to "1010101010000000"
+
+        AsnSchemaSizeConstraint instance = new AsnSchemaSizeConstraint(3, 15);
+        ImmutableSet<SchemaConstraintValidationFailure> failures =
+                instance.apply(bytes, new AsnPrimitiveTypeBitString());
+        assertEquals(1, failures.size());
+        final SchemaConstraintValidationFailure failure = failures.iterator().next();
+        assertEquals(FailureType.SchemaConstraint, failure.getFailureType());
+    }
+
+    @Test
+    public void testBitStringDecodeError() throws Exception {
+
+        // fail to decode - invalid length octet (single byte)
+        byte[] bytes = {(byte) 0x08, (byte) 0xFF};
+
+        AsnSchemaSizeConstraint instance = new AsnSchemaSizeConstraint(3, 15);
+        ImmutableSet<SchemaConstraintValidationFailure> failures =
+                instance.apply(bytes, new AsnPrimitiveTypeBitString());
+        assertEquals(1, failures.size());
+
+        final SchemaConstraintValidationFailure failure = failures.iterator().next();
+        assertEquals(FailureType.DataIncorrectlyFormatted, failure.getFailureType());
     }
 }

@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
@@ -63,7 +64,8 @@ public class AsnSchemaNumericValueConstraint extends AbstractAsnSchemaConstraint
      * @return any failures encountered in applying the constraint to the supplied bytes
      */
     @Override
-    public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(byte[] bytes) {
+    public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(
+            byte[] bytes, final AsnPrimitiveType type) {
         try {
             final BigInteger value = new BigInteger(bytes);
             final boolean conforms =
