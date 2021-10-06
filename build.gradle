@@ -8,24 +8,30 @@
 // -----------------------------------------------------------------------------
 
 plugins {
-    // Apply the brightSPARK Labs plugin for standardisation
-    id 'com.brightsparklabs.gradle.baseline' version "0.6.0"
+    // Apply the brightSPARK Labs plugin for standardisation.
+    id 'com.brightsparklabs.gradle.baseline' version '1.0.0'
 
-    // Apply the java plugin to add support for Java
+    // Apply the java plugin to add support for Java.
     id 'java'
 
-    // Apply the application plugin to add support for building an application
+    // Apply the application plugin to add support for building an application.
     id 'application'
 
-    // Apply the library plugin to add support for exposing as a library
+    // Apply the library plugin to add support for exposing as a library.
     id 'java-library'
 
-    // Apply the groovy plugin to also add support for Groovy (needed for Spock)
+    // Apply the groovy plugin to also add support for Groovy (needed for Spock).
     id 'groovy'
 
-    // Apply bintray plugin for publishing artifacts
-    id "com.jfrog.bintray" version "1.8.5"
-    id "maven-publish"
+    // -----------------------------------------------------------------------------
+    // PUBLISHING
+    // -----------------------------------------------------------------------------
+
+    id 'maven-publish'
+    // Maven Central requires artifacts to be signed.
+    id 'signing'
+    // Maven Central requires artifacts to be released via Sonatype Nexus.
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
 // -----------------------------------------------------------------------------
@@ -39,7 +45,7 @@ apply from: 'startScripts.gradle'
 // -----------------------------------------------------------------------------
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -98,81 +104,87 @@ project.tasks.named("compileJava").configure {
 mainClassName = 'com.brightsparklabs.asanti.AsantiCli'
 
 // -----------------------------------------------------------------------------
-// PUBLISH ARTIFACTS (via bintray)
+// SETUP ARTIFACTS FOR PUBLISHING
 // -----------------------------------------------------------------------------
 
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['Publication']
-    override = true
-    publish = true
-    pkg {
-        repo = 'maven'
-        name = project.name
-        userOrg = 'brightsparklabs'
-        licenses = ['MIT']
-        vcsUrl = project.ext.url
-        version {
-            name = project.version
-            vcsTag = project.version
-            released = new Date()
-        }
-    }
-}
-
-// Include javadoc and sources (requirements for publishing to Maven Central)
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-def pomConfig = {
-    name project.name
-    packaging 'jar'
-    description project.description
-    url project.url
-
-    scm {
-        connection project.scm
-        developerConnection project.scm
-        url project.scm
-    }
-
-    licenses {
-        license {
-            name 'MIT License'
-            url 'http://www.opensource.org/licenses/mit-license.php'
-        }
-    }
-
-    developers {
-        developer {
-            id 'brightsparklabs'
-            name 'brightSPARK Labs'
-            email 'enquire@brightsparklabs.com'
-        }
-    }
+// Maven Central requires javadoc and sources.
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
     publications {
-        Publication(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
+        mavenJava(MavenPublication) {
             groupId project.group
             artifactId project.name
             version project.version
-            pom.withXml {
-                def root = asNode()
-                root.children().last() + pomConfig
+            from components.java
+
+            // Maven Central requires specific POM attributes.
+            pom {
+                name = project.name
+                description = project.description
+                url = project.url
+
+                scm {
+                    connection = project.scm
+                    developerConnection = project.scm
+                    url = project.scm
+                }
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'http://www.opensource.org/licenses/mit-license.php'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'brightsparklabs'
+                        name = 'brightSPARK Labs'
+                        email = 'enquire@brightsparklabs.com'
+                    }
+                }
             }
         }
     }
 }
+
+// Maven Central requires signed artifacts.
+signing {
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.mavenJava
+
+    // Only require signing when publishing (otherwise normal builds would need GPG keys).
+    required { gradle.taskGraph.hasTask("publishToSonatype") }
+}
+
+// -----------------------------------------------------------------------------
+// PUBLISH ARTIFACTS (via nexus)
+// -----------------------------------------------------------------------------
+
+nexusPublishing {
+    repositories {
+        // Credentials default to:
+        // - Property `sonatypeUsername` or ENV variable `ORG_GRADLE_PROJECT_sonatypeUsername`.
+        // - Property `sonatypePassword` or ENV variable ORG_GRADLE_PROJECT_sonatypePassword`.
+        sonatype()
+    }
+}
+
+
+task prePublishToMavenCentral {
+    group 'brightSPARK Labs - Maven Central Publishing'
+    description 'Stages the release on Sonatype ready for publishing to Maven Central.'
+    dependsOn 'publishToSonatype', 'closeSonatypeStagingRepository'
+}
+task publishToMavenCentral {
+    group 'brightSPARK Labs - Maven Central Publishing'
+    description 'Publishes the release to Maven Central.'
+    dependsOn 'publishToSonatype', 'closeAndReleaseSonatypeStagingRepository'
+}
+
