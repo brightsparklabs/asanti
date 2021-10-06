@@ -26,4 +26,4 @@ jobs:
       script: ./gradlew build
     - stage: publish
       if: branch = master
-      script: ./gradlew -i bintrayUpload
+      script: ./gradlew -i prePublishToMavenCentral
