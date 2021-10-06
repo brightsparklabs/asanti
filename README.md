@@ -1,7 +1,7 @@
 # Asanti
 
 [![Build Status](https://travis-ci.org/brightsparklabs/asanti.svg?branch=master)](https://travis-ci.org/brightsparklabs/asanti)
-[![Download](https://api.bintray.com/packages/brightsparklabs/maven/asanti/images/download.svg)](https://bintray.com/brightsparklabs/maven/asanti/_latestVersion)
+[![Maven](https://img.shields.io/maven-central/v/com.brightsparklabs/asanti)](https://search.maven.org/artifact/com.brightsparklabs/asanti)
 
 A dynamic ASN.1 Parser for decoding tagged BER/DER data. Asanti allows a schema
 to be layered on top of parsed data rather than forcing the schema to be
