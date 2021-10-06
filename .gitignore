@@ -65,3 +65,4 @@ local.properties
 # Gradle handles classpath
 .classpath
 
+.gradletasknamecache
