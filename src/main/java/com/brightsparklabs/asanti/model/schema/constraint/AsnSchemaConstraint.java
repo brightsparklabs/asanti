@@ -9,6 +9,7 @@ package com.brightsparklabs.asanti.model.schema.constraint;
 
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
@@ -23,7 +24,7 @@ public interface AsnSchemaConstraint {
     // -------------------------------------------------------------------------
 
     /** null instance */
-    public static final AsnSchemaConstraint.Null NULL = new AsnSchemaConstraint.Null();
+    AsnSchemaConstraint.Null NULL = new AsnSchemaConstraint.Null();
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -35,14 +36,14 @@ public interface AsnSchemaConstraint {
      * @param bytes the bytes to test
      * @return any failures encountered in applying the constraint to the supplied bytes
      */
-    public ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes);
+    ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes, AsnPrimitiveType type);
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: AsnSchemaTypeDefinitionNull
     // -------------------------------------------------------------------------
 
     /** Null instance of {@link AsnSchemaConstraint} */
-    public static class Null implements AsnSchemaConstraint {
+    class Null implements AsnSchemaConstraint {
         /**
          * Default constructor. Private, use {@link AsnSchemaConstraint#NULL} instead to obtain a
          * singleton instance
@@ -54,7 +55,8 @@ public interface AsnSchemaConstraint {
         // ---------------------------------------------------------------------
 
         @Override
-        public ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes) {
+        public ImmutableSet<SchemaConstraintValidationFailure> apply(
+                final byte[] bytes, final AsnPrimitiveType type) {
             return ImmutableSet.of();
         }
     }

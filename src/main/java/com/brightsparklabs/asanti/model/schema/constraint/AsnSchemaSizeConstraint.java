@@ -7,8 +7,10 @@
 
 package com.brightsparklabs.asanti.model.schema.constraint;
 
+import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
@@ -29,6 +31,8 @@ public class AsnSchemaSizeConstraint extends AbstractAsnSchemaConstraint {
 
     /** the minimum length the data can be */
     private final int maximumLength;
+
+    private final SizeDeterminingVisitor sizeDeterminingVisitor = new SizeDeterminingVisitor();
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -57,18 +61,29 @@ public class AsnSchemaSizeConstraint extends AbstractAsnSchemaConstraint {
      * @return any failures encountered in applying the constraint to the supplied bytes
      */
     @Override
-    public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(byte[] bytes) {
-        final int length = bytes.length;
-        final boolean conforms = (length >= minimumLength) && (length <= maximumLength);
-        if (conforms) {
-            return ImmutableSet.of();
-        } else {
+    public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(
+            byte[] bytes, final AsnPrimitiveType type) {
+        final SizeDeterminer sizeDeterminer = (SizeDeterminer) type.accept(sizeDeterminingVisitor);
+        try {
+            final Integer size = sizeDeterminer.determineSize(bytes);
+            final boolean conforms = (size >= minimumLength) && (size <= maximumLength);
+            if (conforms) {
+                return ImmutableSet.of();
+            }
+
             final String error =
                     String.format(
                             "Expected a value between %d and %d, but found: %d",
-                            minimumLength, maximumLength, length);
+                            minimumLength, maximumLength, size);
             final SchemaConstraintValidationFailure failure =
                     new SchemaConstraintValidationFailure(FailureType.SchemaConstraint, error);
+            return ImmutableSet.of(failure);
+        } catch (final DecodeException e) {
+            final String error =
+                    String.format("Exception while determining size: %s", e.getMessage());
+            final SchemaConstraintValidationFailure failure =
+                    new SchemaConstraintValidationFailure(
+                            FailureType.DataIncorrectlyFormatted, error);
             return ImmutableSet.of(failure);
         }
     }

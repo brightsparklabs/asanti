@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.*;
 
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaComponentType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableSet;
@@ -40,7 +41,7 @@ public class AsnSchemaExactNumericValueConstraint extends AbstractAsnSchemaConst
      * @param exactValue the value the data must be
      * @throws NullPointerException if any of the parameters are {@code null}
      */
-    public AsnSchemaExactNumericValueConstraint(BigInteger exactValue) {
+    public AsnSchemaExactNumericValueConstraint(final BigInteger exactValue) {
         checkNotNull(exactValue);
         this.exactValue = exactValue;
     }
@@ -57,7 +58,8 @@ public class AsnSchemaExactNumericValueConstraint extends AbstractAsnSchemaConst
      * @return any failures encountered in applying the constraint to the supplied bytes
      */
     @Override
-    public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(byte[] bytes) {
+    public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(
+            final byte[] bytes, final AsnPrimitiveType type) {
         try {
             final BigInteger value = new BigInteger(bytes);
             if (exactValue.equals(value)) {
