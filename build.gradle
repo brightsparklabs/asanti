@@ -7,6 +7,18 @@
 // PLUGINS
 // -----------------------------------------------------------------------------
 
+// We want to conditionally apply these plugins, therefore need to use legacy plugin syntax.
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'io.github.gradle-nexus:publish-plugin:1.1.0'
+    }
+}
+
 plugins {
     // Apply the brightSPARK Labs plugin for standardisation.
     id 'com.brightsparklabs.gradle.baseline' version '1.0.0'
@@ -30,8 +42,16 @@ plugins {
     id 'maven-publish'
     // Maven Central requires artifacts to be signed.
     id 'signing'
-    // Maven Central requires artifacts to be released via Sonatype Nexus.
-    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+}
+
+/*
+ * Maven Central requires artifacts to be released via Sonatype Nexus.
+ * The Nexus Publish Plugin can only be applied to the root project.
+ * Do not apply it if this project is being included as a subproject.
+ */
+def isRootProject = project.path == ':'
+if (isRootProject) {
+    apply plugin: 'io.github.gradle-nexus.publish-plugin'
 }
 
 // -----------------------------------------------------------------------------
@@ -167,24 +187,24 @@ signing {
 // PUBLISH ARTIFACTS (via nexus)
 // -----------------------------------------------------------------------------
 
-nexusPublishing {
-    repositories {
-        // Credentials default to:
-        // - Property `sonatypeUsername` or ENV variable `ORG_GRADLE_PROJECT_sonatypeUsername`.
-        // - Property `sonatypePassword` or ENV variable ORG_GRADLE_PROJECT_sonatypePassword`.
-        sonatype()
+if (isRootProject) {
+    nexusPublishing {
+        repositories {
+            // Credentials default to:
+            // - Property `sonatypeUsername` or ENV variable `ORG_GRADLE_PROJECT_sonatypeUsername`.
+            // - Property `sonatypePassword` or ENV variable ORG_GRADLE_PROJECT_sonatypePassword`.
+            sonatype()
+        }
+    }
+
+    task prePublishToMavenCentral {
+        group 'brightSPARK Labs - Maven Central Publishing'
+        description 'Stages the release on Sonatype ready for publishing to Maven Central.'
+        dependsOn 'publishToSonatype', 'closeSonatypeStagingRepository'
+    }
+    task publishToMavenCentral {
+        group 'brightSPARK Labs - Maven Central Publishing'
+        description 'Publishes the release to Maven Central.'
+        dependsOn 'publishToSonatype', 'closeAndReleaseSonatypeStagingRepository'
     }
 }
-
-
-task prePublishToMavenCentral {
-    group 'brightSPARK Labs - Maven Central Publishing'
-    description 'Stages the release on Sonatype ready for publishing to Maven Central.'
-    dependsOn 'publishToSonatype', 'closeSonatypeStagingRepository'
-}
-task publishToMavenCentral {
-    group 'brightSPARK Labs - Maven Central Publishing'
-    description 'Publishes the release to Maven Central.'
-    dependsOn 'publishToSonatype', 'closeAndReleaseSonatypeStagingRepository'
-}
-
