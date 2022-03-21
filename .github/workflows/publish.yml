@@ -22,7 +22,6 @@ jobs:
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v2
         with:
-          fetch-depth: 0
           java-version: '11'
           distribution: 'adopt'
           server-id: ossrh
@@ -33,6 +32,6 @@ jobs:
           mkdir -p ~/.gradle
           ./gradlew -i publishToMavenCentral
         env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
         
