@@ -5,7 +5,6 @@ name: Asanti build with gradle
 # Controls when the workflow will run
 on: [push]
 
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -15,14 +14,16 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        # fetch all history for all branches and tags, so that our `make` targets can get tags
+        with:
+          fetch-depth: 0
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
-          fetch-depth: 0
-          java-version: '11'
-          distribution: 'adopt'
-      # cache dependencies and validate wrapper jar    
+          java-version: "11"
+          distribution: "adopt"
+      # cache dependencies and validate wrapper jar
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Build with Gradle
