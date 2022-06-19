@@ -74,7 +74,7 @@ dependencies {
         slf4j: "1.7.35"
     ]
 
-    implementation "com.google.guava:guava:31.0.1-jre"
+    implementation "com.google.guava:guava:31.1-jre"
     implementation "org.bouncycastle:bcprov-jdk15on:1.70"
     implementation "org.slf4j:slf4j-api:${versions.slf4j}"
     implementation "joda-time:joda-time:2.10.14"
