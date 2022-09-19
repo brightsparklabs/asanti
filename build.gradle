@@ -71,7 +71,7 @@ repositories {
 dependencies {
     def versions = [
         powermock: "2.0.9",
-        slf4j: "1.7.36"
+        slf4j: "2.0.1"
     ]
 
     implementation "com.google.guava:guava:31.1-jre"
