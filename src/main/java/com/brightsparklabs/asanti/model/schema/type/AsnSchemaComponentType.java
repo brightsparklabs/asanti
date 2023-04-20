@@ -62,7 +62,9 @@ public class AsnSchemaComponentType {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /** @return the tag of this component type */
+    /**
+     * @return the tag of this component type
+     */
     public String getTag() {
         return tag;
     }
@@ -75,17 +77,23 @@ public class AsnSchemaComponentType {
         this.tag = (tag == null) ? "" : tag;
     }
 
-    /** @return {@code true} if this component type is optional */
+    /**
+     * @return {@code true} if this component type is optional
+     */
     public boolean isOptional() {
         return isOptional;
     }
 
-    /** @return the {@link AsnSchemaType} of this component */
+    /**
+     * @return the {@link AsnSchemaType} of this component
+     */
     public AsnSchemaType getType() {
         return type;
     }
 
-    /** @return the name of this component */
+    /**
+     * @return the name of this component
+     */
     public String getName() {
         return name;
     }

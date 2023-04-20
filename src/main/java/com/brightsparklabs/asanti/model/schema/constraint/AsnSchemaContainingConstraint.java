@@ -17,7 +17,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteSource;
 import java.io.IOException;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class AsnSchemaContainingConstraint extends AbstractAsnSchemaConstraint {
     // -------------------------------------------------------------------------
     // CONSTANTS

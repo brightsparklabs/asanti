@@ -11,7 +11,9 @@ import com.brightsparklabs.asanti.data.AsnData;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.selector.Selector;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class ValidatorSelectorImpl implements ValidatorSelector {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES

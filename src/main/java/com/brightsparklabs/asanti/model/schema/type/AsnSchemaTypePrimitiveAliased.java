@@ -16,7 +16,9 @@ import com.google.common.collect.ImmutableList;
 import java.text.ParseException;
 import java.util.Optional;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
 
     // -------------------------------------------------------------------------
@@ -74,6 +76,11 @@ public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
         this.aliasedType = aliasedType;
     }
 
+    /**
+     * Returns the type that this type is aliasing
+     *
+     * @return The type that this type is aliasing
+     */
     public AsnSchemaType getAliasedType() {
         return this.aliasedType;
     }

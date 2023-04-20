@@ -301,6 +301,12 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
             }
         }
 
+        /**
+         * Checks for duplicates.
+         *
+         * @param componentTypes Components to check.
+         * @throws ParseException if there is a duplicate tag.
+         */
         public void checkForDuplicates(Iterable<AsnSchemaComponentType> componentTypes)
                 throws ParseException {
             // Key: decorated tag, Value: component name.  We only really need a List, but by

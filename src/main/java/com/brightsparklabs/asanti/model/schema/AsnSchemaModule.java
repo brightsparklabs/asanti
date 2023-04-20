@@ -14,6 +14,7 @@ import com.brightsparklabs.asanti.model.schema.typedefinition.AsnSchemaTypeDefin
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.text.ParseException;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -170,6 +171,7 @@ public class AsnSchemaModule {
          * @param name name of the module
          * @return this builder
          */
+        @CanIgnoreReturnValue
         public Builder setName(String name) {
             this.name = name;
             return this;
@@ -185,6 +187,7 @@ public class AsnSchemaModule {
          * @param type type definition to add
          * @return this builder
          */
+        @CanIgnoreReturnValue
         public Builder addType(AsnSchemaTypeDefinition type) {
             types.put(type.getName(), type);
             return this;
@@ -198,6 +201,7 @@ public class AsnSchemaModule {
          *     in)
          * @return this builder
          */
+        @CanIgnoreReturnValue
         public Builder addImport(String typeName, String moduleName) {
             imports.put(typeName, moduleName);
             return this;
@@ -210,6 +214,7 @@ public class AsnSchemaModule {
          *     imported type comes from. Map is of format {typeName =&gt; moduleName}
          * @return this builder
          */
+        @CanIgnoreReturnValue
         public Builder addImports(Map<String, String> imports) {
             this.imports.putAll(imports);
             return this;
@@ -225,8 +230,8 @@ public class AsnSchemaModule {
         }
 
         /**
-         * Resolve all of the "placeholder" type definitions such that they point to actual types,
-         * even across modules.
+         * Resolve all the "placeholder" type definitions such that they point to actual types, even
+         * across modules.
          *
          * @param otherModules the other {@link AsnSchemaModule.Builder} within the schema. They
          *     will be used to resolve imports as part of the final build.

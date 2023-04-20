@@ -11,6 +11,7 @@ import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.brightsparklabs.asanti.validator.ValidationResult;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 /**
  * Implementation of {@link ValidationResult}.
@@ -111,6 +112,7 @@ public class ValidationResultImpl implements ValidationResult {
          * @param failures result to add
          * @return this builder
          */
+        @CanIgnoreReturnValue
         public Builder add(ValidationFailure failures) {
             failuresBuilder.add(failures);
             return this;
@@ -122,6 +124,7 @@ public class ValidationResultImpl implements ValidationResult {
          * @param failures failures to add
          * @return this builder
          */
+        @CanIgnoreReturnValue
         public Builder addAll(Iterable<? extends ValidationFailure> failures) {
             failuresBuilder.addAll(failures);
             return this;

@@ -84,7 +84,9 @@ public class BaseAsnSchemaTypeTest {
         assertEquals("Got AsnSchemaTypePrimitive", o);
     }
 
-    /** @return a helper/test Visitor to determine what Type was visited */
+    /**
+     * @return a helper/test Visitor to determine what Type was visited
+     */
     public static AsnSchemaTypeVisitor<String> getVisitor() {
         return new AsnSchemaTypeVisitor<>() {
             @Override

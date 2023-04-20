@@ -19,7 +19,9 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class Decoder {
     // -------------------------------------------------------------------------
     // CONSTANTS

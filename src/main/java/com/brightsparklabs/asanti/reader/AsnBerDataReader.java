@@ -157,6 +157,7 @@ public class AsnBerDataReader {
      * @param tagsToData storage for the tags/data found
      * @throws IOException if any errors occur reading from the file
      */
+    @SuppressWarnings("JdkObsolete") // Bouncy Castle lib returns enumeration.
     private static void processElementsFromSequenceOrSet(
             Enumeration<?> elements, String prefix, Map<String, byte[]> tagsToData)
             throws IOException {
