@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Unit tests for {@link AsnSchemaTypePlaceholder}
@@ -111,21 +112,21 @@ public class AsnSchemaTypePlaceholderTest {
     @Test
     public void testGetModuleName() throws Exception {
         assertEquals("Module", instance.getModuleName());
-        verifyZeroInteractions(indirectType);
+        Mockito.verifyNoInteractions(indirectType);
 
         instance.setIndirectType(indirectType);
         assertEquals("Module", instance.getModuleName());
-        verifyZeroInteractions(indirectType);
+        Mockito.verifyNoInteractions(indirectType);
     }
 
     @Test
     public void testGetTypeName() throws Exception {
         assertEquals("Type", instance.getTypeName());
-        verifyZeroInteractions(indirectType);
+        Mockito.verifyNoInteractions(indirectType);
 
         instance.setIndirectType(indirectType);
         assertEquals("Type", instance.getTypeName());
-        verifyZeroInteractions(indirectType);
+        Mockito.verifyNoInteractions(indirectType);
     }
 
     @Test

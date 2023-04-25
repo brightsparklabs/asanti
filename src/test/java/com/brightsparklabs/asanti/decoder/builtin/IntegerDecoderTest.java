@@ -8,7 +8,7 @@
 package com.brightsparklabs.asanti.decoder.builtin;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.exception.DecodeException;

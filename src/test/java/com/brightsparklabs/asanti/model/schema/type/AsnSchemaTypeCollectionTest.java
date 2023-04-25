@@ -19,6 +19,7 @@ import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Unit tests for {@link AsnSchemaTypeCollection}
@@ -175,7 +176,7 @@ public class AsnSchemaTypeCollectionTest {
     @Test
     public void testGetElementType() throws Exception {
         assertEquals(wrappedSequence, instance.getElementType());
-        verifyZeroInteractions(wrappedSequence);
+        Mockito.verifyNoInteractions(wrappedSequence);
     }
 
     @Test
