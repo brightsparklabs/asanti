@@ -19,7 +19,9 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class Decoder {
     // -------------------------------------------------------------------------
     // CONSTANTS
@@ -29,13 +31,13 @@ public class Decoder {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger = LoggerFactory.getLogger(Decoder.class);
 
-    /** splitter for separating tag strings */
+    /** Splitter for separating tag strings. */
     private static final Splitter tagSplitter = Splitter.on("/").omitEmptyStrings();
 
-    /** joiner for creating tag strings */
+    /** Joiner for creating tag strings. */
     private static final Joiner tagJoiner = Joiner.on("/");
 
     // -------------------------------------------------------------------------
@@ -59,11 +61,11 @@ public class Decoder {
      * iteration order of the decoded tags will be as read from the data file (which should, for the
      * most part, be as defined in the schema).
      *
-     * @param rawTags raw tags to decode
-     * @param topLevelTypeName the name of the top level type in this module from which to begin
-     *     decoding the raw tag
-     * @param schema the schema to decode against
-     * @return the result of the decode attempt containing the decoded tags for each of the rawTags
+     * @param rawTags Raw tags to decode.
+     * @param topLevelTypeName The name of the top level type in this module from which to begin
+     *     decoding the raw tag.
+     * @param schema The schema to decode against.
+     * @return The result of the decode attempt containing the decoded tags for each of the rawTags.
      */
     public static ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(
             final Iterable<String> rawTags, final String topLevelTypeName, final AsnSchema schema) {
@@ -75,6 +77,14 @@ public class Decoder {
         return getDecodedTags(rawTags, type.get());
     }
 
+    /**
+     * Returns the decoded tags for the supplied raw tags using a new {@link DecodingSession}.
+     *
+     * @param rawTags Raw tags to decode.
+     * @param rootType The name of the top level type in this module from which to begin decoding
+     *     the raw tag.
+     * @return The result of the decode attempt containing the decoded tags for each of the rawTags.
+     */
     public static ImmutableSet<OperationResult<DecodedTag, String>> getDecodedTags(
             final Iterable<String> rawTags, final AsnSchemaType rootType) {
         DecodingSession session = new DecodingSessionImpl();
@@ -92,14 +102,16 @@ public class Decoder {
     }
 
     /**
-     * Returns the decoded tag for the supplied raw tag. E.g. {@code
-     * getDecodedTag("/0[1]/0[0]/0[1]", "Document")} =&gt; {@code "/Document/header/published/date"}
+     * Returns the decoded tag for the supplied raw tag.
      *
-     * @param rawTag raw tag to decode
-     * @param type the top level type from which to begin decoding the raw tag
-     * @param session the session state that tracks the ordering and stateful part of decoding a
-     *     complete set of asn data.
-     * @return the result of the decode attempt containing the decoded tag
+     * <p>E.g. {@code getDecodedTag("/0[1]/0[0]/0[1]", "Document")} =&gt; {@code
+     * "/Document/header/published/date"}
+     *
+     * @param rawTag Raw tag to decode.
+     * @param type The top level type from which to begin decoding the raw tag.
+     * @param session The session state that tracks the ordering and stateful part of decoding a
+     *     complete set of asn data..
+     * @return The result of the decode attempt containing the decoded tag.
      */
     public static OperationResult<DecodedTag, String> getDecodedTag(
             String rawTag, AsnSchemaType type, DecodingSession session) {
@@ -163,7 +175,7 @@ public class Decoder {
             decodingSession.setContext(decodedTagPath);
 
             Optional<AsnSchemaComponentType> child = type.getMatchingChild(tag, decodingSession);
-            if (!child.isPresent()) {
+            if (child.isEmpty()) {
                 // no type to delve into
                 break;
             }

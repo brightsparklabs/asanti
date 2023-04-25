@@ -50,6 +50,7 @@ public interface BuiltinTypeValidator {
     String OID_VALIDATION_ERROR =
             "Supplied bytes do not conform to the OID format. The first byte must be with the range 0x00 - 0x7F. Supplied bytes contain a byte with invalid value: ";
 
+    /** validation error string for incomplete Oid */
     String OID_VALIDATION_ERROR_INCOMPLETE =
             "Supplied bytes do not conform to the OID format. The OID encoding is incomplete: ";
 

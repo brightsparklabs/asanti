@@ -19,7 +19,9 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class AsPrintableAsciiValidationRule implements ValidationRule {
 
     // -------------------------------------------------------------------------

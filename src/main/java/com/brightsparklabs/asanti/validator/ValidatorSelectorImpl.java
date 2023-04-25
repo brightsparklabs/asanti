@@ -11,22 +11,30 @@ import com.brightsparklabs.asanti.data.AsnData;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.selector.Selector;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class ValidatorSelectorImpl implements ValidatorSelector {
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the Selector to use to determine criteria match */
+    /** The Selector to use to determine criteria match. */
     private final Selector selector;
 
-    /** the wrapped decoder */
+    /** The wrapped decoder. */
     private final ValidationRule validator;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
+    /**
+     * Default constructor.
+     *
+     * @param selector The Selector to use to determine criteria match.
+     * @param validator The wrapped decoder.
+     */
     public ValidatorSelectorImpl(final Selector selector, final ValidationRule validator) {
         this.selector = selector;
         this.validator = validator;

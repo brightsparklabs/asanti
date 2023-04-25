@@ -7,8 +7,8 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.model.schema.AsnSchemaModule;
@@ -16,18 +16,14 @@ import com.google.common.base.Splitter;
 import java.text.ParseException;
 import java.util.List;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * Unit tests for {@link AsnSchemaParser}
  *
  * @author brightSPARK Labs
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AsnSchemaModuleParser.class)
 public class AsnSchemaParserTest {
     // -------------------------------------------------------------------------
     // FIXTURES
@@ -35,131 +31,136 @@ public class AsnSchemaParserTest {
 
     /**
      * number of lines expected after pre-parsing the Document-PDU module from the example schema
-     * This takes in to account that all lines ending in comma are joined.
+     * This takes into account that all lines ending in comma are joined.
      */
     private static final int EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT = 34;
 
     /**
      * number of lines expected after pre-parsing the People-Protocol module from the example
-     * schema. This takes in to account that all lines ending in comma are joined.
+     * schema. This takes into account that all lines ending in comma are joined.
      */
     private static final int EXPECTED_PEOPLE_PROTOCOL_MODULE_LINE_COUNT = 18;
 
     /** an invalid schema (missing an END tag) */
     private static final String SCHEMA_NO_END =
-            "People-Protocol\n"
-                    + "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
-                    + "\n"
-                    + "DEFINITIONS\n"
-                    + "    AUTOMATIC TAGS ::=\n"
-                    + "\n"
-                    + "BEGIN\n"
-                    + "    /*Person ::= SEQUENCE\n"
-                    + "    {\n"
-                    + "        firstName [1] OCTET STRING,\n"
-                    + "        lastName  [2] OCTET STRING,\n"
-                    + "        title     [3] ENUMERATED\n"
-                    + "            { mr, mrs, ms, dr, rev } OPTIONAL,\n"
-                    + "        gender OPTIONAL\n"
-                    + "    }*/\n"
-                    + "\n"
-                    + "    Gender ::= ENUMERATED\n"
-                    + "    {\n"
-                    + "        male(0),\n"
-                    + "        female(1)\n"
-                    + "    }\n";
+            """
+                    People-Protocol
+                        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+                    DEFINITIONS
+                        AUTOMATIC TAGS ::=
+
+                    BEGIN
+                        /*Person ::= SEQUENCE
+                        {
+                            firstName [1] OCTET STRING,
+                            lastName  [2] OCTET STRING,
+                            title     [3] ENUMERATED
+                                { mr, mrs, ms, dr, rev } OPTIONAL,
+                            gender OPTIONAL
+                        }*/
+
+                        Gender ::= ENUMERATED
+                        {
+                            male(0),
+                            female(1)
+                        }
+                    """;
 
     /** a valid schema to check all regex matches */
     private static final String SCHEMA_FOR_REGEX_TEST =
-            "/*Document-PDU\r\n"
-                    + "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n"
-                    + "\n"
-                    + "DEFINITIONS\n"
-                    + "    AUTOMATIC TAGS ::=\n"
-                    + "\n"
-                    + "IMPORTS\n"
-                    + "  Gender\n"
-                    + "    FROM People-Protocol\n"
-                    + "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
-                    + "\n*/"
-                    + "/*********************************\n"
-                    + "BEGIN\n"
-                    + "\n"
-                    + "    Document ::= SEQUENCE\n"
-                    + "    {\n"
-                    + "        header [1] Header,\n"
-                    + "        body   [2] Body,\n"
-                    + "        footer [3] Footer\n"
-                    + "    }\n"
-                    + "END\n"
-                    + "*********************************/\n"
-                    + "People-Protocol\n\n"
-                    + "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
-                    + "\n"
-                    + "DEFINITIONS\n"
-                    + "    AUTOMATIC TAGS ::=\n"
-                    + "\n"
-                    + "IMPORTS\n"
-                    + "  Hair-type\n"
-                    + "    FROM Hair-Protocol\n"
-                    + "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }; BEGIN\n"
-                    + "\n"
-                    + "    /*Person ::= SEQUENCE\n"
-                    + "    {\n"
-                    + "        firstName [1] OCTET STRING,\n"
-                    + "\t\t\t -- this is a comment --\n"
-                    + "        lastName  [2] OCTET STRING,\n"
-                    + "        title     [3] ENUMERATED\n"
-                    + "            { mr, mrs, ms, dr, rev } OPTIONAL,\n"
-                    + "        gender OPTIONAL\n"
-                    + "\t\t\t -- this is a\n"
-                    + "\t\t\t -- multiline comment --\n"
-                    + "    }*/\n"
-                    + "\n"
-                    + "    Gender ::= ENUMERATED\n"
-                    + "    {\n"
-                    + "        male(0),\n"
-                    + "        female(1)\n"
-                    + "    }\n"
-                    + "END\n"
-                    + "\n"
-                    + "/*Hair-Protocol\n"
-                    + "*    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }\n"
-                    + "*\n"
-                    + "*DEFINITIONS\n"
-                    + "*    AUTOMATIC TAGS ::=\n"
-                    + "*\n"
-                    + "*BEGIN\n"
-                    + "*    Hair ::= SEQUENCE\n"
-                    + "*    {\n"
-                    + "*        color [1] OCTET STRING,\n"
-                    + "*        type  [2] Hair-type\n"
-                    + "*    }\n"
-                    + "*\n"
-                    + "*    Hair-type ::= ENUMERATED\n"
-                    + "*    {\n"
-                    + "*        straight(0),\n"
-                    + "*        curly(1)\n"
-                    + "*    }\n"
-                    + "*END*/";
+            """
+                    /*Document-PDU\r
+                        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }
+
+                    DEFINITIONS
+                        AUTOMATIC TAGS ::=
+
+                    IMPORTS
+                      Gender
+                        FROM People-Protocol
+                        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+                    *//*********************************
+                    BEGIN
+
+                        Document ::= SEQUENCE
+                        {
+                            header [1] Header,
+                            body   [2] Body,
+                            footer [3] Footer
+                        }
+                    END
+                    *********************************/
+                    People-Protocol
+
+                        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+
+                    DEFINITIONS
+                        AUTOMATIC TAGS ::=
+
+                    IMPORTS
+                      Hair-type
+                        FROM Hair-Protocol
+                        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }; BEGIN
+
+                        /*Person ::= SEQUENCE
+                        {
+                            firstName [1] OCTET STRING,
+                    \t\t\t -- this is a comment --
+                            lastName  [2] OCTET STRING,
+                            title     [3] ENUMERATED
+                                { mr, mrs, ms, dr, rev } OPTIONAL,
+                            gender OPTIONAL
+                    \t\t\t -- this is a
+                    \t\t\t -- multiline comment --
+                        }*/
+
+                        Gender ::= ENUMERATED
+                        {
+                            male(0),
+                            female(1)
+                        }
+                    END
+
+                    /*Hair-Protocol
+                    *    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }
+                    *
+                    *DEFINITIONS
+                    *    AUTOMATIC TAGS ::=
+                    *
+                    *BEGIN
+                    *    Hair ::= SEQUENCE
+                    *    {
+                    *        color [1] OCTET STRING,
+                    *        type  [2] Hair-type
+                    *    }
+                    *
+                    *    Hair-type ::= ENUMERATED
+                    *    {
+                    *        straight(0),
+                    *        curly(1)
+                    *    }
+                    *END*/""";
 
     /** The text expected after applying regex matches to {@link #SCHEMA_FOR_REGEX_TEST} */
     private static final String SCHEMA_VALID_PARSE_INPUT =
-            "People-Protocol\n"
-                    + "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
-                    + "DEFINITIONS\n"
-                    + "AUTOMATIC TAGS ::=\n"
-                    + "IMPORTS\n"
-                    + "Hair-type\n"
-                    + "FROM Hair-Protocol\n"
-                    + "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }\n"
-                    + ";\n"
-                    + "BEGIN\n"
-                    + "Gender ::= ENUMERATED\n"
-                    + "{\n"
-                    + "male(0), female(1)\n"
-                    + "}\n"
-                    + "END";
+            """
+                    People-Protocol
+                    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+                    DEFINITIONS
+                    AUTOMATIC TAGS ::=
+                    IMPORTS
+                    Hair-type
+                    FROM Hair-Protocol
+                    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) hair(2) }
+                    ;
+                    BEGIN
+                    Gender ::= ENUMERATED
+                    {
+                    male(0), female(1)
+                    }
+                    END""";
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------
@@ -171,6 +172,7 @@ public class AsnSchemaParserTest {
             AsnSchemaParser.parse("");
             fail("ParseException not thrown");
         } catch (final ParseException ex) {
+            // Expected to get here.
         }
 
         // test null argument
@@ -178,6 +180,7 @@ public class AsnSchemaParserTest {
             AsnSchemaParser.parse(null);
             fail("ParseException not thrown");
         } catch (final ParseException ex) {
+            // Expected to get here.
         }
     }
 
@@ -188,6 +191,7 @@ public class AsnSchemaParserTest {
             AsnSchemaParser.parse(SCHEMA_NO_END);
             fail("ParseException not thrown");
         } catch (final ParseException ex) {
+            // Expected to get here.
         }
     }
 
@@ -200,7 +204,7 @@ public class AsnSchemaParserTest {
     //                MockAsnSchemaModule.createMockedAsnSchemaModuleForPeopleProtocol();
     //
     //        // mock AsnSchemaModuleParser.parse() static method
-    //        PowerMockito.mockStatic(AsnSchemaModuleParser.class);
+    //        Mockito.mockStatic(AsnSchemaModuleParser.class);
     //        final Matcher<Iterable<String>> documentPduMatcher =
     //
     // org.hamcrest.Matchers.iterableWithSize(EXPECTED_DOCUMENT_PDU_MODULE_LINE_COUNT);
@@ -232,12 +236,15 @@ public class AsnSchemaParserTest {
 
         // mock AsnSchemaModuleParser.parse static method to only return mock object
         // if argument matches expected input
-        PowerMockito.mockStatic(AsnSchemaModuleParser.class);
-        when(AsnSchemaModuleParser.parse(expectedParseInput)).thenReturn(mockAsnSchemaModule);
+        try (MockedStatic<AsnSchemaModuleParser> parser =
+                Mockito.mockStatic(AsnSchemaModuleParser.class)) {
+            parser.when(() -> AsnSchemaModuleParser.parse(expectedParseInput))
+                    .thenReturn(mockAsnSchemaModule);
 
-        // test parse with a schema which has all regex combinations
-        final AsnSchema actualSchema = AsnSchemaParser.parse(SCHEMA_FOR_REGEX_TEST);
-        assertNotNull(actualSchema);
+            // test parse with a schema which has all regex combinations
+            final AsnSchema actualSchema = AsnSchemaParser.parse(SCHEMA_FOR_REGEX_TEST);
+            assertNotNull(actualSchema);
+        }
     }
 
     @Test
@@ -247,46 +254,48 @@ public class AsnSchemaParserTest {
         // separator between different type defs or value assignments.
         // ASN-184
         final String withComments =
-                "People-Protocol\n"
-                        + "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
-                        + "DEFINITIONS\n"
-                        + "AUTOMATIC TAGS ::=\n"
-                        + "IMPORTS\n"
-                        + ";\n"
-                        + "BEGIN\n"
-                        + "Gender ::= ENUMERATED\n"
-                        + "{\n"
-                        + "male(0),\n"
-                        + "female(1)\n"
-                        + "}\n"
-                        + "SomeType ::= INTEGER (0..100) -- this comment ends at the end of this line\n"
-                        + "SomeChoice ::= CHOICE\n"
-                        + "{\n"
-                        + "optA INTEGER,\n"
-                        + "optB OCTET STRING\n"
-                        + "}\n"
-                        + "END";
+                """
+                        People-Protocol
+                        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+                        DEFINITIONS
+                        AUTOMATIC TAGS ::=
+                        IMPORTS
+                        ;
+                        BEGIN
+                        Gender ::= ENUMERATED
+                        {
+                        male(0),
+                        female(1)
+                        }
+                        SomeType ::= INTEGER (0..100) -- this comment ends at the end of this line
+                        SomeChoice ::= CHOICE
+                        {
+                        optA INTEGER,
+                        optB OCTET STRING
+                        }
+                        END""";
         // "END -- comment at the end of file, note no newline, we need this comment to be cleaned
         // out";
 
         final String cleaned =
-                "People-Protocol\n"
-                        + "{ joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }\n"
-                        + "DEFINITIONS\n"
-                        + "AUTOMATIC TAGS ::=\n"
-                        + "IMPORTS\n"
-                        + ";\n"
-                        + "BEGIN\n"
-                        + "Gender ::= ENUMERATED\n"
-                        + "{\n"
-                        + "male(0), female(1)\n"
-                        + "}\n"
-                        + "SomeType ::= INTEGER (0..100)\n"
-                        + "SomeChoice ::= CHOICE\n"
-                        + "{\n"
-                        + "optA INTEGER, optB OCTET STRING\n"
-                        + "}\n"
-                        + "END";
+                """
+                        People-Protocol
+                        { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) people(2) }
+                        DEFINITIONS
+                        AUTOMATIC TAGS ::=
+                        IMPORTS
+                        ;
+                        BEGIN
+                        Gender ::= ENUMERATED
+                        {
+                        male(0), female(1)
+                        }
+                        SomeType ::= INTEGER (0..100)
+                        SomeChoice ::= CHOICE
+                        {
+                        optA INTEGER, optB OCTET STRING
+                        }
+                        END""";
 
         // prepare objects for mocking of AsnSchemaModuleParser.parse static method
         // set up mock AsnSchemaModule to return
@@ -300,14 +309,18 @@ public class AsnSchemaParserTest {
 
         // mock AsnSchemaModuleParser.parse static method to only return mock object
         // if argument matches expected input
-        PowerMockito.mockStatic(AsnSchemaModuleParser.class);
-        when(AsnSchemaModuleParser.parse(expectedParseInput)).thenReturn(mockAsnSchemaModule);
+        try (MockedStatic<AsnSchemaModuleParser> parser =
+                Mockito.mockStatic(AsnSchemaModuleParser.class)) {
+            parser.when(() -> AsnSchemaModuleParser.parse(expectedParseInput))
+                    .thenReturn(mockAsnSchemaModule);
 
-        // This test is really testing that the preparation of the schema (ie removing comments etc)
-        // produces the expected results.
+            // This test is really testing that the preparation of the schema (ie removing comments
+            // etc)
+            // produces the expected results.
 
-        // test parse with a schema which has all regex combinations
-        final AsnSchema actualSchema = AsnSchemaParser.parse(withComments);
-        assertNotNull(actualSchema);
+            // test parse with a schema which has all regex combinations
+            final AsnSchema actualSchema = AsnSchemaParser.parse(withComments);
+            assertNotNull(actualSchema);
+        }
     }
 }

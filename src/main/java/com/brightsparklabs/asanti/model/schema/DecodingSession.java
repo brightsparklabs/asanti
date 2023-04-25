@@ -15,7 +15,9 @@ import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
  * other data has been received (notably OPTIONAL components of a SEQUENCE)
  */
 public interface DecodingSession {
-    /** @param context a unique string for each level of the hierarchy of a set of tags */
+    /**
+     * @param context a unique string for each level of the hierarchy of a set of tags
+     */
     void setContext(String context);
 
     /**

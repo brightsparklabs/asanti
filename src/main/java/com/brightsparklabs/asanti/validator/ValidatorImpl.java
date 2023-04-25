@@ -22,6 +22,7 @@ import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -203,6 +204,7 @@ public class ValidatorImpl implements Validator {
          * @param selector Selector to match on.
          * @return This builder.
          */
+        @CanIgnoreReturnValue
         public Builder withValidationRule(ValidationRule rule, Selector selector) {
             customRules.put(rule, selector);
             return this;
@@ -217,6 +219,8 @@ public class ValidatorImpl implements Validator {
          * @deprecated Use {@link #withValidationRule(ValidationRule, Selector)}.
          */
         @Deprecated
+        @CanIgnoreReturnValue
+        @SuppressWarnings("InlineMeSuggester") // Cannot inline overridable method.
         public Builder withValidationRule(ValidationRule rule, String tag) {
             return withValidationRule(rule, new SelectorByTagMatch(tag));
         }
@@ -227,6 +231,7 @@ public class ValidatorImpl implements Validator {
          * @param rules Rules to register.
          * @return This builder.
          */
+        @CanIgnoreReturnValue
         public Builder withValidationRules(Map<ValidationRule, Selector> rules) {
             customRules.putAll(rules);
             return this;
