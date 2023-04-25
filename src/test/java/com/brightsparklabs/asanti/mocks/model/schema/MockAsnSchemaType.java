@@ -19,6 +19,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -544,11 +545,12 @@ public class MockAsnSchemaType {
         }
 
         /**
-         * Use this to mock a Collection type, eg SET OF
+         * Use this to mock a Collection type, e.g. SET OF
          *
          * @param element setting the new type that getChildType and getChildName will delegate to
          * @return this builder
          */
+        @CanIgnoreReturnValue
         public MockAsnSchemaTypeBuilder setCollectionType(final AsnSchemaType element) {
             when(mockedInstance.getMatchingChild(anyString(), any(DecodingSession.class)))
                     .thenAnswer(
