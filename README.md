@@ -1,17 +1,16 @@
 # Asanti
 
-[![Build Status](https://travis-ci.org/brightsparklabs/asanti.svg?branch=master)](https://travis-ci.org/brightsparklabs/asanti)
+[![Build Status](https://github.com/brightsparklabs/asanti/actions/workflows/test.yml/badge.svg)
 [![Maven](https://img.shields.io/maven-central/v/com.brightsparklabs/asanti)](https://search.maven.org/artifact/com.brightsparklabs/asanti)
 
-A dynamic ASN.1 Parser for decoding tagged BER/DER data. Asanti allows a schema
-to be layered on top of parsed data rather than forcing the schema to be
-modelled with concrete classes. This allows data to be validated for conformance
-against a schema, whilst still allowing the ability to process and manipulate
-non-conforming data.
+A dynamic ASN.1 Parser for decoding tagged BER/DER data. Asanti allows a schema to be layered on top
+of parsed data rather than forcing the schema to be modelled with concrete classes. This allows data
+to be validated for conformance against a schema, whilst still allowing the ability to process and
+manipulate non-conforming data.
 
 ## Prerequisites
 
-- Java 11 or higher
+- Java 17 or higher
 
 ## Setup, Build and Run
 
@@ -448,8 +447,8 @@ This project makes use of the following libraries:
 - [Google Guava](https://github.com/google/guava)
 - [Hamcrest](http://hamcrest.org/)
 - [JUnit](http://junit.org/)
-- [PowerMock](https://code.google.com/p/powermock/)
 
 ## Contributing
 
-Contributions are welcome. Simply fork the repository and create a pull request with your suggested changes.
+Contributions are welcome. Simply fork the repository and create a pull request with your suggested
+changes.
