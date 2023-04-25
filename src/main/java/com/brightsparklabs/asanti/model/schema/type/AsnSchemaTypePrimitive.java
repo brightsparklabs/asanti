@@ -14,7 +14,9 @@ import com.google.common.collect.ImmutableList;
 import java.text.ParseException;
 import java.util.Optional;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class AsnSchemaTypePrimitive extends AbstractAsnSchemaType {
 
     // -------------------------------------------------------------------------

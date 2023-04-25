@@ -10,7 +10,9 @@ package com.brightsparklabs.asanti.selector;
 import com.brightsparklabs.asanti.data.AsnData;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public interface Selector {
     // -------------------------------------------------------------------------
     // CONSTANTS

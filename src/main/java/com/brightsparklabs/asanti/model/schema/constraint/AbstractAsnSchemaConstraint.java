@@ -45,6 +45,7 @@ public abstract class AbstractAsnSchemaConstraint implements AsnSchemaConstraint
      * non-{@code null}.
      *
      * @param bytes the bytes to test
+     * @param type The ASN.1 type of the bytes.
      * @return any failures encountered in applying the constraint to the supplied bytes
      */
     protected abstract ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(

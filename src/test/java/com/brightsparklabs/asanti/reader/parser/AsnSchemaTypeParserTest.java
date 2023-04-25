@@ -7,91 +7,108 @@
 
 package com.brightsparklabs.asanti.reader.parser;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import com.brightsparklabs.asanti.model.schema.AsnModuleTaggingMode;
 import com.brightsparklabs.asanti.model.schema.constraint.AsnSchemaConstraint;
-import com.brightsparklabs.asanti.model.schema.type.*;
+import com.brightsparklabs.asanti.model.schema.type.AbstractAsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeCollection;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeConstructed;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePlaceholder;
+import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypeWithNamedTags;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.google.common.collect.ImmutableList;
 import java.text.ParseException;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * Unit tests for {@link AsnSchemaTypeParser}
  *
  * @author brightSPARK Labs
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({
-    AsnSchemaConstraintParser.class,
-    AsnSchemaNamedTagParser.class,
-    AsnSchemaComponentTypeParser.class
-})
 public class AsnSchemaTypeParserTest {
     // -------------------------------------------------------------------------
     // FIXTURES
     // -------------------------------------------------------------------------
 
-    /** an argument capture helper for Constraints */
-    private ArgumentCaptor<String> constraintArgument;
+    /**
+     * Method to run within the context of mocked static parsers. Used to check that the mocked
+     * parsers (which form a chain) all receive the expected input arguments to their methods.
+     */
+    interface TestWithinMockedParsers {
+        void run(
+                ArgumentCaptor<String> constraintArgument,
+                ArgumentCaptor<String> distinguishedValuesArgument,
+                ArgumentCaptor<String> enumeratedOptionsArgument,
+                ArgumentCaptor<String> componentArgument)
+                throws ParseException;
+    }
 
-    /** an argument helper for Distinguished Values */
-    private ArgumentCaptor<String> distinguishedValuesArgument;
-
-    /** an argument helper for Enumerated options */
-    private ArgumentCaptor<String> enumeratedOptionsArgument;
-
-    /** an argument helper for Components */
-    private ArgumentCaptor<String> componentArgument;
-
-    // -------------------------------------------------------------------------
-    // SETUP/TEAR-DOWN
-    // -------------------------------------------------------------------------
-
-    @Before
-    public void setUpBeforeTest() throws Exception {
-        // Mockito does a tear down after each test, so we can't do this as a BeforeClass
-
-        // Setup the mock child parsers.  We are only trying to parse the Type, not the
-        // constraints, or named values (Enumerator, Integer).
-        // We do want to test that those child parsers get passed the correct information,
-        // so we setup the argument captors.
-
+    /**
+     * Runs the supplied test within the mock child parsers. We are only trying to parse the Type,
+     * not the constraints, or named values (Enumerator, Integer). We do want to test that those
+     * child parsers get passed the correct information, so we setup the argument captors.
+     */
+    public void testWithinMockedParsers(TestWithinMockedParsers testToRun) throws Exception {
         // mock AsnSchemaConstraintParser.parse static method
-        PowerMockito.mockStatic(AsnSchemaConstraintParser.class);
-        // we want to capture the constraintArgument that gets passed to the
-        // AsnSchemaConstraintParser
-        constraintArgument = ArgumentCaptor.forClass(String.class);
-        when(AsnSchemaConstraintParser.parse(constraintArgument.capture()))
-                .thenReturn(AsnSchemaConstraint.NULL);
+        try (MockedStatic<AsnSchemaConstraintParser> mockedConstraintParser =
+                Mockito.mockStatic(AsnSchemaConstraintParser.class)) {
+            // we want to capture the constraintArgument that gets passed to the
+            // AsnSchemaConstraintParser
+            var constraintArgument = ArgumentCaptor.forClass(String.class);
+            mockedConstraintParser
+                    .when(() -> AsnSchemaConstraintParser.parse(constraintArgument.capture()))
+                    .thenReturn(AsnSchemaConstraint.NULL);
 
-        // mock AsnSchemaConstraintParser.parseIntegerDistinguishedValues and parseEnumeratedOptions
-        // static methods
-        PowerMockito.mockStatic(AsnSchemaNamedTagParser.class);
-        distinguishedValuesArgument = ArgumentCaptor.forClass(String.class);
-        when(AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(
-                        distinguishedValuesArgument.capture()))
-                .thenReturn(ImmutableList.of());
-        enumeratedOptionsArgument = ArgumentCaptor.forClass(String.class);
-        when(AsnSchemaNamedTagParser.parseEnumeratedOptions(enumeratedOptionsArgument.capture()))
-                .thenReturn(ImmutableList.of());
+            // mock AsnSchemaConstraintParser.parseIntegerDistinguishedValues and
+            // parseEnumeratedOptions
+            // static methods
+            try (MockedStatic<AsnSchemaNamedTagParser> mockedNamedTagParser =
+                    Mockito.mockStatic(AsnSchemaNamedTagParser.class)) {
+                var distinguishedValuesArgument = ArgumentCaptor.forClass(String.class);
+                mockedNamedTagParser
+                        .when(
+                                () ->
+                                        AsnSchemaNamedTagParser.parseIntegerDistinguishedValues(
+                                                distinguishedValuesArgument.capture()))
+                        .thenReturn(ImmutableList.of());
+                var enumeratedOptionsArgument = ArgumentCaptor.forClass(String.class);
+                mockedNamedTagParser
+                        .when(
+                                () ->
+                                        AsnSchemaNamedTagParser.parseEnumeratedOptions(
+                                                enumeratedOptionsArgument.capture()))
+                        .thenReturn(ImmutableList.of());
 
-        // mock AsnSchemaComponentTypeParser.parse, and capture call arguments
-        PowerMockito.mockStatic(AsnSchemaComponentTypeParser.class);
-        componentArgument = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<AsnModuleTaggingMode> taggingMode =
-                ArgumentCaptor.forClass(AsnModuleTaggingMode.class);
-        when(AsnSchemaComponentTypeParser.parse(componentArgument.capture(), taggingMode.capture()))
-                .thenReturn(ImmutableList.of());
+                // mock AsnSchemaComponentTypeParser.parse, and capture call arguments
+                try (MockedStatic<AsnSchemaComponentTypeParser> mockedComponentTypeParser =
+                        Mockito.mockStatic(AsnSchemaComponentTypeParser.class)) {
+                    var componentArgument = ArgumentCaptor.forClass(String.class);
+                    ArgumentCaptor<AsnModuleTaggingMode> taggingMode =
+                            ArgumentCaptor.forClass(AsnModuleTaggingMode.class);
+                    mockedComponentTypeParser
+                            .when(
+                                    () ->
+                                            AsnSchemaComponentTypeParser.parse(
+                                                    componentArgument.capture(),
+                                                    taggingMode.capture()))
+                            .thenReturn(ImmutableList.of());
+
+                    testToRun.run(
+                            constraintArgument,
+                            distinguishedValuesArgument,
+                            enumeratedOptionsArgument,
+                            componentArgument);
+                }
+            }
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -109,12 +126,14 @@ public class AsnSchemaTypeParserTest {
             AsnSchemaTypeParser.parse(null, AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         } catch (final ParseException ex) {
+            // Expected to get here.
         }
         // null tagging mode
         try {
             AsnSchemaTypeParser.parse("Stuff", null);
             fail("NullPointerException not thrown");
         } catch (final NullPointerException ex) {
+            // Expected to get here.
         }
 
         // only whitespace
@@ -122,6 +141,7 @@ public class AsnSchemaTypeParserTest {
             AsnSchemaTypeParser.parse(" ", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         } catch (final ParseException ex) {
+            // Expected to get here.
         }
 
         // blank value
@@ -129,6 +149,7 @@ public class AsnSchemaTypeParserTest {
             AsnSchemaTypeParser.parse("", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         } catch (final ParseException ex) {
+            // Expected to get here.
         }
     }
 
@@ -138,6 +159,7 @@ public class AsnSchemaTypeParserTest {
             AsnSchemaTypeParser.parse("Fred ::= INTEGER", AsnModuleTaggingMode.DEFAULT);
             fail("ParseException not thrown");
         } catch (final ParseException ex) {
+            // Expected to get here.
         }
     }
 
@@ -220,43 +242,53 @@ public class AsnSchemaTypeParserTest {
 
     @Test
     public void testParseInteger() throws Exception {
-        AsnSchemaType result = AsnSchemaTypeParser.parse("INTEGER", AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
-        assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
-        // Ensure that the right text got passed to the constraints parser
-        assertEquals("", constraintArgument.getValue());
-        assertEquals("", distinguishedValuesArgument.getValue());
-        assertEquals(1, result.getConstraints().size());
+        testWithinMockedParsers(
+                (constraintArgument,
+                        distinguishedValuesArgument,
+                        enumeratedOptionsArgument,
+                        componentArgument) -> {
+                    var result = AsnSchemaTypeParser.parse("INTEGER", AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
+                    assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
+                    // Ensure that the right text got passed to the constraints parser
+                    assertEquals("", constraintArgument.getValue());
+                    assertEquals("", distinguishedValuesArgument.getValue());
+                    assertEquals(1, result.getConstraints().size());
 
-        result = AsnSchemaTypeParser.parse("INTEGER (1..10)", AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
-        assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
-        // Ensure that the right text got passed to the constraints parser
-        assertEquals("1..10", constraintArgument.getValue());
-        assertEquals("", distinguishedValuesArgument.getValue());
-        assertEquals(1, result.getConstraints().size());
+                    result =
+                            AsnSchemaTypeParser.parse(
+                                    "INTEGER (1..10)", AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
+                    assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
+                    // Ensure that the right text got passed to the constraints parser
+                    assertEquals("1..10", constraintArgument.getValue());
+                    assertEquals("", distinguishedValuesArgument.getValue());
+                    assertEquals(1, result.getConstraints().size());
 
-        result = AsnSchemaTypeParser.parse("INTEGER (1..10, ...)", AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
-        assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
-        // Ensure that the right text got passed to the constraints parser
-        assertEquals("1..10, ...", constraintArgument.getValue());
-        assertEquals("", distinguishedValuesArgument.getValue());
-        assertEquals(1, result.getConstraints().size());
+                    result =
+                            AsnSchemaTypeParser.parse(
+                                    "INTEGER (1..10, ...)", AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
+                    assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
+                    // Ensure that the right text got passed to the constraints parser
+                    assertEquals("1..10, ...", constraintArgument.getValue());
+                    assertEquals("", distinguishedValuesArgument.getValue());
+                    assertEquals(1, result.getConstraints().size());
 
-        // check distinguished values.
-        result =
-                AsnSchemaTypeParser.parse(
-                        "INTEGER { disk-full(1), no-disk(-1), disk-not-formatted(2) }",
-                        AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
-        assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
-        // Ensure that the right text got passed to the constraints parser
-        assertEquals("", constraintArgument.getValue());
-        assertEquals(
-                " disk-full(1), no-disk(-1), disk-not-formatted(2) ",
-                distinguishedValuesArgument.getValue());
-        assertEquals(1, result.getConstraints().size());
+                    // check distinguished values.
+                    result =
+                            AsnSchemaTypeParser.parse(
+                                    "INTEGER { disk-full(1), no-disk(-1), disk-not-formatted(2) }",
+                                    AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.Integer, result.getBuiltinType());
+                    assertThat(result, instanceOf(AsnSchemaTypeWithNamedTags.class));
+                    // Ensure that the right text got passed to the constraints parser
+                    assertEquals("", constraintArgument.getValue());
+                    assertEquals(
+                            " disk-full(1), no-disk(-1), disk-not-formatted(2) ",
+                            distinguishedValuesArgument.getValue());
+                    assertEquals(1, result.getConstraints().size());
+                });
     }
 
     @Test
@@ -269,19 +301,26 @@ public class AsnSchemaTypeParserTest {
 
     @Test
     public void testParseNumericString() throws Exception {
-        AsnSchemaType result =
-                AsnSchemaTypeParser.parse("NumericString", AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+        testWithinMockedParsers(
+                (constraintArgument,
+                        distinguishedValuesArgument,
+                        enumeratedOptionsArgument,
+                        componentArgument) -> {
+                    AsnSchemaType result =
+                            AsnSchemaTypeParser.parse(
+                                    "NumericString", AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
+                    assertThat(result, instanceOf(AbstractAsnSchemaType.class));
 
-        //
-        result =
-                AsnSchemaTypeParser.parse(
-                        "NumericString (SIZE(1..100))", AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
-        assertThat(result, instanceOf(AbstractAsnSchemaType.class));
-        // Ensure that the right text got passed to the constraints parser
-        assertEquals("SIZE(1..100)", constraintArgument.getValue());
+                    //
+                    result =
+                            AsnSchemaTypeParser.parse(
+                                    "NumericString (SIZE(1..100))", AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.NumericString, result.getBuiltinType());
+                    assertThat(result, instanceOf(AbstractAsnSchemaType.class));
+                    // Ensure that the right text got passed to the constraints parser
+                    assertEquals("SIZE(1..100)", constraintArgument.getValue());
+                });
     }
 
     @Test
@@ -334,20 +373,28 @@ public class AsnSchemaTypeParserTest {
 
     @Test
     public void testParseSequence() throws Exception {
-        AsnSchemaType result =
-                AsnSchemaTypeParser.parse(
-                        "SEQUENCE { someValue [0] UTF8String }", AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.Sequence, result.getBuiltinType());
-        assertThat(result, instanceOf(AsnSchemaTypeConstructed.class));
-        assertEquals(" someValue [0] UTF8String ", componentArgument.getValue());
+        testWithinMockedParsers(
+                (constraintArgument,
+                        distinguishedValuesArgument,
+                        enumeratedOptionsArgument,
+                        componentArgument) -> {
+                    AsnSchemaType result =
+                            AsnSchemaTypeParser.parse(
+                                    "SEQUENCE { someValue [0] UTF8String }",
+                                    AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.Sequence, result.getBuiltinType());
+                    assertThat(result, instanceOf(AsnSchemaTypeConstructed.class));
+                    assertEquals(" someValue [0] UTF8String ", componentArgument.getValue());
 
-        result =
-                AsnSchemaTypeParser.parse(
-                        "SEQUENCE { someValue [0] SEQUENCE { foo [0] BAR }",
-                        AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.Sequence, result.getBuiltinType());
-        assertThat(result, instanceOf(AsnSchemaTypeConstructed.class));
-        assertEquals(" someValue [0] SEQUENCE { foo [0] BAR ", componentArgument.getValue());
+                    result =
+                            AsnSchemaTypeParser.parse(
+                                    "SEQUENCE { someValue [0] SEQUENCE { foo [0] BAR }",
+                                    AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.Sequence, result.getBuiltinType());
+                    assertThat(result, instanceOf(AsnSchemaTypeConstructed.class));
+                    assertEquals(
+                            " someValue [0] SEQUENCE { foo [0] BAR ", componentArgument.getValue());
+                });
     }
 
     @Test
@@ -371,18 +418,26 @@ public class AsnSchemaTypeParserTest {
 
     @Test
     public void testParseSetOf() throws Exception {
-        final AsnSchemaType result =
-                AsnSchemaTypeParser.parse(
-                        "SET (SIZE (10)) OF INTEGER (1..100)", AsnModuleTaggingMode.DEFAULT);
-        assertEquals(AsnBuiltinType.SetOf, result.getBuiltinType());
-        assertThat(result, instanceOf(AsnSchemaTypeCollection.class));
-        // the first time we parse constraints is for the SET OF
-        assertEquals(" (SIZE (10))", constraintArgument.getAllValues().get(0));
+        testWithinMockedParsers(
+                (constraintArgument,
+                        distinguishedValuesArgument,
+                        enumeratedOptionsArgument,
+                        componentArgument) -> {
+                    final AsnSchemaType result =
+                            AsnSchemaTypeParser.parse(
+                                    "SET (SIZE (10)) OF INTEGER (1..100)",
+                                    AsnModuleTaggingMode.DEFAULT);
+                    assertEquals(AsnBuiltinType.SetOf, result.getBuiltinType());
+                    assertThat(result, instanceOf(AsnSchemaTypeCollection.class));
+                    // the first time we parse constraints is for the SET OF
+                    assertEquals(" (SIZE (10))", constraintArgument.getAllValues().get(0));
 
-        AsnSchemaTypeCollection collection = (AsnSchemaTypeCollection) result;
-        assertEquals(AsnBuiltinType.Integer, collection.getElementType().getBuiltinType());
-        // the second time we parse constraints is for the INTEGER
-        assertEquals("1..100", constraintArgument.getAllValues().get(1));
+                    AsnSchemaTypeCollection collection = (AsnSchemaTypeCollection) result;
+                    assertEquals(
+                            AsnBuiltinType.Integer, collection.getElementType().getBuiltinType());
+                    // the second time we parse constraints is for the INTEGER
+                    assertEquals("1..100", constraintArgument.getAllValues().get(1));
+                });
     }
 
     @Test

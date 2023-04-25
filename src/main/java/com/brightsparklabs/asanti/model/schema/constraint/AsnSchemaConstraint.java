@@ -31,10 +31,11 @@ public interface AsnSchemaConstraint {
     // -------------------------------------------------------------------------
 
     /**
-     * Applies the constraint to the supplied bytes
+     * Applies the constraint to the supplied byte.
      *
-     * @param bytes the bytes to test
-     * @return any failures encountered in applying the constraint to the supplied bytes
+     * @param bytes the bytes to test.
+     * @param type The ASN.1 type of the bytes.
+     * @return any failures encountered in applying the constraint to the supplied bytes.
      */
     ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes, AsnPrimitiveType type);
 

@@ -23,7 +23,9 @@ import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 
-/** @author brightSPARK Labs */
+/**
+ * @author brightSPARK Labs
+ */
 public class SelectorByOtherTagValueTest {
     // -------------------------------------------------------------------------
     // FIXTURES

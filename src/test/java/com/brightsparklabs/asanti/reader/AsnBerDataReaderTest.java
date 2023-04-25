@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
 import com.brightsparklabs.asanti.mocks.MockAsnBerFile;
 import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteSource;
@@ -32,7 +31,7 @@ public class AsnBerDataReaderTest {
     private static final BaseEncoding hexEncoding = BaseEncoding.base16().lowerCase();
 
     /** hex string representing 1000 hyphen characters */
-    private static final String HEXSTRING_1000_HYPHENS = Strings.repeat("2d", 1000);
+    private static final String HEXSTRING_1000_HYPHENS = "2d".repeat(1000);
 
     /** a PDU of a 'People' value assignment setting using a large octet string */
     public static final String EXAMPLE_SCHEMA_PEOPLE_PDU_LARGE_OCTET_STRING =

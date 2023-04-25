@@ -11,6 +11,7 @@ import static org.mockito.Mockito.*;
 
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Optional;
 
 /**
@@ -82,12 +83,6 @@ public class MockDecodedAsnData {
         // ---------------------------------------------------------------------
 
         /**
-         * Sets the constraint on this definition
-         *
-         * @param constraint constraint to use
-         * @return this builder
-         */
-        /**
          * Adds the specified bytes to the mocked instance
          *
          * @param tag tag the bytes are associated with (e.g. {@code
@@ -95,6 +90,7 @@ public class MockDecodedAsnData {
          * @param bytes bytes to return for the specified tag
          * @return this instance
          */
+        @CanIgnoreReturnValue
         public Builder addBytes(String tag, byte[] bytes) {
             when(mockedInstance.getBytes(tag)).thenReturn(Optional.of(bytes));
             return this;
