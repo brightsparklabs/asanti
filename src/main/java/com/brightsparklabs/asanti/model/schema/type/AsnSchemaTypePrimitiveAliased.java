@@ -33,10 +33,13 @@ public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** The type that this type is aliasing */
+    /** The type that this type is aliasing. */
     private AsnSchemaType aliasedType;
 
+    /** The name of the module that the alias type belongs in (can be empty). */
     private final String module;
+
+    /** The name of the aliased type. */
     private final String type;
 
     // -------------------------------------------------------------------------
@@ -72,17 +75,40 @@ public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
+    /**
+     * Sets the type that this type is aliasing.
+     *
+     * @param aliasedType The type that this type is aliasing.
+     */
     public void setAliasedType(final AsnSchemaType aliasedType) {
         this.aliasedType = aliasedType;
     }
 
     /**
-     * Returns the type that this type is aliasing
+     * Returns the type that this type is aliasing.
      *
-     * @return The type that this type is aliasing
+     * @return The type that this type is aliasing.
      */
     public AsnSchemaType getAliasedType() {
         return this.aliasedType;
+    }
+
+    /**
+     * Returns the name of the module that the alias type belongs in (can be empty).
+     *
+     * @return The name of the module that the alias type belongs in (can be empty).
+     */
+    public String getModule() {
+        return module;
+    }
+
+    /**
+     * Returns the name of the aliased type.
+     *
+     * @return The name of the aliased type.
+     */
+    public String getType() {
+        return type;
     }
 
     // -------------------------------------------------------------------------
@@ -105,14 +131,6 @@ public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
     @Override
     public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException {
         return visitor.visit(this);
-    }
-
-    public String getModule() {
-        return module;
-    }
-
-    public String getType() {
-        return type;
     }
 
     // -------------------------------------------------------------------------

@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Builds a tag from a passed tag via transformation using a given pattern and replacement string
+ * Builds a tag from a passed tag via transformation using a given pattern and replacement string.
  *
  * @author brightSPARK Labs
  */
@@ -27,7 +27,7 @@ public class SingleIndexTagTransformation implements Function<String, String> {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger =
             LoggerFactory.getLogger(SingleIndexTagTransformation.class);
 
@@ -37,17 +37,25 @@ public class SingleIndexTagTransformation implements Function<String, String> {
 
     /**
      * Pattern used to parse information from passed tag and build replacement tag. Expects at least
-     * one capture group
+     * one capture group.
      */
     private final Pattern patternToApplyToTag;
 
-    /** The string used to construct a tag based on the capture group of patternToApplyToTag */
+    /** The string used to construct a tag based on the capture group of patternToApplyToTag. */
     private final String replacementTag;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
+    /**
+     * Default constructor.
+     *
+     * @param patternToApplyToTag Pattern used to parse information from passed tag and build
+     *     replacement tag. Expects at least one capture group.
+     * @param replacementTag * The string used to construct a tag based on the capture group of
+     *     patternToApplyToTag.
+     */
     public SingleIndexTagTransformation(
             final Pattern patternToApplyToTag, final String replacementTag) {
         checkArgument(
