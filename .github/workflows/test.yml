@@ -11,7 +11,12 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os:
+          - ubuntu-latest
+          # Temporarily disabling builds on Windows as the `Fix tag` step fails.
+          # The step is a workaround due to `checkout@v3` having a bug.
+          # Once the bug is resolved, Windows builds can be re-enabled.
+          - windows-latest
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
 
@@ -33,6 +38,6 @@ jobs:
           distribution: "temurin"
           cache: "gradle"
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
       - name: Execute Gradle build
         run: ./gradlew build
