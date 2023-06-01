@@ -21,7 +21,7 @@ buildscript {
 
 plugins {
     // Apply the brightSPARK Labs plugin for standardisation.
-    id 'com.brightsparklabs.gradle.baseline' version '3.1.0'
+    id 'com.brightsparklabs.gradle.baseline' version '4.0.0'
 
     // Apply the java plugin to add support for Java.
     id 'java'
