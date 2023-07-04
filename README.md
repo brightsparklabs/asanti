@@ -10,7 +10,7 @@ manipulate non-conforming data.
 
 ## Prerequisites
 
-- Java 17 or higher
+- Java 17 or higher.
 
 ## Setup, Build and Run
 
@@ -440,13 +440,6 @@ failure.getFailureReason();  // => "The date in field /Document/header/copyright
 ## Licenses
 
 Refer to the LICENSE file for details.
-
-This project makes use of the following libraries:
-
-- [Bouncy Castle Crypto APIs](http://www.bouncycastle.org/)
-- [Google Guava](https://github.com/google/guava)
-- [Hamcrest](http://hamcrest.org/)
-- [JUnit](http://junit.org/)
 
 ## Contributing
 

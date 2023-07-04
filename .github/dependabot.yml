@@ -3,11 +3,10 @@ updates:
 - package-ecosystem: gradle
   directory: /
   schedule:
-    # Defaults to Monday 5am UTC.
-    interval: weekly
+    # Defaults to first day of the month.
+    interval: monthly
   open-pull-requests-limit: 20
   reviewers:
-  - glen-wiltshire-bsl
-  - michael-lyndon-bsl
+  - cameron-thomson-bsl
   labels:
   - dependencies
