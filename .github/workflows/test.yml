@@ -16,7 +16,7 @@ jobs:
           # Temporarily disabling builds on Windows as the `Fix tag` step fails.
           # The step is a workaround due to `checkout@v3` having a bug.
           # Once the bug is resolved, Windows builds can be re-enabled.
-          - windows-latest
+          #- windows-latest
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
 
