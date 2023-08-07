@@ -1,0 +1,41 @@
+##
+ # Dependabot auto-merge config for merging patch and minor updates.
+ #
+ # Based on https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions#enable-auto-merge-on-a-pull-request
+ # ______________________________________________________________________________
+ #
+ # Maintained by brightSPARK Labs.
+ # www.brightsparklabs.com
+ ##
+
+name: Dependabot auto-merge
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    # Run if Dependabot triggered the initial workflow run.
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      # Fetch the Dependabot metadata that describes the updated dependencies.
+      - name: Fetch Dependabot metadata
+        # Specify the ID used to access the output of this step.
+        id: metadata
+        # Specify that this step will run the `dependabot/fetch-metadata` action.
+        uses: dependabot/fetch-metadata@v1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Enable auto-merge for Dependabot PRs
+        # Auto-merge dependencies only for patch and minor updates.
+        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'}}
+        # Merge the PR automatically once all status checks have passed.
+        # NOTE: To ensure no breaking changes are merged, the `Require status checks to pass
+        # before merging` option should be enabled in the branch protection rules.
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
