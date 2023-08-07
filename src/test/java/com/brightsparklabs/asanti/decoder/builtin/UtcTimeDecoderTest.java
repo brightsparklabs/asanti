@@ -39,6 +39,7 @@ public class UtcTimeDecoderTest {
     private static final long ONE_HOUR_IN_MILLI_SECONDS = 1000 * 60 * 60;
 
     private static final long ONE_MINUTE_IN_MILLI_SECONDS = 1000 * 60;
+
     // -------------------------------------------------------------------------
     // TESTS
     // -------------------------------------------------------------------------

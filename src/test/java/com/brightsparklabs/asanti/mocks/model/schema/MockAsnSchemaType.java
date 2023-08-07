@@ -430,6 +430,7 @@ public class MockAsnSchemaType {
         final AsnSchemaTypeConstructed mockedInstance = mock(AsnSchemaTypeConstructed.class);
 
         final List<AsnSchemaComponentType> components = Lists.newArrayList();
+
         // ---------------------------------------------------------------------
         // CONSTRUCTION
         // ---------------------------------------------------------------------
