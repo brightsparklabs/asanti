@@ -29,6 +29,7 @@ public class DelegatingValidator implements ValidationRule {
 
     /** validators that we can delegate to */
     private final ImmutableList<ValidatorSelector> validators;
+
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
