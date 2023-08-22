@@ -1,5 +1,5 @@
 ##
- # Workflow for publishing the `master` branch to Maven Central after unit tests
+ # Dependabot auto-merge workflow for merging patch and minor updates after tests
  # succeed.
  # ______________________________________________________________________________
  #
@@ -7,23 +7,23 @@
  # www.brightsparklabs.com
  ##
 
-name: Publish to Maven Central
-on:
-  # Call workflow on push to the `master` branch.
-  push:
-    branches:
-      - master
- 
+name: Dependabot test and auto-merge
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
-  call-publish-to-maven-central-workflow:
-    # Specify that this job should only run if the unit tests job succeeds.
+  call-dependabot-auto-merge-workflow:
+    # Specify that this job should only run if the test job succeeds.
     # See https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow#defining-prerequisite-jobs
     needs: call-test-workflow
-    uses: brightsparklabs/github-actions/.github/workflows/publish-to-maven-central.yml@0.1.0
+    uses: brightsparklabs/github-actions/.github/workflows/dependabot-auto-merge.yml@0.1.0
     with:
-      github-ref-name: ${GITHUB_REF_NAME}
+      pr-url: ${{ github.event.pull_request.html_url }}
     # Since all of our workflows are called from the same organisation, we can use the `inherit`
     # keyword to pass secrets to the called workflow.
     # See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecretsinherit

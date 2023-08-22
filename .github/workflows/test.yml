@@ -1,43 +1,35 @@
-# This is a basic workflow to help you get started with Actions
+##
+ # A workflow for testing for breaking changes.
+ #
+ # This workflow can be called from workflows in this repo with:
+ # ```
+ # jobs:
+ #   <job-id>:
+ #     uses: ./.github/workflows/test.yml
+ # ```
+ #
+ # See https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow
+ # ______________________________________________________________________________
+ #
+ # Maintained by brightSPARK Labs.
+ # www.brightsparklabs.com
+ ##
 
-name: Asanti build with gradle
+name: Test
+on:
+  # Call workflow on push.
+  push:
+  # Call workflow when called from other workflows.
+  workflow_call:
 
-# Controls when the workflow will run
-on: [push]
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  call-test-gradle-build-workflow:
     strategy:
       matrix:
         os:
           - ubuntu-latest
-          # Temporarily disabling builds on Windows as the `Fix tag` step fails.
-          # The step is a workaround due to `checkout@v3` having a bug.
-          # Once the bug is resolved, Windows builds can be re-enabled.
-          #- windows-latest
-    # The type of runner that the job will run on
-    runs-on: ${{ matrix.os }}
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - uses: actions/checkout@v3
-        # Fetch all history for all branches and tags since they are used for versioning.
-        with:
-          fetch-depth: 0
-      - name: Fix tag
-        # Workaround actions/checkout bug. See:
-        # - https://github.com/actions/checkout/issues/290
-        # - https://github.com/actions/checkout/issues/882
-        if: github.ref_type == 'tag'
-        run: git fetch -fv origin tag "${GITHUB_REF_NAME}"
-      - uses: actions/setup-java@v3
-        with:
-          java-version: "17"
-          distribution: "temurin"
-          cache: "gradle"
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2.4.2
-      - name: Execute Gradle build
-        run: ./gradlew build
+          - windows-latest
+    uses: brightsparklabs/github-actions/.github/workflows/test-gradle-build.yml@0.1.0
+    with:
+      github-ref-name: ${GITHUB_REF_NAME}
+      os: ${{ matrix.os }}
