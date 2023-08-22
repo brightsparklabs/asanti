@@ -167,6 +167,7 @@ public class AsnSchemaTypeParser {
     private static final Pattern PATTERN_DEFINED_TYPE =
             Pattern.compile(
                     "^(((EXPLICIT|IMPLICIT)[ ]+)?(([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT ?.+)?$");
+
     // "^((([a-zA-Z0-9\\-]+)\\.)?([a-zA-Z0-9\\-]+)) ?(\\{(.+?)\\})? ?(\\((.+?)\\))? ?(DEFAULT
     // ?.+)?$");
 
