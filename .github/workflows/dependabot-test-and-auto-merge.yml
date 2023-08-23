@@ -7,24 +7,28 @@
  # www.brightsparklabs.com
  ##
 
-name: Dependabot test and auto-merge
-on: pull_request
-
-permissions:
-  contents: write
-  pull-requests: write
-
-jobs:
-  call-test-workflow:
-    uses: ./.github/workflows/test.yml
-  call-dependabot-auto-merge-workflow:
-    # Specify that this job should only run if the test job succeeds.
-    # See https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow#defining-prerequisite-jobs
-    needs: call-test-workflow
-    uses: brightsparklabs/github-actions/.github/workflows/dependabot-auto-merge.yml@0.1.0
-    with:
-      pr-url: ${{ github.event.pull_request.html_url }}
-    # Since all of our workflows are called from the same organisation, we can use the `inherit`
-    # keyword to pass secrets to the called workflow.
-    # See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecretsinherit
-    secrets: inherit
+ name: Dependabot Test and Auto-Merge
+ on: pull_request
+ 
+ permissions:
+   contents: write
+   pull-requests: write
+ 
+ jobs:
+   call-test-workflow:
+     # Run tests only for Dependabot PRs. Testing for non-Dependabot changes is done each push via
+     # the `test-on-push.yml` workflow.
+     if: ${{ github.actor == 'dependabot[bot]' }}
+     uses: ./.github/workflows/test.yml
+   call-dependabot-auto-merge-workflow:
+     # Specify that this job should only run if the test job succeeds.
+     # See https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow#defining-prerequisite-jobs
+     needs: call-test-workflow
+     uses: brightsparklabs/github-actions/.github/workflows/dependabot-auto-merge.yml@0.1.0
+     with:
+       pr-url: ${{ github.event.pull_request.html_url }}
+     # Since all of our workflows are called from the same organisation, we can use the `inherit`
+     # keyword to pass secrets to the called workflow.
+     # See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecretsinherit
+     secrets: inherit
+ 
