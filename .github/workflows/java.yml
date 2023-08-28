@@ -12,7 +12,7 @@ on: [push, pull_request]
 
 jobs:
   call-java-workflow:
-    uses: brightsparklabs/github-actions/.github/workflows/java.yml@0.2.0
+    uses: brightsparklabs/github-actions/.github/workflows/java.yml@master
     secrets: inherit
     # These permissions are required for Dependabot to merge PRs.
     permissions:
