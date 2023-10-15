@@ -21,7 +21,7 @@ buildscript {
 
 plugins {
     // Apply the brightSPARK Labs plugin for standardisation.
-    id 'com.brightsparklabs.gradle.baseline' version '3.1.0'
+    id 'com.brightsparklabs.gradle.baseline' version '4.3.0'
 
     // Apply the java plugin to add support for Java.
     id 'java'
@@ -70,27 +70,32 @@ repositories {
 
 dependencies {
     def versions = [
-        slf4j: "2.0.7"
+        slf4j: "2.0.9",
     ]
 
-    implementation "com.google.guava:guava:31.1-jre"
-    implementation "org.bouncycastle:bcprov-jdk15on:1.70"
-    implementation "org.slf4j:slf4j-api:${versions.slf4j}"
-    implementation "joda-time:joda-time:2.12.5"
+    implementation(
+            "com.google.guava:guava:31.1-jre",
+            "org.bouncycastle:bcprov-jdk15on:1.70",
+            "org.slf4j:slf4j-api:${versions.slf4j}",
+            "joda-time:joda-time:2.12.5",
+            "commons-cli:commons-cli:1.5.0",
+            )
 
-    implementation "commons-cli:commons-cli:1.5.0"
+    testImplementation(
+            'junit:junit:4.13.2',
+            "org.mockito:mockito-inline:5.2.0",
+            'org.hamcrest:hamcrest-all:1.3',
+            "org.codehaus.groovy:groovy-all:3.0.19",
+            "org.spockframework:spock-core:2.3-groovy-3.0",
+            )
 
-    testImplementation 'junit:junit:4.13.2'
+    testRuntimeOnly(
+            "cglib:cglib-nodep:3.3.0",
+            )
 
-    testImplementation "org.mockito:mockito-inline:5.2.0"
-    testImplementation 'org.hamcrest:hamcrest-all:1.3'
-
-    testImplementation "org.codehaus.groovy:groovy-all:3.0.18"
-    testImplementation "org.spockframework:spock-core:2.3-groovy-3.0"
-
-    testRuntimeOnly "cglib:cglib-nodep:3.3.0"
-
-    runtimeOnly "org.slf4j:slf4j-log4j12:${versions.slf4j}"
+    runtimeOnly(
+            "org.slf4j:slf4j-log4j12:${versions.slf4j}",
+            )
 }
 
 java {
@@ -119,7 +124,9 @@ project.tasks.named("compileJava").configure {
 // CREATE START SCRIPTS (via application)
 // -----------------------------------------------------------------------------
 
-mainClassName = 'com.brightsparklabs.asanti.AsantiCli'
+application {
+    mainClass = 'com.brightsparklabs.asanti.AsantiCli'
+}
 
 // -----------------------------------------------------------------------------
 // SETUP ARTIFACTS FOR PUBLISHING
