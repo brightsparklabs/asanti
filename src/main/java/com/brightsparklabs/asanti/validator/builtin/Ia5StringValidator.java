@@ -59,7 +59,7 @@ public class Ia5StringValidator extends PrimitiveBuiltinTypeValidator {
         final Set<ByteValidationFailure> failures = Sets.newHashSet();
         for (int i = 0; i < bytes.length; i++) {
             byte b = bytes[i];
-            if (b < 0 || b > 127) {
+            if (b < 0) {
                 final String error = IA5STRING_VALIDATION_ERROR + String.format("0x%02X ", b);
                 final ByteValidationFailure failure =
                         new ByteValidationFailure(i, FailureType.DataIncorrectlyFormatted, error);
