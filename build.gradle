@@ -85,7 +85,7 @@ dependencies {
             'junit:junit:4.13.2',
             "org.mockito:mockito-inline:5.2.0",
             'org.hamcrest:hamcrest-all:1.3',
-            "org.codehaus.groovy:groovy-all:3.0.19",
+            "org.codehaus.groovy:groovy-all:3.0.20",
             "org.spockframework:spock-core:2.3-groovy-3.0",
             )
 
