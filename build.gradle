@@ -70,14 +70,14 @@ repositories {
 
 dependencies {
     def versions = [
-        slf4j: "2.0.10",
+        slf4j: "2.0.11",
     ]
 
     implementation(
             "com.google.guava:guava:31.1-jre",
             "org.bouncycastle:bcprov-jdk15on:1.70",
             "org.slf4j:slf4j-api:${versions.slf4j}",
-            "joda-time:joda-time:2.12.5",
+            "joda-time:joda-time:2.12.6",
             "commons-cli:commons-cli:1.6.0",
             )
 
