@@ -70,22 +70,22 @@ repositories {
 
 dependencies {
     def versions = [
-        slf4j: "2.0.9",
+        slf4j: "2.0.11",
     ]
 
     implementation(
             "com.google.guava:guava:31.1-jre",
             "org.bouncycastle:bcprov-jdk15on:1.70",
             "org.slf4j:slf4j-api:${versions.slf4j}",
-            "joda-time:joda-time:2.12.5",
-            "commons-cli:commons-cli:1.5.0",
+            "joda-time:joda-time:2.12.6",
+            "commons-cli:commons-cli:1.6.0",
             )
 
     testImplementation(
             'junit:junit:4.13.2',
             "org.mockito:mockito-inline:5.2.0",
             'org.hamcrest:hamcrest-all:1.3',
-            "org.codehaus.groovy:groovy-all:3.0.19",
+            "org.codehaus.groovy:groovy-all:3.0.20",
             "org.spockframework:spock-core:2.3-groovy-3.0",
             )
 
