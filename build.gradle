@@ -77,7 +77,7 @@ dependencies {
             "com.google.guava:guava:31.1-jre",
             "org.bouncycastle:bcprov-jdk15on:1.70",
             "org.slf4j:slf4j-api:${versions.slf4j}",
-            "joda-time:joda-time:2.12.6",
+            "joda-time:joda-time:2.12.7",
             "commons-cli:commons-cli:1.6.0",
             )
 
