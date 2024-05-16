@@ -32,6 +32,30 @@ cd asanti
 ./build/install/asanti/asanti.sh /path/to/example.asn /path/to/example/directory TopLevelType
 ```
 
+### Publishing
+
+New versions will be published to Maven Central by CI/CD when merged to `master`:
+
+```bash
+git flow relese start <x.y.z> ...
+git flow release finish -m '<TICKET>: Tag v<x.y.z>'
+git push --all --tags
+```
+
+If you need to manually publish a version, do so via:
+
+```bash
+git checkout master    # Or the specific version.
+
+# NOTE: sonatype credentials are the API key.
+export ORG_GRADLE_PROJECT_signingKey=$(gpg -a --export-secret-keys A068...) \
+  ORG_GRADLE_PROJECT_signingPassword='REDACTED' \
+  ORG_GRADLE_PROJECT_sonatypeUsername='y...' \
+  ORG_GRADLE_PROJECT_sonatypePassword='REDACTED'
+
+./gradlew publishToMavenCentral
+```
+
 ## Usage
 
 ##### Simple Parsing
