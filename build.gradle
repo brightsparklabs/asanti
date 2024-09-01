@@ -74,7 +74,7 @@ dependencies {
     ]
 
     implementation(
-            "com.google.guava:guava:33.2.1-jre",
+            "com.google.guava:guava:33.3.0-jre",
             // Do not upgrade the following package unless you are updating the relevant Asanti parser classes.
             "org.bouncycastle:bcprov-jdk15on:1.70",
             "org.slf4j:slf4j-api:${versions.slf4j}",
