@@ -79,7 +79,7 @@ dependencies {
             "org.bouncycastle:bcprov-jdk15on:1.70",
             "org.slf4j:slf4j-api:${versions.slf4j}",
             "joda-time:joda-time:2.13.0",
-            "commons-cli:commons-cli:1.8.0",
+            "commons-cli:commons-cli:1.9.0",
             )
 
     testImplementation(
