@@ -15,13 +15,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'io.github.gradle-nexus:publish-plugin:1.3.0'
+        classpath 'io.github.gradle-nexus:publish-plugin:2.0.0'
     }
 }
 
 plugins {
     // Apply the brightSPARK Labs plugin for standardisation.
-    id 'com.brightsparklabs.gradle.baseline' version '4.6.0'
+    id 'com.brightsparklabs.gradle.baseline' version '4.7.0'
 
     // Apply the java plugin to add support for Java.
     id 'java'
@@ -70,23 +70,23 @@ repositories {
 
 dependencies {
     def versions = [
-        slf4j: "2.0.13",
+        slf4j: "2.0.16",
     ]
 
     implementation(
-            "com.google.guava:guava:33.2.1-jre",
+            "com.google.guava:guava:33.3.1-jre",
             // Do not upgrade the following package unless you are updating the relevant Asanti parser classes.
             "org.bouncycastle:bcprov-jdk15on:1.70",
             "org.slf4j:slf4j-api:${versions.slf4j}",
-            "joda-time:joda-time:2.12.7",
-            "commons-cli:commons-cli:1.8.0",
+            "joda-time:joda-time:2.13.0",
+            "commons-cli:commons-cli:1.9.0",
             )
 
     testImplementation(
-            'org.junit.jupiter:junit-jupiter-api:5.10.3',
+            'org.junit.jupiter:junit-jupiter-api:5.11.1',
             "org.mockito:mockito-inline:5.2.0",
             'org.hamcrest:hamcrest:2.2',
-            "org.apache.groovy:groovy-all:4.0.22",
+            "org.apache.groovy:groovy-all:4.0.23",
             "org.spockframework:spock-core:2.3-groovy-4.0",
             )
 
