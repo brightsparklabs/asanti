@@ -76,7 +76,7 @@ dependencies {
     implementation(
             "com.google.guava:guava:33.4.0-jre",
             // Do not upgrade the following package unless you are updating the relevant Asanti parser classes.
-            "org.bouncycastle:bcprov-jdk18on:1.79",
+            "org.bouncycastle:bcprov-jdk18on:1.80",
             "org.slf4j:slf4j-api:${versions.slf4j}",
             "joda-time:joda-time:2.13.0",
             "commons-cli:commons-cli:1.9.0",
@@ -85,7 +85,7 @@ dependencies {
     testImplementation(
             'org.junit.jupiter:junit-jupiter-api:5.11.4',
             "org.mockito:mockito-inline:5.2.0",
-            'org.hamcrest:hamcrest:2.2',
+            'org.hamcrest:hamcrest:3.0',
             "org.apache.groovy:groovy-all:4.0.24",
             "org.spockframework:spock-core:2.3-groovy-4.0",
             )
