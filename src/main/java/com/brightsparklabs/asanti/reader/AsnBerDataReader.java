@@ -107,15 +107,12 @@ public class AsnBerDataReader {
     private static void processDerObject(
             ASN1Primitive derObject, String prefix, Map<String, byte[]> tagsToData, int index)
             throws IOException {
-        if (derObject instanceof ASN1Sequence) {
-            processSequence((ASN1Sequence) derObject, prefix, tagsToData);
-        } else if (derObject instanceof ASN1Set) {
-            processSet((ASN1Set) derObject, prefix, tagsToData);
-        } else if (derObject instanceof ASN1TaggedObject) {
-            processTaggedObject((ASN1TaggedObject) derObject, prefix, tagsToData, index);
-        } else if (derObject instanceof DERApplicationSpecific) {
-            processApplicationSpecific(
-                    (DERApplicationSpecific) derObject, prefix, tagsToData, index);
+        if (derObject instanceof ASN1Sequence sequence) {
+            processSequence(sequence, prefix, tagsToData);
+        } else if (derObject instanceof ASN1Set asn1Set) {
+            processSet(asn1Set, prefix, tagsToData);
+        } else if (derObject instanceof ASN1TaggedObject asn1TaggedObject) {
+            processTaggedObject(asn1TaggedObject, prefix, tagsToData, index);
         } else {
             processPrimitiveDerObject(derObject, prefix, tagsToData);
         }
@@ -206,13 +203,18 @@ public class AsnBerDataReader {
             int index)
             throws IOException {
 
-        ASN1Primitive obj = asnTaggedObject.getObject();
+        ASN1Primitive obj = asnTaggedObject.getBaseObject().toASN1Primitive();
 
-        prefix =
-                prefix
-                        + "/"
-                        + AsnSchemaTag.createRawTag(
-                                index, String.valueOf(asnTaggedObject.getTagNo()));
+        if (asnTaggedObject.getTagClass() == BERTags.APPLICATION) {
+            // Process ASN.1 application objects.
+            prefix = prefix + "/" + asnTaggedObject.getTagNo();
+        } else {
+            prefix =
+                    prefix
+                            + "/"
+                            + AsnSchemaTag.createRawTag(
+                                    index, String.valueOf(asnTaggedObject.getTagNo()));
+        }
 
         int containingType = getType(asnTaggedObject);
         if (isConstructedType(containingType)) {
@@ -233,25 +235,8 @@ public class AsnBerDataReader {
             prefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, number);
         }
 
-        processDerObject(asnTaggedObject.getObject(), prefix, tagsToData, index);
-    }
-
-    /**
-     * Processes an ASN.1 'ApplicationSpecific' object and stores the tags/data found in it
-     *
-     * @param asnApplicationSpecific object to process
-     * @param prefix prefix to prepend to any tags found
-     * @param tagsToData storage for the tags/data found
-     * @throws IOException if any errors occur reading from the file
-     */
-    private static void processApplicationSpecific(
-            DERApplicationSpecific asnApplicationSpecific,
-            String prefix,
-            Map<String, byte[]> tagsToData,
-            int index)
-            throws IOException {
-        prefix = prefix + "/" + asnApplicationSpecific.getApplicationTag();
-        processDerObject(asnApplicationSpecific.getObject(), prefix, tagsToData, index);
+        processDerObject(
+                asnTaggedObject.getBaseObject().toASN1Primitive(), prefix, tagsToData, index);
     }
 
     /**
