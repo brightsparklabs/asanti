@@ -78,7 +78,7 @@ dependencies {
             // Do not upgrade the following package unless you are updating the relevant Asanti parser classes.
             "org.bouncycastle:bcprov-jdk18on:1.80",
             "org.slf4j:slf4j-api:${versions.slf4j}",
-            "joda-time:joda-time:2.13.0",
+            "joda-time:joda-time:2.14.0",
             "commons-cli:commons-cli:1.9.0",
             )
 
