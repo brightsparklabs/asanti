@@ -86,7 +86,7 @@ dependencies {
             'org.junit.jupiter:junit-jupiter-api:5.12.2',
             "org.mockito:mockito-inline:5.2.0",
             'org.hamcrest:hamcrest:3.0',
-            "org.apache.groovy:groovy-all:4.0.26",
+            "org.apache.groovy:groovy-all:4.0.27",
             "org.spockframework:spock-core:2.3-groovy-4.0",
             )
 
