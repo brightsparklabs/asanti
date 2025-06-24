@@ -196,7 +196,6 @@ publishing {
 // JReleaser plugin configuration.
 jreleaser {
     /* NOTE: Config is applied in this order: inline > env var.
-
      * Artifact signing configuration.
      * See https://jreleaser.org/guide/latest/reference/signing.html
      */
