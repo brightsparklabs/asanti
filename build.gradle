@@ -14,9 +14,6 @@ buildscript {
             url 'https://plugins.gradle.org/m2/'
         }
     }
-    dependencies {
-        classpath 'io.github.gradle-nexus:publish-plugin:2.0.0'
-    }
 }
 
 plugins {
@@ -40,18 +37,10 @@ plugins {
     // -----------------------------------------------------------------------------
 
     id 'maven-publish'
-    // Maven Central requires artifacts to be signed.
-    id 'signing'
-}
-
-/*
- * Maven Central requires artifacts to be released via Sonatype Nexus.
- * The Nexus Publish Plugin can only be applied to the root project.
- * Do not apply it if this project is being included as a subproject.
- */
-def isRootProject = project.path == ':'
-if (isRootProject) {
-    apply plugin: 'io.github.gradle-nexus.publish-plugin'
+    /* Apply the JReleaser plugin to sign and deploy artifacts.
+     * See https://jreleaser.org/guide/latest/tools/jreleaser-gradle.html
+     */
+    id 'org.jreleaser' version '1.18.0'
 }
 
 // -----------------------------------------------------------------------------
@@ -59,6 +48,8 @@ if (isRootProject) {
 // -----------------------------------------------------------------------------
 
 apply from: 'startScripts.gradle'
+
+import org.jreleaser.gradle.plugin.tasks.JReleaserDeployTask
 
 // -----------------------------------------------------------------------------
 // REPOSITORIES/DEPENDENCIES
@@ -99,10 +90,21 @@ dependencies {
             )
 }
 
+// -----------------------------------------------------------------------------
+// JAVA VERSION
+// -----------------------------------------------------------------------------
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+// -----------------------------------------------------------------------------
+// VARIABLES
+// -----------------------------------------------------------------------------
+
+/** The directory to stage artifacts for publishing. */
+def stagingDeployDir = layout.buildDirectory.dir('staging-deploy')
 
 // -----------------------------------------------------------------------------
 // PROJECT IDENTIFICATION
@@ -176,41 +178,226 @@ publishing {
             }
         }
     }
-}
-
-// Maven Central requires signed artifacts.
-signing {
-    def signingKey = findProperty("signingKey")
-    def signingPassword = findProperty("signingPassword")
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign publishing.publications.mavenJava
-
-    // Only require signing when publishing (otherwise normal builds would need GPG keys).
-    required { gradle.taskGraph.hasTask("publishToSonatype") }
+    /* Configure the staging directory to put all artifacts into prior to publishing to Maven
+     * Central. To publish to a Maven repository, JReleaser must be configured to point to a staging
+     * directory that contains all artifacts in Maven's default layout.
+     */
+    repositories {
+        maven {
+            url = stagingDeployDir
+        }
+    }
 }
 
 // -----------------------------------------------------------------------------
-// PUBLISH ARTIFACTS (via nexus)
+// CONFIGURATION: org.jreleaser
 // -----------------------------------------------------------------------------
 
-if (isRootProject) {
-    nexusPublishing {
-        repositories {
-            // Credentials default to:
-            // - Property `sonatypeUsername` or ENV variable `ORG_GRADLE_PROJECT_sonatypeUsername`.
-            // - Property `sonatypePassword` or ENV variable ORG_GRADLE_PROJECT_sonatypePassword`.
-            sonatype()
+/* JReleaser plugin configuration.
+ *
+ * Some values can be set using a JReleaser environment variable (prefixed with `JRELEASER_`); a
+ * config value set here takes precedence over the environment variable.
+ */
+jreleaser {
+    /* Artifact signing configuration.
+     * See https://jreleaser.org/guide/latest/reference/signing.html
+     */
+    signing {
+        /* Enables or disables file signing.
+         * Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
+         * Defaults to `NEVER`.
+         */
+        active = 'ALWAYS'
+
+        /* Generates an armored signature.
+         * Defaults to `false`.
+         *
+         * We set this to `true` to produce human-readable `.asc` signature files.
+         * NOTE: Signing fails with "Unexpected error" when set to `false`.
+         */
+        armored = true
+
+        /* Verify signature files.
+         * If `false` then `publicKey` may be omitted.
+         * Defaults to `true`.
+         *
+         * NOTE: Disabled because there's no need to verify signatures immediately after signing.
+         * If we want to enable this in the future, we'll need to configure `publicKey` to our PGP
+         * public key.
+         */
+        verify = false
+
+        /* The passphrase required to read secret keys.
+         * Set via env var `JRELEASER_GPG_PASSPHRASE`.
+         *
+         * NOTE: The name of the project property we set this to is derived from our GitHub
+         * publishing workflow, which sets the project property using an environment variable.
+         * NOTE: This raises an error if left blank, however this is a bug that should be fixed in
+         * the 1.19.0 release. See https://github.com/jreleaser/jreleaser/issues/1883.
+         */
+        passphrase = findProperty("signingPassword") ?: '__DUMMY_VALUE__'
+
+        /* The private GPG (ascii armored) used to sign files and commits.
+         * Required when mode = `MEMORY` || `FILE`.
+         * Set via env var `JRELEASER_GPG_SECRET_KEY`.
+         *
+         * NOTE: The name of the project property we set this to is derived from our GitHub
+         * publishing workflow, which sets the project property using an environment variable.
+         * NOTE: If set to a non-empty malformed value, signing will fail with "Unexpected error".
+         */
+        secretKey = findProperty("signingKey")
+    }
+
+    // Artifact deployment configuration.
+    deploy {
+        // Deploy staged artifacts to target Maven compatible repositories.
+        maven {
+            /* Deploy staged artifacts to Maven Central using the publisher API.
+             * See https://jreleaser.org/guide/latest/reference/deploy/maven/maven-central.html
+             */
+            mavenCentral {
+                // The name of the deployer (deployers require a name).
+                app {
+                    /* Enables or disables the deployer.
+                     * Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
+                     * Defaults to `NEVER`.
+                     */
+                    active = 'ALWAYS'
+
+                    // URL where the MavenCentral service is enabled.
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+
+                    /* The username required for authorization.
+                     * Set via env var `JRELEASER_MAVENCENTRAL_USERNAME`.
+                     *
+                     * NOTE: The name of the project property we set this to is derived from our
+                     * GitHub publishing workflow, which sets the project property using an
+                     * environment variable.
+                     */
+                    username = findProperty("mavenCentralUsername")
+
+                    /* Password for login into the MAVENCENTRAL service.
+                     * Set via env var `JRELEASER_MAVENCENTRAL_PASSWORD`.
+                     *
+                     * NOTE: The name of the project property we set this to is derived from our
+                     * GitHub publishing workflow, which sets the project property using an
+                     * environment variable.
+                     */
+                    password = findProperty("mavenCentralPassword")
+
+                    /* The authorization method to use.
+                     * Supported values are [`NONE`, `BASIC`, `BEARER`].
+                     * `BASIC` requires both username & password.
+                     * `BEARER` requires a token (set as password).
+                     * Defaults to `BEARER`.
+                     *
+                     * NOTE: This defaults to `BASIC` even though the documentation says otherwise.
+                     * We explicitly set it to `BASIC` anyway to be certain.
+                     */
+                    authorization = 'BASIC'
+
+                    /* Signs artifacts with the configured credentials.
+                     * The Signing section must be configured as well.
+                     * Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                     *
+                     * Signatures are output to `.asc` files in the staging directory.
+                     *
+                     * NOTE: This defaults to `true` even though the documentation says otherwise.
+                     * We explicitly set it to `true` anyway to be certain.
+                     */
+                    sign = true
+
+                    /* Verifies that a matching `-sources.jar` artifact is staged.
+                     * Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                     *
+                     * NOTE: This defaults to `true` even though the documentation says otherwise.
+                     * We explicitly set it to `true` anyway to be certain.
+                     */
+                    sourceJar = true
+
+                    /* Verifies that a matching `-javadoc.jar` artifact is staged.
+                     * Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                     *
+                     * NOTE: This defaults to `true` even though the documentation says otherwise.
+                     * We explicitly set it to `true` anyway to be certain.
+                     */
+                    javadocJar = true
+
+                    /* Verifies that POM files comply with the minimum requirements for publication
+                     * to Maven Central. Checks rules using PomChecker.
+                     * Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                     *
+                     * NOTE: This defaults to `true` even though the documentation says otherwise.
+                     * We explicitly set it to `true` anyway to be certain.
+                     */
+                    verifyPom = true
+
+                    /* Verifies pom files, signs all artifacts, verifies that matching
+                     * `-sources.jar` and `-javadoc.jar` artifacts are also staged.
+                     * Defaults to `false`.
+                     *
+                     * NOTE: This defaults to `true` even though the documentation says otherwise.
+                     * We explicitly set it to `true` anyway to be certain.
+                     */
+                    applyMavenCentralRules = true
+
+                    // List of directories where staged artifacts can be found.
+                    stagingRepository(stagingDeployDir.get().asFile.toString())
+                }
+            }
         }
     }
 
-    task prePublishToMavenCentral {
-        group 'brightSPARK Labs - Maven Central Publishing'
-        description 'Stages the release on Sonatype ready for publishing to Maven Central.'
-        dependsOn 'publishToSonatype', 'closeSonatypeStagingRepository'
+    /* Release configuration.
+     *
+     * NOTE: A single releaser must be configured. See
+     * https://github.com/jreleaser/jreleaser/discussions/1725
+     */
+    release {
+        /* GitHub releaser configuration.
+         * See https://jreleaser.org/guide/latest/reference/release/github.html
+         */
+        github {
+            /* Password or OAuth token with write access to the repository.
+             *
+             * NOTE: This value must be set else the `jreleaserConfig` task (useful for debugging)
+             * will raise an error. See above note.
+             */
+            token = '__DUMMY_VALUE__'
+
+            /* Skips creating a release.
+             * Useful when release assets will be handled with an uploader.
+             * Defaults to `false`.
+             *
+             * NOTE: We set this to `true` to disable all GitHub publishing behaviour.
+             */
+            skipRelease = true
+        }
     }
-    task publishToMavenCentral {
-        group 'brightSPARK Labs - Maven Central Publishing'
-        description 'Publishes the release to Maven Central.'
-        dependsOn 'publishToSonatype', 'closeAndReleaseSonatypeStagingRepository'
-    }
+}
+
+// -----------------------------------------------------------------------------
+// TASKS
+// -----------------------------------------------------------------------------
+
+// Ensure artifacts are published to the staging directory before deploying to Maven Central.
+tasks.withType(JReleaserDeployTask).configureEach { task ->
+    // The `publish` task stages artifacts as per the `publishing` block configuration above.
+    task.dependsOn publish
+    // Do not let clean run after this task as that would blow away results.
+    mustRunAfter clean
+}
+
+/* Wrap our publishing logic in a custom task to decouple our CI/CD pipeline from the specific
+ * implementation.
+ */
+tasks.register('publishToMavenCentral') {
+    group 'brightSPARK Labs - Maven Central Publishing'
+    description 'Publishes the release to Maven Central.'
+    /* Deploy artifacts using JReleaser.
+     * See https://jreleaser.org/guide/latest/tools/jreleaser-gradle.html#_jreleaserdeploy
+     */
+    dependsOn jreleaserDeploy
+    // Do not let clean run after this task as that would blow away results.
+    mustRunAfter clean
 }
