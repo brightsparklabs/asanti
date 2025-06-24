@@ -193,10 +193,13 @@ publishing {
 // CONFIGURATION: org.jreleaser
 // -----------------------------------------------------------------------------
 
-// JReleaser plugin configuration.
+/* JReleaser plugin configuration.
+ *
+ * Some values can be set using a JReleaser environment variable (prefixed with `JRELEASER_`); a
+ * config value set here takes precedence over the environment variable.
+ */
 jreleaser {
-    /* NOTE: Config is applied in this order: inline > env var.
-     * Artifact signing configuration.
+    /* Artifact signing configuration.
      * See https://jreleaser.org/guide/latest/reference/signing.html
      */
     signing {
@@ -227,8 +230,8 @@ jreleaser {
         /* The passphrase required to read secret keys.
          * Set via env var `JRELEASER_GPG_PASSPHRASE`.
          *
-         * NOTE: We set this using a project property. See
-         * https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
+         * NOTE: The name of the project property we set this to is derived from our GitHub
+         * publishing workflow, which sets the project property using an environment variable.
          * NOTE: This raises an error if left blank, however this is a bug that should be fixed in
          * the 1.19.0 release. See https://github.com/jreleaser/jreleaser/issues/1883.
          */
@@ -238,8 +241,8 @@ jreleaser {
          * Required when mode = `MEMORY` || `FILE`.
          * Set via env var `JRELEASER_GPG_SECRET_KEY`.
          *
-         * NOTE: We set this using a project property. See
-         * https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
+         * NOTE: The name of the project property we set this to is derived from our GitHub
+         * publishing workflow, which sets the project property using an environment variable.
          * NOTE: If set to a non-empty malformed value, signing will fail with "Unexpected error".
          */
         secretKey = findProperty("signingKey")
@@ -267,22 +270,24 @@ jreleaser {
                     /* The username required for authorization.
                      * Set via env var `JRELEASER_MAVENCENTRAL_USERNAME`.
                      *
-                     * NOTE: We set this using a project property. See
-                     * https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
+                     * NOTE: The name of the project property we set this to is derived from our
+                     * GitHub publishing workflow, which sets the project property using an
+                     * environment variable.
                      */
                     username = findProperty("mavenCentralUsername")
 
                     /* Password for login into the MAVENCENTRAL service.
                      * Set via env var `JRELEASER_MAVENCENTRAL_PASSWORD`.
                      *
-                     * NOTE: We set this using a project property. See
-                     * https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
+                     * NOTE: The name of the project property we set this to is derived from our
+                     * GitHub publishing workflow, which sets the project property using an
+                     * environment variable.
                      */
                     password = findProperty("mavenCentralPassword")
 
                     /* The authorization method to use.
                      * Supported values are [`NONE`, `BASIC`, `BEARER`].
-                     * `Basic` requires both username & password.
+                     * `BASIC` requires both username & password.
                      * `BEARER` requires a token (set as password).
                      * Defaults to `BEARER`.
                      *
@@ -344,11 +349,14 @@ jreleaser {
     }
 
     /* Release configuration.
+     *
      * NOTE: A single releaser must be configured. See
      * https://github.com/jreleaser/jreleaser/discussions/1725
      */
     release {
-        // See https://jreleaser.org/guide/latest/reference/release/github.html
+        /* GitHub releaser configuration.
+         * See https://jreleaser.org/guide/latest/reference/release/github.html
+         */
         github {
             /* Password or OAuth token with write access to the repository.
              *
@@ -393,4 +401,3 @@ tasks.register('publishToMavenCentral') {
     // Do not let clean run after this task as that would blow away results.
     mustRunAfter clean
 }
-
