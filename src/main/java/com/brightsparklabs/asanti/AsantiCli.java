@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Locale;
 import java.util.Map;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
@@ -186,17 +187,17 @@ public class AsantiCli {
                     // I don't really know what the 'right' file extensions are, so let's just rule
                     // out
                     // some of the ones that we have come across that are not BER files!
-                    if (!name.toLowerCase().endsWith(".txt") //
-                            && !name.toLowerCase().endsWith(".jpg") //
-                            && !name.toLowerCase().endsWith(".bmp") //
-                            && !name.toLowerCase().endsWith(".asn") //
-                            && !name.toLowerCase().endsWith(".zip") //
-                            && !name.toLowerCase().endsWith(".wav") //
-                            && !name.toLowerCase().endsWith(".pcap") //
-                            && !name.toLowerCase().endsWith(".rtp") //
-                            && !name.toLowerCase().endsWith(".csv") //
-                            && !name.toLowerCase().endsWith(".xlsx") //
-                            && !name.toLowerCase().endsWith(".xls")) {
+                    if (!name.toLowerCase(Locale.ENGLISH).endsWith(".txt") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".jpg") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".bmp") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".asn") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".zip") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".wav") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".pcap") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".rtp") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".csv") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".xlsx") //
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".xls")) {
                         loadDataFile(file, asnSchema, topLevelType);
                     } else {
                         logger.debug("Ignoring file: " + name);
