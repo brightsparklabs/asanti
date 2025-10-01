@@ -74,7 +74,7 @@ dependencies {
             )
 
     testImplementation(
-            'org.junit.jupiter:junit-jupiter-api:5.13.4',
+            'org.junit.jupiter:junit-jupiter-api:6.0.0',
             "org.mockito:mockito-core:5.20.0",
             'org.hamcrest:hamcrest:3.0',
             "org.apache.groovy:groovy-all:4.0.28",
