@@ -51,7 +51,12 @@ public class AsnSchemaParser {
 
     /** pattern to match module header keywords */
     private static final Pattern PATTERN_SCHEMA_KEYWORDS =
-            Pattern.compile("(DEFINITIONS|BEGIN|EXPORTS|IMPORTS|END)");
+            /* NOTE:
+             *
+             * `\\b` inserts a word boundary to prevent matches within larger words.
+             * I.e. we do not want to match `BENDER` as that would turn it into `B\nEND\ner`.
+             */
+            Pattern.compile("\\b(DEFINITIONS|BEGIN|EXPORTS|IMPORTS|END)\\b");
 
     /** pattern to match semicolons */
     private static final Pattern PATTERN_SEMICOLONS = Pattern.compile(";");
