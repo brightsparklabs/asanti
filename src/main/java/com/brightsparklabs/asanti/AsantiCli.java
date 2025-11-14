@@ -23,15 +23,22 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Files;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.MissingArgumentException;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.Map;
-import org.apache.commons.cli.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main class as an example of how to use the library.
@@ -184,20 +191,21 @@ public class AsantiCli {
                 if (!file.isDirectory()) {
                     final String name = file.getCanonicalPath();
 
-                    // I don't really know what the 'right' file extensions are, so let's just rule
-                    // out
-                    // some of the ones that we have come across that are not BER files!
-                    if (!name.toLowerCase(Locale.ENGLISH).endsWith(".txt") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".jpg") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".bmp") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".asn") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".zip") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".wav") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".pcap") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".rtp") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".csv") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".xlsx") //
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".xls")) {
+                    // Do not really know what the 'right' file extensions are, so let's just rule
+                    // out some of the ones that we have come across that are not BER files.
+                    if (!name.toLowerCase(Locale.ENGLISH).endsWith(".txt")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".jpg")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".bmp")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".asn")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".zip")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".wav")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".pcap")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".rtp")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".csv")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".xlsx")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".xls")
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".yaml")
+                            ) {
                         loadDataFile(file, asnSchema, topLevelType);
                     } else {
                         logger.debug("Ignoring file: " + name);
