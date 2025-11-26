@@ -7,8 +7,6 @@
 
 package com.brightsparklabs.asanti.mocks.model.schema;
 
-import static org.mockito.Mockito.*;
-
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
 import com.google.common.io.CharSource;
@@ -32,7 +30,7 @@ public class TestAsnSchema {
                             "    { joint-iso-itu-t internationalRA(23) set(42) set-vendors(9) example(99) modules(2) document(1) }\n")
                     .append("DEFINITIONS")
                     .append("    AUTOMATIC TAGS ::=")
-                    .append("BEGIN")
+                    .append("BEGIN\n")
                     .append("EXPORTS Header, Body;\n")
                     .append("IMPORTS")
                     .append("  People,")

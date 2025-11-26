@@ -40,7 +40,7 @@ plugins {
     /* Apply the JReleaser plugin to sign and deploy artifacts.
      * See https://jreleaser.org/guide/latest/tools/jreleaser-gradle.html
      */
-    id 'org.jreleaser' version '1.20.0'
+    id 'org.jreleaser' version '1.21.0'
 }
 
 // -----------------------------------------------------------------------------
@@ -65,9 +65,9 @@ dependencies {
     ]
 
     implementation(
-            "com.google.guava:guava:33.4.8-jre",
+            "com.google.guava:guava:33.5.0-jre",
             // Do not upgrade the following package unless you are updating the relevant Asanti parser classes.
-            "org.bouncycastle:bcprov-jdk18on:1.81",
+            "org.bouncycastle:bcprov-jdk18on:1.82",
             "org.slf4j:slf4j-api:${versions.slf4j}",
             "joda-time:joda-time:2.14.0",
             "commons-cli:commons-cli:1.10.0",
@@ -75,7 +75,7 @@ dependencies {
 
     testImplementation(
             'org.junit.jupiter:junit-jupiter-api:5.13.4',
-            "org.mockito:mockito-core:5.19.0",
+            "org.mockito:mockito-core:5.20.0",
             'org.hamcrest:hamcrest:3.0',
             "org.apache.groovy:groovy-all:4.0.28",
             "org.spockframework:spock-core:2.3-groovy-4.0",
