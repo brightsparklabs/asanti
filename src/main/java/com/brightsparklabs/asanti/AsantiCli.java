@@ -23,6 +23,12 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Files;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Locale;
+import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -32,13 +38,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Main class as an example of how to use the library.
@@ -204,8 +203,7 @@ public class AsantiCli {
                             && !name.toLowerCase(Locale.ENGLISH).endsWith(".csv")
                             && !name.toLowerCase(Locale.ENGLISH).endsWith(".xlsx")
                             && !name.toLowerCase(Locale.ENGLISH).endsWith(".xls")
-                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".yaml")
-                            ) {
+                            && !name.toLowerCase(Locale.ENGLISH).endsWith(".yaml")) {
                         loadDataFile(file, asnSchema, topLevelType);
                     } else {
                         logger.debug("Ignoring file: " + name);
