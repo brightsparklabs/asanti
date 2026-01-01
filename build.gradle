@@ -78,7 +78,7 @@ dependencies {
             "org.mockito:mockito-core:5.21.0",
             'org.hamcrest:hamcrest:3.0',
             "org.apache.groovy:groovy-all:4.0.28",
-            "org.spockframework:spock-core:2.3-groovy-4.0",
+            "org.spockframework:spock-core:2.4-groovy-5.0",
             )
 
     testRuntimeOnly(
