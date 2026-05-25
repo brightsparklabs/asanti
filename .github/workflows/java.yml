@@ -21,3 +21,4 @@ jobs:
     with:
       # Tests for Asanti are run on both Ubuntu and Windows.
       os: '["ubuntu-latest", "windows-latest"]'
+      java_version: 25

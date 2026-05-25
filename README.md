@@ -10,7 +10,7 @@ manipulate non-conforming data.
 
 ## Prerequisites
 
-- Java 17 or higher.
+- Java 25 or higher.
 
 ## Setup, Build and Run
 
