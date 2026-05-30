@@ -102,7 +102,7 @@ public class Decoder {
      * @return The result of the decode attempt containing the decoded tag.
      */
     public static OperationResult<DecodedTag, String> getDecodedTag(
-            String rawTag, AsnSchemaType type, DecodingSession session) {
+            final String rawTag, final AsnSchemaType type, final DecodingSession session) {
         final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(), type, session);
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
@@ -141,9 +141,9 @@ public class Decoder {
     // -------------------------------------------------------------------------
 
     private static DecodedTagsAndType decodeTags(
-            Iterator<String> rawTags,
-            AsnSchemaType containingType,
-            DecodingSession decodingSession) {
+            final Iterator<String> rawTags,
+            final AsnSchemaType containingType,
+            final DecodingSession decodingSession) {
         /* TODO: ASN-143.  does this functionality now belong here?
          * all the logic is about AsnSchemaType object - should it have a decodeTags function?
          */
