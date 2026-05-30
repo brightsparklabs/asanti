@@ -133,7 +133,7 @@ public class AsnSchemaTag {
      *     passed in to create a new tag
      */
     public static String createRawTag(int tagIndex, String tag) {
-        return String.format("%d[%s]", tagIndex, tag);
+        return tagIndex + "[" + tag + "]";
     }
 
     /**
