@@ -60,7 +60,8 @@ public class Decoder {
 
         final Optional<AsnSchemaType> type = schema.getType(topLevelTypeName);
         if (type.isEmpty()) {
-            throw new RuntimeException("type [%s] does not exist in schema".formatted(topLevelTypeName));
+            throw new RuntimeException(
+                    "type [%s] does not exist in schema".formatted(topLevelTypeName));
         }
         return getDecodedTags(rawTags, type.get());
     }
@@ -157,8 +158,7 @@ public class Decoder {
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
-            final String decodedTagPath =
-                    tagJoiner.join(result.decodedTags).replace("/[", "[");
+            final String decodedTagPath = tagJoiner.join(result.decodedTags).replace("/[", "[");
             // By definition the new tag is the child of its container.
             decodingSession.setContext(decodedTagPath);
 

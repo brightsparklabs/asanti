@@ -11,8 +11,6 @@ import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Models a tag in a 'constructed' type. A tag conforms to one of the following formats:
@@ -29,10 +27,6 @@ public class AsnSchemaTag {
 
     /** null instance */
     private static final AsnSchemaTag NULL = new AsnSchemaTag("", "", "");
-
-    /** pattern to match a raw tag coming out of the BER decoder */
-    private static final Pattern PATTERN_TAG =
-            Pattern.compile("^([0-9]+)(\\[(([0-9]+)|(UNIVERSAL ([a-zA-Z0-9]+)))\\])$");
 
     private static final ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG =
             ImmutableMap.<AsnBuiltinType, String>builder()
@@ -134,13 +128,14 @@ public class AsnSchemaTag {
     /**
      * Default constructor. Private, use {@link #create(String)} instead.
      *
-     * @param tagIndex Tag index component of the raw tag
+     * @param tagIndex Tag index component of the raw tag.
      * @param tagContextSpecific Tag context-specific component of the raw tag. Set to {@code null}
      *     if no context-specific component.
      * @param tagUniversal Tag universal component of the raw tag. Set to {@code null} if no
      *     universal component.
      */
-    private AsnSchemaTag(String tagIndex, String tagContextSpecific, String tagUniversal) {
+    private AsnSchemaTag(
+            final String tagIndex, final String tagContextSpecific, final String tagUniversal) {
         this.tagIndex = tagIndex;
         this.tagContextSpecific = Strings.nullToEmpty(tagContextSpecific).trim();
         this.tagUniversal = Strings.nullToEmpty(tagUniversal).trim();
@@ -148,6 +143,13 @@ public class AsnSchemaTag {
 
     /**
      * Creates an instance from the supplied raw tag.
+     *
+     * <p>The expected format should be either:
+     *
+     * <ul>
+     *   <li>{@code "[0-9]+\[[0-9]\]"} e.g. {@code "12[345]"}
+     *   <li>{@code "[0-9]+\[UNIVERSAL [a-zA-Z0-9]+\]"} e.g. {@code "0[UNIVERSAL abcXYZ123]"}
+     * </ul>
      *
      * @param rawTag Raw tag to create instance from.
      * @return Instance which models the raw tag, or {@link #NULL} if the raw tag is invalid.
@@ -157,11 +159,51 @@ public class AsnSchemaTag {
             return NULL;
         }
 
-        final Matcher matcher = PATTERN_TAG.matcher(rawTag);
-        if (matcher.matches()) {
-            return new AsnSchemaTag(matcher.group(1), matcher.group(4), matcher.group(5));
-        } else {
+        // NOTE: We are intentionally *not* using regex here. This code is part
+        // of the hotpath and even compiled regex matching has a noticeable
+        // performance impact. This approach is multiple times faster by comparison.
+
+        final int len = rawTag.length();
+        if (len < 4) {
+            // Minimum valid value is: "0[1]" so we can do a quick check
+            // ahead of time.
             return NULL;
+        }
+
+        final int bracketStart = rawTag.indexOf('[');
+        if (bracketStart <= 0 || rawTag.charAt(len - 1) != ']') {
+            // No opening or wrong ordering "0[]0"
+            return NULL;
+        }
+
+        final String tagIndex = rawTag.substring(0, bracketStart);
+        for (int i = 0; i < tagIndex.length(); i++) {
+            char c = tagIndex.charAt(i);
+            if (c < '0' || c > '9') {
+                // `tagIndex` should be all digits.
+                return NULL;
+            }
+        }
+
+        final var bracketContent = rawTag.substring(bracketStart + 1, len - 1);
+        if (bracketContent.startsWith("UNIVERSAL ") && bracketContent.length() > 10) {
+            // `tagUniversal` should be "UNIVERSAL [a-zA-Z0-9]+".
+            for (int i = 10; i < bracketContent.length(); i++) {
+                char c = bracketContent.charAt(i);
+                if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))) {
+                    return NULL;
+                }
+            }
+            return new AsnSchemaTag(tagIndex, "", bracketContent);
+        } else {
+            for (int i = 0; i < bracketContent.length(); i++) {
+                char c = bracketContent.charAt(i);
+                if (c < '0' || c > '9') {
+                    return NULL;
+                }
+            }
+            // `tagContextSpecific` should be "[0-9]+".
+            return new AsnSchemaTag(tagIndex, bracketContent, "");
         }
     }
 
@@ -184,7 +226,7 @@ public class AsnSchemaTag {
      * @param tag The tag portion.
      * @return A new {@link AsnSchemaTag}.
      */
-    public static AsnSchemaTag create(int tagIndex, String tag) {
+    public static AsnSchemaTag create(final int tagIndex, final String tag) {
         return create(createRawTag(tagIndex, tag));
     }
 
@@ -225,7 +267,7 @@ public class AsnSchemaTag {
     /**
      * Creates the Universal portion of a tag based on the type
      *
-     * @param type AsnBuiltinType to map to universal tag number
+     * @param type {@link AsnBuiltinType} to map to universal tag number
      * @return the equivalent of the getTagUniversal for a tag created from this type
      */
     public static String createUniversalPortion(final AsnBuiltinType type) {
@@ -242,7 +284,6 @@ public class AsnSchemaTag {
     public String toString() {
         return getRawTag();
     }
-
 
     /** {@return the raw tag (that came from the AsantiAsnData)} */
     public String getRawTag() {
@@ -299,11 +340,11 @@ public class AsnSchemaTag {
     /**
      * Helper to map from AsnBuiltinType to the ASN.1 value for the Universal tag of this type.
      *
-     * @param type AsnBuiltinType to map to universal tag number.
+     * @param type {@link AsnBuiltinType} to map to universal tag number.
      * @return the String representation of the universal type (integer), empty string if there is
      *     no mapping.
      */
-    private static String getUniversalTagForBuiltInType(AsnBuiltinType type) {
+    private static String getUniversalTagForBuiltInType(final AsnBuiltinType type) {
         return Optional.ofNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).orElse("");
     }
 
@@ -311,8 +352,8 @@ public class AsnSchemaTag {
      * Map from the ASN.1 Universal tag to our AsnBuiltinType.
      *
      * @param universalTag ASN.1 Universal tag.
-     * @return Respective AsnBuiltinType for the Universal tag, {@link Optional#empty()} if there is
-     *     no match.
+     * @return Respective {@link AsnBuiltinType} for the Universal tag, {@link Optional#empty()} if
+     *     there is no match.
      */
     public static Optional<AsnBuiltinType> getBuiltInTypeForUniversalTag(final int universalTag) {
         return Optional.ofNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag));
