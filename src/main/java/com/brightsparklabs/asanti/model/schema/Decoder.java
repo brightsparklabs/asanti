@@ -24,10 +24,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Decoder {
     // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
@@ -39,14 +35,6 @@ public class Decoder {
 
     /** Joiner for creating tag strings. */
     private static final Joiner tagJoiner = Joiner.on("/");
-
-    // -------------------------------------------------------------------------
-    // INSTANCE VARIABLES
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // CONSTRUCTION
-    // -------------------------------------------------------------------------
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -72,7 +60,7 @@ public class Decoder {
 
         final Optional<AsnSchemaType> type = schema.getType(topLevelTypeName);
         if (type.isEmpty()) {
-            throw new RuntimeException("type [" + topLevelTypeName + "] does not exist in schema");
+            throw new RuntimeException("type [%s] does not exist in schema".formatted(topLevelTypeName));
         }
         return getDecodedTags(rawTags, type.get());
     }
@@ -110,7 +98,7 @@ public class Decoder {
      * @param rawTag Raw tag to decode.
      * @param type The top level type from which to begin decoding the raw tag.
      * @param session The session state that tracks the ordering and stateful part of decoding a
-     *     complete set of asn data..
+     *     complete set of asn data.
      * @return The result of the decode attempt containing the decoded tag.
      */
     public static OperationResult<DecodedTag, String> getDecodedTag(
@@ -129,13 +117,13 @@ public class Decoder {
             for (int i = decodedTags.size(); i < tags.size(); i++) {
                 final String unknownTag = tags.get(i);
                 decodedTags.add(unknownTag);
-                logger.debug("Unable to parse " + rawTag + " : " + unknownTag);
+                logger.debug("Unable to parse {} : {}", rawTag, unknownTag);
             }
         }
 
         // The raw tags create a new '/' for collection elements (eg .../foo/[0])
         // and we would rather have .../foo[0]
-        final String decodedTagPath = tagJoiner.join(decodedTags).replaceAll("/\\[", "\\[");
+        final String decodedTagPath = tagJoiner.join(decodedTags).replace("/[", "[");
 
         logger.trace("getDecodedTag {} => {}", rawTag, decodedTagPath);
 
@@ -170,7 +158,7 @@ public class Decoder {
             final String tag = rawTags.next();
 
             final String decodedTagPath =
-                    tagJoiner.join(result.decodedTags).replaceAll("/\\[", "\\[");
+                    tagJoiner.join(result.decodedTags).replace("/[", "[");
             // By definition the new tag is the child of its container.
             decodingSession.setContext(decodedTagPath);
 
