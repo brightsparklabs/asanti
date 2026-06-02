@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -28,10 +29,6 @@ import org.bouncycastle.asn1.*;
  * @author brightSPARK Labs
  */
 public class AsnBerDataReader {
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
@@ -51,49 +48,83 @@ public class AsnBerDataReader {
      * Reads the supplied ASN.1 BER/DER binary data and stops reading when it has read the specified
      * number of PDUs
      *
-     * @param source data to decode
-     * @param maxPDUs number of PDUs to read from the data. The returned list will be less than or
+     * @param source Data to decode.
+     * @param maxPDUs Number of PDUs to read from the data. The returned list will be less than or
      *     equal to this value. Set to {@code 0} for no maximum (or use {@link #read(ByteSource)}
      *     instead).
-     * @return list of {@link RawAsnData} objects found in the data
-     * @throws IOException if any errors occur reading the data
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
      */
-    public static ImmutableList<RawAsnData> read(ByteSource source, int maxPDUs)
+    public static ImmutableList<RawAsnData> read(final ByteSource source, final int maxPDUs)
             throws IOException {
-        final InputStream inputStream = source.openStream();
-        final ASN1InputStream asnInputStream = new ASN1InputStream(inputStream);
+        final int bufferSize = getOptimalBufferSize(source);
 
-        final List<RawAsnData> result = Lists.newArrayList();
+        try (final var inputStream = source.openStream();
+                final var bufferedStream = new BufferedInputStream(inputStream, bufferSize);
+                final var asnInputStream = new ASN1InputStream(bufferedStream)) {
 
-        ASN1Primitive asnObject = asnInputStream.readObject();
-        while (asnObject != null) {
-            final Map<String, byte[]> tagsToData =
-                    Maps.newLinkedHashMap(); // we want to preserve input order
+            final List<RawAsnData> result = Lists.newArrayList();
 
-            processDerObject(asnObject, "", tagsToData, 0);
-            final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
-            result.add(rawAsnData);
-            asnObject = asnInputStream.readObject();
+            ASN1Primitive asnObject = asnInputStream.readObject();
+            while (asnObject != null) {
+                final Map<String, byte[]> tagsToData =
+                        Maps.newLinkedHashMap(); // we want to preserve input order
 
-            /*
-             * NOTE: do not use '>=' in the below if statement as we use 0 (or
-             * negative numbers) to indicate no limit. We cannot use
-             * Integer#MAX_VALUE as iterables do not need to be limited to this
-             * size
-             */
-            if (result.size() == maxPDUs) {
-                break;
+                processDerObject(asnObject, "", tagsToData, 0);
+                final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
+                result.add(rawAsnData);
+                asnObject = asnInputStream.readObject();
+
+                /*
+                 * NOTE: do not use '>=' in the below if statement as we use 0 (or
+                 * negative numbers) to indicate no limit. We cannot use
+                 * Integer#MAX_VALUE as iterables do not need to be limited to this
+                 * size
+                 */
+                if (result.size() == maxPDUs) {
+                    break;
+                }
             }
+
+            asnInputStream.close();
+
+            return ImmutableList.copyOf(result);
         }
-
-        asnInputStream.close();
-
-        return ImmutableList.copyOf(result);
     }
 
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
+
+    /**
+     * Determines the optimal buffer size based on the source data size.
+     *
+     * <ul>
+     *     <li>Small files (<8KB): use file size to avoid over-allocation</li>
+     *     <li>Medium files (8KB-64KB): use 8KB buffer</li>
+     *     <li>Large files (>64KB): use larger 64KB buffer for better throughput</li>
+     * </ul>
+     *
+     * @param source The data source to read from.
+     * @return Optimal buffer size in bytes.
+     */
+    private static int getOptimalBufferSize(final ByteSource source) {
+        final long size = source.sizeIfKnown().or(0L);
+        if (size == 0) {
+            // Size unknown, use conservative 8KB default
+            return 8192;
+        } else if (size < 8192) {
+            // Small file: use exact size (rounded up to nearest 1KB to avoid tiny buffers)
+            return Math.max(1024, (int) size);
+        } else if (size < 65536) {
+            // Medium file: 8KB is efficient
+            return 8192;
+        } else {
+            // Large file: use 64KB for better throughput
+            // Cap at 64KB to avoid excessive memory usage when processing many files
+            return 65536;
+        }
+    }
 
     /**
      * Processes a DER object and stores the tags/data found in it
@@ -107,14 +138,15 @@ public class AsnBerDataReader {
     private static void processDerObject(
             ASN1Primitive derObject, String prefix, Map<String, byte[]> tagsToData, int index)
             throws IOException {
-        if (derObject instanceof ASN1Sequence sequence) {
-            processSequence(sequence, prefix, tagsToData);
-        } else if (derObject instanceof ASN1Set asn1Set) {
-            processSet(asn1Set, prefix, tagsToData);
-        } else if (derObject instanceof ASN1TaggedObject asn1TaggedObject) {
-            processTaggedObject(asn1TaggedObject, prefix, tagsToData, index);
-        } else {
-            processPrimitiveDerObject(derObject, prefix, tagsToData);
+        switch (derObject) {
+            case ASN1Sequence sequence ->
+                    processSequence(sequence, prefix, tagsToData);
+            case ASN1Set asn1Set -> processSet(asn1Set, prefix, tagsToData);
+            case ASN1TaggedObject asn1TaggedObject ->
+                    processTaggedObject(asn1TaggedObject, prefix, tagsToData,
+                            index);
+            default ->
+                    processPrimitiveDerObject(derObject, prefix, tagsToData);
         }
     }
 
