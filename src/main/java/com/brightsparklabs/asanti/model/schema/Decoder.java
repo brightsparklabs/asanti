@@ -104,7 +104,7 @@ public class Decoder {
      */
     public static OperationResult<DecodedTag, String> getDecodedTag(
             final String rawTag, final AsnSchemaType type, final DecodingSession session) {
-        final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
+        final List<String> tags = tagSplitter.splitToList(rawTag);
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(), type, session);
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
 

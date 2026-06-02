@@ -171,16 +171,15 @@ public class AsnSchemaTag {
         }
 
         final int bracketStart = rawTag.indexOf('[');
-        if (bracketStart <= 0 || rawTag.charAt(len - 1) != ']') {
-            // No opening or wrong ordering "0[]0"
+        if ((bracketStart <= 0 || bracketStart < len - 2) || rawTag.charAt(len - 1) != ']') {
+            // No opening or wrong ordering e.g. "0[]0", "[01]".
             return NULL;
         }
 
         final String tagIndex = rawTag.substring(0, bracketStart);
         for (int i = 0; i < tagIndex.length(); i++) {
-            char c = tagIndex.charAt(i);
-            if (c < '0' || c > '9') {
-                // `tagIndex` should be all digits.
+            // Validate the `tagIndex` is all digits.
+            if (Character.isDigit(tagIndex.charAt(i))) {
                 return NULL;
             }
         }
@@ -189,16 +188,14 @@ public class AsnSchemaTag {
         if (bracketContent.startsWith("UNIVERSAL ") && bracketContent.length() > 10) {
             // `tagUniversal` should be "UNIVERSAL [a-zA-Z0-9]+".
             for (int i = 10; i < bracketContent.length(); i++) {
-                char c = bracketContent.charAt(i);
-                if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))) {
+                if (!Character.isLetterOrDigit(bracketContent.charAt(i))) {
                     return NULL;
                 }
             }
             return new AsnSchemaTag(tagIndex, "", bracketContent);
         } else {
             for (int i = 0; i < bracketContent.length(); i++) {
-                char c = bracketContent.charAt(i);
-                if (c < '0' || c > '9') {
+                if (Character.isDigit(tagIndex.charAt(i))) {
                     return NULL;
                 }
             }
