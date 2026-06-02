@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
- * Interface for modeling ASN.1 data which has been mapped against a schema
+ * Interface for modeling ASN.1 data which has been mapped against a schema.
  *
  * @author brightSPARK Labs
  */
@@ -25,11 +25,11 @@ public interface AsnData {
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the {@link AsnPrimitiveType} of the specified tag
+     * Returns the {@link AsnPrimitiveType} of the specified tag.
      *
-     * @param tag tag to retrieve the type of
-     * @return the {@link AsnPrimitiveType} of the specified tag or or {@code Optional.absent()} if
-     *     the tag does not exist in this data.
+     * @param tag Tag to retrieve the type of.
+     * @return The {@link AsnPrimitiveType} of the specified tag or {@code Optional.absent()} if the
+     *     tag does not exist in this data.
      */
     Optional<AsnPrimitiveType> getPrimitiveType(String tag);
 
@@ -38,15 +38,26 @@ public interface AsnData {
      * "/Document/header/published/date", "/Document/header/lastModified/date",
      * "/Document/body/prefix/text"
      *
-     * @return all tags in the data
+     * @return All tags in the data.
      */
     ImmutableSet<String> getTags();
 
     /**
-     * Returns all tags which match the supplied regular expression
+     * Returns all tags found in the ASN data as a set of XPath like strings. E.g.
+     * "/Document/header/published/date", "/Document/header/lastModified/date",
+     * "/Document/body/prefix/text"
      *
-     * @param regex regular expression to match tags against
-     * @return all tags which match the supplied regular expression
+     * <p>Unlike {@link #getTags()} this also includes unmapped tags.
+     *
+     * @return All tags in the data.
+     */
+    ImmutableSet<String> getAllTags();
+
+    /**
+     * Returns all tags which match the supplied regular expression.
+     *
+     * @param regex Regular expression to match tags against.
+     * @return All tags which match the supplied regular expression.
      */
     ImmutableSet<String> getTagsMatching(Pattern regex);
 
@@ -54,23 +65,23 @@ public interface AsnData {
      * Returns the tags from the data which could not be mapped using the schema. E.g.
      * "/Document/body/content/99", "/Document/0[99]/0[1]/0[1]"
      *
-     * @return all unmapped tags in the data
+     * @return All unmapped tags in the data.
      */
     ImmutableSet<String> getUnmappedTags();
 
     /**
-     * Determines whether the specified tag is contained in the data
+     * Determines whether the specified tag is contained in the data.
      *
-     * @param tag tag to check
-     * @return {@code true} if the tag is in the data; {@code false} otherwise
+     * @param tag Tag to check.
+     * @return {@code true} if the tag is in the data; {@code false} otherwise.
      */
     boolean contains(String tag);
 
     /**
-     * Determines whether the data contains any tags matching the supplied regular expression
+     * Determines whether the data contains any tags matching the supplied regular expression.
      *
-     * @param regex regular expression to match tags against
-     * @return {@code true} if the tag is in the data; {@code false} otherwise
+     * @param regex Regular expression to match tags against.
+     * @return {@code true} if the tag is in the data; {@code false} otherwise.
      */
     boolean contains(Pattern regex);
 
@@ -80,17 +91,17 @@ public interface AsnData {
      * <p>Note that because this method is returning unprocessed bytes it will provide results for
      * partially matched tags as well as "raw" tags
      *
-     * @param tag tag associated with the data
-     * @return data associated with the specified tag or {@code Optional.absent()} if the tag does
-     *     not exist
+     * @param tag Tag associated with the data
+     * @return Data associated with the specified tag or {@code Optional.absent()} if the tag does
+     *     not exist.
      */
     Optional<byte[]> getBytes(String tag);
 
     /**
      * Gets the data (bytes) from all tags matching the supplied regular expression.
      *
-     * @param regex regular expression to match tags against
-     * @return data associated with the matching tags. Map is of form: {@code tag => data}
+     * @param regex Regular expression to match tags against.
+     * @return Data associated with the matching tags. Map is of form: {@code tag => data}.
      */
     ImmutableMap<String, byte[]> getBytesMatching(Pattern regex);
 
@@ -102,17 +113,17 @@ public interface AsnData {
      * "0x", as this function is implicitly returning a hex string, using the uppercase alphabet, eg
      * "0A12DF".
      *
-     * @param tag tag associated with the data
-     * @return data associated with the specified tag (e.g. {@code "010203"}) or {@code
-     *     Optional.absent()} if the tag does not exist
+     * @param tag Tag associated with the data.
+     * @return Data associated with the specified tag (e.g. {@code "010203"}) or {@code
+     *     Optional.absent()} if the tag does not exist.
      */
     Optional<String> getHexString(String tag);
 
     /**
      * Gets the data (bytes) from all tags matching the supplied regular expression as hex strings.
      *
-     * @param regex regular expression to match tags against
-     * @return data associated with the matching tags. Map is of form: {@code tag => data}
+     * @param regex Regular expression to match tags against.
+     * @return Data associated with the matching tags. Map is of form: {@code tag => data}.
      */
     ImmutableMap<String, String> getHexStringsMatching(Pattern regex);
 
@@ -120,12 +131,12 @@ public interface AsnData {
      * Gets the data (bytes) associated with the specified tag as a printable string.
      *
      * <p>Note that because this method needs to process the bytes in a way that requires knowing
-     * the tags type it will only return results for fully decoded tags
+     * the tags type it will only return results for fully decoded tags.
      *
-     * @param tag tag associated with the data
-     * @return data associated with the specified tag or {@code Optional.absent()} if the tag does
-     *     not exist
-     * @throws DecodeException if any errors occur decoding the data associated with the tag
+     * @param tag Tag associated with the data.
+     * @return Data associated with the specified tag or {@code Optional.absent()} if the tag does
+     *     not exist.
+     * @throws DecodeException if any errors occur decoding the data associated with the tag.
      */
     Optional<String> getPrintableString(String tag) throws DecodeException;
 
@@ -134,11 +145,11 @@ public interface AsnData {
      * strings.
      *
      * <p>Note that because this method needs to process the bytes in a way that requires knowing
-     * the tags type it will only return results for fully decoded tags
+     * the tags type it will only return results for fully decoded tags.
      *
-     * @param regex regular expression to match tags against
-     * @return data associated with the matching tags. Map is of form: {@code tag => data}
-     * @throws DecodeException if any errors occur decoding the data associated with the tags
+     * @param regex Regular expression to match tags against.
+     * @return Data associated with the matching tags. Map is of form: {@code tag => data}.
+     * @throws DecodeException If any errors occur decoding the data associated with the tags.
      */
     ImmutableMap<String, String> getPrintableStringsMatching(Pattern regex) throws DecodeException;
 
@@ -148,11 +159,11 @@ public interface AsnData {
      * <p>Note that because this method needs to process the bytes in a way that requires knowing
      * the tags' type it will only return results for fully decoded tags
      *
-     * @param tag tag associated with the data
-     * @param classOfT the class of data that is expected for this tag
-     * @param <T> the type of data that will be returned in the {@link Optional}
-     * @return data associated with the specified tag or {@code Optional.absent()} if the tag does
-     *     not exist
+     * @param tag Tag associated with the data.
+     * @param classOfT The class of data that is expected for this tag.
+     * @param <T> The type of data that will be returned in the {@link Optional}.
+     * @return Data associated with the specified tag or {@code Optional.absent()} if the tag does
+     *     not exist.
      *     <p>The expected Java object type for each ASN.1 schema type is:
      *     <ul>
      *       <li><b>BitString</b>: String
@@ -194,8 +205,8 @@ public interface AsnData {
      *       <li><b>VisibleString</b>: String
      *     </ul>
      *
-     * @throws DecodeException if any errors occur decoding the data associated with the tag
-     * @throws ClassCastException if the type of the tag does not match T
+     * @throws DecodeException If any errors occur decoding the data associated with the tag.
+     * @throws ClassCastException If the type of the tag does not match T.
      */
     <T> Optional<T> getDecodedObject(String tag, Class<T> classOfT)
             throws DecodeException, ClassCastException;
@@ -207,9 +218,9 @@ public interface AsnData {
      * <p>Note that because this method needs to process the bytes in a way that requires knowing
      * the tags type it will only return results for fully decoded tags
      *
-     * @param regex regular expression to match tags against
-     * @return data associated with the matching tags. Map is of form: {@code tag => data}
-     * @throws DecodeException if any errors occur decoding the data associated with the tags
+     * @param regex Regular expression to match tags against.
+     * @return Data associated with the matching tags. Map is of form: {@code tag => data}.
+     * @throws DecodeException If any errors occur decoding the data associated with the tags.
      */
     ImmutableMap<String, Object> getDecodedObjectsMatching(Pattern regex) throws DecodeException;
 }
