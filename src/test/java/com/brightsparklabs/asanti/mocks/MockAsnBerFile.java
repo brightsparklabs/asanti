@@ -8,7 +8,6 @@
 package com.brightsparklabs.asanti.mocks;
 
 import com.google.common.io.BaseEncoding;
-import com.google.common.io.ByteSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -113,8 +112,7 @@ public class MockAsnBerFile {
      * @return an ASN.1 BER binary file containing the specified number of PDUs
      * @throws IOException if any errors occur while creating the file
      */
-    public static ByteSource createAsnBerDataContainingDocumentPdus(int pduCount)
-            throws IOException {
+    public static byte[] createAsnBerDataContainingDocumentPdus(int pduCount) throws IOException {
         return createAsnBerData(pduCount, EXAMPLE_SCHEMA_DOCUMENT_PDU_MINIMUM_BER);
     }
 
@@ -126,7 +124,7 @@ public class MockAsnBerFile {
      * @return an ASN.1 BER binary file containing the specified number of PDUs
      * @throws IOException if any errors occur while creating the file
      */
-    public static ByteSource createAsnBerDataContainingPeoplePdus(int pduCount) throws IOException {
+    public static byte[] createAsnBerDataContainingPeoplePdus(int pduCount) throws IOException {
         return createAsnBerData(pduCount, EXAMPLE_SCHEMA_PEOPLE_PDU_MINIMUM_BER);
     }
 
@@ -137,16 +135,12 @@ public class MockAsnBerFile {
      * @param pduCount number of PDUs to include in the file
      * @param pdu bytes which comprise the PDU
      * @return an ASN.1 BER binary file containing the specified number of PDUs
-     * @throws IOException if any errors occur while creating the file
      */
-    public static ByteSource createAsnBerData(int pduCount, byte[] pdu) throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    public static byte[] createAsnBerData(int pduCount, byte[] pdu) throws IOException {
+        final var stream = new ByteArrayOutputStream();
         for (int i = 0; i < pduCount; i++) {
             stream.write(pdu);
         }
-
-        final ByteSource result = ByteSource.wrap(stream.toByteArray());
-        stream.close();
-        return result;
+        return stream.toByteArray();
     }
 }
