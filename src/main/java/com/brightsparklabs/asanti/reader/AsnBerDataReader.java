@@ -13,9 +13,12 @@ import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.io.ByteSource;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -37,34 +40,22 @@ public class AsnBerDataReader {
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** The minimum size of the input buffer (1KB). */
-    private static final int MIN_BUFFER_SIZE = 1024;
+    /** The minimum size of the input buffer (50MB). */
+    private static final int BUFFERED_STREAM_FALLBACK_SIZE = 50 * 1024 * 1024;
 
-    /** The default size of the file buffer (8KB). */
-    private static final int DEFAULT_BUFFER_SIZE = 8192;
-
-    /** The size of the input stream buffer for medium files (8KB). */
-    private static final int MEDIUM_BUFFER_SIZE = 8192;
-
-    /** The threshold for if a file is considered large (64KB). */
-    private static final int LARGE_FILE_THRESHOLD = 65536;
-
-    /** The size of the input stream buffer for large files (64KB). */
-    private static final int LARGE_BUFFER_SIZE = 65536;
-
-    /** TLV encoding constants */
+    /** TLV encoding constants. */
     private static final int MIN_TLV_OCTETS = 3;
 
     private static final int SINGLE_BYTE_LENGTH_THRESHOLD = 127;
     private static final int LENGTH_MASK = 0x7f;
 
-    /** Bit masks for tag analysis */
+    /** Bit masks for tag analysis. */
     private static final int TAG_CLASS_MASK = 0xC0;
 
     private static final int TAG_NUMBER_MASK = 0x1F;
     private static final int CONSTRUCTED_BIT_MASK = 0x20;
 
-    /** Reusable empty byte array to avoid repeated allocations */
+    /** Reusable empty byte array to avoid repeated allocations. */
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     // -------------------------------------------------------------------------
@@ -74,12 +65,60 @@ public class AsnBerDataReader {
     /**
      * Reads the supplied ASN.1 BER/DER binary data.
      *
-     * @param source Data to decode.
+     * <p>For files below {@link #BUFFERED_STREAM_FALLBACK_SIZE 50MB} this will read in all the
+     * bytes at once. For files over this limit, a buffered input stream will be used instead. Use
+     * {@link #read(InputStream)} or {@link #read(byte[])} if you'd prefer different behaviour.
+     *
+     * @param source The path to the file containing the ASN.1 BER/DER binary data.
      * @return List of {@link RawAsnData} objects found in the data.
      * @throws IOException If any errors occur reading the data.
      */
-    public static ImmutableList<RawAsnData> read(final ByteSource source) throws IOException {
+    public static ImmutableList<RawAsnData> read(final Path source) throws IOException {
+        if (Files.size(source) < BUFFERED_STREAM_FALLBACK_SIZE) {
+            return read(Files.readAllBytes(source));
+        }
+
+        try (final var bufferedStream = new BufferedInputStream(Files.newInputStream(source))) {
+            return read(bufferedStream, 0);
+        }
+    }
+
+    /**
+     * Reads the supplied ASN.1 BER/DER binary data.
+     *
+     * @param source The ASN.1 BER/DER binary data to decode.
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
+     */
+    public static ImmutableList<RawAsnData> read(final byte[] source) throws IOException {
         return read(source, 0);
+    }
+
+    /**
+     * Reads the supplied ASN.1 BER/DER binary data.
+     *
+     * @param source An input stream containing the ASN.1 BER/DER binary data to decode.
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
+     */
+    public static ImmutableList<RawAsnData> read(final InputStream source) throws IOException {
+        return read(source, 0);
+    }
+
+    /**
+     * Reads the supplied ASN.1 BER/DER binary data and stops reading when it has read the specified
+     * number of PDUs.
+     *
+     * @param source The ASN.1 BER/DER binary data to decode.
+     * @param maxPDUs Number of PDUs to read from the data. The returned list will be less than or
+     *     equal to this value. Set to {@code 0} for no maximum (or use {@link #read(byte[])}
+     *     instead).
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
+     */
+    public static ImmutableList<RawAsnData> read(final byte[] source, final int maxPDUs)
+            throws IOException {
+        return read(new ByteArrayInputStream(source), maxPDUs);
     }
 
     /**
@@ -88,19 +127,14 @@ public class AsnBerDataReader {
      *
      * @param source Data to decode.
      * @param maxPDUs Number of PDUs to read from the data. The returned list will be less than or
-     *     equal to this value. Set to {@code 0} for no maximum (or use {@link #read(ByteSource)}
+     *     equal to this value. Set to {@code 0} for no maximum (or use {@link #read(InputStream)}
      *     instead).
      * @return List of {@link RawAsnData} objects found in the data.
      * @throws IOException If any errors occur reading the data.
      */
-    public static ImmutableList<RawAsnData> read(final ByteSource source, final int maxPDUs)
+    public static ImmutableList<RawAsnData> read(final InputStream source, final int maxPDUs)
             throws IOException {
-        final int bufferSize = getOptimalBufferSize(source);
-
-        try (final var inputStream = source.openStream();
-                final var bufferedStream = new BufferedInputStream(inputStream, bufferSize);
-                final var asnInputStream = new ASN1InputStream(bufferedStream)) {
-
+        try (final var asnInputStream = new ASN1InputStream(source)) {
             final List<RawAsnData> result = Lists.newArrayList();
 
             ASN1Primitive asnObject = asnInputStream.readObject();
@@ -134,36 +168,6 @@ public class AsnBerDataReader {
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
-
-    /**
-     * Determines the optimal buffer size based on the source data size.
-     *
-     * <ul>
-     *   <li>Small files (<8KB): use file size to avoid over-allocation
-     *   <li>Medium files (8KB-64KB): use 8KB buffer
-     *   <li>Large files (>64KB): use larger 64KB buffer for better throughput
-     * </ul>
-     *
-     * @param source The data source to read from.
-     * @return Optimal buffer size in bytes.
-     */
-    private static int getOptimalBufferSize(final ByteSource source) {
-        final long size = source.sizeIfKnown().or(0L);
-        if (size == 0) {
-            // Size unknown, use conservative default
-            return DEFAULT_BUFFER_SIZE;
-        } else if (size < DEFAULT_BUFFER_SIZE) {
-            // Small file: use exact size (rounded up to nearest 1KB to avoid tiny buffers)
-            return Math.max(MIN_BUFFER_SIZE, (int) size);
-        } else if (size < LARGE_FILE_THRESHOLD) {
-            // Medium file: 8KB is efficient
-            return MEDIUM_BUFFER_SIZE;
-        } else {
-            // Large file: use 64KB for better throughput
-            // Cap at 64KB to avoid excessive memory usage when processing many files
-            return LARGE_BUFFER_SIZE;
-        }
-    }
 
     /**
      * Processes a DER object and stores the tags/data found in it
