@@ -50,7 +50,7 @@ public class AsantiTest {
         String berFilename = getClass().getResource("/TestMostSimple.ber").getFile();
         final File berFile = new File(berFilename);
 
-        final ByteSource byteSource = Files.asByteSource(berFile);
+        final var byteSource = Files.toByteArray(berFile);
         final ImmutableList<RawAsnData> allRawAsnData = Asanti.readAsnBerData(byteSource);
 
         int count = 0;
@@ -88,8 +88,7 @@ public class AsantiTest {
         final CharSource schemaSource =
                 Resources.asCharSource(
                         getClass().getResource("/TestMostSimple.asn"), Charsets.UTF_8);
-        final ByteSource berSource =
-                Resources.asByteSource(getClass().getResource("/TestMostSimple.ber"));
+        final var berSource = Resources.toByteArray(getClass().getResource("/TestMostSimple.ber"));
 
         final ImmutableList<AsantiAsnData> allDecodedData =
                 Asanti.decodeAsnData(berSource, schemaSource, "Human");
@@ -126,7 +125,7 @@ public class AsantiTest {
 
         final CharSource schemaSource =
                 Resources.asCharSource(getClass().getResource("/barTypeDef.asn"), Charsets.UTF_8);
-        final ByteSource berSource = Resources.asByteSource(getClass().getResource("/bar.ber"));
+        final var berSource = Resources.toByteArray(getClass().getResource("/bar.ber"));
 
         final ImmutableList<AsantiAsnData> allDecodedData =
                 Asanti.decodeAsnData(berSource, schemaSource, "Bar");
@@ -152,8 +151,7 @@ public class AsantiTest {
         final CharSource schemaSource =
                 Resources.asCharSource(
                         getClass().getResource("/TestMostSimpleTypeDef.asn"), Charsets.UTF_8);
-        final ByteSource berSource =
-                Resources.asByteSource(getClass().getResource("/TestMostSimple.ber"));
+        final var berSource = Resources.toByteArray(getClass().getResource("/TestMostSimple.ber"));
 
         final ImmutableList<AsantiAsnData> allDecodedData =
                 Asanti.decodeAsnData(berSource, schemaSource, "Human");
@@ -195,8 +193,8 @@ public class AsantiTest {
         final CharSource schemaSource =
                 Resources.asCharSource(
                         getClass().getResource("/validation/Simple3.asn"), Charsets.UTF_8);
-        final ByteSource berSource =
-                Resources.asByteSource(getClass().getResource("/validation/Simple3_missing_b.ber"));
+        final var berSource =
+                Resources.toByteArray(getClass().getResource("/validation/Simple3_missing_b.ber"));
 
         final ImmutableList<AsantiAsnData> allDecodedData =
                 Asanti.decodeAsnData(berSource, schemaSource, "Human");

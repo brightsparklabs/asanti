@@ -14,7 +14,6 @@ import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.BaseEncoding;
-import com.google.common.io.ByteSource;
 import org.junit.Test;
 
 /**
@@ -63,7 +62,7 @@ public class AsnBerDataReaderTest {
 
     @Test
     public void testReadFileInt() throws Exception {
-        final ByteSource berData = MockAsnBerFile.createAsnBerDataContainingPeoplePdus(5);
+        final var berData = MockAsnBerFile.createAsnBerDataContainingPeoplePdus(5);
 
         // test minimum
         ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData, 1);
@@ -92,7 +91,7 @@ public class AsnBerDataReaderTest {
 
     @Test
     public void testReadFile() throws Exception {
-        final ByteSource berData = MockAsnBerFile.createAsnBerDataContainingDocumentPdus(5);
+        final var berData = MockAsnBerFile.createAsnBerDataContainingDocumentPdus(5);
         final ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData);
         assertEquals(5, result.size());
         for (final RawAsnData pdu : result) {
@@ -147,7 +146,7 @@ public class AsnBerDataReaderTest {
 
     @Test
     public void testReadFile_LargeOctetString() throws Exception {
-        final ByteSource berData =
+        final var berData =
                 MockAsnBerFile.createAsnBerData(
                         5, EXAMPLE_SCHEMA_PEOPLE_PDU_LARGE_OCTET_STRING_BER);
         final ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData);

@@ -13,82 +13,156 @@ import com.brightsparklabs.asanti.model.schema.tag.AsnSchemaTag;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.io.ByteSource;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import org.bouncycastle.asn1.*;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1TaggedObject;
+import org.bouncycastle.asn1.BERTags;
 
 /**
- * Reads data from ASN.1 BER/DER binary files
+ * Reads data from ASN.1 BER/DER binary files.
  *
  * @author brightSPARK Labs
  */
 public class AsnBerDataReader {
     // -------------------------------------------------------------------------
-    // CLASS VARIABLES
+    // CONSTANTS
     // -------------------------------------------------------------------------
+
+    /** The minimum size of the input buffer (50MB). */
+    private static final int BUFFERED_STREAM_FALLBACK_SIZE = 50 * 1024 * 1024;
+
+    /** TLV encoding constants. */
+    private static final int MIN_TLV_OCTETS = 3;
+
+    private static final int SINGLE_BYTE_LENGTH_THRESHOLD = 127;
+    private static final int LENGTH_MASK = 0x7f;
+
+    /** Bit masks for tag analysis. */
+    private static final int TAG_CLASS_MASK = 0xC0;
+
+    private static final int TAG_NUMBER_MASK = 0x1F;
+    private static final int CONSTRUCTED_BIT_MASK = 0x20;
+
+    /** Reusable empty byte array to avoid repeated allocations. */
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * Reads the supplied ASN.1 BER/DER binary data
+     * Reads the supplied ASN.1 BER/DER binary data.
      *
-     * @param source data to decode
-     * @return list of {@link RawAsnData} objects found in the data
-     * @throws IOException if any errors occur reading the data
+     * <p>For files below {@link #BUFFERED_STREAM_FALLBACK_SIZE 50MB} this will read in all the
+     * bytes at once. For files over this limit, a buffered input stream will be used instead. Use
+     * {@link #read(InputStream)} or {@link #read(byte[])} if you'd prefer different behaviour.
+     *
+     * @param source The path to the file containing the ASN.1 BER/DER binary data.
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
      */
-    public static ImmutableList<RawAsnData> read(ByteSource source) throws IOException {
+    public static ImmutableList<RawAsnData> read(final Path source) throws IOException {
+        if (Files.size(source) < BUFFERED_STREAM_FALLBACK_SIZE) {
+            return read(Files.readAllBytes(source));
+        }
+
+        try (final var bufferedStream = new BufferedInputStream(Files.newInputStream(source))) {
+            return read(bufferedStream, 0);
+        }
+    }
+
+    /**
+     * Reads the supplied ASN.1 BER/DER binary data.
+     *
+     * @param source The ASN.1 BER/DER binary data to decode.
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
+     */
+    public static ImmutableList<RawAsnData> read(final byte[] source) throws IOException {
+        return read(source, 0);
+    }
+
+    /**
+     * Reads the supplied ASN.1 BER/DER binary data.
+     *
+     * @param source An input stream containing the ASN.1 BER/DER binary data to decode.
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
+     */
+    public static ImmutableList<RawAsnData> read(final InputStream source) throws IOException {
         return read(source, 0);
     }
 
     /**
      * Reads the supplied ASN.1 BER/DER binary data and stops reading when it has read the specified
-     * number of PDUs
+     * number of PDUs.
      *
-     * @param source data to decode
-     * @param maxPDUs number of PDUs to read from the data. The returned list will be less than or
-     *     equal to this value. Set to {@code 0} for no maximum (or use {@link #read(ByteSource)}
+     * @param source The ASN.1 BER/DER binary data to decode.
+     * @param maxPDUs Number of PDUs to read from the data. The returned list will be less than or
+     *     equal to this value. Set to {@code 0} for no maximum (or use {@link #read(byte[])}
      *     instead).
-     * @return list of {@link RawAsnData} objects found in the data
-     * @throws IOException if any errors occur reading the data
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
      */
-    public static ImmutableList<RawAsnData> read(ByteSource source, int maxPDUs)
+    public static ImmutableList<RawAsnData> read(final byte[] source, final int maxPDUs)
             throws IOException {
-        final InputStream inputStream = source.openStream();
-        final ASN1InputStream asnInputStream = new ASN1InputStream(inputStream);
+        return read(new ByteArrayInputStream(source), maxPDUs);
+    }
 
-        final List<RawAsnData> result = Lists.newArrayList();
+    /**
+     * Reads the supplied ASN.1 BER/DER binary data and stops reading when it has read the specified
+     * number of PDUs.
+     *
+     * @param source Data to decode.
+     * @param maxPDUs Number of PDUs to read from the data. The returned list will be less than or
+     *     equal to this value. Set to {@code 0} for no maximum (or use {@link #read(InputStream)}
+     *     instead).
+     * @return List of {@link RawAsnData} objects found in the data.
+     * @throws IOException If any errors occur reading the data.
+     */
+    public static ImmutableList<RawAsnData> read(final InputStream source, final int maxPDUs)
+            throws IOException {
+        try (final var asnInputStream = new ASN1InputStream(source)) {
+            final List<RawAsnData> result = Lists.newArrayList();
 
-        ASN1Primitive asnObject = asnInputStream.readObject();
-        while (asnObject != null) {
-            final Map<String, byte[]> tagsToData =
-                    Maps.newLinkedHashMap(); // we want to preserve input order
+            ASN1Primitive asnObject = asnInputStream.readObject();
+            while (asnObject != null) {
+                final Map<String, byte[]> tagsToData =
+                        Maps.newLinkedHashMap(); // we want to preserve input order
 
-            processDerObject(asnObject, "", tagsToData, 0);
-            final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
-            result.add(rawAsnData);
-            asnObject = asnInputStream.readObject();
+                final StringBuilder tagBuilder = new StringBuilder();
 
-            /*
-             * NOTE: do not use '>=' in the below if statement as we use 0 (or
-             * negative numbers) to indicate no limit. We cannot use
-             * Integer#MAX_VALUE as iterables do not need to be limited to this
-             * size
-             */
-            if (result.size() == maxPDUs) {
-                break;
+                final int rootType = getType(asnObject);
+                processDerObject(asnObject, tagBuilder, tagsToData, 0, rootType);
+                final RawAsnData rawAsnData = new RawAsnDataImpl(tagsToData);
+                result.add(rawAsnData);
+                asnObject = asnInputStream.readObject();
+
+                /*
+                 * NOTE: do not use '>=' in the below if statement as we use 0 (or
+                 * negative numbers) to indicate no limit. We cannot use
+                 * Integer#MAX_VALUE as iterables do not need to be limited to this
+                 * size
+                 */
+                if (result.size() == maxPDUs) {
+                    break;
+                }
             }
+
+            return ImmutableList.copyOf(result);
         }
-
-        asnInputStream.close();
-
-        return ImmutableList.copyOf(result);
     }
 
     // -------------------------------------------------------------------------
@@ -98,84 +172,67 @@ public class AsnBerDataReader {
     /**
      * Processes a DER object and stores the tags/data found in it
      *
-     * @param derObject object to process
-     * @param prefix prefix to prepend to any tags found
-     * @param tagsToData storage for the tags/data found
-     * @param index the index of this item within the parent container
-     * @throws IOException if any errors occur reading from the file
+     * @param derObject Object to process.
+     * @param tagBuilder StringBuilder for building tag paths efficiently.
+     * @param tagsToData Storage for the tags/data found.
+     * @param index The index of this item within the parent container.
+     * @param objectType The pre-calculated type byte from getType(derObject).
+     * @throws IOException If any errors occur reading from the file.
      */
     private static void processDerObject(
-            ASN1Primitive derObject, String prefix, Map<String, byte[]> tagsToData, int index)
+            final ASN1Primitive derObject,
+            final StringBuilder tagBuilder,
+            final Map<String, byte[]> tagsToData,
+            final int index,
+            final int objectType)
             throws IOException {
-        if (derObject instanceof ASN1Sequence sequence) {
-            processSequence(sequence, prefix, tagsToData);
-        } else if (derObject instanceof ASN1Set asn1Set) {
-            processSet(asn1Set, prefix, tagsToData);
-        } else if (derObject instanceof ASN1TaggedObject asn1TaggedObject) {
-            processTaggedObject(asn1TaggedObject, prefix, tagsToData, index);
-        } else {
-            processPrimitiveDerObject(derObject, prefix, tagsToData);
+        switch (derObject) {
+            case ASN1TaggedObject tagged ->
+                    processTaggedObject(tagged, tagBuilder, tagsToData, index, objectType);
+            case ASN1Sequence sequence -> processElements(sequence, tagBuilder, tagsToData);
+            case ASN1Set set -> processElements(set, tagBuilder, tagsToData);
+            case ASN1Primitive primitive ->
+                    processPrimitiveDerObject(primitive, tagBuilder.toString(), tagsToData);
         }
     }
 
     /**
-     * Processes an ASN.1 'Sequence' and stores the tags/data found in it
+     * Processes elements from an ASN.1 Sequence or Set using modern iteration.
      *
-     * @param asnSequence sequence to process
-     * @param prefix prefix to prepend to any tags found
-     * @param tagsToData storage for the tags/data found
-     * @throws IOException if any errors occur reading from the file
-     */
-    private static void processSequence(
-            ASN1Sequence asnSequence, String prefix, Map<String, byte[]> tagsToData)
-            throws IOException {
-        processElementsFromSequenceOrSet(asnSequence.getObjects(), prefix, tagsToData);
-    }
-
-    /**
-     * Processes an ASN.1 'Set' and stores the tags/data found in it
+     * <p>OPTIMIZATION: Uses Iterator instead of legacy Enumeration. Both ASN1Sequence and ASN1Set
+     * implement Iterable&lt;ASN1Encodable&gt;, allowing type-safe iteration without casting.
      *
-     * @param asnSet set to process
-     * @param prefix prefix to prepend to any tags found
-     * @param tagsToData storage for the tags/data found
-     * @throws IOException if any errors occur reading from the file
-     */
-    private static void processSet(ASN1Set asnSet, String prefix, Map<String, byte[]> tagsToData)
-            throws IOException {
-        processElementsFromSequenceOrSet(asnSet.getObjects(), prefix, tagsToData);
-    }
-
-    /**
-     * Processes the elements found in an ASN.1 'Sequence' or ASN.1 'Set' stores the tags/data found
-     * in them
+     * <p>OPTIMIZATION: Calculates type once per element and passes it to processDerObject to avoid
+     * redundant getEncoded() calls.
      *
-     * @param elements elements from the sequence or set
-     * @param prefix prefix to prepend to any tags found
-     * @param tagsToData storage for the tags/data found
-     * @throws IOException if any errors occur reading from the file
+     * @param elements The iterable collection of ASN.1 elements (sequence or set).
+     * @param tagBuilder StringBuilder for building tag paths efficiently.
+     * @param tagsToData Storage for the tags/data found.
+     * @throws IOException If any errors occur reading from the file.
      */
-    @SuppressWarnings("JdkObsolete") // Bouncy Castle lib returns enumeration.
-    private static void processElementsFromSequenceOrSet(
-            Enumeration<?> elements, String prefix, Map<String, byte[]> tagsToData)
+    private static void processElements(
+            final Iterable<ASN1Encodable> elements,
+            final StringBuilder tagBuilder,
+            final Map<String, byte[]> tagsToData)
             throws IOException {
         int index = 0;
-        while (elements.hasMoreElements()) {
-            final Object obj = elements.nextElement();
-            final ASN1Primitive derObject =
-                    (obj instanceof ASN1Primitive)
-                            ? (ASN1Primitive) obj
-                            : ((ASN1Encodable) obj).toASN1Primitive();
+        final int baseLength = tagBuilder.length();
 
-            boolean isTagged = (derObject instanceof ASN1TaggedObject);
-            String elementPrefix = prefix;
+        for (final ASN1Encodable encodable : elements) {
+            final ASN1Primitive derObject = encodable.toASN1Primitive();
+
+            final int objectType = getType(derObject);
+            final boolean isTagged = (derObject instanceof ASN1TaggedObject);
 
             if (!isTagged) {
-                // Because this type is not tagged then we need to add a universal tag
-                int tagNumber = getTagNumber(getType(derObject));
-                elementPrefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, tagNumber);
+                final int tagNumber = getTagNumber(objectType);
+                tagBuilder.append('/').append(AsnSchemaTag.createRawTagUniversal(index, tagNumber));
             }
 
-            processDerObject(derObject, elementPrefix, tagsToData, index);
+            processDerObject(derObject, tagBuilder, tagsToData, index, objectType);
+
+            // Restore to base length for next iteration
+            tagBuilder.setLength(baseLength);
             index++;
         }
 
@@ -184,44 +241,42 @@ public class AsnBerDataReader {
             // Sequence/Set is valid, for example all the components could be OPTIONAL)
             // Make an empty data object against this tag so that we know we received the
             // Constructed type as this is important for decoding and validation.
-            tagsToData.put(prefix, new byte[0]);
+            tagsToData.put(tagBuilder.toString(), EMPTY_BYTE_ARRAY);
         }
     }
 
     /**
-     * Processes an ASN.1 'Tagged' object and stores the tags/data found in it
+     * Processes an ASN.1 'Tagged' object and stores the tags/data found in it.
      *
-     * @param asnTaggedObject object to process
-     * @param prefix prefix to prepend to any tags found
-     * @param tagsToData storage for the tags/data found
-     * @throws IOException if any errors occur reading from the file
+     * @param asnTaggedObject Object to process.
+     * @param tagBuilder StringBuilder for building tag paths efficiently.
+     * @param tagsToData Storage for the tags/data found.
+     * @param index The index of this item within the parent container.
+     * @param containingType The pre-calculated type of the tagged object.
+     * @throws IOException If any errors occur reading from the file.
      */
     private static void processTaggedObject(
-            ASN1TaggedObject asnTaggedObject,
-            String prefix,
-            Map<String, byte[]> tagsToData,
-            int index)
+            final ASN1TaggedObject asnTaggedObject,
+            final StringBuilder tagBuilder,
+            final Map<String, byte[]> tagsToData,
+            final int index,
+            final int containingType)
             throws IOException {
-
-        ASN1Primitive obj = asnTaggedObject.getBaseObject().toASN1Primitive();
+        final var obj = asnTaggedObject.getBaseObject().toASN1Primitive();
 
         if (asnTaggedObject.getTagClass() == BERTags.APPLICATION) {
             // Process ASN.1 application objects.
-            prefix = prefix + "/" + asnTaggedObject.getTagNo();
+            tagBuilder.append('/').append(asnTaggedObject.getTagNo());
         } else {
-            prefix =
-                    prefix
-                            + "/"
-                            + AsnSchemaTag.createRawTag(
-                                    index, String.valueOf(asnTaggedObject.getTagNo()));
+            tagBuilder
+                    .append('/')
+                    .append(
+                            AsnSchemaTag.createRawTag(
+                                    index, String.valueOf(asnTaggedObject.getTagNo())));
         }
 
-        int containingType = getType(asnTaggedObject);
-        if (isConstructedType(containingType)) {
-            index = 0;
-        }
-
-        int type = getType(obj);
+        final int containerIndex = isConstructedType(containingType) ? 0 : index;
+        final int childType = getType(obj);
 
         // We are looking for where UNIVERSAL tags are used in the encoding, so that we can insert
         // appropriate tags.
@@ -230,89 +285,99 @@ public class AsnBerDataReader {
         // to just give it a universal type of either 16 or 4 (Sequence for constructed and
         // Octet String otherwise)
         // This means that we need to check for isExplicit as well as whether it is a Universal type
-        if (asnTaggedObject.isExplicit() && isUniversalType(type)) {
-            int number = getTagNumber(type);
-            prefix = prefix + "/" + AsnSchemaTag.createRawTagUniversal(index, number);
+        if (asnTaggedObject.isExplicit() && isUniversalType(childType)) {
+            int number = getTagNumber(childType);
+            tagBuilder
+                    .append('/')
+                    .append(AsnSchemaTag.createRawTagUniversal(containerIndex, number));
         }
 
         processDerObject(
-                asnTaggedObject.getBaseObject().toASN1Primitive(), prefix, tagsToData, index);
+                asnTaggedObject.getBaseObject().toASN1Primitive(),
+                tagBuilder,
+                tagsToData,
+                containerIndex,
+                childType);
     }
 
     /**
      * Processes an ASN.1 'primitive' object and stores the binary data in it against the supplied
      * tag
      *
-     * @param derObject object to process
-     * @param tag tag to associate the data with
-     * @param tagsToData storage for the data found
-     * @throws IOException if any errors occur reading from the file
+     * @param derObject Object to process.
+     * @param tag Tag to associate the data with.
+     * @param tagsToData Storage for the data found.
+     * @throws IOException If any errors occur reading from the file.
      */
     private static void processPrimitiveDerObject(
-            ASN1Primitive derObject, String tag, Map<String, byte[]> tagsToData)
+            final ASN1Primitive derObject, final String tag, final Map<String, byte[]> tagsToData)
             throws IOException {
-        // get the bytes representing Tag-Length-Value
         final byte[] tlvData = derObject.getEncoded();
-
-        // extract the value
-        byte[] value = new byte[0];
-        // must be at least three octets to contain a value
-        if (tlvData.length >= 3) {
-            // determine the number of bytes which define the length
-            int numberOfAdditionalLengthBytes = 0;
-            final int length = tlvData[1] & 0xff;
-            if (length > 127) {
-                // more than one byte used to specify length
-                numberOfAdditionalLengthBytes = length & 0x7f;
-            }
-
-            // extract and store value
-            final int firstDataByteIndex = 2 + numberOfAdditionalLengthBytes;
-            value = Arrays.copyOfRange(tlvData, firstDataByteIndex, tlvData.length);
-        }
-
+        final byte[] value = extractValueFromTlv(tlvData);
         tagsToData.put(tag, value);
     }
 
     /**
-     * Returns the T from a TLV (Type Length Value) triplet from the ASN1Primitive object
+     * Extracts the value (V) from a TLV (Tag-Length-Value) encoded byte array.
      *
-     * @param object the ASN1Primitive to extract the T from
-     * @return the T from the TLV
+     * @param tlvData The complete TLV-encoded data.
+     * @return The value portion, or an empty array if the data is too short.
      */
-    private static int getType(ASN1Primitive object) throws IOException {
+    private static byte[] extractValueFromTlv(final byte[] tlvData) {
+        // Must be at least three octets to contain a value.
+        if (tlvData.length < MIN_TLV_OCTETS) {
+            return EMPTY_BYTE_ARRAY;
+        }
+
+        // Determine the number of bytes which define the length.
+        final int lengthByte = tlvData[1] & 0xff;
+        final int lengthFieldSize =
+                (lengthByte > SINGLE_BYTE_LENGTH_THRESHOLD) ? (lengthByte & LENGTH_MASK) : 0;
+
+        // Extract value (skip tag byte + length field).
+        final int valueStartIndex = 2 + lengthFieldSize;
+        return Arrays.copyOfRange(tlvData, valueStartIndex, tlvData.length);
+    }
+
+    /**
+     * Returns the T from a TLV (Type Length Value) triplet from the ASN1Primitive object.
+     *
+     * @param object The ASN1Primitive to extract the T from.
+     * @return The T from the TLV.
+     */
+    private static int getType(final ASN1Primitive object) throws IOException {
         return object.getEncoded()[0] & 0xff;
     }
 
     /**
      * Encoding uses TLV (Type Length Value) triplets. This function is checking whether the T is a
-     * Universal tag
+     * Universal tag.
      *
-     * @param type The T from the TLV encoding
-     * @return true if the type is Universal
+     * @param type The T from the TLV encoding.
+     * @return true if the type is Universal.
      */
-    private static boolean isUniversalType(int type) {
-        return ((type & 0xC0) == 0);
+    private static boolean isUniversalType(final int type) {
+        return ((type & TAG_CLASS_MASK) == 0);
     }
 
     /**
-     * This masks out the Tag Class and the Constructed/Primitive bits and returns just the number
+     * This masks out the Tag Class and the Constructed/Primitive bits and returns just the number.
      *
-     * @param type the T from the TLV triplet
+     * @param type the T from the TLV triplet.
      * @return the number part of the tag (the lower 5 bits).
      */
-    private static int getTagNumber(int type) {
-        return type & 0x1F;
+    private static int getTagNumber(final int type) {
+        return type & TAG_NUMBER_MASK;
     }
 
     /**
      * Encoding uses TLV (Type Length Value) triplets. This function is checking whether the T is a
-     * Constructed type (bit 5 is 1)
+     * Constructed type (bit 5 is 1).
      *
-     * @param type The T from the TLV encoding
-     * @return true if the type is Constructed
+     * @param type The T from the TLV encoding.
+     * @return {@code true} if the type is Constructed.
      */
-    private static boolean isConstructedType(int type) {
-        return (type & 0x20) == 0x20;
+    private static boolean isConstructedType(final int type) {
+        return (type & CONSTRUCTED_BIT_MASK) == CONSTRUCTED_BIT_MASK;
     }
 }

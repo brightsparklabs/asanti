@@ -21,7 +21,6 @@ import com.brightsparklabs.asanti.validator.Validators;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Resources;
 import org.junit.Test;
@@ -35,8 +34,7 @@ public class Validation {
                         getClass().getResource("/validation/Simple.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/validation/Simple.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/validation/Simple.ber"));
 
         String topLevelType = "Human";
 
@@ -67,8 +65,8 @@ public class Validation {
                         getClass().getResource("/validation/Simple2.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/validation/Simple2.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/validation/Simple2.ber"));
 
         String topLevelType = "Human";
 

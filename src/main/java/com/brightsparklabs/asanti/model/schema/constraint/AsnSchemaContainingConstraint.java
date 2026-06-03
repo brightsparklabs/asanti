@@ -14,7 +14,6 @@ import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFailure;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.ByteSource;
 import java.io.IOException;
 
 /**
@@ -66,14 +65,13 @@ public class AsnSchemaContainingConstraint extends AbstractAsnSchemaConstraint {
 
         ImmutableSet.Builder<SchemaConstraintValidationFailure> builder = ImmutableSet.builder();
 
-        final ByteSource byteSource = ByteSource.wrap(bytes);
         try {
-            final ImmutableList<RawAsnData> read = AsnBerDataReader.read(byteSource);
+            final ImmutableList<RawAsnData> read = AsnBerDataReader.read(bytes);
             if (read.isEmpty()) {
                 builder.add(
                         new SchemaConstraintValidationFailure(
                                 FailureType.DataIncorrectlyFormatted,
-                                "Got no PDUs from aliased type, got " + read.size()));
+                                "Got no PDUs from aliased type, got 0"));
             }
         } catch (final IOException e) {
             builder.add(

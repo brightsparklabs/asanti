@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import com.google.common.io.BaseEncoding;
-import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Files;
 import java.io.BufferedReader;
@@ -141,9 +140,8 @@ public class AsantiCli {
 
             logger.info("Loading file: " + berFile.getCanonicalPath());
 
-            final ByteSource byteSource = Files.asByteSource(berFile);
             final ImmutableList<AsantiAsnData> pdus =
-                    Asanti.decodeAsnData(byteSource, asnSchema, topLevelType);
+                    Asanti.decodeAsnData(Files.toByteArray(berFile), asnSchema, topLevelType);
             for (int i = 0; i < pdus.size(); i++) {
 
                 logger.info("Parsing PDU[{}]", i);
@@ -250,8 +248,7 @@ public class AsantiCli {
      * @throws IOException if any errors occur while parsing
      */
     private static void testReadingBerFile(final File berFile) throws IOException {
-        final ByteSource byteSource = Files.asByteSource(berFile);
-        final ImmutableList<RawAsnData> data = Asanti.readAsnBerData(byteSource);
+        final ImmutableList<RawAsnData> data = Asanti.readAsnBerData(Files.toByteArray(berFile));
         int count = 0;
         for (final RawAsnData rawAsnData : data) {
             logger.info("PDU[" + count + "]");

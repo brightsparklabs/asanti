@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.io.BaseEncoding;
-import com.google.common.io.ByteSource;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -378,9 +377,8 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
             final Map<String, DecodedTag> decodedToRawTags,
             final Map<String, DecodedTag> unmappedTags) {
         // Now attempt to re-parse the bytes, and realign with the type...
-        final ByteSource byteSource = ByteSource.wrap(bytes);
         try {
-            final ImmutableList<RawAsnData> readPdus = AsnBerDataReader.read(byteSource);
+            final ImmutableList<RawAsnData> readPdus = AsnBerDataReader.read(bytes);
             // TODO INS-434: should we ever expect anything other than 1 PDU from this???
             // what if the CONTAINS is a collection?
             if (readPdus.isEmpty()) {
