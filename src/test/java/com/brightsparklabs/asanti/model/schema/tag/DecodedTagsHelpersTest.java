@@ -47,6 +47,9 @@ public class DecodedTagsHelpersTest {
                     .add("/Document/99/1/1")
                     .build();
 
+    private static final ImmutableSet<String> allTags =
+            ImmutableSet.<String>builder().addAll(unmappedTags).addAll(decodedTags).build();
+
     // -------------------------------------------------------------------------
     // SETUP/TEAR-DOWN
     // -------------------------------------------------------------------------
@@ -58,10 +61,12 @@ public class DecodedTagsHelpersTest {
 
         when(instance.getTags()).thenReturn(decodedTags);
         when(instance.getUnmappedTags()).thenReturn(unmappedTags);
+        when(instance.getAllTags()).thenReturn(allTags);
 
         emptyInstance = mock(AsantiAsnData.class);
         when(emptyInstance.getTags()).thenReturn(ImmutableSet.of());
         when(emptyInstance.getUnmappedTags()).thenReturn(ImmutableSet.of());
+        when(emptyInstance.getAllTags()).thenReturn(ImmutableSet.of());
     }
 
     @Test

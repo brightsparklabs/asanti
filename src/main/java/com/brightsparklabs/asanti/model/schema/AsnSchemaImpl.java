@@ -18,7 +18,7 @@ import com.google.common.collect.*;
 import java.util.*;
 
 /**
- * Default implementation of {@link AsnSchema}
+ * Default implementation of {@link AsnSchema}.
  *
  * @author brightSPARK Labs
  */
@@ -27,17 +27,17 @@ public class AsnSchemaImpl implements AsnSchema {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** splitter for separating tag strings */
+    /** Splitter for separating tag strings. */
     private static final Splitter tagSplitter = Splitter.on("/").omitEmptyStrings();
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the primary module defined in this schema (defaults to the first module) */
+    /** The primary module defined in this schema (defaults to the first module). */
     private final AsnSchemaModule primaryModule;
 
-    /** a simple cache to avoid recalculating Tag to Type mapping */
+    /** A simple cache to avoid recalculating Tag to Type mapping. */
     private final Map<String, Optional<AsnSchemaType>> tagCache = Maps.newConcurrentMap();
 
     // -------------------------------------------------------------------------
@@ -45,15 +45,15 @@ public class AsnSchemaImpl implements AsnSchema {
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
+     * Default constructor.
      *
-     * @param primaryModule the primary module defined in this schema
-     * @param modules all modules defined in this schema
-     * @throws NullPointerException if any of the parameters are {@code null}
-     * @throws IllegalArgumentException if no modules are specified or the primary module is not
-     *     contained in the modules
+     * @param primaryModule The primary module defined in this schema.
+     * @param modules All modules defined in this schema.
+     * @throws NullPointerException If any of the parameters are {@code null}.
+     * @throws IllegalArgumentException If no modules are specified or the primary module is not
+     *     contained in the modules.
      */
-    public AsnSchemaImpl(String primaryModule, Map<String, AsnSchemaModule> modules) {
+    public AsnSchemaImpl(final String primaryModule, final Map<String, AsnSchemaModule> modules) {
         checkNotNull(primaryModule);
         checkNotNull(modules);
         checkArgument(!modules.isEmpty(), "A schema cannot contain no modules");
@@ -69,7 +69,7 @@ public class AsnSchemaImpl implements AsnSchema {
     // -------------------------------------------------------------------------
 
     @Override
-    public Optional<AsnSchemaType> getType(String tag) {
+    public Optional<AsnSchemaType> getType(final String tag) {
         final Optional<AsnSchemaType> cacheHit = tagCache.get(tag);
         // ignore the warning about Optional being compared to null.
         // Optional.empty means we've already done the lookup and have an empty result.
@@ -78,7 +78,7 @@ public class AsnSchemaImpl implements AsnSchema {
             return cacheHit;
         }
 
-        final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
+        final List<String> tags = tagSplitter.splitToList(tag);
         if (tags.isEmpty()) {
             final Optional<AsnSchemaType> result = Optional.empty();
             tagCache.put(tag, result);
@@ -94,7 +94,7 @@ public class AsnSchemaImpl implements AsnSchema {
             final String nextTag = DecodedTagsHelpers.stripIndex(it.next());
 
             Optional<AsnSchemaType> next = getNext(type, nextTag);
-            if (!next.isPresent()) {
+            if (next.isEmpty()) {
                 return Optional.empty();
             }
             type = next.get();
@@ -113,13 +113,13 @@ public class AsnSchemaImpl implements AsnSchema {
      * For a given AsnSchemaType get the child component that matches tag. This differs from {@link
      * AsnSchemaType#getMatchingChild(String, DecodingSession)} in that it does not needs a
      * DecodingSession, it does not care about ordering of components, and it returns the component
-     * type rather than the component
+     * type rather than the component.
      *
-     * @param type type to get the matching child type from
-     * @param tag tag of the child to match
-     * @return the child component that matches the tag, {@link Optional#empty()} if no match
+     * @param type Type to get the matching child type from.
+     * @param tag Tag of the child to match.
+     * @return The child component that matches the tag, {@link Optional#empty()} if no match.
      */
-    private Optional<AsnSchemaType> getNext(AsnSchemaType type, String tag) {
+    private Optional<AsnSchemaType> getNext(final AsnSchemaType type, final String tag) {
         final ImmutableList<AsnSchemaComponentType> allComponents = type.getAllComponents();
         for (AsnSchemaComponentType component : allComponents) {
             if (component.getName().equals(tag)) {

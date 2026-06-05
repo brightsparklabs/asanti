@@ -11,8 +11,6 @@ import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Models a tag in a 'constructed' type. A tag conforms to one of the following formats:
@@ -23,229 +21,12 @@ import java.util.regex.Pattern;
  * </ul>
  */
 public class AsnSchemaTag {
-    // ---------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // CONSTANTS
-    // ---------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /** null instance */
     private static final AsnSchemaTag NULL = new AsnSchemaTag("", "", "");
-
-    /** pattern to match a raw tag coming out of the BER decoder */
-    private static final Pattern PATTERN_TAG =
-            Pattern.compile("^([0-9]+)(\\[(([0-9]+)|(UNIVERSAL ([a-zA-Z0-9]+)))\\])$");
-
-    // ---------------------------------------------------------------------
-    // INSTANCE VARIABLES
-    // ---------------------------------------------------------------------
-
-    /**
-     * the context specific tag number component of the raw tag. Note that this and tagUniversal are
-     * mutually exclusive
-     */
-    private final String tagContextSpecific;
-
-    /**
-     * the Universal tag number component of the raw tag. Note that this and the tagContextSpecific
-     * are mutually exclusive
-     */
-    private final String tagUniversal;
-
-    /** the tag index component of the raw tag. Blank if no index component */
-    private final String tagIndex;
-
-    // ---------------------------------------------------------------------
-    // CONSTRUCTION
-    // ---------------------------------------------------------------------
-
-    /**
-     * Default constructor. Private, use {@link #create(String)} instead.
-     *
-     * @param tagIndex tag index component of the raw tag
-     * @param tagContextSpecific tag context-specific component of the raw tag. Set to {@code null}
-     *     if no context-specific component.
-     * @param tagUniversal tag universal component of the raw tag. Set to {@code null} if no
-     *     universal component.
-     */
-    private AsnSchemaTag(String tagIndex, String tagContextSpecific, String tagUniversal) {
-        this.tagIndex = tagIndex;
-        this.tagContextSpecific = Strings.nullToEmpty(tagContextSpecific).trim();
-        this.tagUniversal = Strings.nullToEmpty(tagUniversal).trim();
-    }
-
-    /**
-     * Creates an instance from the supplied raw tag
-     *
-     * @param rawTag raw tag to create instance from
-     * @return instance which models the raw tag, or {@link #NULL} if the raw tag is invalid
-     */
-    public static AsnSchemaTag create(String rawTag) {
-        if (rawTag == null) {
-            return NULL;
-        }
-
-        final Matcher matcher = PATTERN_TAG.matcher(rawTag);
-        if (matcher.matches()) {
-            return new AsnSchemaTag(matcher.group(1), matcher.group(4), matcher.group(5));
-        } else {
-            return NULL;
-        }
-    }
-
-    /**
-     * Creates an instance, deriving the Universal type from the type passed in
-     *
-     * @param tagIndex tag index component of the raw tag
-     * @param type tag universal component of the raw tag. Set to {@code null} if no universal
-     *     component.
-     * @return a new AsnSchemaTag
-     */
-    public static AsnSchemaTag create(String tagIndex, AsnBuiltinType type) {
-        return new AsnSchemaTag(tagIndex, "", createUniversalPortion(type));
-    }
-
-    /**
-     * Creates an instance, combining the index and tag
-     *
-     * @param tagIndex tag index component of the raw tag
-     * @param tag the tag portion
-     * @return a new AsnSchemaTag
-     */
-    public static AsnSchemaTag create(int tagIndex, String tag) {
-        return create(createRawTag(tagIndex, tag));
-    }
-
-    /**
-     * Creates a new tag with an updated index
-     *
-     * @param tagIndex tag index component of the raw tag
-     * @param tag the old tag to get the tag Portion from
-     * @return a new AsnSchemaTag
-     */
-    public static AsnSchemaTag create(int tagIndex, AsnSchemaTag tag) {
-        return new AsnSchemaTag(
-                Integer.toString(tagIndex), tag.getTagContextSpecific(), tag.getTagUniversal());
-    }
-
-    /**
-     * @param tagIndex tag index component of the raw tag
-     * @param tag tag potion
-     * @return a String representation of what toString of this tag would be, or this string can be
-     *     passed in to create a new tag
-     */
-    public static String createRawTag(int tagIndex, String tag) {
-        return String.format("%d[%s]", tagIndex, tag);
-    }
-
-    /**
-     * @param tagIndex tag index component of the raw tag
-     * @param universalTagNumber ASN.1 Universal tag number
-     * @return a String representation of what toString of this tag would be, or this string can be
-     *     passed in to create a new tag. If the universalTagNumber is invalid returns empty string
-     */
-    public static String createRawTagUniversal(int tagIndex, int universalTagNumber) {
-        return getBuiltInTypeForUniversalTag(universalTagNumber)
-                .map(type -> createRawTag(tagIndex, createUniversalPortion(type)))
-                .orElse("");
-    }
-
-    /**
-     * Creates the Universal portion of a tag based on the type
-     *
-     * @param type AsnBuiltinType to map to universal tag number
-     * @return the equivalent of the getTagUniversal for a tag created from this type
-     */
-    public static String createUniversalPortion(AsnBuiltinType type) {
-        // Some AsnBuiltinType's don't translate to a UNIVERSAL tag, eg Choice
-        final String universalType = getUniversalTagForBuiltInType(type);
-        return universalType.isEmpty() ? "" : ("UNIVERSAL " + universalType);
-    }
-
-    // ---------------------------------------------------------------------
-    // PUBLIC METHODS
-    // ---------------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return getRawTag();
-    }
-
-    /**
-     * Returns the raw tag (that came from the AsantiAsnData)
-     *
-     * @return the raw tag (that came from the AsantiAsnData)
-     */
-    public String getRawTag() {
-        if (tagIndex.isEmpty()) {
-            // If this is a valid tag then the index will not be empty, so if it
-            // is empty it is invalid and we should return an empty string
-            return "";
-        }
-
-        return tagIndex + "[" + getTagPortion() + "]";
-    }
-
-    /**
-     * Returns the tag index component of the raw tag. For a raw tag {@code "1.2"} this is {@code
-     * "1"}.
-     *
-     * @return the tag index or a blank string if no index component
-     */
-    public String getTagIndex() {
-        return tagIndex;
-    }
-
-    /**
-     * Returns the context-specific component of the raw tag. For a raw tag {@code "0.1"} this is
-     * {@code "1"}. For raw tag {@code "0.u.2"} this is {@code ""}.
-     *
-     * @return the tag number
-     */
-    public String getTagContextSpecific() {
-        return tagContextSpecific;
-    }
-
-    /**
-     * Returns the universal component of the raw tag. For a raw tag {@code "0.u.2"} this is {@code
-     * "u.2"}. For raw tag {@code "0.1"} this is {@code ""}.
-     *
-     * @return the tag number
-     */
-    public String getTagUniversal() {
-        return tagUniversal;
-    }
-
-    /**
-     * Returns the non-index component of the raw tag. For a raw tag {@code "0.u.2"} this is {@code
-     * "u.2"}. For raw tag {@code "0.1"} this is {@code "1"}. This returns either the
-     * context-specific or universal tag, which ever is not empty
-     *
-     * @return the tag number
-     */
-    public String getTagPortion() {
-        return tagUniversal.isEmpty() ? tagContextSpecific : tagUniversal;
-    }
-
-    /**
-     * Helper to map from AsnBuiltinType to the ASN.1 value for the Universal tag of this type.
-     *
-     * @param type AsnBuiltinType to map to universal tag number
-     * @return the String representation of the universal type (integer), empty string if there is
-     *     no mapping
-     */
-    private static String getUniversalTagForBuiltInType(AsnBuiltinType type) {
-        return Optional.ofNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).orElse("");
-    }
-
-    /**
-     * Map from the ASN.1 Universal tag to our AsnBuiltinType
-     *
-     * @param universalTag ASN.1 Universal tag
-     * @return respective AsnBuiltinType for the Universal tag, {@link Optional#empty()} if there is
-     *     no match
-     */
-    public static Optional<AsnBuiltinType> getBuiltInTypeForUniversalTag(int universalTag) {
-        return Optional.ofNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag));
-    }
 
     private static final ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG =
             ImmutableMap.<AsnBuiltinType, String>builder()
@@ -320,4 +101,259 @@ public class AsnSchemaTag {
                     .put(29, AsnBuiltinType.CharacterString)
                     .put(30, AsnBuiltinType.BmpString)
                     .build();
+
+    // -------------------------------------------------------------------------
+    // INSTANCE VARIABLES
+    // -------------------------------------------------------------------------
+
+    /**
+     * the context specific tag number component of the raw tag. Note that this and tagUniversal are
+     * mutually exclusive
+     */
+    private final String tagContextSpecific;
+
+    /**
+     * the Universal tag number component of the raw tag. Note that this and the tagContextSpecific
+     * are mutually exclusive
+     */
+    private final String tagUniversal;
+
+    /** the tag index component of the raw tag. Blank if no index component */
+    private final String tagIndex;
+
+    // -------------------------------------------------------------------------
+    // CONSTRUCTION
+    // -------------------------------------------------------------------------
+
+    /**
+     * Default constructor. Private, use {@link #create(String)} instead.
+     *
+     * @param tagIndex Tag index component of the raw tag.
+     * @param tagContextSpecific Tag context-specific component of the raw tag. Set to {@code null}
+     *     if no context-specific component.
+     * @param tagUniversal Tag universal component of the raw tag. Set to {@code null} if no
+     *     universal component.
+     */
+    private AsnSchemaTag(
+            final String tagIndex, final String tagContextSpecific, final String tagUniversal) {
+        this.tagIndex = tagIndex;
+        this.tagContextSpecific = Strings.nullToEmpty(tagContextSpecific).trim();
+        this.tagUniversal = Strings.nullToEmpty(tagUniversal).trim();
+    }
+
+    /**
+     * Creates an instance from the supplied raw tag.
+     *
+     * <p>The expected format should be either:
+     *
+     * <ul>
+     *   <li>{@code "[0-9]+\[[0-9]\]"} e.g. {@code "12[345]"}
+     *   <li>{@code "[0-9]+\[UNIVERSAL [a-zA-Z0-9]+\]"} e.g. {@code "0[UNIVERSAL abcXYZ123]"}
+     * </ul>
+     *
+     * @param rawTag Raw tag to create instance from.
+     * @return Instance which models the raw tag, or {@link #NULL} if the raw tag is invalid.
+     */
+    public static AsnSchemaTag create(final String rawTag) {
+        if (rawTag == null) {
+            return NULL;
+        }
+
+        // NOTE: We are intentionally *not* using regex here. This code is part
+        // of the hotpath and even compiled regex matching has a noticeable
+        // performance impact. This approach is multiple times faster by comparison.
+
+        final int len = rawTag.length();
+        if (len < 4) {
+            // Minimum valid value is: "0[1]" so we can do a quick check
+            // ahead of time.
+            return NULL;
+        }
+
+        final int bracketStart = rawTag.indexOf('[');
+        if ((bracketStart <= 0) || rawTag.charAt(len - 1) != ']') {
+            // No opening or wrong ordering e.g. "0[]0", "[01]".
+            return NULL;
+        }
+
+        final String tagIndex = rawTag.substring(0, bracketStart);
+        // Validate the `tagIndex` is all digits.
+        for (int i = 0; i < tagIndex.length(); i++) {
+            if (!Character.isDigit(tagIndex.charAt(i))) {
+                return NULL;
+            }
+        }
+
+        // E.g. "UNIVERSAL abcXYZ123".
+        final var bracketContent = rawTag.substring(bracketStart + 1, len - 1);
+        if (bracketContent.startsWith("UNIVERSAL ") && bracketContent.length() > 10) {
+            // Validate the `tagUniversal` is all alphanumeric.
+            for (int i = 10; i < bracketContent.length(); i++) {
+                if (!Character.isLetterOrDigit(bracketContent.charAt(i))) {
+                    return NULL;
+                }
+            }
+            return new AsnSchemaTag(tagIndex, "", bracketContent);
+        } else {
+            // Validate the `tagContextSpecific` is all digits.
+            for (int i = 0; i < bracketContent.length(); i++) {
+                if (!Character.isDigit(bracketContent.charAt(i))) {
+                    return NULL;
+                }
+            }
+            return new AsnSchemaTag(tagIndex, bracketContent, "");
+        }
+    }
+
+    /**
+     * Creates an instance, deriving the Universal type from the type passed in.
+     *
+     * @param tagIndex Tag index component of the raw tag.
+     * @param type Tag universal component of the raw tag. Set to {@code null} if no universal
+     *     component.
+     * @return A new {@link AsnSchemaTag}.
+     */
+    public static AsnSchemaTag create(final String tagIndex, final AsnBuiltinType type) {
+        return new AsnSchemaTag(tagIndex, "", createUniversalPortion(type));
+    }
+
+    /**
+     * Creates an instance, combining the index and tag
+     *
+     * @param tagIndex Tag index component of the raw tag.
+     * @param tag The tag portion.
+     * @return A new {@link AsnSchemaTag}.
+     */
+    public static AsnSchemaTag create(final int tagIndex, final String tag) {
+        return create(createRawTag(tagIndex, tag));
+    }
+
+    /**
+     * Creates a new tag with an updated index
+     *
+     * @param tagIndex Tag index component of the raw tag.
+     * @param tag The old tag to get the tag Portion from.
+     * @return A new {@link AsnSchemaTag}.
+     */
+    public static AsnSchemaTag create(final int tagIndex, final AsnSchemaTag tag) {
+        return new AsnSchemaTag(
+                Integer.toString(tagIndex), tag.getTagContextSpecific(), tag.getTagUniversal());
+    }
+
+    /**
+     * @param tagIndex Tag index component of the raw tag,
+     * @param tag Tag potion,
+     * @return A String representation of what toString of this tag would be, or this string can be
+     *     passed in to create a new tag.
+     */
+    public static String createRawTag(final int tagIndex, final String tag) {
+        return tagIndex + "[" + tag + "]";
+    }
+
+    /**
+     * @param tagIndex Tag index component of the raw tag
+     * @param universalTagNumber ASN.1 Universal tag number
+     * @return A String representation of what toString of this tag would be, or this string can be
+     *     passed in to create a new tag. If the universalTagNumber is invalid returns empty string.
+     */
+    public static String createRawTagUniversal(final int tagIndex, final int universalTagNumber) {
+        return getBuiltInTypeForUniversalTag(universalTagNumber)
+                .map(type -> createRawTag(tagIndex, createUniversalPortion(type)))
+                .orElse("");
+    }
+
+    /**
+     * Creates the Universal portion of a tag based on the type
+     *
+     * @param type {@link AsnBuiltinType} to map to universal tag number
+     * @return the equivalent of the getTagUniversal for a tag created from this type
+     */
+    public static String createUniversalPortion(final AsnBuiltinType type) {
+        // Some AsnBuiltinType's don't translate to a UNIVERSAL tag, eg Choice
+        final String universalType = getUniversalTagForBuiltInType(type);
+        return universalType.isEmpty() ? "" : ("UNIVERSAL " + universalType);
+    }
+
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getRawTag();
+    }
+
+    /** {@return the raw tag (that came from the AsantiAsnData)} */
+    public String getRawTag() {
+        if (tagIndex.isEmpty()) {
+            // If this is a valid tag then the index will not be empty, so if it
+            // is empty it is invalid, and we should return an empty string.
+            return "";
+        }
+
+        return tagIndex + "[" + getTagPortion() + "]";
+    }
+
+    /**
+     * Returns the tag index component of the raw tag. For a raw tag {@code "1.2"} this is {@code
+     * "1"}.
+     *
+     * @return The tag index or a blank string if no index component.
+     */
+    public String getTagIndex() {
+        return tagIndex;
+    }
+
+    /**
+     * Returns the context-specific component of the raw tag. For a raw tag {@code "0.1"} this is
+     * {@code "1"}. For raw tag {@code "0.u.2"} this is {@code ""}.
+     *
+     * @return The tag number.
+     */
+    public String getTagContextSpecific() {
+        return tagContextSpecific;
+    }
+
+    /**
+     * Returns the universal component of the raw tag. For a raw tag {@code "0.u.2"} this is {@code
+     * "u.2"}. For raw tag {@code "0.1"} this is {@code ""}.
+     *
+     * @return the tag number.
+     */
+    public String getTagUniversal() {
+        return tagUniversal;
+    }
+
+    /**
+     * Returns the non-index component of the raw tag. For a raw tag {@code "0.u.2"} this is {@code
+     * "u.2"}. For raw tag {@code "0.1"} this is {@code "1"}. This returns either the
+     * context-specific or universal tag, whichever is not empty.
+     *
+     * @return The tag number.
+     */
+    public String getTagPortion() {
+        return tagUniversal.isEmpty() ? tagContextSpecific : tagUniversal;
+    }
+
+    /**
+     * Helper to map from AsnBuiltinType to the ASN.1 value for the Universal tag of this type.
+     *
+     * @param type {@link AsnBuiltinType} to map to universal tag number.
+     * @return the String representation of the universal type (integer), empty string if there is
+     *     no mapping.
+     */
+    private static String getUniversalTagForBuiltInType(final AsnBuiltinType type) {
+        return Optional.ofNullable(BUILTIN_TYPE_TO_UNIVERSAL_TAG.get(type)).orElse("");
+    }
+
+    /**
+     * Map from the ASN.1 Universal tag to our AsnBuiltinType.
+     *
+     * @param universalTag ASN.1 Universal tag.
+     * @return Respective {@link AsnBuiltinType} for the Universal tag, {@link Optional#empty()} if
+     *     there is no match.
+     */
+    public static Optional<AsnBuiltinType> getBuiltInTypeForUniversalTag(final int universalTag) {
+        return Optional.ofNullable(UNIVERSAL_TAG_TO_BUILTIN_TYPE.get(universalTag));
+    }
 }

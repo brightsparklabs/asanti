@@ -24,10 +24,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Decoder {
     // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
@@ -39,14 +35,6 @@ public class Decoder {
 
     /** Joiner for creating tag strings. */
     private static final Joiner tagJoiner = Joiner.on("/");
-
-    // -------------------------------------------------------------------------
-    // INSTANCE VARIABLES
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // CONSTRUCTION
-    // -------------------------------------------------------------------------
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -72,7 +60,8 @@ public class Decoder {
 
         final Optional<AsnSchemaType> type = schema.getType(topLevelTypeName);
         if (type.isEmpty()) {
-            throw new RuntimeException("type [" + topLevelTypeName + "] does not exist in schema");
+            throw new RuntimeException(
+                    "type [%s] does not exist in schema".formatted(topLevelTypeName));
         }
         return getDecodedTags(rawTags, type.get());
     }
@@ -110,12 +99,12 @@ public class Decoder {
      * @param rawTag Raw tag to decode.
      * @param type The top level type from which to begin decoding the raw tag.
      * @param session The session state that tracks the ordering and stateful part of decoding a
-     *     complete set of asn data..
+     *     complete set of asn data.
      * @return The result of the decode attempt containing the decoded tag.
      */
     public static OperationResult<DecodedTag, String> getDecodedTag(
-            String rawTag, AsnSchemaType type, DecodingSession session) {
-        final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(rawTag));
+            final String rawTag, final AsnSchemaType type, final DecodingSession session) {
+        final List<String> tags = tagSplitter.splitToList(rawTag);
         final DecodedTagsAndType decodedTagsAndType = decodeTags(tags.iterator(), type, session);
         final List<String> decodedTags = decodedTagsAndType.decodedTags;
 
@@ -129,13 +118,13 @@ public class Decoder {
             for (int i = decodedTags.size(); i < tags.size(); i++) {
                 final String unknownTag = tags.get(i);
                 decodedTags.add(unknownTag);
-                logger.debug("Unable to parse " + rawTag + " : " + unknownTag);
+                logger.debug("Unable to parse {} : {}", rawTag, unknownTag);
             }
         }
 
         // The raw tags create a new '/' for collection elements (eg .../foo/[0])
         // and we would rather have .../foo[0]
-        final String decodedTagPath = tagJoiner.join(decodedTags).replaceAll("/\\[", "\\[");
+        final String decodedTagPath = tagJoiner.join(decodedTags).replace("/[", "[");
 
         logger.trace("getDecodedTag {} => {}", rawTag, decodedTagPath);
 
@@ -153,9 +142,9 @@ public class Decoder {
     // -------------------------------------------------------------------------
 
     private static DecodedTagsAndType decodeTags(
-            Iterator<String> rawTags,
-            AsnSchemaType containingType,
-            DecodingSession decodingSession) {
+            final Iterator<String> rawTags,
+            final AsnSchemaType containingType,
+            final DecodingSession decodingSession) {
         /* TODO: ASN-143.  does this functionality now belong here?
          * all the logic is about AsnSchemaType object - should it have a decodeTags function?
          */
@@ -169,8 +158,7 @@ public class Decoder {
             // Get the tag that we are decoding
             final String tag = rawTags.next();
 
-            final String decodedTagPath =
-                    tagJoiner.join(result.decodedTags).replaceAll("/\\[", "\\[");
+            final String decodedTagPath = tagJoiner.join(result.decodedTags).replace("/[", "[");
             // By definition the new tag is the child of its container.
             decodingSession.setContext(decodedTagPath);
 

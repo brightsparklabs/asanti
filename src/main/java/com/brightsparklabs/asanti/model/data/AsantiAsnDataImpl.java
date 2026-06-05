@@ -7,13 +7,16 @@
 
 package com.brightsparklabs.asanti.model.data;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.brightsparklabs.asanti.common.OperationResult;
 import com.brightsparklabs.asanti.decoder.DecoderVisitor;
 import com.brightsparklabs.asanti.decoder.builtin.BuiltinTypeDecoder;
 import com.brightsparklabs.asanti.exception.DecodeException;
-import com.brightsparklabs.asanti.model.schema.*;
+import com.brightsparklabs.asanti.model.schema.AsnSchema;
+import com.brightsparklabs.asanti.model.schema.DecodedTag;
+import com.brightsparklabs.asanti.model.schema.Decoder;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaType;
 import com.brightsparklabs.asanti.model.schema.type.AsnSchemaTypePrimitiveAliased;
 import com.brightsparklabs.asanti.reader.AsnBerDataReader;
@@ -49,39 +52,39 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
     // -------------------------------------------------------------------------
 
     /** ASN data to decode */
-    private final RawAsnData rawAsnData;
+    protected final RawAsnData rawAsnData;
 
     /** all tags which could be decoded. Map is of form: { decodedTagString => decodedTag } */
-    private final ImmutableMap<String, DecodedTag> decodedTags;
+    protected final ImmutableMap<String, DecodedTag> decodedTags;
 
     /** all tags which could not be decoded. Map is of form: { decodedTagString => decodedTag } */
-    private final ImmutableMap<String, DecodedTag> unmappedTags;
+    protected final ImmutableMap<String, DecodedTag> unmappedTags;
 
     /**
      * all tags (decoded and unmapped) found in the data. Map is of form: { decodedTagString =>
      * decodedTag }
      */
-    private final ImmutableMap<String, DecodedTag> allTags;
+    protected final ImmutableMap<String, DecodedTag> allTags;
 
     /** visitor used to determine which decoder to use for decoding data */
-    private final DecoderVisitor decoderVisitor = new DecoderVisitor();
+    protected final DecoderVisitor decoderVisitor = new DecoderVisitor();
 
     /** the schema used to decode */
-    private final AsnSchema asnSchema;
+    protected final AsnSchema asnSchema;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
+     * Default constructor.
      *
-     * @param rawAsnData data to decode
-     * @param asnSchema schema to use to decode data
-     * @param topLevelTypeName the name of the top level type in this module from which to begin
-     *     decoding the raw tag
-     * @throws NullPointerException if any of the parameters are {@code null}
-     * @throws IllegalArgumentException if topLevelTypeName is blank
+     * @param rawAsnData Data to decode.
+     * @param asnSchema Schema to use to decode data.
+     * @param topLevelTypeName The name of the top level type in this module from which to begin
+     *     decoding the raw tag.
+     * @throws NullPointerException If any of the parameters are {@code null}.
+     * @throws IllegalArgumentException If topLevelTypeName is blank.
      */
     public AsantiAsnDataImpl(
             final RawAsnData rawAsnData, final AsnSchema asnSchema, final String topLevelTypeName) {
@@ -145,7 +148,12 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
 
     @Override
     public ImmutableSet<String> getTags() {
-        return ImmutableSet.copyOf(decodedTags.keySet());
+        return decodedTags.keySet();
+    }
+
+    @Override
+    public ImmutableSet<String> getAllTags() {
+        return allTags.keySet();
     }
 
     @Override
@@ -161,7 +169,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
 
     @Override
     public ImmutableSet<String> getUnmappedTags() {
-        return ImmutableSet.copyOf(unmappedTags.keySet());
+        return unmappedTags.keySet();
     }
 
     @Override
