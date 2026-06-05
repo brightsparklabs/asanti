@@ -27,7 +27,6 @@ import com.brightsparklabs.asanti.validator.Validators;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.ByteSource;
 import com.google.common.io.CharSource;
 import com.google.common.io.Resources;
 import java.io.IOException;
@@ -568,8 +567,7 @@ public class AsnSchemaParserTest {
                 Resources.asCharSource(getClass().getResource("/Root_MyInt.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Root_MyInt.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/Root_MyInt.ber"));
         String topLevelType = "MyInt";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -600,8 +598,7 @@ public class AsnSchemaParserTest {
     public void testParse_HumanSimple() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_Simple.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/Human_Simple.ber"));
 
         String topLevelType = "Human";
 
@@ -624,8 +621,7 @@ public class AsnSchemaParserTest {
     public void testParse_HumanSimple2() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE2);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_Simple2.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/Human_Simple2.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -649,8 +645,8 @@ public class AsnSchemaParserTest {
     public void testParse_HumanEnumerated() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE_ENUMERATED);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_SimpleEnumerated.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_SimpleEnumerated.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -689,8 +685,8 @@ public class AsnSchemaParserTest {
     public void testParse_HumanSimpleChoice() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE_CHOICE);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_SimpleChoice.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_SimpleChoice.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -709,8 +705,7 @@ public class AsnSchemaParserTest {
     public void testParse_HumanSimpleSet() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE_SET);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_SimpleSet.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/Human_SimpleSet.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -734,8 +729,7 @@ public class AsnSchemaParserTest {
     public void testParse_HumanNested() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_NESTED);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_Nested.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/Human_Nested.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -769,8 +763,7 @@ public class AsnSchemaParserTest {
     public void testParse_HumanUsingTypeDef() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_Typedef.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/Human_Typedef.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -810,8 +803,7 @@ public class AsnSchemaParserTest {
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_INDIRECT);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_Typedef.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/Human_Typedef.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -849,8 +841,8 @@ public class AsnSchemaParserTest {
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_SEQUENCE);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_TypedefSequence.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_TypedefSequence.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -904,8 +896,8 @@ public class AsnSchemaParserTest {
     public void testParse_HumanSequenceOfPrimitive() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_PRIMITIVE);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_SequenceOfPrimitive.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_SequenceOfPrimitive.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -931,8 +923,8 @@ public class AsnSchemaParserTest {
     public void testParse_HumanSequenceOfSequence3() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE3);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_SequenceOfSequence3.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_SequenceOfSequence3.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -977,8 +969,8 @@ public class AsnSchemaParserTest {
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE4);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_SequenceOfSequence3.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_SequenceOfSequence3.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -1023,8 +1015,8 @@ public class AsnSchemaParserTest {
 
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SEQUENCEOF_SEQUENCE2);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_SequenceOfSequence2.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_SequenceOfSequence2.ber"));
         String topLevelType = "Human";
         final ImmutableList<AsantiAsnData> pdus =
                 Asanti.decodeAsnData(berData, schema, topLevelType);
@@ -1049,8 +1041,8 @@ public class AsnSchemaParserTest {
     public void testParse_HumanUsingTypeDefSetOf() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_USING_TYPEDEF_SETOF);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_TypedefSetOf.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_TypedefSetOf.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -1082,8 +1074,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_ImplicitTagging.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_ImplicitTagging.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_ImplicitTagging.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -1105,8 +1097,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_ImplicitTagging2.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_ImplicitTagging2.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_ImplicitTagging2.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -1129,8 +1121,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_ImplicitTagging3.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_ImplicitTagging3.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_ImplicitTagging3.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -1154,8 +1146,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_ReuseWithOptional.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_ReuseWithOptional.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_ReuseWithOptional.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -1182,8 +1174,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_NonUniqueTags.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_NonUniqueTags.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_NonUniqueTags.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -1206,8 +1198,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_NonUniqueTagsImplicit.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_NonUniqueTagsImplicit.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_NonUniqueTagsImplicit.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -1230,8 +1222,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_NonUniqueTagsOptional.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(
+        final var berData =
+                Resources.toByteArray(
                         getClass().getResource("/Human_NonUniqueTagsOptional_allpresent.ber"));
         String topLevelType = "Human";
 
@@ -1255,8 +1247,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_NonUniqueTagsOptional.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(
+        final var berData =
+                Resources.toByteArray(
                         getClass().getResource("/Human_NonUniqueTagsOptional_noOptional.ber"));
         String topLevelType = "Human";
 
@@ -1279,8 +1271,8 @@ public class AsnSchemaParserTest {
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_SetOfChoice.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_SetOfChoice.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1296,8 +1288,8 @@ public class AsnSchemaParserTest {
             assertEquals(0, bytes.get()[0]);
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_SetOfChoice_2items.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_SetOfChoice_2items.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1325,8 +1317,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_SetOfUnTaggedChoice.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_SetOfUnTaggedChoice.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_SetOfUnTaggedChoice.ber"));
         String topLevelType = "Human";
 
         final ImmutableList<AsantiAsnData> pdus =
@@ -1349,8 +1341,8 @@ public class AsnSchemaParserTest {
                         Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(
+        final var berData =
+                Resources.toByteArray(
                         getClass().getResource("/Human_SetOfSetOfUnTaggedChoice.ber"));
         String topLevelType = "Human";
 
@@ -1379,8 +1371,8 @@ public class AsnSchemaParserTest {
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_SequenceOf_optA.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_SequenceOf_optA.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1400,8 +1392,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_SequenceOf_optB.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_SequenceOf_optB.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1424,8 +1416,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_SequenceOf_optC.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_SequenceOf_optC.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1455,8 +1447,8 @@ public class AsnSchemaParserTest {
                 Resources.asCharSource(getClass().getResource("/Human_SetOf.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_SetOf_optA.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_SetOf_optA.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1476,8 +1468,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_SetOf_optB.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_SetOf_optB.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1500,8 +1492,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_SetOf_optC.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_SetOf_optC.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1532,8 +1524,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_ChoiceImplicit.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(
+        final var berData =
+                Resources.toByteArray(
                         getClass().getResource("/Human_ChoiceImplicit_milliSeconds.ber"));
         String topLevelType = "Human";
 
@@ -1560,8 +1552,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_Choice_ZZZ.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_Choice_ZZZ.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_Choice_ZZZ.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1585,8 +1577,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_Choice_ZZZ_2.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_Choice_ZZZ_2.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1622,8 +1614,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_Choice_basic.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
         {
-            final ByteSource berData =
-                    Resources.asByteSource(
+            final var berData =
+                    Resources.toByteArray(
                             getClass().getResource("/Human_Choice_basic_roundYears.ber"));
             String topLevelType = "Human";
 
@@ -1643,8 +1635,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_Choice_basic_ymd.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_Choice_basic_ymd.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1667,8 +1659,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_Choice_basic_dob.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_Choice_basic_dob.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1696,8 +1688,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_Choice2.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_Choice2_typeA.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_Choice2_typeA.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1719,8 +1711,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_Choice2_int.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_Choice2_int.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1739,8 +1731,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_Choice2_sofA.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_Choice2_sofA.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1762,8 +1754,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(
+            final var berData =
+                    Resources.toByteArray(
                             getClass().getResource("/Human_Choice2_sofA_2_mid_entries.ber"));
             String topLevelType = "Human";
 
@@ -1790,8 +1782,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(getClass().getResource("/Human_Choice2_setOfA.ber"));
+            final var berData =
+                    Resources.toByteArray(getClass().getResource("/Human_Choice2_setOfA.ber"));
             String topLevelType = "Human";
 
             final ImmutableList<AsantiAsnData> pdus =
@@ -1813,8 +1805,8 @@ public class AsnSchemaParserTest {
             assertFalse(validationresult.hasFailures());
         }
         {
-            final ByteSource berData =
-                    Resources.asByteSource(
+            final var berData =
+                    Resources.toByteArray(
                             getClass().getResource("/Human_Choice2_setOfA_2entries.ber"));
             String topLevelType = "Human";
 
@@ -1861,8 +1853,8 @@ public class AsnSchemaParserTest {
                         getClass().getResource("/Human_Choice3.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_Choice3_typeB.ber"));
+        final var berData =
+                Resources.toByteArray(getClass().getResource("/Human_Choice3_typeB.ber"));
 
         String topLevelType = "Human";
 
@@ -1887,8 +1879,7 @@ public class AsnSchemaParserTest {
                 Resources.asCharSource(getClass().getResource("/UnusualTypes.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/UnusualTypes.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/UnusualTypes.ber"));
 
         String topLevelType = "Types";
 
@@ -1917,9 +1908,9 @@ public class AsnSchemaParserTest {
                 Resources.asCharSource(getClass().getResource("/EIFv122.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData = Resources.asByteSource(getClass().getResource("/test.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/test.ber"));
 
-        final ByteSource berData5 = Resources.asByteSource(getClass().getResource("/test5.ber"));
+        final var berData5 = Resources.toByteArray(getClass().getResource("/test5.ber"));
 
         long mid = System.currentTimeMillis();
 
@@ -2177,8 +2168,7 @@ public class AsnSchemaParserTest {
     public void testCastExceptions() throws Exception {
         AsnSchema schema = AsnSchemaParser.parse(HUMAN_SIMPLE);
 
-        final ByteSource berData =
-                Resources.asByteSource(getClass().getResource("/Human_Simple.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/Human_Simple.ber"));
 
         String topLevelType = "Human";
 
@@ -2243,9 +2233,9 @@ public class AsnSchemaParserTest {
                 Resources.asCharSource(getClass().getResource("/EIFv122.asn"), Charsets.UTF_8);
         AsnSchema schema = AsnSchemaReader.read(schemaData);
 
-        final ByteSource berData = Resources.asByteSource(getClass().getResource("/test.ber"));
+        final var berData = Resources.toByteArray(getClass().getResource("/test.ber"));
 
-        final ByteSource berData5 = Resources.asByteSource(getClass().getResource("/test5.ber"));
+        final var berData5 = Resources.toByteArray(getClass().getResource("/test5.ber"));
         String topLevelType = "PS-PDU";
 
         for (int z = 0; z < 5; ++z) {
