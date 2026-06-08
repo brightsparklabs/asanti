@@ -114,7 +114,7 @@ public class AsantiAsnDataImplTest {
         final AsnSchema mockSchema = mock(AsnSchema.class);
 
         try {
-            new AsantiAsnDataImpl(null, null, null);
+            new AsantiAsnDataImpl(null, (AsnSchema) null, null);
             fail("NullPointerException not thrown");
         } catch (final NullPointerException ex) {
         }
@@ -134,7 +134,7 @@ public class AsantiAsnDataImplTest {
         } catch (final NullPointerException ex) {
         }
         try {
-            new AsantiAsnDataImpl(mockData, null, null);
+            new AsantiAsnDataImpl(mockData, (AsnSchema) null, null);
             fail("NullPointerException not thrown");
         } catch (final NullPointerException ex) {
         }
