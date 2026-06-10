@@ -237,7 +237,7 @@ public class AsantiCli {
                     "\t{}:\t decode {} => {}",
                     result.wasSuccessful() ? "PASS" : "FAIL",
                     rawTag,
-                    result.getOutput().getTag());
+                    result.getOutput().tag());
         }
     }
 
