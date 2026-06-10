@@ -48,6 +48,7 @@ public class AsantiAsnDataImpl implements AsantiAsnData {
     /** ASN data to decode. */
     protected final RawAsnData rawAsnData;
 
+    /** The derived "Schema" for the PDU data. This maps the decoded to the raw tags. */
     protected final PduSchema pduSchema;
 
     /** the schema used to decode. */
