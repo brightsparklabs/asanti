@@ -67,11 +67,7 @@ public class ValidatorImpl implements Validator {
         this.customRules = ImmutableMap.copyOf(customRules);
     }
 
-    /**
-     * Returns a builder for creating instances of this class.
-     *
-     * @return a builder for creating instances of this class.
-     */
+    /** {@return a builder for creating instances of this class} */
     public static Builder builder() {
         return new Builder();
     }
@@ -91,19 +87,23 @@ public class ValidatorImpl implements Validator {
             return builder.build();
         }
 
-        // validate each mapped tag
-        final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
-        for (final String tag : tags) {
-            // default validation
-            Set<ValidationFailure> failures = validateDefault(tag, (AsantiAsnData) asnData);
+        // Validate each mapped tag and get its immediate children (for the
+        // ConstructedBuiltinTypeValidator).
+        final ImmutableMap<String, ImmutableSet<String>> tags =
+                DecodedTagsHelpers.buildTagsWithImmediateChildren(asnData);
+
+        for (final String tag : tags.keySet()) {
+            // Default validation.
+            Set<ValidationFailure> failures =
+                    validateDefault(tag, (AsantiAsnData) asnData, tags.get(tag));
             builder.addAll(failures);
 
-            // custom validation
+            // Custom validation.
             failures = validateCustom(tag, asnData);
             builder.addAll(failures);
         }
 
-        // add a failure for each unmapped tag
+        // Add a failure for each unmapped tag.
         for (final String tag : asnData.getUnmappedTags()) {
             final DecodedTagValidationFailure failure =
                     new DecodedTagValidationFailure(
@@ -119,28 +119,29 @@ public class ValidatorImpl implements Validator {
     // -------------------------------------------------------------------------
 
     /**
-     * Validates the supplied data using the default ASN.1 schema rules
+     * Validates the supplied data using the default ASN.1 schema rules.
      *
-     * @param asnData data to validate
-     * @return the results from validating the data
+     * @param asnData The data to validate.
+     * @return The results from validating the data.
      */
-    private Set<ValidationFailure> validateDefault(String tag, AsantiAsnData asnData) {
+    private Set<ValidationFailure> validateDefault(
+            String tag, AsantiAsnData asnData, ImmutableSet<String> immediateChildren) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
         final AsnPrimitiveType type =
                 asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
         final BuiltinTypeValidator tagValidator =
                 (BuiltinTypeValidator) type.accept(validationVisitor);
         if (tagValidator != null) {
-            failures.addAll(tagValidator.validate(tag, asnData));
+            failures.addAll(tagValidator.validate(tag, asnData, immediateChildren));
         }
         return failures;
     }
 
     /**
-     * Validates the supplied tag using any custom rules in this decoder
+     * Validates the supplied tag using any custom rules in this decoder.
      *
-     * @param asnData data to validate
-     * @return the results from validating the data
+     * @param asnData The data to validate.
+     * @return The results from validating the data.
      */
     private Set<ValidationFailure> validateCustom(String tag, AsnData asnData) {
         final Set<ValidationFailure> failures = Sets.newHashSet();

@@ -73,6 +73,12 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator {
         return result.getFailureReason().orElse(ImmutableSet.of());
     }
 
+    @Override
+    public ImmutableSet<DecodedTagValidationFailure> validate(
+            final String tag, final AsantiAsnData asnData, final ImmutableSet<String> children) {
+        return validate(tag, asnData);
+    }
+
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: PrimitiveBuiltinTypeValidator
     // -------------------------------------------------------------------------

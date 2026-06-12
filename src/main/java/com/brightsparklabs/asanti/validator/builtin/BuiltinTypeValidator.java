@@ -78,17 +78,29 @@ public interface BuiltinTypeValidator {
     // -------------------------------------------------------------------------
 
     /**
-     * Validates the supplied tag in the data based on the the kind of ASN.1 Built-in Type
-     * represented by this validator
+     * Validates the supplied tag in the data based on the kind of ASN.1 Built-in Type represented
+     * by this validator
      *
-     * @param tag tag to validate
-     * @param asnData data to retrieve tag from
-     * @return any failures encountered while validating the tag
+     * @param tag The tag to validate.
+     * @param asnData data to retrieve tag from.
+     * @return Any failures encountered while validating the tag.
      */
     ImmutableSet<DecodedTagValidationFailure> validate(String tag, AsantiAsnData asnData);
 
     /**
-     * Validates the supplied bytes based on the the kind of ASN.1 Built-in Type represented by this
+     * Validates the supplied tag in the data based on the kind of ASN.1 Built-in Type represented
+     * by this validator
+     *
+     * @param tag The tag to validate.
+     * @param asnData The data to retrieve tag from.
+     * @param immediateChildren The immediate children of the tag.
+     * @return Any failures encountered while validating the tag.
+     */
+    ImmutableSet<DecodedTagValidationFailure> validate(
+            String tag, AsantiAsnData asnData, ImmutableSet<String> immediateChildren);
+
+    /**
+     * Validates the supplied bytes based on the kind of ASN.1 Built-in Type represented by this
      * validator
      *
      * @param bytes bytes to validate
@@ -125,6 +137,14 @@ public interface BuiltinTypeValidator {
         @Override
         public ImmutableSet<DecodedTagValidationFailure> validate(
                 final String tag, final AsantiAsnData asnData) {
+            return ImmutableSet.of();
+        }
+
+        @Override
+        public ImmutableSet<DecodedTagValidationFailure> validate(
+                final String tag,
+                final AsantiAsnData asnData,
+                final ImmutableSet<String> immediateChildren) {
             return ImmutableSet.of();
         }
 

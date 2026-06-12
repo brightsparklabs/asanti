@@ -64,6 +64,12 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
     }
 
     @Override
+    public ImmutableSet<DecodedTagValidationFailure> validate(
+            final String tag, final AsantiAsnData asnData, final ImmutableSet<String> children) {
+        return validate(tag, asnData);
+    }
+
+    @Override
     public ImmutableSet<ByteValidationFailure> validate(final byte[] bytes) {
         if (bytes == null) {
             final ByteValidationFailure failure =

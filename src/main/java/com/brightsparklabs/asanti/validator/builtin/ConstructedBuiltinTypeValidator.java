@@ -68,11 +68,21 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator {
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<DecodedTagValidationFailure> validate(String tag, AsantiAsnData asnData) {
+    public ImmutableSet<DecodedTagValidationFailure> validate(
+            final String tag, final AsantiAsnData asnData) {
         final ImmutableSet<String> childTags =
                 DecodedTagsHelpers.getImmediateChildren(asnData, tag);
 
-        // to have gotten a mapped tag the schema look up must have previously worked,
+        return validate(tag, asnData, childTags);
+    }
+
+    @Override
+    public ImmutableSet<DecodedTagValidationFailure> validate(
+            final String tag,
+            final AsantiAsnData asnData,
+            final ImmutableSet<String> immediateChildren) {
+
+        // To have gotten a mapped tag the schema look up must have previously worked,
         // so it is safe to assume it will work here.  If it fails then throwing is the right thing
         // to do.  (noting the .get() at the end of the Optional)
         final AsnSchemaType type = asnData.getType(tag).get();
@@ -82,7 +92,7 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator {
         final ImmutableList<AsnSchemaComponentType> allComponents = type.getAllComponents();
         for (AsnSchemaComponentType component : allComponents) {
             if (!component.isOptional()) {
-                if (!childTags.contains(component.getName())) {
+                if (!immediateChildren.contains(component.getName())) {
                     final String fullyQualifiedTag = tag + "/" + component.getName();
                     final DecodedTagValidationFailure failure =
                             new DecodedTagValidationFailure(
