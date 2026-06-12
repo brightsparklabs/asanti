@@ -16,6 +16,7 @@ import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.brightsparklabs.asanti.validator.ValidationRule;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -60,9 +61,29 @@ public class IsEqualValidationRule<T> implements ValidationRule {
     @Override
     public ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData)
             throws DecodeException {
+        return validate(tag, asnData, Optional.empty(), Optional.empty());
+    }
+
+    @Override
+    public ImmutableSet<ValidationFailure> validate(
+            final String tag,
+            final AsnData asnData,
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
+            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache)
+            throws DecodeException {
         final ImmutableSet.Builder<ValidationFailure> builder = ImmutableSet.builder();
         try {
-            final Optional<T> actualValue = asnData.getDecodedObject(tag, classOfT);
+            final Optional<T> actualValue =
+                    getDecodedValueFromCache(
+                                    decodedTagValuesCache,
+                                    tag,
+                                    (t) ->
+                                            asnData.getDecodedObject(t, classOfT)
+                                                    // Need to perform this map otherwise the type
+                                                    // inference acts up.
+                                                    .map(v -> (Object) v))
+                            .map(classOfT::cast);
+
             final boolean actualValuePresent = actualValue.isPresent();
             if (!actualValuePresent || !expectedValue.equals(actualValue.get())) {
                 final String reason =

@@ -16,6 +16,7 @@ import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.brightsparklabs.asanti.validator.ValidationRule;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -69,7 +70,21 @@ public class PrintableStringRegexMatchValidationRule implements ValidationRule {
     @Override
     public ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData)
             throws DecodeException {
-        final Optional<String> value = asnData.getPrintableString(tag);
+        return validate(tag, asnData, Optional.empty(), Optional.empty());
+    }
+
+    @Override
+    public ImmutableSet<ValidationFailure> validate(
+            final String tag,
+            final AsnData asnData,
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
+            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache)
+            throws DecodeException {
+
+        final Optional<String> value =
+                getDecodedValueFromCache(
+                        decodedTagPrintableStringCache, tag, asnData::getPrintableString);
+
         if (value.isPresent() && pattern.matcher(value.get()).matches()) {
             // validation successful -> no failures
             return ImmutableSet.of();

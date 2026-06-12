@@ -17,6 +17,8 @@ import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -40,7 +42,7 @@ public class AsPrintableAsciiValidationRule implements ValidationRule {
      *
      * @param pattern regex to use to retrieve data
      */
-    public AsPrintableAsciiValidationRule(Pattern pattern) {
+    public AsPrintableAsciiValidationRule(final Pattern pattern) {
         this.pattern = pattern;
     }
 
@@ -51,9 +53,36 @@ public class AsPrintableAsciiValidationRule implements ValidationRule {
     @Override
     public ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData)
             throws DecodeException {
+        return validate(tag, asnData, Optional.empty(), Optional.empty());
+    }
+
+    @Override
+    public ImmutableSet<ValidationFailure> validate(
+            final String ignored,
+            final AsnData asnData,
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
+            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache)
+            throws DecodeException {
+
         final ImmutableSet.Builder<ValidationFailure> builder = ImmutableSet.builder();
 
-        final ImmutableMap<String, Object> decoded = asnData.getDecodedObjectsMatching(pattern);
+        final ImmutableSet<String> tags = getTags(asnData);
+
+        final ImmutableMap<String, Object> decoded =
+                tags.stream()
+                        .map(
+                                (tag) ->
+                                        Map.entry(
+                                                tag,
+                                                getDecodedValueFromCache(
+                                                        decodedTagValuesCache,
+                                                        tag,
+                                                        (t) ->
+                                                                asnData.getDecodedObject(
+                                                                        t, Object.class))))
+                        .filter(entry -> entry.getValue().isPresent())
+                        .map(entry -> Map.entry(entry.getKey(), entry.getValue().get()))
+                        .collect(ImmutableMap.toImmutableMap(Entry::getKey, Entry::getValue));
 
         for (Map.Entry<String, Object> entry : decoded.entrySet()) {
             final String key = entry.getKey();
@@ -78,5 +107,19 @@ public class AsPrintableAsciiValidationRule implements ValidationRule {
         }
 
         return builder.build();
+    }
+
+    // -------------------------------------------------------------------------
+    // PROTECTED METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Gets the tags to validate.
+     *
+     * @param asnData The AsnData holding the tags.
+     * @return The tags to validate.
+     */
+    protected ImmutableSet<String> getTags(final AsnData asnData) {
+        return asnData.getTagsMatching(pattern);
     }
 }

@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,15 @@ public class ValidatorImpl implements Validator {
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationResult validate(AsnData asnData) {
+    public ValidationResult validate(final AsnData asnData) {
+        return validate(asnData, Optional.empty(), Optional.empty());
+    }
+
+    @Override
+    public ValidationResult validate(
+            final AsnData asnData,
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
+            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache) {
         final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
 
         if (!(asnData instanceof AsantiAsnData)) {
@@ -99,7 +108,9 @@ public class ValidatorImpl implements Validator {
             builder.addAll(failures);
 
             // Custom validation.
-            failures = validateCustom(tag, asnData);
+            failures =
+                    validateCustom(
+                            tag, asnData, decodedTagValuesCache, decodedTagPrintableStringCache);
             builder.addAll(failures);
         }
 
@@ -141,9 +152,16 @@ public class ValidatorImpl implements Validator {
      * Validates the supplied tag using any custom rules in this decoder.
      *
      * @param asnData The data to validate.
+     * @param decodedTagValuesCache Optional cache to lookup and add decoded tag values.
+     * @param decodedTagPrintableStringCache Optional cache to lookup and add decoded tag printable
+     *     string values.
      * @return The results from validating the data.
      */
-    private Set<ValidationFailure> validateCustom(String tag, AsnData asnData) {
+    private Set<ValidationFailure> validateCustom(
+            final String tag,
+            final AsnData asnData,
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
+            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
         final AsnPrimitiveType primitiveType =
                 asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
@@ -158,7 +176,12 @@ public class ValidatorImpl implements Validator {
         rules.forEach(
                 rule -> {
                     try {
-                        failures.addAll(rule.validate(tag, asnData));
+                        failures.addAll(
+                                rule.validate(
+                                        tag,
+                                        asnData,
+                                        decodedTagValuesCache,
+                                        decodedTagPrintableStringCache));
                     } catch (DecodeException ex) {
                         final ValidationFailure failure =
                                 new DecodedTagValidationFailure(
