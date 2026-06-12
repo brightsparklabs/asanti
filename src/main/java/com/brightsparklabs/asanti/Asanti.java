@@ -13,13 +13,17 @@ import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnBerDataReader;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
+import com.brightsparklabs.asanti.reader.AsnBerDataStreamReader;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharSource;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * The entry point to the API. This contains the logic for decoding tagged/application ASN.1 data
@@ -98,6 +102,10 @@ public class Asanti {
      */
     public static ImmutableList<RawAsnData> readAsnBerData(final Path source) throws IOException {
         return AsnBerDataReader.read(source);
+    }
+
+    public static Stream<RawAsnData> readAsnBerDataStream(final Path source) throws IOException {
+        return AsnBerDataReader.read(source).stream();
     }
 
     /**
