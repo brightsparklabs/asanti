@@ -47,16 +47,13 @@ public interface ValidationRule {
      * @param tag The tag to validate in the data.
      * @param asnData The data to validate.
      * @param decodedTagValuesCache Optional cache to lookup and add decoded tag values.
-     * @param decodedTagPrintableStringCache Optional cache to lookup and add decoded tag printable
-     *     string values.
      * @return The results of validation
      * @throws DecodeException If the specified tag could not be decoded.
      */
     ImmutableSet<ValidationFailure> validate(
             final String tag,
             final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
-            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache)
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache)
             throws DecodeException;
 
     /**
@@ -130,8 +127,7 @@ public interface ValidationRule {
         public ImmutableSet<ValidationFailure> validate(
                 final String tag,
                 final AsnData asnData,
-                final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
-                final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache) {
+                final Optional<Map<String, Optional<Object>>> decodedTagValuesCache) {
             return ImmutableSet.of();
         }
     }

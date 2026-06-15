@@ -175,12 +175,7 @@ public class ValidatorImpl implements Validator {
         rules.forEach(
                 rule -> {
                     try {
-                        failures.addAll(
-                                rule.validate(
-                                        tag,
-                                        asnData,
-                                        decodedTagValuesCache,
-                                        decodedTagPrintableStringCache));
+                        failures.addAll(rule.validate(tag, asnData, decodedTagValuesCache));
                     } catch (DecodeException ex) {
                         final ValidationFailure failure =
                                 new DecodedTagValidationFailure(

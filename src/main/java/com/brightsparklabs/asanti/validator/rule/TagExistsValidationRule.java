@@ -83,8 +83,7 @@ public class TagExistsValidationRule implements ValidationRule {
     public ImmutableSet<ValidationFailure> validate(
             final String tag,
             final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
-            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache)
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache)
             throws DecodeException {
 
         // Cache isn't useful for this validation rule.

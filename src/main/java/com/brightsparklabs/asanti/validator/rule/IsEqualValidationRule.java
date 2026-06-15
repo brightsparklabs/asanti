@@ -61,15 +61,14 @@ public class IsEqualValidationRule<T> implements ValidationRule {
     @Override
     public ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData)
             throws DecodeException {
-        return validate(tag, asnData, Optional.empty(), Optional.empty());
+        return validate(tag, asnData, Optional.empty());
     }
 
     @Override
     public ImmutableSet<ValidationFailure> validate(
             final String tag,
             final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
-            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache)
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache)
             throws DecodeException {
         final ImmutableSet.Builder<ValidationFailure> builder = ImmutableSet.builder();
         try {
