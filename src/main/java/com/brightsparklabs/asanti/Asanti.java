@@ -13,16 +13,11 @@ import com.brightsparklabs.asanti.model.data.RawAsnData;
 import com.brightsparklabs.asanti.model.schema.AsnSchema;
 import com.brightsparklabs.asanti.reader.AsnBerDataReader;
 import com.brightsparklabs.asanti.reader.AsnSchemaReader;
-import com.brightsparklabs.asanti.reader.AsnBerDataStreamReader;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.io.CharSource;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -66,13 +61,9 @@ public class Asanti {
     public static ImmutableList<AsantiAsnData> decodeAsnData(
             final byte[] source, final AsnSchema asnSchema, final String topLevelType)
             throws IOException {
-        final ImmutableList<RawAsnData> allRawAsnData = readAsnBerData(source);
-        final List<AsantiAsnData> allAsnData = Lists.newArrayList();
-        for (final RawAsnData rawAsnData : allRawAsnData) {
-            final AsantiAsnData asnData = decodeAsnData(rawAsnData, asnSchema, topLevelType);
-            allAsnData.add(asnData);
-        }
-        return ImmutableList.copyOf(allAsnData);
+        return readAsnBerData(source)
+                .map(rawAsnData -> decodeAsnData(rawAsnData, asnSchema, topLevelType))
+                .collect(ImmutableList.toImmutableList());
     }
 
     /**
@@ -100,12 +91,8 @@ public class Asanti {
      * @return List of {@link RawAsnData} objects found in the data.
      * @throws IOException If any errors occur reading the data.
      */
-    public static ImmutableList<RawAsnData> readAsnBerData(final Path source) throws IOException {
+    public static Stream<RawAsnData> readAsnBerData(final Path source) throws IOException {
         return AsnBerDataReader.read(source);
-    }
-
-    public static Stream<RawAsnData> readAsnBerDataStream(final Path source) throws IOException {
-        return AsnBerDataReader.read(source).stream();
     }
 
     /**
@@ -115,7 +102,7 @@ public class Asanti {
      * @return List of {@link RawAsnData} objects found in the data.
      * @throws IOException If any errors occur reading the data.
      */
-    public static ImmutableList<RawAsnData> readAsnBerData(final byte[] source) throws IOException {
+    public static Stream<RawAsnData> readAsnBerData(final byte[] source) throws IOException {
         return AsnBerDataReader.read(source);
     }
 
@@ -124,10 +111,8 @@ public class Asanti {
      *
      * @param source An input stream containing the ASN.1 BER/DER binary data to decode.
      * @return List of {@link RawAsnData} objects found in the data.
-     * @throws IOException If any errors occur reading the data.
      */
-    public static ImmutableList<RawAsnData> readAsnBerData(final InputStream source)
-            throws IOException {
+    public static Stream<RawAsnData> readAsnBerData(final InputStream source) {
         return AsnBerDataReader.read(source);
     }
 }

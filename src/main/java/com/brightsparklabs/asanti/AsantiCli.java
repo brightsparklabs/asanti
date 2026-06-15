@@ -248,7 +248,9 @@ public class AsantiCli {
      * @throws IOException if any errors occur while parsing
      */
     private static void testReadingBerFile(final File berFile) throws IOException {
-        final ImmutableList<RawAsnData> data = Asanti.readAsnBerData(Files.toByteArray(berFile));
+        final ImmutableList<RawAsnData> data =
+                Asanti.readAsnBerData(Files.toByteArray(berFile))
+                        .collect(ImmutableList.toImmutableList());
         int count = 0;
         for (final RawAsnData rawAsnData : data) {
             logger.info("PDU[" + count + "]");

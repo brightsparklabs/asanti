@@ -51,7 +51,8 @@ public class AsantiTest {
         final File berFile = new File(berFilename);
 
         final var byteSource = Files.toByteArray(berFile);
-        final ImmutableList<RawAsnData> allRawAsnData = Asanti.readAsnBerData(byteSource);
+        final ImmutableList<RawAsnData> allRawAsnData =
+                Asanti.readAsnBerData(byteSource).collect(ImmutableList.toImmutableList());
 
         int count = 0;
         for (final RawAsnData rawAsnData : allRawAsnData) {

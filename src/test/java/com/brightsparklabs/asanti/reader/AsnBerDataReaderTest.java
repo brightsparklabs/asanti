@@ -65,34 +65,36 @@ public class AsnBerDataReaderTest {
         final var berData = MockAsnBerFile.createAsnBerDataContainingPeoplePdus(5);
 
         // test minimum
-        ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData, 1);
+        ImmutableList<RawAsnData> result =
+                AsnBerDataReader.read(berData).limit(1).collect(ImmutableList.toImmutableList());
         assertEquals(1, result.size());
 
         // test middle
-        result = AsnBerDataReader.read(berData, 3);
+        result = AsnBerDataReader.read(berData).limit(3).collect(ImmutableList.toImmutableList());
         assertEquals(3, result.size());
 
         // test maximum
-        result = AsnBerDataReader.read(berData, 5);
+        result = AsnBerDataReader.read(berData).limit(5).collect(ImmutableList.toImmutableList());
         assertEquals(5, result.size());
 
         // test over-specified
-        result = AsnBerDataReader.read(berData, Integer.MAX_VALUE);
+        result =
+                AsnBerDataReader.read(berData)
+                        .limit(Integer.MAX_VALUE)
+                        .collect(ImmutableList.toImmutableList());
         assertEquals(5, result.size());
 
         // test unlimited
-        result = AsnBerDataReader.read(berData, 0);
-        assertEquals(5, result.size());
-        result = AsnBerDataReader.read(berData, -1);
-        assertEquals(5, result.size());
-        result = AsnBerDataReader.read(berData, Integer.MIN_VALUE);
+        result = AsnBerDataReader.read(berData).collect(ImmutableList.toImmutableList());
+        ;
         assertEquals(5, result.size());
     }
 
     @Test
     public void testReadFile() throws Exception {
         final var berData = MockAsnBerFile.createAsnBerDataContainingDocumentPdus(5);
-        final ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData);
+        final ImmutableList<RawAsnData> result =
+                AsnBerDataReader.read(berData).collect(ImmutableList.toImmutableList());
         assertEquals(5, result.size());
         for (final RawAsnData pdu : result) {
             assertEquals(16, pdu.getRawTags().size());
@@ -149,7 +151,8 @@ public class AsnBerDataReaderTest {
         final var berData =
                 MockAsnBerFile.createAsnBerData(
                         5, EXAMPLE_SCHEMA_PEOPLE_PDU_LARGE_OCTET_STRING_BER);
-        final ImmutableList<RawAsnData> result = AsnBerDataReader.read(berData);
+        final ImmutableList<RawAsnData> result =
+                AsnBerDataReader.read(berData).collect(ImmutableList.toImmutableList());
         assertEquals(5, result.size());
 
         final RawAsnData pdu = result.get(0);
