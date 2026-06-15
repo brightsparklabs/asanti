@@ -34,12 +34,8 @@ public interface Validator {
      *
      * @param asnData The data to validate.
      * @param decodedTagValuesCache Optional cache to lookup and add decoded tag values.
-     * @param decodedTagPrintableStringCache Optional cache to lookup and add decoded tag printable
-     *     string values.
      * @return The results from validating the data.
      */
     ValidationResult validate(
-            AsnData asnData,
-            Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
-            Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache);
+            AsnData asnData, Optional<Map<String, Optional<Object>>> decodedTagValuesCache);
 }

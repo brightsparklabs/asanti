@@ -79,14 +79,13 @@ public class ValidatorImpl implements Validator {
 
     @Override
     public ValidationResult validate(final AsnData asnData) {
-        return validate(asnData, Optional.empty(), Optional.empty());
+        return validate(asnData, Optional.empty());
     }
 
     @Override
     public ValidationResult validate(
             final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
-            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache) {
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache) {
         final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
 
         if (!(asnData instanceof AsantiAsnData)) {
@@ -105,9 +104,7 @@ public class ValidatorImpl implements Validator {
             builder.addAll(failures);
 
             // Custom validation.
-            failures =
-                    validateCustom(
-                            tag, asnData, decodedTagValuesCache, decodedTagPrintableStringCache);
+            failures = validateCustom(tag, asnData, decodedTagValuesCache);
             builder.addAll(failures);
         }
 
@@ -152,39 +149,37 @@ public class ValidatorImpl implements Validator {
      *
      * @param asnData The data to validate.
      * @param decodedTagValuesCache Optional cache to lookup and add decoded tag values.
-     * @param decodedTagPrintableStringCache Optional cache to lookup and add decoded tag printable
-     *     string values.
      * @return The results from validating the data.
      */
     private Set<ValidationFailure> validateCustom(
             final String tag,
             final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache,
-            final Optional<Map<String, Optional<String>>> decodedTagPrintableStringCache) {
+            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
         final AsnPrimitiveType primitiveType =
                 asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
         final AsnBuiltinType type = primitiveType.getBuiltinType();
 
-        final ImmutableSet<ValidationRule> rules =
-                customRules.entrySet().stream()
-                        .filter(e -> e.getValue().matches(tag, type, asnData))
-                        .map(Map.Entry::getKey)
-                        .collect(ImmutableSet.toImmutableSet());
+        for (final Map.Entry<ValidationRule, Selector> entry : customRules.entrySet()) {
+            final ValidationRule rule = entry.getKey();
+            final Selector selector = entry.getValue();
 
-        rules.forEach(
-                rule -> {
-                    try {
-                        failures.addAll(rule.validate(tag, asnData, decodedTagValuesCache));
-                    } catch (DecodeException ex) {
-                        final ValidationFailure failure =
-                                new DecodedTagValidationFailure(
-                                        tag,
-                                        FailureType.CustomValidationFailed,
-                                        "Data was not in the expected format: " + ex.getMessage());
-                        failures.add(failure);
-                    }
-                });
+            if (!selector.matches(tag, type, asnData)) {
+                continue;
+            }
+
+            try {
+                failures.addAll(rule.validate(tag, asnData, decodedTagValuesCache));
+            } catch (DecodeException ex) {
+                final ValidationFailure failure =
+                        new DecodedTagValidationFailure(
+                                tag,
+                                FailureType.CustomValidationFailed,
+                                "Data was not in the expected format: " + ex.getMessage());
+                failures.add(failure);
+            }
+        }
+
         return failures;
     }
 
