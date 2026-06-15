@@ -96,15 +96,12 @@ public class ValidatorImpl implements Validator {
             return builder.build();
         }
 
-        // Validate each mapped tag and get its immediate children (for the
-        // ConstructedBuiltinTypeValidator).
-        final ImmutableMap<String, ImmutableSet<String>> tags =
-                DecodedTagsHelpers.buildTagsWithImmediateChildren(asnData);
+        // Validate each mapped tag.
+        final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
 
-        for (final String tag : tags.keySet()) {
+        for (final String tag : tags) {
             // Default validation.
-            Set<ValidationFailure> failures =
-                    validateDefault(tag, (AsantiAsnData) asnData, tags.get(tag));
+            Set<ValidationFailure> failures = validateDefault(tag, (AsantiAsnData) asnData, tags);
             builder.addAll(failures);
 
             // Custom validation.
@@ -132,18 +129,20 @@ public class ValidatorImpl implements Validator {
     /**
      * Validates the supplied data using the default ASN.1 schema rules.
      *
+     * @param tag The tag to validate.
      * @param asnData The data to validate.
+     * @param allTags All the mapped tags.
      * @return The results from validating the data.
      */
     private Set<ValidationFailure> validateDefault(
-            String tag, AsantiAsnData asnData, ImmutableSet<String> immediateChildren) {
+            final String tag, final AsantiAsnData asnData, final ImmutableSet<String> allTags) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
         final AsnPrimitiveType type =
                 asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
         final BuiltinTypeValidator tagValidator =
                 (BuiltinTypeValidator) type.accept(validationVisitor);
         if (tagValidator != null) {
-            failures.addAll(tagValidator.validate(tag, asnData, immediateChildren));
+            failures.addAll(tagValidator.validate(tag, asnData, allTags));
         }
         return failures;
     }

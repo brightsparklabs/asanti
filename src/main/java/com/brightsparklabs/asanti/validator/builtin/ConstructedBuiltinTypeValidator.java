@@ -70,17 +70,14 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator {
     @Override
     public ImmutableSet<DecodedTagValidationFailure> validate(
             final String tag, final AsantiAsnData asnData) {
-        final ImmutableSet<String> childTags =
-                DecodedTagsHelpers.getImmediateChildren(asnData, tag);
+        final ImmutableSet<String> alltags = DecodedTagsHelpers.buildTags(asnData);
 
-        return validate(tag, asnData, childTags);
+        return validate(tag, asnData, alltags);
     }
 
     @Override
     public ImmutableSet<DecodedTagValidationFailure> validate(
-            final String tag,
-            final AsantiAsnData asnData,
-            final ImmutableSet<String> immediateChildren) {
+            final String tag, final AsantiAsnData asnData, final ImmutableSet<String> alltags) {
 
         // To have gotten a mapped tag the schema look up must have previously worked,
         // so it is safe to assume it will work here.  If it fails then throwing is the right thing
@@ -90,18 +87,21 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator {
         final Set<DecodedTagValidationFailure> failures = Sets.newHashSet();
 
         final ImmutableList<AsnSchemaComponentType> allComponents = type.getAllComponents();
-        for (AsnSchemaComponentType component : allComponents) {
-            if (!component.isOptional()) {
-                if (!immediateChildren.contains(component.getName())) {
-                    final String fullyQualifiedTag = tag + "/" + component.getName();
-                    final DecodedTagValidationFailure failure =
-                            new DecodedTagValidationFailure(
-                                    fullyQualifiedTag,
-                                    FailureType.MandatoryFieldMissing,
-                                    "Mandatory field was not found in the data");
-                    logger.warn("Mandatory field {} was not found in the data", fullyQualifiedTag);
-                    failures.add(failure);
-                }
+        for (final AsnSchemaComponentType component : allComponents) {
+            if (component.isOptional()) {
+                continue;
+            }
+
+            final String childTag = tag + "/" + component.getName();
+
+            if (!alltags.contains(childTag)) {
+                final DecodedTagValidationFailure failure =
+                        new DecodedTagValidationFailure(
+                                childTag,
+                                FailureType.MandatoryFieldMissing,
+                                "Mandatory field was not found in the data");
+                logger.warn("Mandatory field {} was not found in the data", childTag);
+                failures.add(failure);
             }
         }
 

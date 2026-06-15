@@ -93,11 +93,11 @@ public interface BuiltinTypeValidator {
      *
      * @param tag The tag to validate.
      * @param asnData The data to retrieve tag from.
-     * @param immediateChildren The immediate children of the tag.
+     * @param allTags All the tags contained within the ASN data.
      * @return Any failures encountered while validating the tag.
      */
     ImmutableSet<DecodedTagValidationFailure> validate(
-            String tag, AsantiAsnData asnData, ImmutableSet<String> immediateChildren);
+            String tag, AsantiAsnData asnData, ImmutableSet<String> allTags);
 
     /**
      * Validates the supplied bytes based on the kind of ASN.1 Built-in Type represented by this
