@@ -14,10 +14,8 @@ import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.brightsparklabs.asanti.validator.ValidationRule;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -67,37 +65,23 @@ public class AsPrintableAsciiValidationRule implements ValidationRule {
 
         final ImmutableSet<String> tags = getTags(asnData);
 
-        final ImmutableMap<String, Object> decoded =
-                tags.stream()
-                        .map(
-                                (tag) ->
-                                        Map.entry(
-                                                tag,
-                                                getDecodedValueFromCache(
-                                                        decodedTagValuesCache,
-                                                        tag,
-                                                        (t) ->
-                                                                asnData.getDecodedObject(
-                                                                        t, Object.class))))
-                        .filter(entry -> entry.getValue().isPresent())
-                        .map(entry -> Map.entry(entry.getKey(), entry.getValue().get()))
-                        .collect(ImmutableMap.toImmutableMap(Entry::getKey, Entry::getValue));
+        for (final String tag : tags) {
 
-        for (Map.Entry<String, Object> entry : decoded.entrySet()) {
-            final String key = entry.getKey();
-            final Object element = entry.getValue();
+            final Optional<Object> decodedValue =
+                    getDecodedValueFromCache(
+                            decodedTagValuesCache,
+                            tag,
+                            (t) -> asnData.getDecodedObject(t, Object.class));
 
-            if (!(element instanceof byte[])) {
+            if (decodedValue.isEmpty() || !(decodedValue.get() instanceof final byte[] bytes)) {
                 // it is not an octet string
                 continue;
             }
 
-            final byte[] bytes = (byte[]) element;
-
             if (ByteArrays.containsNonPrintableChars(bytes)) {
                 final DecodedTagValidationFailure failure =
                         new DecodedTagValidationFailure(
-                                key,
+                                tag,
                                 FailureType.CustomValidationFailed,
                                 "Field must contain only printable ASCII characters (0x20-0x7E)");
 
