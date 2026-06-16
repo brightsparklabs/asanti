@@ -154,27 +154,37 @@ public class DecodedTagsHelpers {
      * Note that this only works on a "single" tag, not a fully qualified tag. If the tag has no
      * index part then it will return the input tag unaltered.
      *
-     * <p>Example, someTag[1] will return someTag.
+     * <p>Example, someTag[1] will return someTag, anotherTag[1][0] will return anotherTag.
      *
      * @param tag the tags to strip
      * @return the stripped tag
      * @throws NullPointerException if tag is null
      */
-    public static String stripIndex(String tag) {
+    public static String stripIndex(final String tag) {
         checkNotNull(tag);
+
+        // We want to make sure we're working with the last "tag node" of the given tag. E.g. for
+        // /foo[1]/bar[0] we want to get /foo[1]/bar back.
+        final int lastSlashIndex = tag.lastIndexOf("/");
+        final String lastTagNode = lastSlashIndex != -1 ? tag.substring(lastSlashIndex) : tag;
+
         // Has no index block at all, check no further.
-        final int openBracketIndex = tag.indexOf("[");
-        if (openBracketIndex == -1 || !tag.endsWith("]")) {
+        final int openBracketIndex = lastTagNode.indexOf("[");
+        if (openBracketIndex == -1 || !lastTagNode.endsWith("]")) {
             return tag;
         }
 
-        // Get the end of the tag from the opening square bracket to the end minus one (to account
-        // for the closing bracket) and check if the enclosed substring is a number.
-        final boolean hasIndexEnding =
-                tag.substring(openBracketIndex + 1, tag.length() - 1)
-                        .chars()
-                        .allMatch(Character::isDigit);
+        // Check if that tag ends with an index, allowing for multiple indexes to be applied (i.e.
+        // foo[1][0]).;
+        for (int i = openBracketIndex; i < lastTagNode.length(); i++) {
+            final char character = lastTagNode.charAt(i);
+            // Tag doesn't end with an index, just return the tag as is.
+            if (!Character.isDigit(character) && character != '[' && character != ']') {
+                return tag;
+            }
+        }
 
-        return hasIndexEnding ? tag.substring(0, openBracketIndex) : tag;
+        // Account for the "parent tag" where appropriate.
+        return tag.substring(0, Math.max(lastSlashIndex, 0) + openBracketIndex);
     }
 }
