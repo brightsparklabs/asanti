@@ -20,7 +20,6 @@ import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Map;
@@ -88,11 +87,12 @@ public class ValidatorImpl implements Validator {
         }
 
         // Validate each mapped tag.
-        final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
+        final var tags = DecodedTagsHelpers.buildTagsWithImmediateChildren(asnData);
 
-        for (final String tag : tags) {
+        for (final String tag : tags.keySet()) {
             // Default validation.
-            Set<ValidationFailure> failures = validateDefault(tag, (AsantiAsnData) asnData, tags);
+            Set<ValidationFailure> failures =
+                    validateDefault(tag, (AsantiAsnData) asnData, tags.get(tag));
             builder.addAll(failures);
 
             // Custom validation.
@@ -120,18 +120,18 @@ public class ValidatorImpl implements Validator {
      *
      * @param tag The tag to validate.
      * @param asnData The data to validate.
-     * @param allTags All the mapped tags.
+     * @param immediateChildren The immediate children of the given tag.
      * @return The results from validating the data.
      */
     private Set<ValidationFailure> validateDefault(
-            final String tag, final AsantiAsnData asnData, final ImmutableSet<String> allTags) {
+            final String tag, final AsantiAsnData asnData, final Set<String> immediateChildren) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
         final AsnPrimitiveType type =
                 asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
         final BuiltinTypeValidator tagValidator =
                 (BuiltinTypeValidator) type.accept(validationVisitor);
         if (tagValidator != null) {
-            failures.addAll(tagValidator.validate(tag, asnData, allTags));
+            failures.addAll(tagValidator.validate(tag, asnData, immediateChildren));
         }
         return failures;
     }

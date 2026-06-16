@@ -75,7 +75,7 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator {
 
     @Override
     public ImmutableSet<DecodedTagValidationFailure> validate(
-            final String tag, final AsantiAsnData asnData, final ImmutableSet<String> children) {
+            final String tag, final AsantiAsnData asnData, final Set<String> children) {
         return validate(tag, asnData);
     }
 
