@@ -15,6 +15,7 @@ import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.junit.Test;
 
@@ -52,18 +53,27 @@ public class AsPrintableAsciiValidationRuleTest {
         Pattern patternGood = Pattern.compile("Good");
         Pattern patternBad = Pattern.compile("Bad");
 
-        when(asnData.getDecodedObjectsMatching(eq(patternGood))).thenReturn(dataGood);
-        when(asnData.getDecodedObjectsMatching(eq(patternBad))).thenReturn(dataBad);
-
         final AsPrintableAsciiValidationRule instanceGood =
                 new AsPrintableAsciiValidationRule(patternGood);
+        final AsPrintableAsciiValidationRule instanceBad =
+                new AsPrintableAsciiValidationRule(patternBad);
+
+        when(instanceGood.getTags(asnData)).thenReturn(dataGood.keySet());
+        for (final var entry : dataGood.entrySet()) {
+            when(asnData.getDecodedObject(entry.getKey(), Object.class))
+                    .thenReturn(Optional.of(entry.getValue()));
+        }
+
+        when(instanceBad.getTags(asnData)).thenReturn(dataBad.keySet());
+        for (final var entry : dataBad.entrySet()) {
+            when(asnData.getDecodedObject(entry.getKey(), Object.class))
+                    .thenReturn(Optional.of(entry.getValue()));
+        }
 
         final ImmutableSet<ValidationFailure> failuresGood =
                 instanceGood.validate("any tag", asnData);
         assertEquals(0, failuresGood.size());
 
-        final AsPrintableAsciiValidationRule instanceBad =
-                new AsPrintableAsciiValidationRule(patternBad);
         final ImmutableSet<ValidationFailure> failuresBad =
                 instanceBad.validate("any tag", asnData);
         assertEquals(1, failuresBad.size());
