@@ -16,7 +16,6 @@ import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.brightsparklabs.asanti.validator.ValidationRule;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -82,15 +81,5 @@ public class PrintableStringRegexMatchValidationRule implements ValidationRule {
                 new DecodedTagValidationFailure(
                         tag, FailureType.CustomValidationFailed, failureReason);
         return ImmutableSet.of(failure);
-    }
-
-    @Override
-    public ImmutableSet<ValidationFailure> validate(
-            final String tag,
-            final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache)
-            throws DecodeException {
-        // Cache isn't used here.
-        return validate(tag, asnData);
     }
 }

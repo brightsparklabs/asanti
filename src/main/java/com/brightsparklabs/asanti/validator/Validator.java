@@ -8,8 +8,6 @@
 package com.brightsparklabs.asanti.validator;
 
 import com.brightsparklabs.asanti.data.AsnData;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Used to validate {@link AsnData} against its associated schema or a custom validation rule.
@@ -28,14 +26,4 @@ public interface Validator {
      * @return The results from validating the data.
      */
     ValidationResult validate(AsnData asnData);
-
-    /**
-     * Validates the supplied data using the rules in this validator.
-     *
-     * @param asnData The data to validate.
-     * @param decodedTagValuesCache Optional cache to lookup and add decoded tag values.
-     * @return The results from validating the data.
-     */
-    ValidationResult validate(
-            AsnData asnData, Optional<Map<String, Optional<Object>>> decodedTagValuesCache);
 }

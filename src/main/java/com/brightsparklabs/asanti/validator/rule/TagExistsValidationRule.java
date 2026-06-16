@@ -14,8 +14,6 @@ import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.brightsparklabs.asanti.validator.ValidationRule;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Validates that the given tag exists in the supplied data. This is used for when at the schema
@@ -77,16 +75,5 @@ public class TagExistsValidationRule implements ValidationRule {
         }
 
         return builder.build();
-    }
-
-    @Override
-    public ImmutableSet<ValidationFailure> validate(
-            final String tag,
-            final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache)
-            throws DecodeException {
-
-        // Cache isn't useful for this validation rule.
-        return validate(tag, asnData);
     }
 }

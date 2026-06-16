@@ -15,7 +15,6 @@ import com.brightsparklabs.asanti.validator.ValidationFailure;
 import com.brightsparklabs.asanti.validator.ValidationRule;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -49,29 +48,14 @@ public class AsPrintableAsciiValidationRule implements ValidationRule {
     // -------------------------------------------------------------------------
 
     @Override
-    public ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData)
+    public ImmutableSet<ValidationFailure> validate(final String ignored, final AsnData asnData)
             throws DecodeException {
-        return validate(tag, asnData, Optional.empty());
-    }
-
-    @Override
-    public ImmutableSet<ValidationFailure> validate(
-            final String ignored,
-            final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache)
-            throws DecodeException {
-
         final ImmutableSet.Builder<ValidationFailure> builder = ImmutableSet.builder();
 
         final ImmutableSet<String> tags = getTags(asnData);
 
         for (final String tag : tags) {
-
-            final Optional<Object> decodedValue =
-                    getDecodedValueFromCache(
-                            decodedTagValuesCache,
-                            tag,
-                            (t) -> asnData.getDecodedObject(t, Object.class));
+            final Optional<Object> decodedValue = asnData.getDecodedObject(tag, Object.class);
 
             if (decodedValue.isEmpty() || !(decodedValue.get() instanceof final byte[] bytes)) {
                 // it is not an octet string

@@ -12,7 +12,6 @@ import com.brightsparklabs.asanti.exception.DecodeException;
 import com.brightsparklabs.asanti.schema.AsnPrimitiveType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -50,23 +49,12 @@ public class DelegatingValidator implements ValidationRule {
     @Override
     public ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData)
             throws DecodeException {
-        return validate(tag, asnData, Optional.empty());
-    }
-
-    @Override
-    public ImmutableSet<ValidationFailure> validate(
-            final String tag,
-            final AsnData asnData,
-            final Optional<Map<String, Optional<Object>>> decodedTagValuesCache)
-            throws DecodeException {
-
         final ImmutableSet.Builder<ValidationFailure> result = ImmutableSet.builder();
         for (final ValidatorSelector selector : validators) {
             final Optional<AsnPrimitiveType> primitiveType = asnData.getPrimitiveType(tag);
             if (primitiveType.isPresent()) {
                 if (selector.matches(tag, primitiveType.get().getBuiltinType(), asnData)) {
-                    result.addAll(
-                            selector.getValidator().validate(tag, asnData, decodedTagValuesCache));
+                    result.addAll(selector.getValidator().validate(tag, asnData));
                 }
             }
         }
