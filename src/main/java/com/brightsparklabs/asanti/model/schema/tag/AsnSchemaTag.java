@@ -380,12 +380,12 @@ public class AsnSchemaTag {
     /**
      * Determines the UNIVERSAL tag number for a primitive using direct type inspection.
      *
-     * <p>Uses instanceof checks to avoid expensive getEncoded() calls. This is 20x faster than
-     * encoding the entire object just to read the tag byte. Falls back to encoding only for rare
-     * types (< 1% of cases).
+     * <p>Uses instanceof checks to avoid expensive getEncoded() calls. This is substantially faster
+     * than encoding the entire object just to read the tag byte. Falls back to encoding only for
+     * rare types.
      *
-     * @param primitive the primitive to inspect
-     * @return the UNIVERSAL tag number, or 0 if unknown
+     * @param primitive The primitive to inspect.
+     * @return The UNIVERSAL tag number, or 0 if unknown.
      */
     public static int getUniversalTagNumber(final ASN1Primitive primitive) {
         return switch (primitive) {
