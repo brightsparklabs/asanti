@@ -20,7 +20,6 @@ import com.brightsparklabs.asanti.validator.builtin.BuiltinTypeValidator;
 import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.brightsparklabs.asanti.validator.result.ValidationResultImpl;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Map;
@@ -67,11 +66,7 @@ public class ValidatorImpl implements Validator {
         this.customRules = ImmutableMap.copyOf(customRules);
     }
 
-    /**
-     * Returns a builder for creating instances of this class.
-     *
-     * @return a builder for creating instances of this class.
-     */
+    /** {@return a builder for creating instances of this class} */
     public static Builder builder() {
         return new Builder();
     }
@@ -81,7 +76,7 @@ public class ValidatorImpl implements Validator {
     // -------------------------------------------------------------------------
 
     @Override
-    public ValidationResult validate(AsnData asnData) {
+    public ValidationResult validate(final AsnData asnData) {
         final ValidationResultImpl.Builder builder = ValidationResultImpl.builder();
 
         if (!(asnData instanceof AsantiAsnData)) {
@@ -91,19 +86,21 @@ public class ValidatorImpl implements Validator {
             return builder.build();
         }
 
-        // validate each mapped tag
-        final ImmutableSet<String> tags = DecodedTagsHelpers.buildTags(asnData);
-        for (final String tag : tags) {
-            // default validation
-            Set<ValidationFailure> failures = validateDefault(tag, (AsantiAsnData) asnData);
+        // Validate each mapped tag.
+        final var tags = DecodedTagsHelpers.buildTagsWithImmediateChildren(asnData);
+
+        for (final String tag : tags.keySet()) {
+            // Default validation.
+            Set<ValidationFailure> failures =
+                    validateDefault(tag, (AsantiAsnData) asnData, tags.get(tag));
             builder.addAll(failures);
 
-            // custom validation
+            // Custom validation.
             failures = validateCustom(tag, asnData);
             builder.addAll(failures);
         }
 
-        // add a failure for each unmapped tag
+        // Add a failure for each unmapped tag.
         for (final String tag : asnData.getUnmappedTags()) {
             final DecodedTagValidationFailure failure =
                     new DecodedTagValidationFailure(
@@ -119,54 +116,59 @@ public class ValidatorImpl implements Validator {
     // -------------------------------------------------------------------------
 
     /**
-     * Validates the supplied data using the default ASN.1 schema rules
+     * Validates the supplied data using the default ASN.1 schema rules.
      *
-     * @param asnData data to validate
-     * @return the results from validating the data
+     * @param tag The tag to validate.
+     * @param asnData The data to validate.
+     * @param immediateChildren The immediate children of the given tag.
+     * @return The results from validating the data.
      */
-    private Set<ValidationFailure> validateDefault(String tag, AsantiAsnData asnData) {
+    private Set<ValidationFailure> validateDefault(
+            final String tag, final AsantiAsnData asnData, final Set<String> immediateChildren) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
         final AsnPrimitiveType type =
                 asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
         final BuiltinTypeValidator tagValidator =
                 (BuiltinTypeValidator) type.accept(validationVisitor);
         if (tagValidator != null) {
-            failures.addAll(tagValidator.validate(tag, asnData));
+            failures.addAll(tagValidator.validate(tag, asnData, immediateChildren));
         }
         return failures;
     }
 
     /**
-     * Validates the supplied tag using any custom rules in this decoder
+     * Validates the supplied tag using any custom rules in this decoder.
      *
-     * @param asnData data to validate
-     * @return the results from validating the data
+     * @param tag The tag being validated.
+     * @param asnData The data to validate.
+     * @return The results from validating the data.
      */
-    private Set<ValidationFailure> validateCustom(String tag, AsnData asnData) {
+    private Set<ValidationFailure> validateCustom(final String tag, final AsnData asnData) {
         final Set<ValidationFailure> failures = Sets.newHashSet();
         final AsnPrimitiveType primitiveType =
                 asnData.getPrimitiveType(tag).orElse(AsnPrimitiveTypes.INVALID);
         final AsnBuiltinType type = primitiveType.getBuiltinType();
 
-        final ImmutableSet<ValidationRule> rules =
-                customRules.entrySet().stream()
-                        .filter(e -> e.getValue().matches(tag, type, asnData))
-                        .map(Map.Entry::getKey)
-                        .collect(ImmutableSet.toImmutableSet());
+        for (final Map.Entry<ValidationRule, Selector> entry : customRules.entrySet()) {
+            final ValidationRule rule = entry.getKey();
+            final Selector selector = entry.getValue();
 
-        rules.forEach(
-                rule -> {
-                    try {
-                        failures.addAll(rule.validate(tag, asnData));
-                    } catch (DecodeException ex) {
-                        final ValidationFailure failure =
-                                new DecodedTagValidationFailure(
-                                        tag,
-                                        FailureType.CustomValidationFailed,
-                                        "Data was not in the expected format: " + ex.getMessage());
-                        failures.add(failure);
-                    }
-                });
+            if (!selector.matches(tag, type, asnData)) {
+                continue;
+            }
+
+            try {
+                failures.addAll(rule.validate(tag, asnData));
+            } catch (DecodeException ex) {
+                final ValidationFailure failure =
+                        new DecodedTagValidationFailure(
+                                tag,
+                                FailureType.CustomValidationFailed,
+                                "Data was not in the expected format: " + ex.getMessage());
+                failures.add(failure);
+            }
+        }
+
         return failures;
     }
 

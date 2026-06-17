@@ -29,14 +29,15 @@ public interface ValidationRule {
     // -------------------------------------------------------------------------
 
     /**
-     * Validates the specified tag in the data
+     * Validates the specified tag in the data.
      *
-     * @param tag tag to validate in the data
-     * @param asnData data to validate
-     * @return the results of validation
-     * @throws DecodeException if the specified tag could not be decoded.
+     * @param tag The tag to validate in the data.
+     * @param asnData the data to validate.
+     * @return The results of validation.
+     * @throws DecodeException If the specified tag could not be decoded.
      */
-    ImmutableSet<ValidationFailure> validate(String tag, AsnData asnData) throws DecodeException;
+    ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData)
+            throws DecodeException;
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: NULL
@@ -63,7 +64,7 @@ public interface ValidationRule {
         // ---------------------------------------------------------------------
 
         @Override
-        public ImmutableSet<ValidationFailure> validate(String tag, AsnData asnData) {
+        public ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData) {
             return ImmutableSet.of();
         }
     }
