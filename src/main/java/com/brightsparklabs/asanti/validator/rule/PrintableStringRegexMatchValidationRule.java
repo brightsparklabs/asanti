@@ -69,7 +69,9 @@ public class PrintableStringRegexMatchValidationRule implements ValidationRule {
     @Override
     public ImmutableSet<ValidationFailure> validate(final String tag, final AsnData asnData)
             throws DecodeException {
+
         final Optional<String> value = asnData.getPrintableString(tag);
+
         if (value.isPresent() && pattern.matcher(value.get()).matches()) {
             // validation successful -> no failures
             return ImmutableSet.of();

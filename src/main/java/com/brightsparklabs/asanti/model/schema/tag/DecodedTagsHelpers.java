@@ -12,17 +12,15 @@ import static com.google.common.collect.Collections2.*;
 
 import com.brightsparklabs.asanti.data.AsnData;
 import com.brightsparklabs.asanti.model.data.AsantiAsnData;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Helper functions to deal with decoded tags, ie what you get out of {@link AsantiAsnData}
@@ -33,17 +31,6 @@ public class DecodedTagsHelpers {
 
     /** splitter for separating tag strings */
     private static final Splitter tagSplitter = Splitter.on("/").omitEmptyStrings();
-
-    /**
-     * regex to determine if a tag starts with a digit, for decoded tags that means it is unmapped
-     */
-    private static final Pattern PATTERN_STARTS_WITH_DIGIT = Pattern.compile("^(\\d+.*)");
-
-    /** regex to determine if the tag has index component */
-    private static final Pattern PATTERN_HAS_INDEX = Pattern.compile("^(.+?)(\\[[0-9]+\\])+$");
-
-    /** predicate used for collection filtering (remove entries that start with a digit */
-    private static final DoesNotStartWithDigit filterOutDigits = new DoesNotStartWithDigit();
 
     // ---------------------------------------------------------------------
     // CONSTRUCTION
@@ -68,29 +55,47 @@ public class DecodedTagsHelpers {
      *     node
      * @throws NullPointerException if asnData is null
      */
-    public static ImmutableSet<String> buildTags(AsnData asnData) {
+    public static ImmutableSet<String> buildTags(final AsnData asnData) {
         checkNotNull(asnData);
 
         Set<String> result = Sets.newHashSet();
 
-        // we have to work through all tags (even unmapped), because the
-        // unmapped tags MAY be the only ones with some of the (decoded) path in them.
         for (final String tag : asnData.getTags()) {
-            final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
+            String currentTag = tag.endsWith("/") ? tag.substring(0, tag.length() - 1) : tag;
 
-            StringBuilder reconstructed = new StringBuilder("");
-            for (final String tagName : tags) {
-                reconstructed.append("/").append(tagName);
-                result.add(reconstructed.toString());
+            /*
+             * For each tag we iterate backwards (e.g. `/X/Y/Z` -> `/X/Y` -> `/X`) to build out the tree.
+             * This way we can abort the loop early if we reach a "parent" that we've already evaluated.
+             * E.g. when evaluating the tags `/X/Y/Z` and `/X/Y/A` we would perform
+             * the following evaluations:
+             *
+             * /X/Y/Z
+             * /X/Y
+             * /X
+             * /X/Y/A
+             * ---- Can stop here as /X/Y has already been evaluated.
+             */
+            while (!currentTag.isEmpty() && !result.contains(currentTag)) {
+                result.add(currentTag);
+                currentTag = currentTag.substring(0, currentTag.lastIndexOf("/"));
             }
         }
 
+        // Unlike the above, unmapped tags typically have mapped prefixes with the tail being
+        // unmapped. E.g. /X/Y/0[1]/4[0]
+        // Because of this it makes more sense to just split it and evaluate them from the front.
         for (final String tag : asnData.getUnmappedTags()) {
-            final ArrayList<String> tags = Lists.newArrayList(tagSplitter.split(tag));
-            final StringBuilder reconstructed = new StringBuilder("");
-            // filter out the unmapped.  We know it is unmapped because it starts
-            // with a digit
-            for (final String tagName : Collections2.filter(tags, filterOutDigits)) {
+            final ImmutableList<String> tags =
+                    tagSplitter
+                            .splitToStream(tag)
+                            // Filter out the unmapped.  We know it is unmapped because it starts
+                            // with a digit.
+                            .filter(t -> !Character.isDigit(t.charAt(0)))
+                            .collect(ImmutableList.toImmutableList());
+
+            final StringBuilder reconstructed = new StringBuilder();
+
+            for (final String tagName : tags) {
                 reconstructed.append("/").append(tagName);
                 result.add(reconstructed.toString());
             }
@@ -100,34 +105,156 @@ public class DecodedTagsHelpers {
     }
 
     /**
-     * get the name of the immediate children of the provided parent tag
+     * Builds the map where the keys are the "tree" of tags described in {@link
+     * #buildTags(AsnData)}, and the values are the immediate children of each tag as described in
+     * {@link #getImmediateChildren(AsnData, String)}.
+     *
+     * <p>Combining this operation into one makes it so that we only have to evaluate each tag in
+     * the data once.
+     *
+     * <p>NOTE: This method returns a <b>mutable</b> map filled with <b>mutable</b> sets as copying
+     * the results into Immutable collections is a significant processing task and this method's
+     * goal is efficiency.
+     *
+     * @param asnData The {@link AsnData} that contains the tags.
+     * @return A map of tags where the keys represent a node that may or may not be a leaf node, and
+     *     the values are the node's immediate children.
+     * @throws NullPointerException If asnData is null.
+     */
+    public static Map<String, Set<String>> buildTagsWithImmediateChildren(final AsnData asnData) {
+        checkNotNull(asnData);
+
+        final Map<String, Set<String>> tagsToChildren = new HashMap<>();
+
+        for (final String tag : asnData.getTags()) {
+
+            // Make sure the tag doesn't end with a slash.
+            String currentTag = tag.endsWith("/") ? tag.substring(0, tag.length() - 1) : tag;
+
+            // Even if the tag has no children we still want to capture it in the map.
+            tagsToChildren.computeIfAbsent(currentTag, (_) -> new HashSet<>());
+
+            /*
+             * For each tag we iterate backwards (e.g. `/X/Y/Z` -> `/X/Y` -> `/X`) to build out the tree
+             * and record the immediate children. This way we can abort the loop early if we reach a "parent"
+             * that we've already evaluated. E.g. when evaluating the tags `/X/Y/Z` and `/X/Y/A` we would perform
+             * the following evaluations:
+             *
+             * /X/Y/Z -> [] (no children)
+             * /X/Y -> [Z]
+             * /X -> [Y]
+             * /X/Y/A -> [] (no children)
+             * /X/Y -> [Z, A]
+             * ---- Can stop here as /X/Y has already been evaluated.
+             */
+            while (!currentTag.isEmpty()) {
+
+                final String parentTag = currentTag.substring(0, currentTag.lastIndexOf("/"));
+
+                // Parent is empty so we've reached the end.
+                if (parentTag.isEmpty()) {
+                    break;
+                }
+
+                // Check if the parent has been seen **before** we add the current tag as a child.
+                // Even if it has been validated we still want to add this tag as one of its
+                // immediate children.
+                final boolean parentEvaluated = tagsToChildren.containsKey(parentTag);
+                // Chop off the parent from this tag and remove any indices.
+                final String currentTagWithoutParent =
+                        stripIndex(currentTag.substring(parentTag.length() + 1));
+
+                tagsToChildren
+                        .computeIfAbsent(parentTag, (_) -> new HashSet<>())
+                        .add(currentTagWithoutParent);
+
+                // The parent has been evaluated so we don't need to proceed further with this tag.
+                if (parentEvaluated) {
+                    break;
+                }
+
+                currentTag = parentTag;
+            }
+        }
+
+        for (final String tag : asnData.getUnmappedTags()) {
+            final ImmutableList<String> tags =
+                    tagSplitter
+                            .splitToStream(tag)
+                            // Filter out the unmapped.  We know it is unmapped because it starts
+                            // with a digit.
+                            .filter(t -> !Character.isDigit(t.charAt(0)))
+                            .collect(ImmutableList.toImmutableList());
+
+            final StringBuilder reconstructed = new StringBuilder();
+
+            // Unlike the above, unmapped tags typically have mapped prefixes with the tail being
+            // unmapped. E.g. /X/Y/0[1]/4[0]
+            // Because of this it makes more sense to just split it and evaluate them from the
+            // front.
+            for (int i = 0; i < tags.size(); i++) {
+                final String currentTag = tags.get(i);
+                final String parentTag = reconstructed.append("/").append(currentTag).toString();
+
+                final Optional<String> immediateChild =
+                        i + 1 >= tags.size() ? Optional.empty() : Optional.of(tags.get(i + 1));
+                final Set<String> tagChildren =
+                        tagsToChildren.computeIfAbsent(parentTag, (k) -> new HashSet<>());
+
+                immediateChild.ifPresent(tagChildren::add);
+            }
+        }
+
+        return tagsToChildren;
+    }
+
+    /**
+     * Get the name of the immediate children of the provided parent tag.
      *
      * @param asnData the AsantiAsnData that we want to extract the tags from
      * @param parentTag the tag to get the children of
-     * @return just the name of the immediate children, this is trimmed of any index (eg [1]), ie if
-     *     parentTag is "/Parent/blah" then /Parent/blah/someTag[0] turns in to someTag. If
-     *     parentTag is "/Parent" then /Parent/blah/someTag[0] turns in to blah
-     * @throws NullPointerException if asnData or parentTag are null
+     * @return The name of the immediate children, this is trimmed of any index (eg [1]). I.e. if
+     *     parentTag is "/Parent/blah" then /Parent/blah/someTag[0] turns into someTag. If parentTag
+     *     is "/Parent" then /Parent/blah/someTag[0] turns into blah
+     * @throws NullPointerException If asnData or parentTag are null.
      */
-    public static ImmutableSet<String> getImmediateChildren(AsnData asnData, String parentTag) {
+    public static ImmutableSet<String> getImmediateChildren(
+            final AsnData asnData, final String parentTag) {
         checkNotNull(asnData);
         checkNotNull(parentTag);
-        // Instead of building out out all the tags, first filter by things that have at least our
-        // tag
-        // in them.
-        final String tag = parentTag.endsWith("/") ? parentTag : parentTag + "/";
-        final ImmutableSet<String> filtered =
-                ImmutableSet.<String>builder()
-                        .addAll(Collections2.filter(asnData.getTags(), new OnlyStartsWith(tag)))
-                        .addAll(
-                                Collections2.filter(
-                                        asnData.getUnmappedTags(), new OnlyStartsWith(tag)))
-                        .build();
 
-        return ImmutableSet.copyOf(
-                Collections2.filter(
-                        transform(filtered, new TransformToJustChildName(parentTag)),
-                        filterOutDigits));
+        // Ensure that the parent tag we're checking against ends with a slash so that the substring
+        // is consistent.
+        final String tag = parentTag.endsWith("/") ? parentTag : parentTag + "/";
+
+        final ImmutableSet<String> children =
+                asnData.getAllTags().stream()
+                        // Only get the tags that are children to the parent tag and have been
+                        // mapped (i.e. do not start with a digit).
+                        .filter(
+                                t ->
+                                        t != null
+                                                && t.startsWith(tag)
+                                                && !Character.isDigit(
+                                                        t.substring(tag.length()).charAt(0)))
+                        .map(
+                                t -> {
+                                    // Strip off the parent tag part.
+                                    String str = t.substring(tag.length());
+
+                                    // Get just the immediate child part.
+                                    final int nextSlashIndex = str.indexOf("/");
+                                    str =
+                                            nextSlashIndex == -1
+                                                    ? str
+                                                    : str.substring(0, nextSlashIndex);
+
+                                    // Remove any trailing index part.
+                                    return stripIndex(str);
+                                })
+                        .collect(ImmutableSet.toImmutableSet());
+
+        return children;
     }
 
     /**
@@ -135,102 +262,37 @@ public class DecodedTagsHelpers {
      * Note that this only works on a "single" tag, not a fully qualified tag. If the tag has no
      * index part then it will return the input tag unaltered.
      *
-     * <p>Example, someTag[1] will return someTag.
+     * <p>Example, someTag[1] will return someTag, anotherTag[1][0] will return anotherTag.
      *
      * @param tag the tags to strip
      * @return the stripped tag
      * @throws NullPointerException if tag is null
      */
-    public static String stripIndex(String tag) {
+    public static String stripIndex(final String tag) {
         checkNotNull(tag);
-        final Matcher matcher = PATTERN_HAS_INDEX.matcher(tag);
-        return matcher.matches() ? matcher.replaceFirst("$1") : tag;
-    }
 
-    // -------------------------------------------------------------------------
-    // INTERNAL CLASS: OnlyStartsWith
-    // -------------------------------------------------------------------------
+        // We want to make sure we're working with the last "tag node" of the given tag. E.g. for
+        // /foo[1]/bar[0] we want to get /foo[1]/bar back.
+        final int lastSlashIndex = tag.lastIndexOf("/");
+        final String lastTagNode = lastSlashIndex != -1 ? tag.substring(lastSlashIndex) : tag;
 
-    /** Predicate to filter the tags so that only the tags starting with the parent are returned. */
-    private static class DoesNotStartWithDigit implements Predicate<String> {
-
-        // -------------------------------------------------------------------------
-        // CONSTRUCTION
-        // -------------------------------------------------------------------------
-
-        /** Default Constructor */
-        DoesNotStartWithDigit() {}
-
-        // ---------------------------------------------------------------------
-        // IMPLEMENTATION: Predicate
-        // ---------------------------------------------------------------------
-        @Override
-        public boolean apply(final String input) {
-            final Matcher matcher = PATTERN_STARTS_WITH_DIGIT.matcher(input);
-            return !matcher.matches();
-        }
-    }
-
-    /** Predicate to filter the tags so that only the tags starting with the parent are returned. */
-    private static class OnlyStartsWith implements Predicate<String> {
-        private final String parentTag;
-
-        // -------------------------------------------------------------------------
-        // CONSTRUCTION
-        // -------------------------------------------------------------------------
-
-        /**
-         * Default Constructor
-         *
-         * @param parentTag the parent tag we are finding children for
-         */
-        OnlyStartsWith(String parentTag) {
-            this.parentTag = parentTag;
+        // Has no index block at all, check no further.
+        final int openBracketIndex = lastTagNode.indexOf("[");
+        if (openBracketIndex == -1 || !lastTagNode.endsWith("]")) {
+            return tag;
         }
 
-        // ---------------------------------------------------------------------
-        // IMPLEMENTATION: Predicate
-        // ---------------------------------------------------------------------
-        @Override
-        public boolean apply(final String input) {
-            return input != null && input.startsWith(parentTag);
-        }
-    }
-
-    /**
-     * get just the child name, and get rid of any 'indexes', ie if parentTag is "/Parent/blah" then
-     * /Parent/blah/someTag[0] turns in to someTag if parentTag is "/Parent" then
-     * /Parent/blah/someTag[0] turns in to blah.
-     *
-     * <p>Will return an empty string if the input does not start with the expected parent tag, or
-     * does not have any child
-     */
-    private static class TransformToJustChildName implements Function<String, String> {
-
-        private final String parentTag;
-
-        private final int index;
-
-        TransformToJustChildName(String parentTag) {
-            checkNotNull(parentTag);
-            this.parentTag = parentTag.endsWith("/") ? parentTag : parentTag + "/";
-            index = parentTag.length();
-        }
-
-        // ---------------------------------------------------------------------
-        // IMPLEMENTATION: Function
-        // ---------------------------------------------------------------------
-        @Override
-        public String apply(final String input) {
-            if (input == null || !input.startsWith(parentTag)) {
-                return "";
+        // Check if that tag ends with an index, allowing for multiple indexes to be applied (i.e.
+        // foo[1][0]).;
+        for (int i = openBracketIndex; i < lastTagNode.length(); i++) {
+            final char character = lastTagNode.charAt(i);
+            // Tag doesn't end with an index, just return the tag as is.
+            if (!Character.isDigit(character) && character != '[' && character != ']') {
+                return tag;
             }
-
-            // strip off the parent tag part
-            String str = input.substring(index);
-            // get just the immediate child part
-            str = tagSplitter.splitToList(str).get(0);
-            return stripIndex(str);
         }
+
+        // Account for the "parent tag" where appropriate.
+        return tag.substring(0, Math.max(lastSlashIndex, 0) + openBracketIndex);
     }
 }

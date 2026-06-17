@@ -20,10 +20,10 @@ public interface Validator {
     // -------------------------------------------------------------------------
 
     /**
-     * Validates the supplied data using the rules in this validator
+     * Validates the supplied data using the rules in this validator.
      *
-     * @param asnData data to validate
-     * @return the results from validating the data
+     * @param asnData The data to validate.
+     * @return The results from validating the data.
      */
     ValidationResult validate(AsnData asnData);
 }

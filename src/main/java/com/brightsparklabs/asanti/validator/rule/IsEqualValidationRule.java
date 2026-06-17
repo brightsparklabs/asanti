@@ -63,6 +63,7 @@ public class IsEqualValidationRule<T> implements ValidationRule {
         final ImmutableSet.Builder<ValidationFailure> builder = ImmutableSet.builder();
         try {
             final Optional<T> actualValue = asnData.getDecodedObject(tag, classOfT);
+
             final boolean actualValuePresent = actualValue.isPresent();
             if (!actualValuePresent || !expectedValue.equals(actualValue.get())) {
                 final String reason =
