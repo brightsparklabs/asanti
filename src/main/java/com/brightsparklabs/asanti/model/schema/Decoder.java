@@ -362,7 +362,8 @@ public class Decoder {
 
             var aliasedAsnData = ImmutableList.<RawAsnData>of();
             try {
-                aliasedAsnData = AsnBerDataReader.read(bytes.get());
+                aliasedAsnData =
+                        AsnBerDataReader.read(bytes.get()).collect(ImmutableList.toImmutableList());
                 // TODO INS-434: should we ever expect anything other than 1 PDU from this???
                 // what if the CONTAINS is a collection?
                 if (aliasedAsnData.isEmpty()) {

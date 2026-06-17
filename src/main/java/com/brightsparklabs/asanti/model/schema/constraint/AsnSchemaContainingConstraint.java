@@ -66,7 +66,8 @@ public class AsnSchemaContainingConstraint extends AbstractAsnSchemaConstraint {
         ImmutableSet.Builder<SchemaConstraintValidationFailure> builder = ImmutableSet.builder();
 
         try {
-            final ImmutableList<RawAsnData> read = AsnBerDataReader.read(bytes);
+            final ImmutableList<RawAsnData> read =
+                    AsnBerDataReader.read(bytes).collect(ImmutableList.toImmutableList());
             if (read.isEmpty()) {
                 builder.add(
                         new SchemaConstraintValidationFailure(
