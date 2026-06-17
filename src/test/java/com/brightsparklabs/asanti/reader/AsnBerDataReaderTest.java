@@ -86,7 +86,7 @@ public class AsnBerDataReaderTest {
 
         // test unlimited
         result = AsnBerDataReader.read(berData).collect(ImmutableList.toImmutableList());
-        ;
+
         assertEquals(5, result.size());
     }
 

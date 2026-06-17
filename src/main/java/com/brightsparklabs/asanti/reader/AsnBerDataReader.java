@@ -86,8 +86,25 @@ public class AsnBerDataReader {
     /** Reusable empty byte array to avoid repeated allocations. */
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-    /** The minimum size of the input buffer (50MB). */
-    private static final int BUFFERED_STREAM_FALLBACK_SIZE = 50 * 1024 * 1024;
+    /**
+     * The minimum size of a file before switching to buffered reading in bytes. Default: `50MB`.
+     */
+    private static final int BUFFERED_STREAM_FALLBACK_SIZE =
+            Integer.getInteger(
+                    "com.brightsparklabs.asanti.reader.AsnBerDataReader.bufferedStreamFallbackSize",
+                    50 * 1024 * 1024);
+
+    /** The expected number of tags per PDU used to pre-size the raw tags map. Default: `48`. */
+    private static final int TAG_MAP_PREALLOCATION_SIZE =
+            Integer.getInteger(
+                    "com.brightsparklabs.asanti.reader.AsnBerDataReader.tagMapPreAllocationSize",
+                    48);
+
+    /** The average length of a PDU tag to pre-size the tag string builder. Default: `64`. */
+    private static final int TAG_PATH_PREALLOCATION_SIZE =
+            Integer.getInteger(
+                    "com.brightsparklabs.asanti.reader.AsnBerDataReader.tagPathPreAllocationSize",
+                    64);
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -143,6 +160,7 @@ public class AsnBerDataReader {
     public static Stream<RawAsnData> read(final InputStream inputStream) {
         final var asnInputStream = new ASN1InputStream(inputStream);
         return Stream.<RawAsnData>generate(() -> read(asnInputStream))
+                // read(ASN1InputStream) terminates on a null value.
                 .takeWhile(Objects::nonNull)
                 .onClose(
                         () -> {
@@ -162,7 +180,9 @@ public class AsnBerDataReader {
      * Parses a BER-encoded input stream lazily, returning the next found RawAsnData.
      *
      * @param asnInputStream The BER-encoded data stream to parse .
-     * @return {@link RawAsnData} containing tag-to-bytes mappings for one PDU.
+     * @return {@link RawAsnData} containing tag-to-bytes mappings for one PDU. This will return
+     *     {@code null} once all BER data has been read.
+     * @throws UncheckedIOException If an I/O error occurs during stream processing.
      */
     private static RawAsnDataImpl read(final ASN1InputStream asnInputStream) {
         try {
@@ -171,10 +191,15 @@ public class AsnBerDataReader {
                 return null;
             }
 
-            // Pre-sized map for typical PDU (~50 tags) to reduces map rehashing
-            // overhead.
-            final var pathMap = new LinkedHashMap<String, byte[]>(64);
-            var pathBuilder = new StringBuilder(256);
+            // NOTE: We've intentially designed this to pass down the mutable
+            // datastructures as this code exists within the "hotpath", performance
+            // and appropriate memory management is key here. Constantly building
+            // new Map objects and Strings adds significant overhead.
+
+            // Pre-sized to reduce overhead from rehashing etc.
+            final var pathMap =
+                    LinkedHashMap.<String, byte[]>newLinkedHashMap(TAG_MAP_PREALLOCATION_SIZE);
+            final var pathBuilder = new StringBuilder(TAG_PATH_PREALLOCATION_SIZE);
 
             // Extract the current root node - don't add index prefix for root
             // level. The root is treated as if already inside a tag to prevent
@@ -444,6 +469,7 @@ public class AsnBerDataReader {
                 try {
                     yield primitive.getEncoded(ASN1Encoding.BER);
                 } catch (IOException _) {
+                    // TODO: INS-703 - logging implications.
                     yield EMPTY_BYTE_ARRAY;
                 }
             }
