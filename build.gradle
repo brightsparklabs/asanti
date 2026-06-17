@@ -14,6 +14,15 @@ buildscript {
             url = 'https://plugins.gradle.org/m2/'
         }
     }
+
+    configurations.classpath {
+        resolutionStrategy {
+            // Force JGit version compatible with JReleaser 1.22.0.
+            // The baseline plugin pulls in a newer JGit (7.5.0) via Spotless, but JReleaser 1.22.0
+            // expects 5.13.3 which has the GpgObjectSigner class.
+            force 'org.eclipse.jgit:org.eclipse.jgit:5.13.3.202401111512-r'
+        }
+    }
 }
 
 plugins {
