@@ -28,10 +28,10 @@ public class AsnSchemaNumericValueConstraint extends AbstractAsnSchemaConstraint
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the minimum value the data can be */
+    /** The minimum value the data can be. */
     private final BigInteger minimumValue;
 
-    /** the minimum value the data can be */
+    /** The maximum value the data can be. */
     private final BigInteger maximumValue;
 
     // -------------------------------------------------------------------------
@@ -39,13 +39,14 @@ public class AsnSchemaNumericValueConstraint extends AbstractAsnSchemaConstraint
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
+     * Default constructor.
      *
-     * @param minimumValue the minimum value the data can be
-     * @param maximumValue the minimum value the data can be
-     * @throws NullPointerException if any of the parameters are {@code null}
+     * @param minimumValue The minimum value the data can be.
+     * @param maximumValue The maximum value the data can be.
+     * @throws NullPointerException if any of the parameters are {@code null}.
      */
-    public AsnSchemaNumericValueConstraint(BigInteger minimumValue, BigInteger maximumValue) {
+    public AsnSchemaNumericValueConstraint(
+            final BigInteger minimumValue, final BigInteger maximumValue) {
         checkNotNull(minimumValue);
         checkNotNull(maximumValue);
         this.minimumValue = minimumValue;
@@ -60,12 +61,12 @@ public class AsnSchemaNumericValueConstraint extends AbstractAsnSchemaConstraint
      * Checks if the value in the supplied array falls between the minimum and maximum bounds of
      * this constraint. The value of the array is read via {@link BigInteger#BigInteger(byte[])}.
      *
-     * @param bytes the bytes to test
-     * @return any failures encountered in applying the constraint to the supplied bytes
+     * @param bytes The bytes to test.
+     * @return Any failures encountered in applying the constraint to the supplied bytes.
      */
     @Override
     public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(
-            byte[] bytes, final AsnPrimitiveType type) {
+            final byte[] bytes, final AsnPrimitiveType type) {
         try {
             final BigInteger value = new BigInteger(bytes);
             final boolean conforms =

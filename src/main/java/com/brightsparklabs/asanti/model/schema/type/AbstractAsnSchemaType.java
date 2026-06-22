@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableSet;
 /**
  * A concrete implementation of class that can model the types for objects within ASN.1 schema.
  * These objects can be either Type Definitions, e.g. Type ::= SomeType, or components within a
- * constructed type (SEQUENCE etc), e.g. component SomeType
+ * constructed type (SEQUENCE etc), e.g. component SomeType.
  *
  * @author brightSPARK Labs
  */
@@ -27,10 +27,10 @@ public abstract class AbstractAsnSchemaType implements AsnSchemaType {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the primitiveType of this definition */
+    /** The primitiveType of this definition. */
     private final AsnPrimitiveType primitiveType;
 
-    /** the constraints on the primitiveType */
+    /** The constraints on the primitiveType. */
     private final ImmutableSet<AsnSchemaConstraint> constraints;
 
     // -------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public abstract class AbstractAsnSchemaType implements AsnSchemaType {
     /**
      * Default constructor.
      *
-     * @param primitiveType the underlying primitiveType of the defined primitiveType
+     * @param primitiveType The underlying primitiveType of the defined primitiveType.
      * @param constraint The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no
      *     constraint.
      *     <p>Example 1 <br>
@@ -48,10 +48,10 @@ public abstract class AbstractAsnSchemaType implements AsnSchemaType {
      *     (10)}.
      *     <p>Example 2 <br>
      *     For {@code INTEGER (1..256)} this would be {@code (1..256)}.
-     * @throws NullPointerException if {@code primitiveType} is {@code null}
+     * @throws NullPointerException if {@code primitiveType} is {@code null}.
      */
     protected AbstractAsnSchemaType(
-            AsnPrimitiveType primitiveType, AsnSchemaConstraint constraint) {
+            final AsnPrimitiveType primitiveType, final AsnSchemaConstraint constraint) {
 
         this.primitiveType = requireNonNull(primitiveType);
         this.constraints =

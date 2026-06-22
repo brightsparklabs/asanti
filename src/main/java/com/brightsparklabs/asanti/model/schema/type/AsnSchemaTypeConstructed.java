@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A type used to model the types for objects within ASN.1 schema that are Constructed, meaning that
  * they have Components. These objects can be either Type Definitions, e.g. Type ::= SomeType, or
- * components within a constructed type (SEQUENCE etc), e.g. component SomeType
+ * components within a constructed type (SEQUENCE etc), e.g. component SomeType.
  *
  * @author brightSPARK Labs
  */
@@ -39,7 +39,7 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** built-in types which are considered 'constructed'. Currently: SEQUENCE, SET and CHOICE. */
+    /** Built-in types which are considered 'constructed'. Currently: SEQUENCE, SET and CHOICE. */
     private static final ImmutableSet<AsnPrimitiveType> validTypes =
             ImmutableSet.of(
                     AsnPrimitiveTypes.SET, AsnPrimitiveTypes.SEQUENCE, AsnPrimitiveTypes.CHOICE);
@@ -48,10 +48,10 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** all of the AsnSchemaComponentType objects that this Constructed type "owns" */
+    /** All the AsnSchemaComponentType objects that this Constructed type "owns". */
     private final ImmutableList<AsnSchemaComponentType> componentTypes;
 
-    /** the mechanism to be used for creation of Tags, during schema creation */
+    /** The mechanism to be used for creation of Tags, during schema creation. */
     private final TagCreator tagCreator;
 
     // -------------------------------------------------------------------------
@@ -61,7 +61,7 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
     /**
      * Default constructor.
      *
-     * @param primitiveType the underlying primitiveType of the defined primitiveType
+     * @param primitiveType The underlying primitiveType of the defined primitiveType.
      * @param constraint The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no
      *     constraint.
      *     <p>Example 1 <br>
@@ -69,18 +69,18 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
      *     (10)}.
      *     <p>Example 2 <br>
      *     For {@code INTEGER (1..256)} this would be {@code (1..256)}.
-     * @param componentTypes the component types within this defined type
-     * @param taggingMode dictates the mode in which to handle/generate tags
+     * @param componentTypes The component types within this defined type.
+     * @param taggingMode Dictates the mode in which to handle/generate tags.
      * @throws NullPointerException if {@code componentTypes} or {@code taggingMode} are {@code
-     *     null}
+     *     null}.
      * @throws IllegalArgumentException if {@code primitiveType} is not a constructed type
-     *     (Currently: SEQUENCE, SET and CHOICE)
+     *     (Currently: SEQUENCE, SET and CHOICE).
      */
     public AsnSchemaTypeConstructed(
-            AsnPrimitiveType primitiveType,
-            AsnSchemaConstraint constraint,
-            List<AsnSchemaComponentType> componentTypes,
-            AsnModuleTaggingMode taggingMode) {
+            final AsnPrimitiveType primitiveType,
+            final AsnSchemaConstraint constraint,
+            final List<AsnSchemaComponentType> componentTypes,
+            final AsnModuleTaggingMode taggingMode) {
         super(primitiveType, constraint);
 
         checkArgument(
@@ -99,9 +99,9 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
     /**
      * Determines if there are any duplicate tags (meaning that decoding would be ambiguous) and
      * throws if there are. This function requires that all the components have their final tags,
-     * i.e. that {@link AsnSchemaTypeConstructed#performTagging()} has been called
+     * i.e. that {@link AsnSchemaTypeConstructed#performTagging()} has been called.
      *
-     * @throws ParseException if there are duplicate tags
+     * @throws ParseException if there are duplicate tags.
      */
     public void checkForDuplicates() throws ParseException {
         tagCreator.checkForDuplicates(componentTypes);
@@ -138,7 +138,7 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
 
     /**
      * Creates Tag values for Constructed types (Sequence, Set Choice), and also subsequently
-     * matches them back up during decoding
+     * matches them back up during decoding.
      *
      * @author brightSPARK Labs
      */
@@ -148,53 +148,53 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
         // CLASS VARIABLES
         // -------------------------------------------------------------------------
 
-        /** class logger */
+        /** Class logger. */
         private static final Logger logger = LoggerFactory.getLogger(TagCreator.class);
 
         /**
-         * static instance of tag automator that checks the components according to the rules and
-         * should be used when module tagging mode is AUTOMATIC
+         * Static instance of tag automator that checks the components according to the rules and
+         * should be used when module tagging mode is AUTOMATIC.
          */
         private static final TagAutomator TAG_AUTOMATOR_CHECK = new TagAutomatorCheck();
 
-        /** static instance of the tag matcher that matches components in a Sequence */
+        /** Static instance of the tag matcher that matches components in a Sequence. */
         private static final TagMatchingCreator TAG_MATCHING_CREATOR_SEQUENCE =
                 new TagMatchingCreatorSequence();
 
-        /** static instance of the tag matcher that matches components in a Set and Choice */
+        /** Static instance of the tag matcher that matches components in a Set and Choice. */
         private static final TagMatchingCreator TAG_MATCHING_CREATOR_UNORDERED =
                 new TagMatchingCreatorUnordered();
 
         /**
-         * static instance of a tag automator that returns false and should be used with the module
-         * tagging mode is anything other than AUTOMATIC
+         * Static instance of a tag automator that returns false and should be used with the module
+         * tagging mode is anything other than AUTOMATIC.
          */
         private static final TagAutomator TAG_AUTOMATOR_FALSE = new TagAutomatorFalse();
 
-        /** static instance of a decorator for Sequences */
+        /** Static instance of a decorator for Sequences. */
         private static final TagDecorator TAG_DECORATOR_SEQUENCE = new SequenceTagDecorator();
 
-        /** static instance of a decorator for Set and Choice */
+        /** Static instance of a decorator for Set and Choice. */
         private static final TagDecorator TAG_DECORATOR_UNORDERED = new UnorderedTagDecorator();
 
-        /** static instance configure for Sequence and Auto tag generation */
+        /** Static instance configure for Sequence and Auto tag generation. */
         private static final TagCreator TAG_CREATION_SEQUENCE_AUTOMATED =
                 new TagCreator(
                         TAG_DECORATOR_SEQUENCE, TAG_AUTOMATOR_CHECK, TAG_MATCHING_CREATOR_SEQUENCE);
 
-        /** static instance configure for Sequence and No auto tag generation */
+        /** Static instance configure for Sequence and No auto tag generation. */
         private static final TagCreator TAG_CREATION_SEQUENCE_FALSE =
                 new TagCreator(
                         TAG_DECORATOR_SEQUENCE, TAG_AUTOMATOR_FALSE, TAG_MATCHING_CREATOR_SEQUENCE);
 
-        /** static instance configure for Set/Choice and Auto tag generation */
+        /** Static instance configure for Set/Choice and Auto tag generation. */
         private static final TagCreator TAG_CREATION_UNORDERED_AUTOMATED =
                 new TagCreator(
                         TAG_DECORATOR_UNORDERED,
                         TAG_AUTOMATOR_CHECK,
                         TAG_MATCHING_CREATOR_UNORDERED);
 
-        /** static instance configure for Set/Choice and No auto tag generation */
+        /** Static instance configure for Set/Choice and No auto tag generation. */
         private static final TagCreator TAG_CREATION_UNORDERED_FALSE =
                 new TagCreator(
                         TAG_DECORATOR_UNORDERED,
@@ -206,14 +206,14 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
         // -------------------------------------------------------------------------
 
         /**
-         * the Strategy to use for "decorating" tags, ie do we store the index along with the tag
+         * The Strategy to use for "decorating" tags, ie do we store the index along with the tag.
          */
         private final TagDecorator tagDecorator;
 
-        /** the Strategy to use for determining whether to Automate tag creation */
+        /** The Strategy to use for determining whether to Automate tag creation. */
         private final TagAutomator tagAutomator;
 
-        /** the Strategy to use for matching up tags at decoding time */
+        /** The Strategy to use for matching up tags at decoding time. */
         private final TagMatchingCreator tagMatchingCreator;
 
         // -------------------------------------------------------------------------
@@ -221,15 +221,16 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
         // -------------------------------------------------------------------------
 
         /**
-         * Default constructor. This is private, Use {@code create} instead
+         * Default constructor. This is private, Use {@code create} instead.
          *
-         * @param tagDecorator the TagDecorator to be used to create the tags
-         * @param tagAutomator the TagAutomator to determine whether to automatically create tags
+         * @param tagDecorator The TagDecorator to be used to create the tags.
+         * @param tagAutomator The TagAutomator to determine whether to automatically create tags.
+         * @param tagMatchingCreator The TagMatchingCreator for matching tags.
          */
         private TagCreator(
-                TagDecorator tagDecorator,
-                TagAutomator tagAutomator,
-                TagMatchingCreator tagMatchingCreator) {
+                final TagDecorator tagDecorator,
+                final TagAutomator tagAutomator,
+                final TagMatchingCreator tagMatchingCreator) {
             this.tagDecorator = tagDecorator;
             this.tagAutomator = tagAutomator;
             this.tagMatchingCreator = tagMatchingCreator;
@@ -240,16 +241,17 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
         // -------------------------------------------------------------------------
 
         /**
-         * creates a TagCreator configured for the permutations of type and tagging mode
+         * Creates a TagCreator configured for the permutations of type and tagging mode.
          *
-         * @param type determines how the Constructed type determines duplicates
-         * @param taggingMode determines whether the Constructed type will automatically generate
-         *     context-specific tags
-         * @return a TagCreator object configured appropriately for the input parameter
+         * @param type Determines how the Constructed type determines duplicates.
+         * @param taggingMode Determines whether the Constructed type will automatically generate
+         *     context-specific tags.
+         * @return A TagCreator object configured appropriately for the input parameter.
          * @throws NullPointerException if either {@code type} or {@code taggingMode} are {@code
-         *     null}
+         *     null}.
          */
-        public static TagCreator create(AsnPrimitiveType type, AsnModuleTaggingMode taggingMode) {
+        public static TagCreator create(
+                final AsnPrimitiveType type, final AsnModuleTaggingMode taggingMode) {
             checkNotNull(type);
             checkNotNull(taggingMode);
 
@@ -339,16 +341,16 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
          * This is the "orthogonal" part of creating the tags - it matches them back up at decoding
          * time.
          *
-         * @param tag the tag to match
-         * @param components the components to match from
+         * @param tag The tag to match.
+         * @param components The components to match from.
          * @param decodingSession The {@link DecodingSession} used to maintain state while decoding
-         *     a PDU of tags
-         * @return the matching component or {@link Optional#empty()} if no match
+         *     a PDU of tags.
+         * @return The matching component or {@link Optional#empty()} if no match.
          */
         public Optional<AsnSchemaComponentType> getComponentType(
-                AsnSchemaTag tag,
-                ImmutableList<AsnSchemaComponentType> components,
-                DecodingSession decodingSession) {
+                final AsnSchemaTag tag,
+                final ImmutableList<AsnSchemaComponentType> components,
+                final DecodingSession decodingSession) {
             return tagMatchingCreator.getComponent(tag, components, decodingSession);
         }
 
@@ -357,15 +359,17 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
         // -------------------------------------------------------------------------
 
         /**
-         * @param usedTags the Map of tags that have already been used
-         * @param decoratedTag the tag to check for uniqueness
-         * @param componentName the name of the component we are checking (only needed for better
-         *     error logging)
+         * @param usedTags The Map of tags that have already been used.
+         * @param decoratedTag The tag to check for uniqueness.
+         * @param componentName The name of the component we are checking (only needed for better
+         *     error logging).
          * @throws ParseException if the decoratedTag passed in has already been used in this
          *     Constructed type.
          */
         private static void assertNotDuplicate(
-                Map<String, String> usedTags, String decoratedTag, String componentName)
+                final Map<String, String> usedTags,
+                final String decoratedTag,
+                final String componentName)
                 throws ParseException {
             if (usedTags.containsKey(decoratedTag)) {
                 logger.warn(
@@ -383,15 +387,17 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
          * Choice components that do not have a context-specific tag (either manually or Auto
          * generated) will not be encoded, instead the selected Choice component will appear in its
          * place. This function will recurse through such choice components if needed, or will
-         * otherwise determine it the passed in component is a match
+         * otherwise determine it the passed in component is a match.
          *
-         * @param componentType AsnSchemaComponentType to match against whether
-         * @param index where we are up to in the Sequence
-         * @param usedTags the tags that have already been used, how duplicates are detected.
-         * @throws ParseException if there is a duplicate tag
+         * @param componentType AsnSchemaComponentType to match against.
+         * @param index Where we are up to in the Sequence.
+         * @param usedTags The tags that have already been used, how duplicates are detected.
+         * @throws ParseException if there is a duplicate tag.
          */
         private void checkChoiceForDuplicates(
-                AsnSchemaComponentType componentType, int index, Map<String, String> usedTags)
+                final AsnSchemaComponentType componentType,
+                final int index,
+                final Map<String, String> usedTags)
                 throws ParseException {
             if (isTaglessChoice(componentType)) {
                 // Get all the components of the Choice, and check them for duplicates against the
@@ -611,7 +617,7 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
                     DecodingSession decodingSession);
         }
 
-        /** implementation of TagMatchingCreator for Sequence types */
+        /** Implementation of TagMatchingCreator for Sequence types. */
         private static class TagMatchingCreatorSequence implements TagMatchingCreator {
             @Override
             public Optional<AsnSchemaComponentType> getComponent(
@@ -664,7 +670,7 @@ public class AsnSchemaTypeConstructed extends AbstractAsnSchemaType {
             }
         }
 
-        /** implementation of TagMatchingCreator for Set and Choice types */
+        /** Implementation of TagMatchingCreator for Set and Choice types. */
         private static class TagMatchingCreatorUnordered implements TagMatchingCreator {
             @Override
             public Optional<AsnSchemaComponentType> getComponent(

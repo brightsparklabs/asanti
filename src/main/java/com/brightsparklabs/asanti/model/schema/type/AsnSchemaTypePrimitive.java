@@ -15,21 +15,11 @@ import java.text.ParseException;
 import java.util.Optional;
 
 /**
+ * A type used to model primitive types within ASN.1 schema.
+ *
  * @author brightSPARK Labs
  */
 public class AsnSchemaTypePrimitive extends AbstractAsnSchemaType {
-
-    // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // INSTANCE VARIABLES
-    // -------------------------------------------------------------------------
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -38,7 +28,7 @@ public class AsnSchemaTypePrimitive extends AbstractAsnSchemaType {
     /**
      * Default constructor.
      *
-     * @param primitiveType the underlying primitiveType of the defined primitiveType
+     * @param primitiveType The underlying primitiveType of the defined primitiveType.
      * @param constraint The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no
      *     constraint.
      *     <p>Example 1 <br>
@@ -46,16 +36,12 @@ public class AsnSchemaTypePrimitive extends AbstractAsnSchemaType {
      *     (10)}.
      *     <p>Example 2 <br>
      *     For {@code INTEGER (1..256)} this would be {@code (1..256)}.
-     * @throws NullPointerException if {@code primitiveType} is {@code null}
+     * @throws NullPointerException if {@code primitiveType} is {@code null}.
      */
     public AsnSchemaTypePrimitive(
             final AsnPrimitiveType primitiveType, final AsnSchemaConstraint constraint) {
         super(primitiveType, constraint);
     }
-
-    // -------------------------------------------------------------------------
-    // PUBLIC METHODS
-    // -------------------------------------------------------------------------
 
     // -------------------------------------------------------------------------
     // IMPLEMENTATION: BaseAsnSchemaType
@@ -76,8 +62,4 @@ public class AsnSchemaTypePrimitive extends AbstractAsnSchemaType {
     public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException {
         return visitor.visit(this);
     }
-
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
 }

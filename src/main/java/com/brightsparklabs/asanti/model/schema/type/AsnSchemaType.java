@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * A base type used to model the types for objects within ASN.1 schema. These objects can be either
  * Type Definitions, e.g. Type ::= SomeType, or components within a constructed type (SEQUENCE etc),
- * e.g. component SomeType
+ * e.g. component SomeType.
  *
  * @author brightSPARK Labs
  */
@@ -30,50 +30,50 @@ public interface AsnSchemaType extends VisitableThrowing<AsnSchemaTypeVisitor<?>
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** null instance */
+    /** Null instance. */
     public static final AsnSchemaType.Null NULL = new AsnSchemaType.Null();
 
     /**
      * Returns all the {@code AsnSchemaComponentType} objects owned by this object, or an empty list
-     * if there are none
+     * if there are none.
      *
-     * @return all the {@code AsnSchemaComponentType} objects owned by this object, or an empty list
-     *     if there are none
+     * @return All the {@code AsnSchemaComponentType} objects owned by this object, or an empty list
+     *     if there are none.
      */
     ImmutableList<AsnSchemaComponentType> getAllComponents();
 
     /**
      * Returns the {@code AsnBuiltinType} enum for this type. This is simply a shortcut for
-     * getPrimitiveType().getBuiltinType()
+     * getPrimitiveType().getBuiltinType().
      *
-     * @return the {@code AsnBuiltinType} enum for this type.
+     * @return The {@code AsnBuiltinType} enum for this type.
      */
     AsnBuiltinType getBuiltinType();
 
     /**
      * Returns the constraints of this type definition. This will be all the constraints the create
-     * this type (i.e. this and all the parent types)
+     * this type (i.e. this and all the parent types).
      *
-     * @return the constraints of this type definition.
+     * @return The constraints of this type definition.
      */
     ImmutableSet<AsnSchemaConstraint> getConstraints();
 
     /**
      * Returns the {@code AsnSchemaComponentType} for the tag, or {@link Optional#empty()} if none
-     * found
+     * found.
      *
-     * @param tag a tag within this construct
+     * @param tag A tag within this construct.
      * @param decodingSession The {@link DecodingSession} used to maintain state while decoding a
-     *     PDU of tags
-     * @return the {@code AsnSchemaComponentType} for the tag, or {@link Optional#empty()} if none
-     *     found
+     *     PDU of tags.
+     * @return The {@code AsnSchemaComponentType} for the tag, or {@link Optional#empty()} if none
+     *     found.
      */
     Optional<AsnSchemaComponentType> getMatchingChild(String tag, DecodingSession decodingSession);
 
     /**
-     * Returns the AsnPrimitiveType of this type definition
+     * Returns the AsnPrimitiveType of this type definition.
      *
-     * @return the AsnPrimitiveType of this type definition
+     * @return The AsnPrimitiveType of this type definition.
      */
     AsnPrimitiveType getPrimitiveType();
 

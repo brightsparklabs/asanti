@@ -8,7 +8,7 @@
 package com.brightsparklabs.asanti.exception;
 
 /**
- * Signals that invalid data was supplied to a decoder
+ * Signals that invalid data was supplied to a decoder.
  *
  * @author brightSPARK Labs
  */
@@ -18,27 +18,20 @@ public class DecodeException extends Exception {
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
+     * Default constructor.
      *
-     * @param message reason for the failure
+     * @param message The reason for the failure.
      */
     public DecodeException(String message) {
         super(message);
     }
 
     /**
-     * Contructor
-     *
-     * @param message
-     * @param cause
-     */
-
-    /**
      * Constructor.
      *
-     * @param message the detail message (which is saved for later retrieval by the {@link
+     * @param message The detail message (which is saved for later retrieval by the {@link
      *     #getMessage()} method).
-     * @param cause the cause (which is saved for later retrieval by the {@link #getCause()}
+     * @param cause The cause (which is saved for later retrieval by the {@link #getCause()}
      *     method). A {@code null} value is permitted, and indicates that the cause is nonexistent
      *     or unknown.
      */

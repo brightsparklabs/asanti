@@ -41,7 +41,7 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
     private static UtcTimeDecoder instance;
 
     /**
-     * parser for the "core" of what an ASN.1 UTCTime MUST consist of. Pivot year 2000 gives a
+     * Parser for the "core" of what an ASN.1 UTCTime MUST consist of. Pivot year 2000 gives a
      * supported range of 1950 to 2049.
      */
     private static final DateTimeFormatter core =
@@ -53,17 +53,17 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
                     .appendMinuteOfHour(2)
                     .toFormatter();
 
-    /** a time zone offset parser, specifying "Z" as no timezone, ie UTC */
+    /** A time zone offset parser, specifying "Z" as no timezone, ie UTC. */
     private static final DateTimeParser offset =
             new DateTimeFormatterBuilder().appendTimeZoneOffset("", "Z", false, 1, 2).toParser();
 
     /**
-     * parser option for when only up to the Minutes are defined, so optional decimals and offset
+     * Parser option for when only up to the Minutes are defined, so optional decimals and offset.
      */
     private static final DateTimeFormatter uptoMinutes =
             new DateTimeFormatterBuilder().append(core).appendOptional(offset).toFormatter();
 
-    /** parser option for when full hours, minutes and seconds are defined, optional offset */
+    /** Parser option for when full hours, minutes and seconds are defined, optional offset. */
     private static final DateTimeFormatter uptoSeconds =
             new DateTimeFormatterBuilder()
                     .append(core)
@@ -71,14 +71,14 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
                     .appendOptional(offset)
                     .toFormatter();
 
-    /** the collection of parsers to try - this is essentially how you do an "OR" with Joda */
+    /** The collection of parsers to try - this is essentially how you do an "OR" with Joda. */
     private static final DateTimeParser[] options = {
         uptoSeconds.getParser(), uptoMinutes.getParser()
     };
 
     /**
      * The parser to use, it is an OR of the three precisions, each of which has its optional
-     * components
+     * components.
      */
     private static final DateTimeFormatter parser =
             new DateTimeFormatterBuilder().append(null, options).toFormatter();
@@ -145,7 +145,7 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
      *
      * @param bytes bytes to be decoded.
      * @return OperationResult that will contain a Timestamp if successful, or a
-     *     ByteValidationFailure otherwise
+     *     ByteValidationFailure otherwise.
      */
     public static OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>>
             validateAndDecode(final byte[] bytes) {

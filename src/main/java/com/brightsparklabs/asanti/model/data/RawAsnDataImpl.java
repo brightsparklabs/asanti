@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
- * Default implementation of {@link RawAsnData}
+ * Default implementation of {@link RawAsnData}.
  *
  * @author brightSPARK Labs
  */
@@ -26,7 +26,7 @@ public class RawAsnDataImpl implements RawAsnData {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** map of tags to data */
+    /** Map of tags to data. */
     private final ImmutableMap<String, byte[]> tagsToData;
 
     // -------------------------------------------------------------------------
@@ -34,10 +34,10 @@ public class RawAsnDataImpl implements RawAsnData {
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
+     * Default constructor.
      *
-     * @param tagsToData map of tags to data
-     * @throws NullPointerException if parameters are {@code null}
+     * @param tagsToData The map of tags to data.
+     * @throws NullPointerException If parameters are {@code null}.
      */
     public RawAsnDataImpl(final Map<String, byte[]> tagsToData) {
         checkNotNull(tagsToData);

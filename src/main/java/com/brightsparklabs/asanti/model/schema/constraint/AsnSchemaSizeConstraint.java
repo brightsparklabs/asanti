@@ -26,12 +26,13 @@ public class AsnSchemaSizeConstraint extends AbstractAsnSchemaConstraint {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the minimum length the data can be */
+    /** The minimum length the data can be. */
     private final int minimumLength;
 
-    /** the minimum length the data can be */
+    /** The maximum length the data can be. */
     private final int maximumLength;
 
+    /** Visitor for determining size based on ASN.1 type. */
     private final SizeDeterminingVisitor sizeDeterminingVisitor = new SizeDeterminingVisitor();
 
     // -------------------------------------------------------------------------
@@ -39,12 +40,12 @@ public class AsnSchemaSizeConstraint extends AbstractAsnSchemaConstraint {
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
+     * Default constructor.
      *
-     * @param minimumLength the minimum length the data can be
-     * @param maximumLength the minimum length the data can be
+     * @param minimumLength The minimum length the data can be.
+     * @param maximumLength The maximum length the data can be.
      */
-    public AsnSchemaSizeConstraint(int minimumLength, int maximumLength) {
+    public AsnSchemaSizeConstraint(final int minimumLength, final int maximumLength) {
         this.minimumLength = minimumLength;
         this.maximumLength = maximumLength;
     }
@@ -57,12 +58,12 @@ public class AsnSchemaSizeConstraint extends AbstractAsnSchemaConstraint {
      * Checks if the length of the supplied array falls between the minimum and maximum bounds of
      * this constraint. The content of the byte array is irrelevant.
      *
-     * @param bytes the bytes to test
-     * @return any failures encountered in applying the constraint to the supplied bytes
+     * @param bytes The bytes to test.
+     * @return Any failures encountered in applying the constraint to the supplied bytes.
      */
     @Override
     public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(
-            byte[] bytes, final AsnPrimitiveType type) {
+            final byte[] bytes, final AsnPrimitiveType type) {
         final SizeDeterminer sizeDeterminer = (SizeDeterminer) type.accept(sizeDeterminingVisitor);
         try {
             final Integer size = sizeDeterminer.determineSize(bytes);

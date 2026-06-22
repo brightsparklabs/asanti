@@ -21,14 +21,6 @@ import java.io.IOException;
  */
 public class AsnSchemaContainingConstraint extends AbstractAsnSchemaConstraint {
     // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
@@ -40,10 +32,10 @@ public class AsnSchemaContainingConstraint extends AbstractAsnSchemaConstraint {
     // -------------------------------------------------------------------------
 
     /**
-     * Default Constructor.
+     * Default constructor.
      *
-     * @param module the module that the type id defined
-     * @param type the type that this is aliasing
+     * @param module The module that the type id defined.
+     * @param type The type that this is aliasing.
      */
     public AsnSchemaContainingConstraint(final String module, final String type) {
         this.module = module;
@@ -83,20 +75,12 @@ public class AsnSchemaContainingConstraint extends AbstractAsnSchemaConstraint {
         return builder.build();
     }
 
-    /**
-     * Returns the module associated with the type this is aliasing
-     *
-     * @return the module associated with the type this is aliasing
-     */
+    /** {@return the module associated with the type this is aliasing} */
     public String getModule() {
         return module;
     }
 
-    /**
-     * Return the type this is aliasing
-     *
-     * @return the type this is aliasing
-     */
+    /** {@return the type this is aliasing} */
     public String getType() {
         return type;
     }

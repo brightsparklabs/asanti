@@ -18,13 +18,6 @@ import com.brightsparklabs.asanti.exception.DecodeException;
  * @author brightSPARK Labs
  */
 public interface SizeDeterminer {
-    // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
@@ -33,8 +26,8 @@ public interface SizeDeterminer {
     /**
      * Returns the size of the appropriate representation of the bytes.
      *
-     * @param bytes the raw bytes containing the value
-     * @return the size to be used for constraint comparison purposed
+     * @param bytes The raw bytes containing the value.
+     * @return The size to be used for constraint comparison purposes.
      * @throws DecodeException in the case the bytes couldn't be decoded.
      */
     Integer determineSize(byte[] bytes) throws DecodeException;

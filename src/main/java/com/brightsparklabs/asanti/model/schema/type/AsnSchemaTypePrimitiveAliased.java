@@ -17,17 +17,11 @@ import java.text.ParseException;
 import java.util.Optional;
 
 /**
+ * A type used to model aliased primitive types within ASN.1 schema.
+ *
  * @author brightSPARK Labs
  */
 public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
-
-    // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -49,7 +43,7 @@ public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
     /**
      * Default constructor.
      *
-     * @param primitiveType the underlying primitiveType of the defined primitiveType
+     * @param primitiveType The underlying primitiveType of the defined primitiveType.
      * @param constraint The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no
      *     constraint.
      *     <p>Example 1 <br>
@@ -57,9 +51,9 @@ public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
      *     (10)}.
      *     <p>Example 2 <br>
      *     For {@code INTEGER (1..256)} this would be {@code (1..256)}.
-     * @param module The name of the module that the alias type belongs in (can be empty)
-     * @param type The name of the aliased type
-     * @throws NullPointerException if {@code primitiveType} is {@code null}
+     * @param module The name of the module that the alias type belongs in (can be empty).
+     * @param type The name of the aliased type.
+     * @throws NullPointerException if {@code primitiveType} is {@code null}.
      */
     public AsnSchemaTypePrimitiveAliased(
             final AsnPrimitiveType primitiveType,
@@ -84,29 +78,17 @@ public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
         this.aliasedType = aliasedType;
     }
 
-    /**
-     * Returns the type that this type is aliasing.
-     *
-     * @return The type that this type is aliasing.
-     */
+    /** {@return the type that this type is aliasing} */
     public AsnSchemaType getAliasedType() {
         return this.aliasedType;
     }
 
-    /**
-     * Returns the name of the module that the alias type belongs in (can be empty).
-     *
-     * @return The name of the module that the alias type belongs in (can be empty).
-     */
+    /** {@return the name of the module that the alias type belongs in (can be empty)} */
     public String getModule() {
         return module;
     }
 
-    /**
-     * Returns the name of the aliased type.
-     *
-     * @return The name of the aliased type.
-     */
+    /** {@return the name of the aliased type} */
     public String getType() {
         return type;
     }
@@ -132,8 +114,4 @@ public class AsnSchemaTypePrimitiveAliased extends AbstractAsnSchemaType {
     public Object accept(final AsnSchemaTypeVisitor<?> visitor) throws ParseException {
         return visitor.visit(this);
     }
-
-    // -------------------------------------------------------------------------
-    // PRIVATE METHODS
-    // -------------------------------------------------------------------------
 }

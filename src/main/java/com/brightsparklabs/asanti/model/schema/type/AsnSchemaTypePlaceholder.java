@@ -20,7 +20,7 @@ import java.text.ParseException;
 import java.util.Optional;
 
 /**
- * A place holder type definition. This is used while parsing the schema file and coming across a
+ * A placeholder type definition. This is used while parsing the schema file and coming across a
  * Component Type that is using a non-Primitive type (i.e. a Type Definition). It stores the
  * constraints and the name of the type so that we can do a lookup later for the actual type
  * definition.
@@ -32,10 +32,10 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the name of a module the type is defined in */
+    /** The name of a module the type is defined in. */
     private final String moduleName;
 
-    /** the name of the type we are placeholder for */
+    /** The name of the type we are placeholder for. */
     private final String typeName;
 
     /** The actual type. This is set once the parser has parsed all modules. */
@@ -50,7 +50,7 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType {
      *
      * @param moduleName The name of the {@link AsnSchemaModule} that contains the real type. May be
      *     {@code null} or empty if not needed.
-     * @param typeName The name of the Type Definition that this placeholder is for
+     * @param typeName The name of the Type Definition that this placeholder is for.
      * @param constraint The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no
      *     constraint.
      *     <p>Example 1 <br>
@@ -58,8 +58,8 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType {
      *     (10)}.
      *     <p>Example 2 <br>
      *     For {@code INTEGER (1..256)} this would be {@code (1..256)}.
-     * @throws NullPointerException if {@code typeName} is {@code null}
-     * @throws IllegalArgumentException if {@code typeName} is blank
+     * @throws NullPointerException if {@code typeName} is {@code null}.
+     * @throws IllegalArgumentException if {@code typeName} is blank.
      */
     public AsnSchemaTypePlaceholder(
             final String moduleName, final String typeName, final AsnSchemaConstraint constraint) {
@@ -75,27 +75,19 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * Returns the name of the Module that this placeholder should address.
-     *
-     * @return the name of the Module that this placeholder should address.
-     */
+    /** {@return the name of the Module that this placeholder should address} */
     public String getModuleName() {
         return moduleName;
     }
 
-    /**
-     * Returns the name of the Type that this placeholder should address.
-     *
-     * @return the name of the Type that this placeholder should address.
-     */
+    /** {@return the name of the Type that this placeholder should address} */
     public String getTypeName() {
         return typeName;
     }
 
     /**
      * Changes the placeholder to an object that stores a link to the type. This is essentially an
-     * layer of indirection, and allows chaining of Type Definitions
+     * layer of indirection, and allows chaining of Type Definitions.
      *
      * <p>E.g.
      *
@@ -104,15 +96,15 @@ public class AsnSchemaTypePlaceholder extends AbstractAsnSchemaType {
      * PersonAge ::= ShortInteger (0..200) ShortInteger ::= INTEGER (0..32768)
      * </pre>
      *
-     * @param type the {@link AsnSchemaType}
+     * @param type The {@link AsnSchemaType}.
      */
     public void setIndirectType(final AsnSchemaType type) {
         indirectType = type;
     }
 
     /**
-     * @return the AsnSchemaType that this placeholder is pointing to, {@link AsnSchemaType#NULL} if
-     *     none has yet been set.
+     * {@return the AsnSchemaType that this placeholder is pointing to, {@link AsnSchemaType#NULL}
+     * if none has yet been set}
      */
     public AsnSchemaType getIndirectType() {
         return indirectType == null ? AsnSchemaType.NULL : indirectType;

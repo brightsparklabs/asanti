@@ -45,9 +45,10 @@ public class AsnSchemaTag {
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** null instance */
+    /** Null instance. */
     private static final AsnSchemaTag NULL = new AsnSchemaTag("", "", "");
 
+    /** Mapping from ASN.1 builtin types to their Universal tag numbers. */
     private static final ImmutableMap<AsnBuiltinType, String> BUILTIN_TYPE_TO_UNIVERSAL_TAG =
             ImmutableMap.<AsnBuiltinType, String>builder()
                     .put(AsnBuiltinType.Boolean, "1")
@@ -85,6 +86,7 @@ public class AsnSchemaTag {
                     .put(AsnBuiltinType.BmpString, "30")
                     .build();
 
+    /** Mapping from Universal tag numbers to ASN.1 builtin types. */
     private static final ImmutableMap<Integer, AsnBuiltinType> UNIVERSAL_TAG_TO_BUILTIN_TYPE =
             ImmutableMap.<Integer, AsnBuiltinType>builder()
                     .put(1, AsnBuiltinType.Boolean)
@@ -127,18 +129,18 @@ public class AsnSchemaTag {
     // -------------------------------------------------------------------------
 
     /**
-     * the context specific tag number component of the raw tag. Note that this and tagUniversal are
-     * mutually exclusive
+     * The context specific tag number component of the raw tag. Note that this and tagUniversal are
+     * mutually exclusive.
      */
     private final String tagContextSpecific;
 
     /**
-     * the Universal tag number component of the raw tag. Note that this and the tagContextSpecific
-     * are mutually exclusive
+     * The Universal tag number component of the raw tag. Note that this and the tagContextSpecific
+     * are mutually exclusive.
      */
     private final String tagUniversal;
 
-    /** the tag index component of the raw tag. Blank if no index component */
+    /** The tag index component of the raw tag. Blank if no index component. */
     private final String tagIndex;
 
     // -------------------------------------------------------------------------
@@ -238,7 +240,7 @@ public class AsnSchemaTag {
     }
 
     /**
-     * Creates an instance, combining the index and tag
+     * Creates an instance, combining the index and tag.
      *
      * @param tagIndex Tag index component of the raw tag.
      * @param tag The tag portion.
@@ -249,7 +251,7 @@ public class AsnSchemaTag {
     }
 
     /**
-     * Creates a new tag with an updated index
+     * Creates a new tag with an updated index.
      *
      * @param tagIndex Tag index component of the raw tag.
      * @param tag The old tag to get the tag Portion from.
@@ -261,8 +263,8 @@ public class AsnSchemaTag {
     }
 
     /**
-     * @param tagIndex Tag index component of the raw tag,
-     * @param tag Tag potion,
+     * @param tagIndex Tag index component of the raw tag.
+     * @param tag Tag portion.
      * @return A String representation of what toString of this tag would be, or this string can be
      *     passed in to create a new tag.
      */
@@ -271,8 +273,8 @@ public class AsnSchemaTag {
     }
 
     /**
-     * @param tagIndex Tag index component of the raw tag
-     * @param universalTagNumber ASN.1 Universal tag number
+     * @param tagIndex Tag index component of the raw tag.
+     * @param universalTagNumber ASN.1 Universal tag number.
      * @return A String representation of what toString of this tag would be, or this string can be
      *     passed in to create a new tag. If the universalTagNumber is invalid returns empty string.
      */
@@ -283,10 +285,10 @@ public class AsnSchemaTag {
     }
 
     /**
-     * Creates the Universal portion of a tag based on the type
+     * Creates the Universal portion of a tag based on the type.
      *
-     * @param type {@link AsnBuiltinType} to map to universal tag number
-     * @return the equivalent of the getTagUniversal for a tag created from this type
+     * @param type {@link AsnBuiltinType} to map to universal tag number.
+     * @return The equivalent of the getTagUniversal for a tag created from this type.
      */
     public static String createUniversalPortion(final AsnBuiltinType type) {
         // Some AsnBuiltinType's don't translate to a UNIVERSAL tag, eg Choice
@@ -338,7 +340,7 @@ public class AsnSchemaTag {
      * Returns the universal component of the raw tag. For a raw tag {@code "0.u.2"} this is {@code
      * "u.2"}. For raw tag {@code "0.1"} this is {@code ""}.
      *
-     * @return the tag number.
+     * @return The tag number.
      */
     public String getTagUniversal() {
         return tagUniversal;
@@ -359,7 +361,7 @@ public class AsnSchemaTag {
      * Helper to map from AsnBuiltinType to the ASN.1 value for the Universal tag of this type.
      *
      * @param type {@link AsnBuiltinType} to map to universal tag number.
-     * @return the String representation of the universal type (integer), empty string if there is
+     * @return The String representation of the universal type (integer), empty string if there is
      *     no mapping.
      */
     private static String getUniversalTagForBuiltInType(final AsnBuiltinType type) {
