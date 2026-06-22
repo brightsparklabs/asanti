@@ -22,16 +22,17 @@ import com.brightsparklabs.asanti.validator.failure.DecodedTagValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#Enumerated}
+ * Decoder for data of type {@link AsnBuiltinType#Enumerated}.
  *
  * @author brightSPARK Labs
  */
 public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static EnumeratedDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -41,15 +42,11 @@ public class EnumeratedDecoder extends AbstractBuiltinTypeDecoder<String> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private EnumeratedDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static EnumeratedDecoder getInstance() {
         if (instance == null) {
             instance = new EnumeratedDecoder();

@@ -16,16 +16,17 @@ import com.google.common.collect.ImmutableSet;
 import java.math.BigInteger;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#Integer}
+ * Decoder for data of type {@link AsnBuiltinType#Integer}.
  *
  * @author brightSPARK Labs
  */
 public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static IntegerDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -35,15 +36,11 @@ public class IntegerDecoder extends AbstractBuiltinTypeDecoder<BigInteger> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private IntegerDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static IntegerDecoder getInstance() {
         if (instance == null) {
             instance = new IntegerDecoder();

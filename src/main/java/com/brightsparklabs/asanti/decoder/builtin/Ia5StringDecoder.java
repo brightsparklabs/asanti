@@ -16,16 +16,17 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#Ia5String}
+ * Decoder for data of type {@link AsnBuiltinType#Ia5String}.
  *
  * @author brightSPARK Labs
  */
 public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static Ia5StringDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -35,15 +36,11 @@ public class Ia5StringDecoder extends AbstractBuiltinTypeDecoder<String> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private Ia5StringDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static Ia5StringDecoder getInstance() {
         if (instance == null) {
             instance = new Ia5StringDecoder();

@@ -27,16 +27,17 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.DateTimeParser;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#UtcTime}
+ * Decoder for data of type {@link AsnBuiltinType#UtcTime}.
  *
  * @author brightSPARK Labs
  */
 public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static UtcTimeDecoder instance;
 
     /**
@@ -89,15 +90,11 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private UtcTimeDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static UtcTimeDecoder getInstance() {
         if (instance == null) {
             instance = new UtcTimeDecoder();

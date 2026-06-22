@@ -15,16 +15,17 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#GraphicString}
+ * Decoder for data of type {@link AsnBuiltinType#GraphicString}.
  *
  * @author brightSPARK Labs
  */
 public class GraphicStringDecoder extends AbstractBuiltinTypeDecoder<String> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static GraphicStringDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +35,11 @@ public class GraphicStringDecoder extends AbstractBuiltinTypeDecoder<String> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private GraphicStringDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static GraphicStringDecoder getInstance() {
         if (instance == null) {
             instance = new GraphicStringDecoder();

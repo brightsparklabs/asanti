@@ -16,16 +16,17 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#OctetString}
+ * Decoder for data of type {@link AsnBuiltinType#OctetString}.
  *
  * @author brightSPARK Labs
  */
 public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static OctetStringDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -35,15 +36,11 @@ public class OctetStringDecoder extends AbstractBuiltinTypeDecoder<byte[]> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private OctetStringDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static OctetStringDecoder getInstance() {
         if (instance == null) {
             instance = new OctetStringDecoder();

@@ -16,16 +16,17 @@ import com.google.common.collect.ImmutableSet;
 import java.time.OffsetDateTime;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#Time}
+ * Decoder for data of type {@link AsnBuiltinType#Time}.
  *
  * @author brightSPARK Labs
  */
 public class TimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static TimeDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -35,15 +36,11 @@ public class TimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private TimeDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static TimeDecoder getInstance() {
         if (instance == null) {
             instance = new TimeDecoder();

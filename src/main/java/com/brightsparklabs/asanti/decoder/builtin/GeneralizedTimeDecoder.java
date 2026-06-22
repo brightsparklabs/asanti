@@ -32,11 +32,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#GeneralizedTime}
+ * Decoder for data of type {@link AsnBuiltinType#GeneralizedTime}.
  *
  * @author brightSPARK Labs
  */
 public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
@@ -44,7 +45,7 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
     /** class logger */
     private static final Logger logger = LoggerFactory.getLogger(GeneralizedTimeDecoder.class);
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static GeneralizedTimeDecoder instance;
 
     /** parser for the "core" of what an ASN.1 GeneralizedTime MUST consist of */
@@ -147,15 +148,11 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private GeneralizedTimeDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static GeneralizedTimeDecoder getInstance() {
         if (instance == null) {
             instance = new GeneralizedTimeDecoder();
