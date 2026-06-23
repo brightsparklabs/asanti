@@ -17,21 +17,13 @@ import com.brightsparklabs.asanti.selector.Selector;
  */
 public interface ValidatorSelector extends Selector {
     // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
-    // CLASS VARIABLES
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
     /**
      * Allows a ValidationRule to be associated with a Selector.
      *
-     * @return the wrapped ValidationRule.
+     * @return The wrapped ValidationRule.
      */
     ValidationRule getValidator();
 }

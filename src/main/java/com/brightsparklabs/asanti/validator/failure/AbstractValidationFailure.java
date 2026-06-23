@@ -22,10 +22,10 @@ public class AbstractValidationFailure implements ValidationFailure {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the type of failure that occurred */
+    /** The type of failure that occurred. */
     private final FailureType failureType;
 
-    /** the reason for the failure */
+    /** The reason for the failure. */
     private final String failureReason;
 
     // -------------------------------------------------------------------------
@@ -35,12 +35,12 @@ public class AbstractValidationFailure implements ValidationFailure {
     /**
      * Default constructor.
      *
-     * @param failureType the type of failure that occurred
-     * @param failureReason the reason for the failure
-     * @throws NullPointerException if parameters are {@code null}
-     * @throws IllegalArgumentException if location or failureReason are empty
+     * @param failureType The type of failure that occurred.
+     * @param failureReason The reason for the failure.
+     * @throws NullPointerException If parameters are {@code null}.
+     * @throws IllegalArgumentException If location or failureReason are empty.
      */
-    public AbstractValidationFailure(FailureType failureType, String failureReason) {
+    public AbstractValidationFailure(final FailureType failureType, final String failureReason) {
         checkNotNull(failureType);
         checkNotNull(failureReason);
         this.failureType = failureType;

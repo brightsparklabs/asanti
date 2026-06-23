@@ -22,12 +22,13 @@ public class SchemaConstraintValidationFailure extends AbstractValidationFailure
     /**
      * Default constructor.
      *
-     * @param failureType the type of failure that occurred
-     * @param failureReason the reason for the failure
-     * @throws NullPointerException if parameters are {@code null}
-     * @throws IllegalArgumentException if location or failureReason are empty
+     * @param failureType The type of failure that occurred.
+     * @param failureReason The reason for the failure.
+     * @throws NullPointerException If parameters are {@code null}.
+     * @throws IllegalArgumentException If location or failureReason are empty.
      */
-    public SchemaConstraintValidationFailure(FailureType failureType, String failureReason) {
+    public SchemaConstraintValidationFailure(
+            final FailureType failureType, final String failureReason) {
         super(failureType, failureReason);
     }
 }

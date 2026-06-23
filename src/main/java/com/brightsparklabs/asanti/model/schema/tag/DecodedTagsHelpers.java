@@ -23,13 +23,17 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Helper functions to deal with decoded tags, ie what you get out of {@link AsantiAsnData}
+ * Helper functions to deal with decoded tags, ie what you get out of {@link AsantiAsnData}.
  *
  * @author brightSPARK Labs
  */
 public class DecodedTagsHelpers {
 
-    /** splitter for separating tag strings */
+    // ---------------------------------------------------------------------
+    // CONSTANTS
+    // ---------------------------------------------------------------------
+
+    /** Splitter for separating tag strings. */
     private static final Splitter tagSplitter = Splitter.on("/").omitEmptyStrings();
 
     // ---------------------------------------------------------------------
@@ -50,10 +54,10 @@ public class DecodedTagsHelpers {
      * filter data is /X/Y, if the tag is /X/Y then the filter data is /X/Y/Z, /X/Y/A In "tree"
      * terms we are going from only leaf nodes to all nodes.
      *
-     * @param asnData the AsantiAsnData that we want to extract the tags from
-     * @return the set of all tags with each item representing a node that may or may not be a leaf
-     *     node
-     * @throws NullPointerException if asnData is null
+     * @param asnData The AsantiAsnData that we want to extract the tags from.
+     * @return The set of all tags with each item representing a node that may or may not be a leaf
+     *     node.
+     * @throws NullPointerException if asnData is null.
      */
     public static ImmutableSet<String> buildTags(final AsnData asnData) {
         checkNotNull(asnData);
@@ -211,11 +215,11 @@ public class DecodedTagsHelpers {
     /**
      * Get the name of the immediate children of the provided parent tag.
      *
-     * @param asnData the AsantiAsnData that we want to extract the tags from
-     * @param parentTag the tag to get the children of
+     * @param asnData The AsantiAsnData that we want to extract the tags from.
+     * @param parentTag The tag to get the children of.
      * @return The name of the immediate children, this is trimmed of any index (eg [1]). I.e. if
      *     parentTag is "/Parent/blah" then /Parent/blah/someTag[0] turns into someTag. If parentTag
-     *     is "/Parent" then /Parent/blah/someTag[0] turns into blah
+     *     is "/Parent" then /Parent/blah/someTag[0] turns into blah.
      * @throws NullPointerException If asnData or parentTag are null.
      */
     public static ImmutableSet<String> getImmediateChildren(
@@ -264,9 +268,9 @@ public class DecodedTagsHelpers {
      *
      * <p>Example, someTag[1] will return someTag, anotherTag[1][0] will return anotherTag.
      *
-     * @param tag the tags to strip
-     * @return the stripped tag
-     * @throws NullPointerException if tag is null
+     * @param tag The tags to strip.
+     * @return The stripped tag.
+     * @throws NullPointerException if tag is null.
      */
     public static String stripIndex(final String tag) {
         checkNotNull(tag);

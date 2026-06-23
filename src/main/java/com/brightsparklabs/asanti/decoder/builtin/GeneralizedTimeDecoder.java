@@ -32,22 +32,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#GeneralizedTime}
+ * Decoder for data of type {@link AsnBuiltinType#GeneralizedTime}.
  *
  * @author brightSPARK Labs
  */
 public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger = LoggerFactory.getLogger(GeneralizedTimeDecoder.class);
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static GeneralizedTimeDecoder instance;
 
-    /** parser for the "core" of what an ASN.1 GeneralizedTime MUST consist of */
+    /** Parser for the "core" of what an ASN.1 GeneralizedTime MUST consist of. */
     private static final DateTimeFormatter core =
             new DateTimeFormatterBuilder()
                     .appendYear(4, 4)
@@ -56,22 +57,22 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
                     .appendHourOfDay(2)
                     .toFormatter();
 
-    /** a comma as a separator - decimal place */
+    /** A comma as a separator - decimal place. */
     private static final DateTimeParser comma =
             new DateTimeFormatterBuilder().appendLiteral(",").toParser();
 
-    /** a dot as a separator - decimal place */
+    /** A dot as a separator - decimal place. */
     private static final DateTimeParser dot =
             new DateTimeFormatterBuilder().appendLiteral(".").toParser();
 
-    /** the collection all of decimal place separators to parse for */
+    /** The collection all of decimal place separators to parse for. */
     private static final DateTimeParser[] decimal = {dot, comma};
 
-    /** a time zone offset parser, specifying "Z" as no timezone, ie UTC */
+    /** A time zone offset parser, specifying "Z" as no timezone, ie UTC. */
     private static final DateTimeParser offset =
             new DateTimeFormatterBuilder().appendTimeZoneOffset("", "Z", false, 1, 2).toParser();
 
-    /** parser option for when only up to the Hours are defined, so optional decimals and offset */
+    /** Parser option for when only up to the Hours are defined, so optional decimals and offset. */
     private static final DateTimeFormatter uptoHours =
             new DateTimeFormatterBuilder()
                     .append(core)
@@ -84,7 +85,7 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
                     .toFormatter();
 
     /**
-     * parser option for when only up to the Minutes are defined, so optional decimals and offset
+     * Parser option for when only up to the Minutes are defined, so optional decimals and offset.
      */
     private static final DateTimeFormatter uptoMinutes =
             new DateTimeFormatterBuilder()
@@ -99,8 +100,8 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
                     .toFormatter();
 
     /**
-     * parser option for when full hours, minutes and seconds are defined, optional decimals and
-     * offset
+     * Parser option for when full hours, minutes and seconds are defined, optional decimals and
+     * offset.
      */
     private static final DateTimeFormatter uptoSeconds =
             new DateTimeFormatterBuilder()
@@ -115,27 +116,27 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
                     .appendOptional(offset)
                     .toFormatter();
 
-    /** the collection of parsers to try - this is essentially how you do an "OR" with Joda */
+    /** The collection of parsers to try - this is essentially how you do an "OR" with Joda. */
     private static final DateTimeParser[] options = {
         uptoSeconds.getParser(), uptoMinutes.getParser(), uptoHours.getParser()
     };
 
     /**
      * The parser to use, it is an OR of the three precisions, each of which has its optional
-     * components
+     * components.
      */
     private static final DateTimeFormatter parser =
             new DateTimeFormatterBuilder().append(null, options).toFormatter();
 
     /**
-     * a regex to use to work around Joda milli second limitation, ie extract the nanoseconds only
+     * A regex to use to work around Joda milli second limitation, ie extract the nanoseconds only
      * match if this is specifying seconds (hence the 14 digits) because otherwise the decimal is
      * for fractions of minutes or hours.
      */
     private static final Pattern PATTERN_SUB_MILLI_SECONDS =
             Pattern.compile("^([0-9]{14})(([,\\.])(([0-9]{1,3})([0-9]*)))(Z|((\\+|\\-)[0-9]+))?");
 
-    /** regex to use to protect us from passing more than 18 decimal places to Joda */
+    /** Regex to use to protect us from passing more than 18 decimal places to Joda. */
     private static final Pattern PATTERN_18_DECIMAL_PLACES =
             Pattern.compile(
                     "^([0-9]{10,12})(([,\\.])(([0-9]{1,18})([0-9]*)))(Z|((\\+|\\-)[0-9]+))?");
@@ -147,15 +148,11 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private GeneralizedTimeDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static GeneralizedTimeDecoder getInstance() {
         if (instance == null) {
             instance = new GeneralizedTimeDecoder();
@@ -207,7 +204,7 @@ public class GeneralizedTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDat
      *
      * @param bytes bytes to be decoded.
      * @return OperationResult that will contain a OffsetDateTime if successful, or a
-     *     ByteValidationFailure otherwise
+     *     ByteValidationFailure otherwise.
      */
     public static OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>>
             validateAndDecode(final byte[] bytes) {

@@ -20,10 +20,10 @@ public class AsnSchemaNamedTag {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** name of the option or distinguished value (i.e. tag name) */
+    /** Name of the option or distinguished value (i.e. tag name). */
     private final String tagName;
 
-    /** tag of the option or distinguished value */
+    /** Tag of the option or distinguished value. */
     private final String tag;
 
     // -------------------------------------------------------------------------
@@ -33,12 +33,12 @@ public class AsnSchemaNamedTag {
     /**
      * Default constructor.
      *
-     * @param tagName name of this component type (i.e. tag name)
-     * @param tag tag of this component type.
-     * @throws NullPointerException if {@code tagName} or {@code tag} are {@code null}
-     * @throws IllegalArgumentException if {@code tagName} or {@code tag} are blank
+     * @param tagName Name of this component type (i.e. tag name).
+     * @param tag Tag of this component type.
+     * @throws NullPointerException if {@code tagName} or {@code tag} are {@code null}.
+     * @throws IllegalArgumentException if {@code tagName} or {@code tag} are blank.
      */
-    public AsnSchemaNamedTag(String tagName, String tag) {
+    public AsnSchemaNamedTag(final String tagName, final String tag) {
         checkNotNull(tagName);
         checkArgument(!tagName.trim().isEmpty(), "Tag name must be specified");
 
@@ -53,20 +53,12 @@ public class AsnSchemaNamedTag {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * Returns the name of the component type
-     *
-     * @return the name of the component type (i.e. tag name)
-     */
+    /** {@return the name of the component type (i.e. tag name)} */
     public String getTagName() {
         return tagName;
     }
 
-    /**
-     * Returns the tag of the component type
-     *
-     * @return the tag of the component type
-     */
+    /** {@return the tag of the component type} */
     public String getTag() {
         return tag;
     }

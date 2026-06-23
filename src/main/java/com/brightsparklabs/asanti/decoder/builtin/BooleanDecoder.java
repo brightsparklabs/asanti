@@ -15,16 +15,17 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#Boolean}
+ * Decoder for data of type {@link AsnBuiltinType#Boolean}.
  *
  * @author brightSPARK Labs
  */
 public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static BooleanDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +35,11 @@ public class BooleanDecoder extends AbstractBuiltinTypeDecoder<Boolean> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private BooleanDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static BooleanDecoder getInstance() {
         if (instance == null) {
             instance = new BooleanDecoder();

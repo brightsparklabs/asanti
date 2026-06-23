@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
 import java.time.OffsetDateTime;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#UtcTime}
+ * Validator for data of type {@link AsnBuiltinType#UtcTime}.
  *
  * @author brightSPARK Labs
  */
@@ -24,7 +24,7 @@ public class UtcTimeValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static UtcTimeValidator instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +34,11 @@ public class UtcTimeValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private UtcTimeValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static UtcTimeValidator getInstance() {
         if (instance == null) {
             instance = new UtcTimeValidator();

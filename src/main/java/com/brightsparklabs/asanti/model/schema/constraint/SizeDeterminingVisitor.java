@@ -38,10 +38,10 @@ public class SizeDeterminingVisitor implements AsnPrimitiveTypeVisitor<SizeDeter
       be able to be applied to all Types.  That should be a schema parse time check.
     */
 
-    /** determine size based on input bytes length */
+    /** Determine size based on input bytes length. */
     private static final SizeDeterminer RAW_BYTES_SIZE = bytes -> bytes.length;
 
-    /** determines size based on length of decoded bytes */
+    /** Determines size based on length of decoded bytes. */
     private static final SizeDeterminer BITSTRING_SIZE =
             bytes -> BitStringDecoder.getInstance().decode(bytes).length();
 

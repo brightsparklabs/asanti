@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Logic for parsing a module within an ASN.1 schema
+ * Logic for parsing a module within an ASN.1 schema.
  *
  * @author brightSPARK Labs
  */
@@ -34,31 +34,31 @@ public class AsnSchemaModuleParser {
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** pattern to match a simple type definition (one with no parameterization) */
+    /** Pattern to match a simple type definition (one with no parameterization). */
     private static final Pattern PATTERN_TYPE_DEFINITION_SIMPLE =
             Pattern.compile("^([A-Za-z0-9\\-]+) ?::= ?(.+)");
 
-    /** pattern to match a parameterized type definition */
+    /** Pattern to match a parameterized type definition. */
     private static final Pattern PATTERN_TYPE_DEFINITION_PARAMETERIZED =
             Pattern.compile("^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+) ?::= ?(.+)");
 
-    /** pattern to match a value assignment */
+    /** Pattern to match a value assignment. */
     private static final Pattern PATTERN_VALUE_ASSIGNMENT =
             Pattern.compile(
                     "^(([A-Za-z0-9\\-]+(\\{[A-Za-z0-9\\-:, ]+\\})?)+( [A-Za-z0-9\\-]+)+) ?::= ?(.+)");
 
-    /** pattern to find the module level tagging mode */
+    /** Pattern to find the module level tagging mode. */
     private static final Pattern PATTERN_DEFINITIONS = Pattern.compile("(([A-Z]+)( TAGS) ?::= ?)");
 
-    /** error message if schema is missing header keywords */
+    /** Error message if schema is missing header keywords. */
     private static final String ERROR_MISSING_HEADERS =
             "Schema does not contain all expected module headers";
 
-    /** error message if schema is missing content */
+    /** Error message if schema is missing content. */
     private static final String ERROR_MISSING_CONTENT =
             "Schema does not contain any information within the 'BEGIN' and 'END' keywords";
 
-    /** error message if a type definition or value assignment is not found */
+    /** Error message if a type definition or value assignment is not found. */
     private static final String ERROR_UNKNOWN_CONTENT =
             "Parser expected a type definition or value assignment but found: ";
 
@@ -66,7 +66,7 @@ public class AsnSchemaModuleParser {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger = LoggerFactory.getLogger(AsnSchemaModuleParser.class);
 
     // -------------------------------------------------------------------------
@@ -74,13 +74,13 @@ public class AsnSchemaModuleParser {
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the supplied module from an ASN.1 schema
+     * Parses the supplied module from an ASN.1 schema.
      *
-     * @param moduleText all text from module within the ASN.1 schema
-     * @return an {@link com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder}
-     *     representing the parsed data
-     * @throws NullPointerException if {@code moduleText} is {@code null}
-     * @throws ParseException if any errors occur while parsing the module
+     * @param moduleText All text from module within the ASN.1 schema.
+     * @return An {@link com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder}
+     *     representing the parsed data.
+     * @throws NullPointerException if {@code moduleText} is {@code null}.
+     * @throws ParseException if any errors occur while parsing the module.
      */
     public static AsnSchemaModule.Builder parse(Iterable<String> moduleText) throws ParseException {
         checkNotNull(moduleText);
@@ -108,11 +108,11 @@ public class AsnSchemaModuleParser {
      * keyword. I.e. calling {@code iterator.next()} will return the line following the 'BEGIN'
      * keyword.
      *
-     * @param lineIterator iterator pointing at the first line following the 'BEGIN' keyword
-     * @param moduleBuilder builder to use to construct module from the parsed information
-     * @return the AsnModuleTaggingMode as parsed from the header. {@link
-     *     AsnModuleTaggingMode#DEFAULT} if not found
-     * @throws ParseException if any errors occur while parsing the schema
+     * @param lineIterator Iterator pointing at the first line following the 'BEGIN' keyword.
+     * @param moduleBuilder Builder to use to construct module from the parsed information.
+     * @return The AsnModuleTaggingMode as parsed from the header. {@link.
+     *     AsnModuleTaggingMode#DEFAULT} if not found.
+     * @throws ParseException if any errors occur while parsing the schema.
      */
     private static AsnModuleTaggingMode parseHeader(
             Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
@@ -167,11 +167,11 @@ public class AsnSchemaModuleParser {
      * keyword. I.e. calling {@code iterator.next()} will return the line following the 'END'
      * keyword.
      *
-     * @param lineIterator iterator pointing at the first line following the 'BEGIN' keyword
-     * @param moduleBuilder builder to use to construct module from the parsed information
-     * @param taggingMode the Module wide tagging mode, determines whether to automatically generate
+     * @param lineIterator Iterator pointing at the first line following the 'BEGIN' keyword.
+     * @param moduleBuilder Builder to use to construct module from the parsed information.
+     * @param taggingMode The Module wide tagging mode, determines whether to automatically generate
      *     tags.
-     * @throws ParseException if any errors occur while parsing the schema
+     * @throws ParseException if any errors occur while parsing the schema.
      */
     private static void parseBody(
             Iterator<String> lineIterator,
@@ -198,12 +198,12 @@ public class AsnSchemaModuleParser {
      * imports/exports. I.e. calling {@code iterator.next()} will return the line *following* the
      * first type definition or value assignment.
      *
-     * @param lineIterator iterator pointing at the first line following the 'BEGIN' keyword
-     * @param moduleBuilder builder to use to construct module from the parsed information
-     * @return the line following the imports/exports, i.e. the first type definition or value
-     *     assignment
-     * @throws ParseException if any errors occur while parsing the schema
-     * @throws NoSuchElementException if there is data missing
+     * @param lineIterator Iterator pointing at the first line following the 'BEGIN' keyword.
+     * @param moduleBuilder Builder to use to construct module from the parsed information.
+     * @return The line following the imports/exports, i.e. the first type definition or value
+     *     assignment.
+     * @throws ParseException if any errors occur while parsing the schema.
+     * @throws NoSuchElementException if there is data missing.
      */
     private static String parseImportsAndExports(
             Iterator<String> lineIterator, AsnSchemaModule.Builder moduleBuilder)
@@ -252,12 +252,12 @@ public class AsnSchemaModuleParser {
      * keyword. I.e. calling {@code iterator.next()} will return the line following the 'END'
      * keyword.
      *
-     * @param firstLine the first type definition or value assignment (i.e. the first line following
-     *     all imports/exports)
-     * @param lineIterator iterator pointing at the first line following all imports/exports
-     * @param moduleBuilder builder to use to construct module from the parsed information
-     * @param taggingMode the Module wide tagging mode, determines whether to automatically generate
-     *     tags.
+     * @param firstLine The first type definition or value assignment (i.e. the first line
+     *     following. all imports/exports).
+     * @param lineIterator Iterator pointing at the first line following all imports/exports.
+     * @param moduleBuilder Builder to use to construct module from the parsed information.
+     * @param taggingMode The Module wide tagging mode, determines whether to automatically
+     *     generate. tags.
      * @throws ParseException if parsing errors are encountered.
      */
     private static void parseTypeDefinitionsAndValueAssignments(
@@ -321,12 +321,12 @@ public class AsnSchemaModuleParser {
     }
 
     /**
-     * Parses a value assignment
+     * Parses a value assignment.
      *
-     * @param valueAssignmentMatcher the matcher that identified the content as a value assignment
-     *     (generated from {@link #PATTERN_VALUE_ASSIGNMENT})
+     * @param valueAssignmentMatcher The matcher that identified the content as a value assignment
+     *     (generated from {@link #PATTERN_VALUE_ASSIGNMENT}).
      */
-    private static void parseValueAssignment(Matcher valueAssignmentMatcher) {
+    private static void parseValueAssignment(final Matcher valueAssignmentMatcher) {
         final String name = valueAssignmentMatcher.group(1);
         final String value = valueAssignmentMatcher.group(5);
         logger.trace("Found value assignment: {} - {}", name, value);

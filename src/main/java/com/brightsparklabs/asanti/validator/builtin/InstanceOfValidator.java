@@ -14,7 +14,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#InstanceOf}
+ * Validator for data of type {@link AsnBuiltinType#InstanceOf}.
  *
  * @author brightSPARK Labs
  */
@@ -23,7 +23,7 @@ public class InstanceOfValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static InstanceOfValidator instance;
 
     // -------------------------------------------------------------------------
@@ -33,15 +33,11 @@ public class InstanceOfValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private InstanceOfValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static InstanceOfValidator getInstance() {
         if (instance == null) {
             instance = new InstanceOfValidator();

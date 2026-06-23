@@ -15,16 +15,17 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#OidIri}
+ * Decoder for data of type {@link AsnBuiltinType#OidIri}.
  *
  * @author brightSPARK Labs
  */
 public class OidIriDecoder extends AbstractBuiltinTypeDecoder<String> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static OidIriDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +35,11 @@ public class OidIriDecoder extends AbstractBuiltinTypeDecoder<String> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private OidIriDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static OidIriDecoder getInstance() {
         if (instance == null) {
             instance = new OidIriDecoder();

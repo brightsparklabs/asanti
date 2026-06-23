@@ -24,7 +24,7 @@ public class DecodedTagValidationFailure extends AbstractValidationFailure {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the name of the tag the validation failure occurred on */
+    /** The name of the tag the validation failure occurred on. */
     private final String tag;
 
     // -------------------------------------------------------------------------
@@ -34,13 +34,14 @@ public class DecodedTagValidationFailure extends AbstractValidationFailure {
     /**
      * Default constructor.
      *
-     * @param tag the name of the tag the validation failure occurred on
-     * @param failureType the type of failure that occurred
-     * @param failureReason the reason for the failure
-     * @throws NullPointerException if parameters are {@code null}
-     * @throws IllegalArgumentException if location or failureReason are empty
+     * @param tag The name of the tag the validation failure occurred on.
+     * @param failureType The type of failure that occurred.
+     * @param failureReason The reason for the failure.
+     * @throws NullPointerException iI parameters are {@code null}.
+     * @throws IllegalArgumentException If location or failureReason are empty.
      */
-    public DecodedTagValidationFailure(String tag, FailureType failureType, String failureReason) {
+    public DecodedTagValidationFailure(
+            final String tag, final FailureType failureType, final String failureReason) {
         super(failureType, failureReason);
         checkNotNull(tag);
         this.tag = tag.trim();

@@ -27,9 +27,10 @@ public class AsnSchemaExactSizeConstraint extends AbstractAsnSchemaConstraint {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the length the data must be */
+    /** The length the data must be. */
     private final int exactLength;
 
+    /** Visitor for determining size based on ASN.1 type. */
     private final SizeDeterminingVisitor sizeDeterminingVisitor = new SizeDeterminingVisitor();
 
     // -------------------------------------------------------------------------
@@ -37,11 +38,11 @@ public class AsnSchemaExactSizeConstraint extends AbstractAsnSchemaConstraint {
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
+     * Default constructor.
      *
-     * @param exactLength the length the data must be
+     * @param exactLength The length the data must be.
      */
-    public AsnSchemaExactSizeConstraint(int exactLength) {
+    public AsnSchemaExactSizeConstraint(final int exactLength) {
         this.exactLength = exactLength;
     }
 
@@ -53,12 +54,12 @@ public class AsnSchemaExactSizeConstraint extends AbstractAsnSchemaConstraint {
      * Checks if the length of the supplied array matches the exact length of this constraint. The
      * content of the byte array is irrelevant.
      *
-     * @param bytes the bytes to test
-     * @return any failures encountered in applying the constraint to the supplied bytes
+     * @param bytes The bytes to test.
+     * @return Any failures encountered in applying the constraint to the supplied bytes.
      */
     @Override
     public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(
-            byte[] bytes, final AsnPrimitiveType type) {
+            final byte[] bytes, final AsnPrimitiveType type) {
 
         // The size that we are constraining is determined by the type.  ie for an OctectString
         // it's the size of the byte array.  For others, eg BitString, it's the length of the

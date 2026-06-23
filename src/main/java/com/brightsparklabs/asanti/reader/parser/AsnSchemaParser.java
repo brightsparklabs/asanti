@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Logic for parsing an ASN.1 schema
+ * Logic for parsing an ASN.1 schema.
  *
  * @author brightSPARK Labs
  */
@@ -30,26 +30,26 @@ public class AsnSchemaParser {
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** pattern to match carriage returns */
+    /** Pattern to match carriage returns. */
     private static final Pattern PATTERN_CARRIAGE_RETURN = Pattern.compile("\\r");
 
-    /** pattern to match comments that are started with -- and end with newline */
+    /** Pattern to match comments that are started with -- and end with newline. */
     private static final Pattern PATTERN_ENDLINE_COMMENTS =
             Pattern.compile("[\\t ]*--.*?(\\n|\\z)");
 
-    /** pattern to match comments that are started and ended with -- */
+    /** Pattern to match comments that are started and ended with --. */
     private static final Pattern PATTERN_INLINE_COMMENTS = Pattern.compile("[\\t ]*--.*?--");
 
-    /** pattern to match block comments */
+    /** Pattern to match block comments. */
     private static final Pattern PATTERN_BLOCK_COMMENTS = Pattern.compile("(?s)/\\*.*?\\*/");
 
-    /** pattern to match new lines */
+    /** Pattern to match new lines. */
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n+");
 
-    /** pattern to match tabs/spaces */
+    /** Pattern to match tabs/spaces. */
     private static final Pattern PATTERN_TABS_SPACES = Pattern.compile("[\\t ]+");
 
-    /** pattern to match module header keywords */
+    /** Pattern to match module header keywords. */
     private static final Pattern PATTERN_SCHEMA_KEYWORDS =
             /* NOTE:
              *
@@ -58,16 +58,16 @@ public class AsnSchemaParser {
              */
             Pattern.compile("\\b(DEFINITIONS|BEGIN|EXPORTS|IMPORTS|END)\\b");
 
-    /** pattern to match semicolons */
+    /** Pattern to match semicolons. */
     private static final Pattern PATTERN_SEMICOLONS = Pattern.compile(";");
 
-    /** pattern to join lines that end in a comma */
+    /** Pattern to join lines that end in a comma. */
     private static final Pattern PATTERN_COMMA_TERMINATED = Pattern.compile(",\\n");
 
-    /** error message if schema is missing 'END' keyword */
+    /** Error message if schema is missing 'END' keyword. */
     private static final String ERROR_MISSING_END_KEYWORD = "Schema is missing an 'END' keyword";
 
-    /** error message if an empty file is encountered */
+    /** Error message if an empty file is encountered. */
     private static final String ERROR_EMPTY_FILE = "Schema is empty";
 
     // -------------------------------------------------------------------------
@@ -75,13 +75,13 @@ public class AsnSchemaParser {
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the supplied ASN.1 schema text
+     * Parses the supplied ASN.1 schema text.
      *
-     * @param asnSchema all text from the ASN.1 schema
-     * @return the parsed schema
-     * @throws ParseException if any errors occur while parsing the schema
+     * @param asnSchema All text from the ASN.1 schema.
+     * @return The parsed schema.
+     * @throws ParseException if any errors occur while parsing the schema.
      */
-    public static AsnSchema parse(String asnSchema) throws ParseException {
+    public static AsnSchema parse(final String asnSchema) throws ParseException {
         if (Strings.isNullOrEmpty(asnSchema)) {
             throw new ParseException(ERROR_EMPTY_FILE, -1);
         }
@@ -168,8 +168,8 @@ public class AsnSchemaParser {
      *   <li>'END' keyword
      * </ul>
      *
-     * @param asnSchema schema to parse
-     * @return the lines from the schema
+     * @param asnSchema Schema to parse.
+     * @return The lines from the schema.
      */
     private static Iterator<String> getLines(String asnSchema) {
         // cull comments and collapse whitespace

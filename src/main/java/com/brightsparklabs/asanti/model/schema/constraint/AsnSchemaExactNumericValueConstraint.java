@@ -28,7 +28,7 @@ public class AsnSchemaExactNumericValueConstraint extends AbstractAsnSchemaConst
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the value the data must be */
+    /** The value the data must be. */
     private final BigInteger exactValue;
 
     // -------------------------------------------------------------------------
@@ -36,10 +36,10 @@ public class AsnSchemaExactNumericValueConstraint extends AbstractAsnSchemaConst
     // -------------------------------------------------------------------------
 
     /**
-     * Default constructor
+     * Default constructor.
      *
-     * @param exactValue the value the data must be
-     * @throws NullPointerException if any of the parameters are {@code null}
+     * @param exactValue The value the data must be.
+     * @throws NullPointerException if any of the parameters are {@code null}.
      */
     public AsnSchemaExactNumericValueConstraint(final BigInteger exactValue) {
         checkNotNull(exactValue);
@@ -54,8 +54,8 @@ public class AsnSchemaExactNumericValueConstraint extends AbstractAsnSchemaConst
      * Checks if the value in the supplied array matches the exact value of this constraint. The
      * value of the array is read via {@link BigInteger#BigInteger(byte[])}.
      *
-     * @param bytes the bytes to test
-     * @return any failures encountered in applying the constraint to the supplied bytes
+     * @param bytes The bytes to test.
+     * @return Any failures encountered in applying the constraint to the supplied bytes.
      */
     @Override
     public ImmutableSet<SchemaConstraintValidationFailure> applyToNonNullBytes(

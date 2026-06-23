@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.*;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 
 /**
- * Class that with criteria is that tag type matches specific schema type.
+ * Selector with criteria that the tag type matches a specific schema type.
  *
  * @author brightSPARK Labs
  */
@@ -21,7 +21,7 @@ public class SelectorByType extends CachableSelector {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the type to match - this is the selection criteria */
+    /** The type to match - this is the selection criteria. */
     private final AsnBuiltinType type;
 
     // -------------------------------------------------------------------------
@@ -29,9 +29,9 @@ public class SelectorByType extends CachableSelector {
     // -------------------------------------------------------------------------
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param type the type to match - this is the selection criteria
+     * @param type The type to match - this is the selection criteria.
      */
     public SelectorByType(final AsnBuiltinType type) {
         this.type = checkNotNull(type);

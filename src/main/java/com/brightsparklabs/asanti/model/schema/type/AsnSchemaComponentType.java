@@ -10,7 +10,7 @@ package com.brightsparklabs.asanti.model.schema.type;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * An item within a 'constructed' (SET, SEQUENCE, CHOICE) type definition
+ * An item within a 'constructed' (SET, SEQUENCE, CHOICE) type definition.
  *
  * @author brightSPARK Labs
  */
@@ -19,17 +19,16 @@ public class AsnSchemaComponentType {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** name of this component type (i.e. tag name) */
+    /** Name of this component type (i.e. tag name). */
     private final String name;
 
-    /** tag of this component type */
-    // private final String tag;
+    /** Tag of this component type. */
     private String tag;
 
-    /** whether this component type is optional */
+    /** Whether this component type is optional. */
     private final boolean isOptional;
 
-    /** the underlying AsnSchemaType that this component is holding */
+    /** The underlying AsnSchemaType that this component is holding. */
     private final AsnSchemaType type;
 
     // -------------------------------------------------------------------------
@@ -39,15 +38,19 @@ public class AsnSchemaComponentType {
     /**
      * Default constructor.
      *
-     * @param name name of this component type (i.e. tag name)
-     * @param tag tag of this component type. Will default to an empty string if {@code null}
-     * @param isOptional whether this component type is optional
-     * @param type the underlying {@link AsnSchemaType} for this component
+     * @param name Name of this component type (i.e. tag name).
+     * @param tag Tag of this component type. Will default to an empty string if {@code null}.
+     * @param isOptional Whether this component type is optional.
+     * @param type The underlying {@link AsnSchemaType} for this component.
      * @throws NullPointerException if {@code name}, {@code typeName} or {@code type} are {@code
-     *     null}
-     * @throws IllegalArgumentException if {@code name} or {@code typeName} are blank
+     *     null}.
+     * @throws IllegalArgumentException if {@code name} or {@code typeName} are blank.
      */
-    public AsnSchemaComponentType(String name, String tag, boolean isOptional, AsnSchemaType type) {
+    public AsnSchemaComponentType(
+            final String name,
+            final String tag,
+            final boolean isOptional,
+            final AsnSchemaType type) {
         checkNotNull(name);
         checkArgument(!name.trim().isEmpty(), "Tag name must be specified");
         checkNotNull(type);
@@ -62,38 +65,30 @@ public class AsnSchemaComponentType {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * @return the tag of this component type
-     */
+    /** {@return the tag of this component type} */
     public String getTag() {
         return tag;
     }
 
     /**
-     * @param tag set the tag of this component type. Will default to an empty string if {@code
-     *     null}
+     * @param tag Set the tag of this component type. Will default to an empty string if {@code
+     *     null}.
      */
-    public void setTag(String tag) {
+    public void setTag(final String tag) {
         this.tag = (tag == null) ? "" : tag;
     }
 
-    /**
-     * @return {@code true} if this component type is optional
-     */
+    /** {@return {@code true} if this component type is optional} */
     public boolean isOptional() {
         return isOptional;
     }
 
-    /**
-     * @return the {@link AsnSchemaType} of this component
-     */
+    /** {@return the {@link AsnSchemaType} of this component} */
     public AsnSchemaType getType() {
         return type;
     }
 
-    /**
-     * @return the name of this component
-     */
+    /** {@return the name of this component} */
     public String getName() {
         return name;
     }

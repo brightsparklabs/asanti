@@ -21,112 +21,98 @@ public interface AsnPrimitiveTypes {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** Invalid Null instance */
-    public static final AsnPrimitiveTypes.Invalid INVALID = new AsnPrimitiveTypes.Invalid();
+    /** Invalid Null instance. */
+    AsnPrimitiveTypes.Invalid INVALID = new AsnPrimitiveTypes.Invalid();
 
-    /** static instance {@link AsnPrimitiveTypeBitString} */
-    public static final AsnPrimitiveTypeBitString BIT_STRING = new AsnPrimitiveTypeBitString();
+    /** Static instance {@link AsnPrimitiveTypeBitString}. */
+    AsnPrimitiveTypeBitString BIT_STRING = new AsnPrimitiveTypeBitString();
 
-    /** static instance {@link AsnPrimitiveTypeBmpString} */
-    public static final AsnPrimitiveTypeBmpString BMP_STRING = new AsnPrimitiveTypeBmpString();
+    /** Static instance {@link AsnPrimitiveTypeBmpString}. */
+    AsnPrimitiveTypeBmpString BMP_STRING = new AsnPrimitiveTypeBmpString();
 
-    /** static instance {@link AsnPrimitiveTypeBoolean} */
-    public static final AsnPrimitiveTypeBoolean BOOLEAN = new AsnPrimitiveTypeBoolean();
+    /** Static instance {@link AsnPrimitiveTypeBoolean}. */
+    AsnPrimitiveTypeBoolean BOOLEAN = new AsnPrimitiveTypeBoolean();
 
-    /** static instance {@link AsnPrimitiveTypeCharacterString} */
-    public static final AsnPrimitiveTypeCharacterString CHARACTER_STRING =
-            new AsnPrimitiveTypeCharacterString();
+    /** Static instance {@link AsnPrimitiveTypeCharacterString}. */
+    AsnPrimitiveTypeCharacterString CHARACTER_STRING = new AsnPrimitiveTypeCharacterString();
 
-    /** static instance {@link AsnPrimitiveTypeChoice} */
-    public static final AsnPrimitiveTypeChoice CHOICE = new AsnPrimitiveTypeChoice();
+    /** Static instance {@link AsnPrimitiveTypeChoice}. */
+    AsnPrimitiveTypeChoice CHOICE = new AsnPrimitiveTypeChoice();
 
-    /** static instance {@link AsnPrimitiveTypeEmbeddedPdv} */
-    public static final AsnPrimitiveTypeEmbeddedPdv EMBEDDED_PDV =
-            new AsnPrimitiveTypeEmbeddedPdv();
+    /** Static instance {@link AsnPrimitiveTypeEmbeddedPdv}. */
+    AsnPrimitiveTypeEmbeddedPdv EMBEDDED_PDV = new AsnPrimitiveTypeEmbeddedPdv();
 
-    /** static instance {@link AsnPrimitiveTypeEnumerated} */
-    public static final AsnPrimitiveTypeEnumerated ENUMERATED = new AsnPrimitiveTypeEnumerated();
+    /** Static instance {@link AsnPrimitiveTypeEnumerated}. */
+    AsnPrimitiveTypeEnumerated ENUMERATED = new AsnPrimitiveTypeEnumerated();
 
-    /** static instance {@link AsnPrimitiveTypeGeneralString} */
-    public static final AsnPrimitiveTypeGeneralString GENERAL_STRING =
-            new AsnPrimitiveTypeGeneralString();
+    /** Static instance {@link AsnPrimitiveTypeGeneralString}. */
+    AsnPrimitiveTypeGeneralString GENERAL_STRING = new AsnPrimitiveTypeGeneralString();
 
-    /** static instance {@link AsnPrimitiveTypeGeneralizedTime} */
-    public static final AsnPrimitiveTypeGeneralizedTime GENERALIZED_TIME =
-            new AsnPrimitiveTypeGeneralizedTime();
+    /** Static instance {@link AsnPrimitiveTypeGeneralizedTime}. */
+    AsnPrimitiveTypeGeneralizedTime GENERALIZED_TIME = new AsnPrimitiveTypeGeneralizedTime();
 
-    /** static instance {@link AsnPrimitiveTypeGraphicString} */
-    public static final AsnPrimitiveTypeGraphicString GRAPHIC_STRING =
-            new AsnPrimitiveTypeGraphicString();
+    /** Static instance {@link AsnPrimitiveTypeGraphicString}. */
+    AsnPrimitiveTypeGraphicString GRAPHIC_STRING = new AsnPrimitiveTypeGraphicString();
 
-    /** static instance {@link AsnPrimitiveTypeIA5String} */
-    public static final AsnPrimitiveTypeIA5String IA5_STRING = new AsnPrimitiveTypeIA5String();
+    /** Static instance {@link AsnPrimitiveTypeIA5String}. */
+    AsnPrimitiveTypeIA5String IA5_STRING = new AsnPrimitiveTypeIA5String();
 
-    /** static instance {@link AsnPrimitiveTypeInteger} */
-    public static final AsnPrimitiveTypeInteger INTEGER = new AsnPrimitiveTypeInteger();
+    /** Static instance {@link AsnPrimitiveTypeInteger}. */
+    AsnPrimitiveTypeInteger INTEGER = new AsnPrimitiveTypeInteger();
 
-    /** static instance {@link AsnPrimitiveTypeNull} */
-    public static final AsnPrimitiveTypeNull NULL = new AsnPrimitiveTypeNull();
+    /** Static instance {@link AsnPrimitiveTypeNull}. */
+    AsnPrimitiveTypeNull NULL = new AsnPrimitiveTypeNull();
 
-    /** static instance {@link AsnPrimitiveTypeNumericString} */
-    public static final AsnPrimitiveTypeNumericString NUMERIC_STRING =
-            new AsnPrimitiveTypeNumericString();
+    /** Static instance {@link AsnPrimitiveTypeNumericString}. */
+    AsnPrimitiveTypeNumericString NUMERIC_STRING = new AsnPrimitiveTypeNumericString();
 
-    /** static instance {@link AsnPrimitiveTypeObjectDescriptor} */
-    public static final AsnPrimitiveTypeObjectDescriptor OBJECT_DESCRIPTOR =
-            new AsnPrimitiveTypeObjectDescriptor();
+    /** Static instance {@link AsnPrimitiveTypeObjectDescriptor}. */
+    AsnPrimitiveTypeObjectDescriptor OBJECT_DESCRIPTOR = new AsnPrimitiveTypeObjectDescriptor();
 
-    /** static instance {@link AsnPrimitiveTypeOctetString} */
-    public static final AsnPrimitiveTypeOctetString OCTET_STRING =
-            new AsnPrimitiveTypeOctetString();
+    /** Static instance {@link AsnPrimitiveTypeOctetString}. */
+    AsnPrimitiveTypeOctetString OCTET_STRING = new AsnPrimitiveTypeOctetString();
 
-    /** static instance {@link AsnPrimitiveTypeOid} */
-    public static final AsnPrimitiveTypeOid OID = new AsnPrimitiveTypeOid();
+    /** Static instance {@link AsnPrimitiveTypeOid}. */
+    AsnPrimitiveTypeOid OID = new AsnPrimitiveTypeOid();
 
-    /** static instance {@link AsnPrimitiveTypePrintableString} */
-    public static final AsnPrimitiveTypePrintableString PRINTABLE_STRING =
-            new AsnPrimitiveTypePrintableString();
+    /** Static instance {@link AsnPrimitiveTypePrintableString}. */
+    AsnPrimitiveTypePrintableString PRINTABLE_STRING = new AsnPrimitiveTypePrintableString();
 
-    /** static instance {@link AsnPrimitiveTypeReal} */
-    public static final AsnPrimitiveTypeReal REAL = new AsnPrimitiveTypeReal();
+    /** Static instance {@link AsnPrimitiveTypeReal}. */
+    AsnPrimitiveTypeReal REAL = new AsnPrimitiveTypeReal();
 
-    /** static instance {@link AsnPrimitiveTypeRelativeOid} */
-    public static final AsnPrimitiveTypeRelativeOid RELATIVE_OID =
-            new AsnPrimitiveTypeRelativeOid();
+    /** Static instance {@link AsnPrimitiveTypeRelativeOid}. */
+    AsnPrimitiveTypeRelativeOid RELATIVE_OID = new AsnPrimitiveTypeRelativeOid();
 
-    /** static instance {@link AsnPrimitiveTypeSequence} */
-    public static final AsnPrimitiveTypeSequence SEQUENCE = new AsnPrimitiveTypeSequence();
+    /** Static instance {@link AsnPrimitiveTypeSequence}. */
+    AsnPrimitiveTypeSequence SEQUENCE = new AsnPrimitiveTypeSequence();
 
-    /** static instance {@link AsnPrimitiveTypeSequenceOf} */
-    public static final AsnPrimitiveTypeSequenceOf SEQUENCE_OF = new AsnPrimitiveTypeSequenceOf();
+    /** Static instance {@link AsnPrimitiveTypeSequenceOf}. */
+    AsnPrimitiveTypeSequenceOf SEQUENCE_OF = new AsnPrimitiveTypeSequenceOf();
 
-    /** static instance {@link AsnPrimitiveTypeSet SET} */
-    public static final AsnPrimitiveTypeSet SET = new AsnPrimitiveTypeSet();
+    /** Static instance {@link AsnPrimitiveTypeSet SET}. */
+    AsnPrimitiveTypeSet SET = new AsnPrimitiveTypeSet();
 
-    /** static instance {@link AsnPrimitiveTypeSetOf} */
-    public static final AsnPrimitiveTypeSetOf SET_OF = new AsnPrimitiveTypeSetOf();
+    /** Static instance {@link AsnPrimitiveTypeSetOf}. */
+    AsnPrimitiveTypeSetOf SET_OF = new AsnPrimitiveTypeSetOf();
 
-    /** static instance {@link AsnPrimitiveTypeTeletexString} */
-    public static final AsnPrimitiveTypeTeletexString TELETEX_STRING =
-            new AsnPrimitiveTypeTeletexString();
+    /** Static instance {@link AsnPrimitiveTypeTeletexString}. */
+    AsnPrimitiveTypeTeletexString TELETEX_STRING = new AsnPrimitiveTypeTeletexString();
 
-    /** static instance {@link AsnPrimitiveTypeVideotexString} */
-    public static final AsnPrimitiveTypeVideotexString VIDEOTEX_STRING =
-            new AsnPrimitiveTypeVideotexString();
+    /** Static instance {@link AsnPrimitiveTypeVideotexString}. */
+    AsnPrimitiveTypeVideotexString VIDEOTEX_STRING = new AsnPrimitiveTypeVideotexString();
 
-    /** static instance {@link AsnPrimitiveTypeUniversalString} */
-    public static final AsnPrimitiveTypeUniversalString UNIVERSAL_STRING =
-            new AsnPrimitiveTypeUniversalString();
+    /** Static instance {@link AsnPrimitiveTypeUniversalString}. */
+    AsnPrimitiveTypeUniversalString UNIVERSAL_STRING = new AsnPrimitiveTypeUniversalString();
 
-    /** static instance {@link AsnPrimitiveTypeUtf8String} */
-    public static final AsnPrimitiveTypeUtf8String UTF8_STRING = new AsnPrimitiveTypeUtf8String();
+    /** Static instance {@link AsnPrimitiveTypeUtf8String}. */
+    AsnPrimitiveTypeUtf8String UTF8_STRING = new AsnPrimitiveTypeUtf8String();
 
-    /** static instance {@link AsnPrimitiveTypeUtcTime} */
-    public static final AsnPrimitiveTypeUtcTime UTC_TIME = new AsnPrimitiveTypeUtcTime();
+    /** Static instance {@link AsnPrimitiveTypeUtcTime}. */
+    AsnPrimitiveTypeUtcTime UTC_TIME = new AsnPrimitiveTypeUtcTime();
 
-    /** static instance {@link AsnPrimitiveTypeVisibleString} */
-    public static final AsnPrimitiveTypeVisibleString VISIBLE_STRING =
-            new AsnPrimitiveTypeVisibleString();
+    /** Static instance {@link AsnPrimitiveTypeVisibleString}. */
+    AsnPrimitiveTypeVisibleString VISIBLE_STRING = new AsnPrimitiveTypeVisibleString();
 
     // -------------------------------------------------------------------------
     // INTERNAL CLASS: Null

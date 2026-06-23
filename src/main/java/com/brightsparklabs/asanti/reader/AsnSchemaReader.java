@@ -27,8 +27,8 @@ public class AsnSchemaReader {
     /**
      * Reads the data from the supplied ASN.1 schema source
      *
-     * @param source source of characters from an ASN.1 schema
-     * @return the data from the supplied ASN.1 schema
+     * @param source Source of characters from an ASN.1 schema.
+     * @return The data from the supplied ASN.1 schema.
      * @throws IOException if any errors occur while parsing the schema file
      */
     public static AsnSchema read(CharSource source) throws IOException {

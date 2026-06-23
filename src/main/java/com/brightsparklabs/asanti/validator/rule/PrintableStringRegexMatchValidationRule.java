@@ -46,7 +46,8 @@ public class PrintableStringRegexMatchValidationRule implements ValidationRule {
      * @param pattern Regex to use to match data.
      * @param failureReason Failure reason to use when validation fails.
      */
-    public PrintableStringRegexMatchValidationRule(Pattern pattern, String failureReason) {
+    public PrintableStringRegexMatchValidationRule(
+            final Pattern pattern, final String failureReason) {
         checkNotNull(pattern);
         checkNotNull(failureReason);
         this.pattern = pattern;
@@ -58,7 +59,7 @@ public class PrintableStringRegexMatchValidationRule implements ValidationRule {
      *
      * @param pattern Regex to use to match data.
      */
-    public PrintableStringRegexMatchValidationRule(Pattern pattern) {
+    public PrintableStringRegexMatchValidationRule(final Pattern pattern) {
         this(pattern, "Value found does not match regex [" + pattern.toString() + "]");
     }
 

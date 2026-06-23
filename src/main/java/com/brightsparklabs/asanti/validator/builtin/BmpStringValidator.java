@@ -14,7 +14,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#BmpString}
+ * Validator for data of type {@link AsnBuiltinType#BmpString}.
  *
  * @author brightSPARK Labs
  */
@@ -23,7 +23,7 @@ public class BmpStringValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static BmpStringValidator instance;
 
     // -------------------------------------------------------------------------
@@ -33,15 +33,11 @@ public class BmpStringValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private BmpStringValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static BmpStringValidator getInstance() {
         if (instance == null) {
             instance = new BmpStringValidator();

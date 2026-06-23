@@ -15,7 +15,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#Oid}
+ * Validator for data of type {@link AsnBuiltinType#Oid}.
  *
  * @author brightSPARK Labs
  */
@@ -24,7 +24,7 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static OidValidator instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +34,11 @@ public class OidValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private OidValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static OidValidator getInstance() {
         if (instance == null) {
             instance = new OidValidator();

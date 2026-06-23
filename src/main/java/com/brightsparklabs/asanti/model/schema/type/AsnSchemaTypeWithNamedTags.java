@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * A type used to model the types for objects within ASN.1 schema that may contain Named Values, for
  * example Enumerated and Integer. These objects can be either Type Definitions, e.g. Type ::=
- * SomeType, or components within a constructed type (SEQUENCE etc), e.g. component SomeType
+ * SomeType, or components within a constructed type (SEQUENCE etc), e.g. component SomeType.
  *
  * @author brightSPARK Labs
  */
@@ -31,7 +31,7 @@ public class AsnSchemaTypeWithNamedTags extends AbstractAsnSchemaType {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** mapping from raw tag to named value */
+    /** Mapping from raw tag to named value. */
     private final ImmutableMap<String, AsnSchemaNamedTag> tagsToNamedValues;
 
     // -------------------------------------------------------------------------
@@ -41,18 +41,18 @@ public class AsnSchemaTypeWithNamedTags extends AbstractAsnSchemaType {
     /**
      * Default constructor.
      *
-     * @param primitiveType The {@link AsnPrimitiveTypes} for this type
+     * @param primitiveType The {@link AsnPrimitiveTypes} for this type.
      * @param constraint The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no
      *     constraint.
-     *     <p>E.g. For {@code Integer (1..56)} this would be {@code (1..56)}
-     * @param namedValues the optional list of named values in this type. Use an empty iterable if
+     *     <p>E.g. For {@code Integer (1..56)} this would be {@code (1..56)}.
+     * @param namedValues The optional list of named values in this type. Use an empty iterable if
      *     there are no named values.
-     * @throws NullPointerException if {@code namedValues} or {@code primitiveType} is {@code null}
+     * @throws NullPointerException if {@code namedValues} or {@code primitiveType} is {@code null}.
      */
     public AsnSchemaTypeWithNamedTags(
-            AsnPrimitiveType primitiveType,
-            AsnSchemaConstraint constraint,
-            Iterable<AsnSchemaNamedTag> namedValues) {
+            final AsnPrimitiveType primitiveType,
+            final AsnSchemaConstraint constraint,
+            final Iterable<AsnSchemaNamedTag> namedValues) {
         super(primitiveType, constraint);
         checkNotNull(namedValues);
 
@@ -70,11 +70,7 @@ public class AsnSchemaTypeWithNamedTags extends AbstractAsnSchemaType {
     // PUBLIC METHODS
     // ---------------------------------------------------------------------
 
-    /**
-     * Returns the map of all the "named values" for this type.
-     *
-     * @return the map of all the "named values" for this type.
-     */
+    /** {@return the map of all the "named values" for this type} */
     public ImmutableMap<String, AsnSchemaNamedTag> getTagsToNamedValues() {
         return tagsToNamedValues;
     }

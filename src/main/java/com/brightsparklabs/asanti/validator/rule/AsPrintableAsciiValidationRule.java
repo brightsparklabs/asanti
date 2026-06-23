@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
+ * Validation rule to ensure data contains only printable ASCII characters.
+ *
  * @author brightSPARK Labs
  */
 public class AsPrintableAsciiValidationRule implements ValidationRule {
@@ -27,7 +29,7 @@ public class AsPrintableAsciiValidationRule implements ValidationRule {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** regex to use to retrieve data */
+    /** Regex to use to retrieve data. */
     private final Pattern pattern;
 
     // -------------------------------------------------------------------------
@@ -35,9 +37,9 @@ public class AsPrintableAsciiValidationRule implements ValidationRule {
     // -------------------------------------------------------------------------
 
     /**
-     * default constructor.
+     * Default constructor.
      *
-     * @param pattern regex to use to retrieve data
+     * @param pattern The regex to use to retrieve data.
      */
     public AsPrintableAsciiValidationRule(final Pattern pattern) {
         this.pattern = pattern;

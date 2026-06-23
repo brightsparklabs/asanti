@@ -22,25 +22,17 @@ public interface AsnSchemaTypeDefinition {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** null instance */
+    /** Null instance. */
     public static final AsnSchemaTypeDefinition.Null NULL = new AsnSchemaTypeDefinition.Null();
 
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * Returns the name of this type definition
-     *
-     * @return the name of this type definition
-     */
+    /** {@return the name of this type definition} */
     String getName();
 
-    /**
-     * Returns the {@link AsnSchemaType} of this type definition
-     *
-     * @return the {@link AsnSchemaType} of this type definition
-     */
+    /** {@return the {@link AsnSchemaType} of this type definition} */
     AsnSchemaType getType();
 
     // -------------------------------------------------------------------------

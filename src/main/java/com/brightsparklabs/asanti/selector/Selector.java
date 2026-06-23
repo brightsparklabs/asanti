@@ -11,33 +11,33 @@ import com.brightsparklabs.asanti.data.AsnData;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 
 /**
+ * Interface for selectors that determine if criteria are met for tag/type/data combinations.
+ *
  * @author brightSPARK Labs
  */
 public interface Selector {
-    // -------------------------------------------------------------------------
-    // CONSTANTS
-    // -------------------------------------------------------------------------
-
     // -------------------------------------------------------------------------
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
     /**
-     * determines if the criteria are met for the provided inputs
+     * Determines if the criteria are met for the provided inputs.
      *
-     * @param tag the tag that we are decoding
-     * @param type the type of the tag according to the schema
-     * @param asnData the data that will be used to determine if this selector is prepared to
-     *     provide a decoder
-     * @return true if the criteria are met for the provided inputs
+     * @param tag The tag that we are decoding.
+     * @param type The type of the tag according to the schema.
+     * @param asnData The data that will be used to determine if this selector is prepared to
+     *     provide a decoder.
+     * @return True if the criteria are met for the provided inputs.
      */
     boolean matches(
-            String tag, com.brightsparklabs.asanti.schema.AsnBuiltinType type, AsnData asnData);
+            final String tag,
+            final com.brightsparklabs.asanti.schema.AsnBuiltinType type,
+            final AsnData asnData);
 
     /**
-     * @return true if the result of {@link #matches(String, AsnBuiltinType, AsnData)} can be
-     *     cached, for the provided input tag ro type. ie they will always return the same value,
-     *     irrespective of what data is passed in.
+     * {@return true if the result of {@link #matches(String, AsnBuiltinType, AsnData)} can be
+     * cached, for the provided input tag or type. ie they will always return the same value,
+     * irrespective of what data is passed in}
      */
     boolean cachable();
 }

@@ -16,16 +16,17 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#NumericString}
+ * Decoder for data of type {@link AsnBuiltinType#NumericString}.
  *
  * @author brightSPARK Labs
  */
 public class NumericStringDecoder extends AbstractBuiltinTypeDecoder<String> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static NumericStringDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -35,15 +36,11 @@ public class NumericStringDecoder extends AbstractBuiltinTypeDecoder<String> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private NumericStringDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static NumericStringDecoder getInstance() {
         if (instance == null) {
             instance = new NumericStringDecoder();

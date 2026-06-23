@@ -24,7 +24,7 @@ import java.util.Optional;
  * A type used to model the types for objects within ASN.1 schema that are Collections, meaning that
  * they are the equivalent of a List of the element type they surround. These objects can be either
  * Type Definitions, e.g. Type ::= SomeType, or components within a constructed type (SEQUENCE etc),
- * e.g. component SomeType
+ * e.g. component SomeType.
  *
  * @author brightSPARK Labs
  */
@@ -33,7 +33,7 @@ public class AsnSchemaTypeCollection extends AbstractAsnSchemaType {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** built-in types which are considered 'collection'. Currently: SET OF and SEQUENCE OF */
+    /** Built-in types which are considered 'collection'. Currently: SET OF and SEQUENCE OF. */
     private static final ImmutableSet<AsnPrimitiveType> validTypes =
             ImmutableSet.of(AsnPrimitiveTypes.SET_OF, AsnPrimitiveTypes.SEQUENCE_OF);
 
@@ -41,10 +41,10 @@ public class AsnSchemaTypeCollection extends AbstractAsnSchemaType {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** name of the type for the elements in this collection */
+    /** Name of the type for the elements in this collection. */
     private final AsnSchemaType elementType;
 
-    /** the Universal tag we should expect */
+    /** The Universal tag we should expect. */
     private String myUniversalTag = "";
 
     // -------------------------------------------------------------------------
@@ -54,7 +54,7 @@ public class AsnSchemaTypeCollection extends AbstractAsnSchemaType {
     /**
      * Default constructor.
      *
-     * @param primitiveType the underlying primitiveType of the defined primitiveType
+     * @param primitiveType The underlying primitiveType of the defined primitiveType.
      * @param constraint The constraint on the type. Use {@link AsnSchemaConstraint#NULL} if no
      *     constraint.
      *     <p>Example 1<br>
@@ -62,17 +62,17 @@ public class AsnSchemaTypeCollection extends AbstractAsnSchemaType {
      *     (10)}.
      *     <p>Example 2<br>
      *     For {@code INTEGER (1..256)} this would be {@code (1..256)}.
-     * @param elementType the name of the type for the elements in the SET OF / SEQUENCE OF. E.g.
+     * @param elementType The name of the type for the elements in the SET OF / SEQUENCE OF. E.g.
      *     for {@code SEQUENCE (SIZE (1..100)) OF OCTET STRING (SIZE (256))}, this would be {@code
-     *     OCTET STRING}
-     * @throws NullPointerException if {@code primitiveType} is {@code null}
+     *     OCTET STRING}.
+     * @throws NullPointerException if {@code primitiveType} is {@code null}.
      * @throws IllegalArgumentException if {@code primitiveType} is not a collection type
-     *     (Currently: SET OF and SEQUENCE OF)
+     *     (Currently: SET OF and SEQUENCE OF).
      */
     public AsnSchemaTypeCollection(
-            AsnPrimitiveType primitiveType,
-            AsnSchemaConstraint constraint,
-            AsnSchemaType elementType) {
+            final AsnPrimitiveType primitiveType,
+            final AsnSchemaConstraint constraint,
+            final AsnSchemaType elementType) {
         super(primitiveType, constraint);
 
         checkArgument(
@@ -87,10 +87,10 @@ public class AsnSchemaTypeCollection extends AbstractAsnSchemaType {
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the type that this Collection surrounds
+     * Returns the type that this Collection surrounds.
      *
-     * @return the underlying type for this Collection, e.g. if the definition was SEQUENCE OF Foo
-     *     then the type for Foo will be returned
+     * @return The underlying type for this Collection, e.g. if the definition was SEQUENCE OF Foo
+     *     then the type for Foo will be returned.
      */
     public AsnSchemaType getElementType() {
         return elementType;

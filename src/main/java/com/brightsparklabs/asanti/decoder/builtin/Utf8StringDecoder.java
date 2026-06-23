@@ -16,16 +16,17 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#Utf8String}
+ * Decoder for data of type {@link AsnBuiltinType#Utf8String}.
  *
  * @author brightSPARK Labs
  */
 public class Utf8StringDecoder extends AbstractBuiltinTypeDecoder<String> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static Utf8StringDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -35,15 +36,11 @@ public class Utf8StringDecoder extends AbstractBuiltinTypeDecoder<String> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private Utf8StringDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static Utf8StringDecoder getInstance() {
         if (instance == null) {
             instance = new Utf8StringDecoder();

@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Logic for parsing Component Types from a 'constructed' Type Definition
+ * Logic for parsing Component Types from a 'constructed' Type Definition.
  *
  * @author brightSPARK Labs
  */
@@ -33,24 +33,24 @@ public class AsnSchemaComponentTypeParser {
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** pattern to break text into: tag name, tag, type, optional/default */
+    /** Pattern to break text into: tag name, tag, type, optional/default. */
     private static final Pattern PATTERN_COMPONENT_TYPE =
             Pattern.compile(
                     "([a-zA-Z0-9\\-]+) ?(\\[(\\d+)\\])? ?(.+?) ?((OPTIONAL)|((DEFAULT) ([a-zA-Z0-9\\-]+)))?");
 
     /**
-     * pattern to break the raw type string into: set/sequence of, construct constraints, type name,
-     * type definition, type constraints
+     * Pattern to break the raw type string into: set/sequence of, construct constraints, type name,
+     * type definition, type constraints.
      */
     private static final Pattern PATTERN_RAW_TYPE =
             Pattern.compile(
-                    "(((SET)|(SEQUENCE))(( SIZE)? ?\\(.+?\\)?)? OF )?([a-zA-Z0-9\\-\\.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
+                    "(((SET)|(SEQUENCE))(( SIZE)? ?\\(.+?\\))? OF )?([a-zA-Z0-9\\-.& ]+)(\\{.+\\})? ?(\\((.+)\\))?");
 
     // -------------------------------------------------------------------------
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger =
             LoggerFactory.getLogger(AsnSchemaComponentTypeParser.class);
 
@@ -59,18 +59,19 @@ public class AsnSchemaComponentTypeParser {
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the component types in a construct
+     * Parses the component types in a construct.
      *
-     * @param componentTypesText all component types contained in the construct as a string
-     * @param taggingMode dictates the mode in which to handle/generate tags
-     * @return each component type found in the construct
+     * @param componentTypesText All component types contained in the construct as a string.
+     * @param taggingMode Dictates the mode in which to handle/generate tags.
+     * @return Each component type found in the construct.
      * @throws NullPointerException if {@code componentTypesText} or {@code taggingMode} is {@code
-     *     null}
-     * @throws IllegalArgumentException if {@code componentTypesText} is blank
-     * @throws ParseException if any errors occur while parsing the data
+     *     null}.
+     * @throws IllegalArgumentException if {@code componentTypesText} is blank.
+     * @throws ParseException if any errors occur while parsing the data.
      */
     public static ImmutableList<AsnSchemaComponentType> parse(
-            String componentTypesText, AsnModuleTaggingMode taggingMode) throws ParseException {
+            final String componentTypesText, final AsnModuleTaggingMode taggingMode)
+            throws ParseException {
         checkNotNull(componentTypesText);
         checkArgument(
                 !componentTypesText.trim().isEmpty(), "Component Types Text must be specified");
@@ -94,10 +95,10 @@ public class AsnSchemaComponentTypeParser {
      * Splits the single block of text containing all component type definitions into a list. Each
      * element of the list represents an individual component type definition.
      *
-     * @param componentTypesText all component types expressed as a single text block
-     * @return list of each component type found in the text
+     * @param componentTypesText All component types expressed as a single text block.
+     * @return List of each component type found in the text.
      */
-    private static List<String> splitComponentTypesText(String componentTypesText) {
+    private static List<String> splitComponentTypesText(final String componentTypesText) {
         final ArrayList<String> items = Lists.newArrayList();
         int begin = 0;
         int bracketCount = 0;
@@ -146,14 +147,16 @@ public class AsnSchemaComponentTypeParser {
     }
 
     /**
-     * Parses a single component type definition from a construct
+     * Parses a single component type definition from a construct.
      *
-     * @param componentTypeLine the component type definition
-     * @return an {@link AsnSchemaComponentType} representing the parsed text
-     * @throws ParseException if any errors occur while parsing the data
+     * @param componentTypeLine The component type definition.
+     * @param taggingMode The tagging mode to use.
+     * @return An {@link AsnSchemaComponentType} representing the parsed text.
+     * @throws ParseException if any errors occur while parsing the data.
      */
     private static AsnSchemaComponentType parseComponentType(
-            String componentTypeLine, AsnModuleTaggingMode taggingMode) throws ParseException {
+            final String componentTypeLine, final AsnModuleTaggingMode taggingMode)
+            throws ParseException {
         Matcher matcher = PATTERN_COMPONENT_TYPE.matcher(componentTypeLine);
         if (!matcher.matches()) {
             final String error =

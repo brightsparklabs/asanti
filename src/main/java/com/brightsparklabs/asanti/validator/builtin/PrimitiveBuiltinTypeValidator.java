@@ -88,8 +88,8 @@ public abstract class PrimitiveBuiltinTypeValidator implements BuiltinTypeValida
      * Validates the supplied bytes based on the the kind of ASN.1 Built-in Type represented by this
      * validator. The bytes parameter is guaranteed to be non-{@code null}.
      *
-     * @param bytes bytes to validate
-     * @return any failures encountered while validating the bytes
+     * @param bytes The bytes to validate.
+     * @return Any failures encountered while validating the bytes.
      */
-    protected abstract ImmutableSet<ByteValidationFailure> validateNonNullBytes(byte[] bytes);
+    protected abstract ImmutableSet<ByteValidationFailure> validateNonNullBytes(final byte[] bytes);
 }

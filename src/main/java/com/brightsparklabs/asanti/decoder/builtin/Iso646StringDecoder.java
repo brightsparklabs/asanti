@@ -15,16 +15,17 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#Iso646String}
+ * Decoder for data of type {@link AsnBuiltinType#Iso646String}.
  *
  * @author brightSPARK Labs
  */
 public class Iso646StringDecoder extends AbstractBuiltinTypeDecoder<String> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static Iso646StringDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +35,11 @@ public class Iso646StringDecoder extends AbstractBuiltinTypeDecoder<String> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private Iso646StringDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static Iso646StringDecoder getInstance() {
         if (instance == null) {
             instance = new Iso646StringDecoder();

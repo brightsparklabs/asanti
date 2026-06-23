@@ -15,16 +15,17 @@ import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Decoder for data of type {@link AsnBuiltinType#EmbeddedPDV}
+ * Decoder for data of type {@link AsnBuiltinType#EmbeddedPDV}.
  *
  * @author brightSPARK Labs
  */
 public class EmbeddedPDVDecoder extends AbstractBuiltinTypeDecoder<String> {
+
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static EmbeddedPDVDecoder instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +35,11 @@ public class EmbeddedPDVDecoder extends AbstractBuiltinTypeDecoder<String> {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private EmbeddedPDVDecoder() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static EmbeddedPDVDecoder getInstance() {
         if (instance == null) {
             instance = new EmbeddedPDVDecoder();

@@ -21,7 +21,7 @@ public interface ValidationRule {
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** null instance */
+    /** Null instance. */
     ValidationRule.Null NULL = new ValidationRule.Null();
 
     // -------------------------------------------------------------------------
@@ -32,7 +32,7 @@ public interface ValidationRule {
      * Validates the specified tag in the data.
      *
      * @param tag The tag to validate in the data.
-     * @param asnData the data to validate.
+     * @param asnData The data to validate.
      * @return The results of validation.
      * @throws DecodeException If the specified tag could not be decoded.
      */
@@ -44,7 +44,7 @@ public interface ValidationRule {
     // -------------------------------------------------------------------------
 
     /**
-     * NULL instance of {@link ValidationRule}
+     * NULL instance of {@link ValidationRule}.
      *
      * @author brightSPARK Labs
      */
@@ -55,7 +55,7 @@ public interface ValidationRule {
 
         /**
          * Default constructor. This is private, use {@link ValidationRule#NULL} to obtain an
-         * instance
+         * instance.
          */
         private Null() {}
 

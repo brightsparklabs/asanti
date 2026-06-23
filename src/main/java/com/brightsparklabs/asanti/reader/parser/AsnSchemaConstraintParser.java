@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Logic for parsing Constraints from an {@link AsnSchemaType} or {@link AsnSchemaComponentType}
+ * Logic for parsing Constraints from an {@link AsnSchemaType} or {@link AsnSchemaComponentType} .
  *
  * @author brightSPARK Labs
  */
@@ -31,27 +31,27 @@ public class AsnSchemaConstraintParser {
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** pattern to match a bounded SIZE constraint */
+    /** Pattern to match a bounded SIZE constraint. */
     private static final Pattern PATTERN_SIZE_CONSTRAINT =
             Pattern.compile("\\(?\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)[^\\)]*\\)\\s*\\)?");
 
-    /** pattern to match an exact SIZE constraint */
+    /** Pattern to match an exact SIZE constraint. */
     private static final Pattern PATTERN_EXACT_SIZE_CONSTRAINT =
             Pattern.compile("\\(?\\s*SIZE\\s*\\(\\s*(\\d+)\\s*\\)\\s*\\)?");
 
-    /** pattern to match a bounded numeric value constraint */
+    /** Pattern to match a bounded numeric value constraint. */
     private static final Pattern PATTERN_NUMERIC_VALUE_CONSTRAINT =
             Pattern.compile("\\(?\\s*(-?\\d+)\\s*\\.\\.\\s*(-?\\d+)[^\\)]*\\)?");
 
-    /** pattern to match an exact numeric value constraint */
+    /** Pattern to match an exact numeric value constraint. */
     private static final Pattern PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT =
             Pattern.compile("\\(?\\s*(-?\\d+)\\s*\\)?");
 
-    /** pattern to match a Containing constraint */
+    /** Pattern to match a Containing constraint. */
     private static final Pattern PATTERN_CONTAINING_CONSTRAINT =
             Pattern.compile("\\(?\\s*CONTAINING\\s*(.*)\\s*\\)?");
 
-    /** error message if an unsupported constraint definition is found */
+    /** Error message if an unsupported constraint definition is found. */
     private static final String ERROR_UNSUPPORTED_CONSTRAINT =
             "Unsupported constraint definition found: ";
 
@@ -59,7 +59,7 @@ public class AsnSchemaConstraintParser {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger =
             LoggerFactory.getLogger(AsnSchemaTypeDefinitionParser.class);
 
@@ -68,11 +68,11 @@ public class AsnSchemaConstraintParser {
     // -------------------------------------------------------------------------
 
     /**
-     * Parses the constraint from an {@link AsnSchemaType} or {@link AsnSchemaComponentType}
+     * Parses the constraint from an {@link AsnSchemaType} or {@link AsnSchemaComponentType}.
      *
-     * @param constraintText the constraint text as a string
-     * @return an {@link AsnSchemaConstraint} representing the constraint text
-     * @throws ParseException if any errors occur while parsing the data
+     * @param constraintText The constraint text as a string.
+     * @return An {@link AsnSchemaConstraint} representing the constraint text.
+     * @throws ParseException if any errors occur while parsing the data.
      */
     public static AsnSchemaConstraint parse(String constraintText) throws ParseException {
         constraintText = Strings.nullToEmpty(constraintText).trim();
@@ -124,13 +124,13 @@ public class AsnSchemaConstraintParser {
     // -------------------------------------------------------------------------
 
     /**
-     * Parses a SIZE constraint containing an upper and lower bound
+     * Parses a SIZE constraint containing an upper and lower bound.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_SIZE_CONSTRAINT}
-     * @return an {@link AsnSchemaSizeConstraint} representing the parsed data
-     * @throws ParseException if any errors occur while parsing the type
+     * @param matcher Matcher which matched on {@link #PATTERN_SIZE_CONSTRAINT}.
+     * @return An {@link AsnSchemaSizeConstraint} representing the parsed data.
+     * @throws ParseException if any errors occur while parsing the type.
      */
-    private static AsnSchemaSizeConstraint parseSizeConstraint(Matcher matcher)
+    private static AsnSchemaSizeConstraint parseSizeConstraint(final Matcher matcher)
             throws ParseException {
         try {
             final int minimumLength = Integer.parseInt(matcher.group(1));
@@ -146,13 +146,13 @@ public class AsnSchemaConstraintParser {
     }
 
     /**
-     * Parses a SIZE constraint containing an exact size
+     * Parses a SIZE constraint containing an exact size.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_EXACT_SIZE_CONSTRAINT}
-     * @return an {@link AsnSchemaExactSizeConstraint} representing the parsed data
-     * @throws ParseException if any errors occur while parsing the type
+     * @param matcher Matcher which matched on {@link #PATTERN_EXACT_SIZE_CONSTRAINT}.
+     * @return An {@link AsnSchemaExactSizeConstraint} representing the parsed data.
+     * @throws ParseException if any errors occur while parsing the type.
      */
-    private static AsnSchemaExactSizeConstraint parseExactSizeConstraint(Matcher matcher)
+    private static AsnSchemaExactSizeConstraint parseExactSizeConstraint(final Matcher matcher)
             throws ParseException {
         try {
             final int fixedLength = Integer.parseInt(matcher.group(1));
@@ -167,14 +167,14 @@ public class AsnSchemaConstraintParser {
     }
 
     /**
-     * Parses a numeric value constraint containing an upper and lower bound
+     * Parses a numeric value constraint containing an upper and lower bound.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_NUMERIC_VALUE_CONSTRAINT}
-     * @return an {@link AsnSchemaNumericValueConstraint} representing the parsed data
-     * @throws ParseException if any errors occur while parsing the type
+     * @param matcher Matcher which matched on {@link #PATTERN_NUMERIC_VALUE_CONSTRAINT}.
+     * @return An {@link AsnSchemaNumericValueConstraint} representing the parsed data.
+     * @throws ParseException if any errors occur while parsing the type.
      */
-    private static AsnSchemaNumericValueConstraint parseNumericValueConstraint(Matcher matcher)
-            throws ParseException {
+    private static AsnSchemaNumericValueConstraint parseNumericValueConstraint(
+            final Matcher matcher) throws ParseException {
         try {
             final BigInteger minimumValue = new BigInteger(matcher.group(1));
             final BigInteger maximumValue = new BigInteger(matcher.group(2));
@@ -189,14 +189,14 @@ public class AsnSchemaConstraintParser {
     }
 
     /**
-     * Parses a numeric value constraint containing an exact value
+     * Parses a numeric value constraint containing an exact value.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT}
-     * @return an {@link AsnSchemaExactNumericValueConstraint} representing the parsed data
-     * @throws ParseException if any errors occur while parsing the type
+     * @param matcher Matcher which matched on {@link #PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT}.
+     * @return An {@link AsnSchemaExactNumericValueConstraint} representing the parsed data.
+     * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaExactNumericValueConstraint parseExactNumericValueConstraint(
-            Matcher matcher) throws ParseException {
+            final Matcher matcher) throws ParseException {
         try {
             final BigInteger exactValue = new BigInteger(matcher.group(1));
             return new AsnSchemaExactNumericValueConstraint(exactValue);
@@ -209,6 +209,13 @@ public class AsnSchemaConstraintParser {
         }
     }
 
+    /**
+     * Parses a CONTAINING constraint.
+     *
+     * @param matcher Matcher which matched on {@link #PATTERN_CONTAINING_CONSTRAINT}.
+     * @return An {@link AsnSchemaContainingConstraint} representing the parsed data.
+     * @throws ParseException if any errors occur while parsing the type.
+     */
     private static AsnSchemaContainingConstraint parseContainingConstraint(final Matcher matcher)
             throws ParseException {
         final String value = matcher.group(1);

@@ -14,7 +14,7 @@ import com.brightsparklabs.asanti.validator.failure.SchemaConstraintValidationFa
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Models a Constraint from within an {@link AsnSchemaType} or {@link AsnSchemaComponentType}
+ * Models a Constraint from within an {@link AsnSchemaType} or {@link AsnSchemaComponentType}.
  *
  * @author brightSPARK Labs
  */
@@ -23,7 +23,7 @@ public interface AsnSchemaConstraint {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** null instance */
+    /** Null instance. */
     AsnSchemaConstraint.Null NULL = new AsnSchemaConstraint.Null();
 
     // -------------------------------------------------------------------------
@@ -33,9 +33,9 @@ public interface AsnSchemaConstraint {
     /**
      * Applies the constraint to the supplied byte.
      *
-     * @param bytes the bytes to test.
+     * @param bytes The bytes to test.
      * @param type The ASN.1 type of the bytes.
-     * @return any failures encountered in applying the constraint to the supplied bytes.
+     * @return Any failures encountered in applying the constraint to the supplied bytes.
      */
     ImmutableSet<SchemaConstraintValidationFailure> apply(byte[] bytes, AsnPrimitiveType type);
 
@@ -43,11 +43,11 @@ public interface AsnSchemaConstraint {
     // INTERNAL CLASS: AsnSchemaTypeDefinitionNull
     // -------------------------------------------------------------------------
 
-    /** Null instance of {@link AsnSchemaConstraint} */
+    /** Null instance of {@link AsnSchemaConstraint}. */
     class Null implements AsnSchemaConstraint {
         /**
          * Default constructor. Private, use {@link AsnSchemaConstraint#NULL} instead to obtain a
-         * singleton instance
+         * singleton instance.
          */
         private Null() {}
 
