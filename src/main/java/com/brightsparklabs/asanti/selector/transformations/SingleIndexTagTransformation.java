@@ -53,7 +53,7 @@ public class SingleIndexTagTransformation implements Function<String, String> {
      *
      * @param patternToApplyToTag Pattern used to parse information from passed tag and build
      *     replacement tag. Expects at least one capture group.
-     * @param replacementTag * The string used to construct a tag based on the capture group of
+     * @param replacementTag The string used to construct a tag based on the capture group of
      *     patternToApplyToTag.
      */
     public SingleIndexTagTransformation(

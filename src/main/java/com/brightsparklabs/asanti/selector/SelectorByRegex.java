@@ -22,7 +22,7 @@ public class SelectorByRegex extends CachableSelector {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the regex pattern to use to match the tag - this is the selection criteria */
+    /** The regex pattern to use to match the tag - this is the selection criteria. */
     private final Pattern tagMatcher;
 
     // -------------------------------------------------------------------------
@@ -30,9 +30,9 @@ public class SelectorByRegex extends CachableSelector {
     // -------------------------------------------------------------------------
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param tagMatcher the regex pattern to use to match the tag
+     * @param tagMatcher the regex pattern to use to match the tag.
      */
     public SelectorByRegex(final Pattern tagMatcher) {
         this.tagMatcher = checkNotNull(tagMatcher);

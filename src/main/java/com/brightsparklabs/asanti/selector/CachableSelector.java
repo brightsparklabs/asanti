@@ -11,6 +11,8 @@ import com.brightsparklabs.asanti.data.AsnData;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 
 /**
+ * Base class for selectors that can be cached.
+ *
  * @author brightSPARK Labs
  */
 public abstract class CachableSelector implements Selector {
@@ -25,11 +27,11 @@ public abstract class CachableSelector implements Selector {
     }
 
     /**
-     * determines if the criteria are met for the provided inputs
+     * Determines if the criteria are met for the provided inputs.
      *
-     * @param tag the tag that we are decoding
-     * @param type the type of the tag according to the schema
-     * @return true if the criteria are met for the provided inputs
+     * @param tag the tag that we are decoding.
+     * @param type the type of the tag according to the schema.
+     * @return true if the criteria are met for the provided inputs.
      */
     public abstract boolean matches(final String tag, final AsnBuiltinType type);
 

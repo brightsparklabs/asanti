@@ -10,7 +10,7 @@ package com.brightsparklabs.asanti.selector;
 import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 
 /**
- * A class always meets the criteria
+ * A selector that always meets the criteria.
  *
  * @author brightSPARK Labs
  */
@@ -20,7 +20,7 @@ public class SelectorAlways extends CachableSelector {
     // CONSTRUCTION
     // -------------------------------------------------------------------------
 
-    /** Constructor */
+    /** Default constructor. */
     public SelectorAlways() {}
 
     // -------------------------------------------------------------------------

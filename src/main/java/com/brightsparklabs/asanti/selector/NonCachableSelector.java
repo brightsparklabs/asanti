@@ -8,6 +8,8 @@
 package com.brightsparklabs.asanti.selector;
 
 /**
+ * Base class for selectors that cannot be cached.
+ *
  * @author brightSPARK Labs
  */
 public abstract class NonCachableSelector implements Selector {
