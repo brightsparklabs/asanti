@@ -14,7 +14,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#Iri}
+ * Validator for data of type {@link AsnBuiltinType#Iri}.
  *
  * @author brightSPARK Labs
  */
@@ -23,7 +23,7 @@ public class IriValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static IriValidator instance;
 
     // -------------------------------------------------------------------------
@@ -33,15 +33,11 @@ public class IriValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private IriValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static IriValidator getInstance() {
         if (instance == null) {
             instance = new IriValidator();

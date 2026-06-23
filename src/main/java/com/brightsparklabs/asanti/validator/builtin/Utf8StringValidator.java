@@ -17,7 +17,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#Utf8String}
+ * Validator for data of type {@link AsnBuiltinType#Utf8String}.
  *
  * @author brightSPARK Labs
  */
@@ -26,7 +26,7 @@ public class Utf8StringValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static Utf8StringValidator instance;
 
     // -------------------------------------------------------------------------
@@ -36,15 +36,11 @@ public class Utf8StringValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private Utf8StringValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static Utf8StringValidator getInstance() {
         if (instance == null) {
             instance = new Utf8StringValidator();

@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
 import java.time.OffsetDateTime;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#GeneralizedTime}
+ * Validator for data of type {@link AsnBuiltinType#GeneralizedTime}.
  *
  * @author brightSPARK Labs
  */
@@ -24,7 +24,7 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static GeneralizedTimeValidator instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +34,11 @@ public class GeneralizedTimeValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private GeneralizedTimeValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static GeneralizedTimeValidator getInstance() {
         if (instance == null) {
             instance = new GeneralizedTimeValidator();

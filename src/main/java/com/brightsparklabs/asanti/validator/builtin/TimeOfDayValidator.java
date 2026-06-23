@@ -14,7 +14,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#TimeOfDay}
+ * Validator for data of type {@link AsnBuiltinType#TimeOfDay}.
  *
  * @author brightSPARK Labs
  */
@@ -23,7 +23,7 @@ public class TimeOfDayValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static TimeOfDayValidator instance;
 
     // -------------------------------------------------------------------------
@@ -33,15 +33,11 @@ public class TimeOfDayValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private TimeOfDayValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static TimeOfDayValidator getInstance() {
         if (instance == null) {
             instance = new TimeOfDayValidator();

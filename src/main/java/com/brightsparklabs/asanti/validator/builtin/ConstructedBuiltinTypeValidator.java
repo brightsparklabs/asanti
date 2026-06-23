@@ -23,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class implementing {@link BuiltinTypeValidator} for Constructed types, ie{@link
- * AsnBuiltinType#Sequence}, {@link AsnBuiltinType#Set} and {@link AsnBuiltinType#Choice} ASN.1
+ * Class implementing {@link BuiltinTypeValidator} for Constructed types, ie {@link
+ * AsnBuiltinType#Sequence}, {@link AsnBuiltinType#Set} and {@link AsnBuiltinType#Choice} ASN.1.
  *
  * @author brightSPARK Labs
  */
@@ -33,11 +33,11 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger =
             LoggerFactory.getLogger(ConstructedBuiltinTypeValidator.class);
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static ConstructedBuiltinTypeValidator instance;
 
     // -------------------------------------------------------------------------
@@ -47,15 +47,11 @@ public class ConstructedBuiltinTypeValidator implements BuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private ConstructedBuiltinTypeValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static ConstructedBuiltinTypeValidator getInstance() {
         if (instance == null) {
             instance = new ConstructedBuiltinTypeValidator();

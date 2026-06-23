@@ -15,7 +15,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#Ia5String}
+ * Validator for data of type {@link AsnBuiltinType#Ia5String}.
  *
  * @author brightSPARK Labs
  */
@@ -24,7 +24,7 @@ public class Ia5StringValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static Ia5StringValidator instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +34,11 @@ public class Ia5StringValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private Ia5StringValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static Ia5StringValidator getInstance() {
         if (instance == null) {
             instance = new Ia5StringValidator();

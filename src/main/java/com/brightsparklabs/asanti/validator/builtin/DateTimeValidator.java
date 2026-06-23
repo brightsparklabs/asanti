@@ -14,7 +14,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#DateTime}
+ * Validator for data of type {@link AsnBuiltinType#DateTime}.
  *
  * @author brightSPARK Labs
  */
@@ -23,7 +23,7 @@ public class DateTimeValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static DateTimeValidator instance;
 
     // -------------------------------------------------------------------------
@@ -33,15 +33,11 @@ public class DateTimeValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private DateTimeValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static DateTimeValidator getInstance() {
         if (instance == null) {
             instance = new DateTimeValidator();

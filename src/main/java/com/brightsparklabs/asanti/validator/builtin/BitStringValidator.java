@@ -15,7 +15,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#BitString}
+ * Validator for data of type {@link AsnBuiltinType#BitString}.
  *
  * @author brightSPARK Labs
  */
@@ -24,7 +24,7 @@ public class BitStringValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static BitStringValidator instance;
 
     // -------------------------------------------------------------------------
@@ -34,15 +34,11 @@ public class BitStringValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private BitStringValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static BitStringValidator getInstance() {
         if (instance == null) {
             instance = new BitStringValidator();

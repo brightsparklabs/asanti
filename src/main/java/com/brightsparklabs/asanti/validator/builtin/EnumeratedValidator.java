@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#Enumerated}
+ * Validator for data of type {@link AsnBuiltinType#Enumerated}.
  *
  * @author brightSPARK Labs
  */
@@ -34,7 +34,7 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static EnumeratedValidator instance;
 
     // -------------------------------------------------------------------------
@@ -44,15 +44,11 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private EnumeratedValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static EnumeratedValidator getInstance() {
         if (instance == null) {
             instance = new EnumeratedValidator();
@@ -152,11 +148,11 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator {
 
     /**
      * Returns a new instance of an AsnSchemaTypeVisitor that can be used to get the matching named
-     * value from a AsnSchemaTypeWithNamedTags type
+     * value from a AsnSchemaTypeWithNamedTags type.
      *
-     * @param value the value that the named tag is keyed off.
-     * @return new instance of the visitor - call {@link AsnSchemaType#accept} on the AsnSchemaType
-     *     with this return value
+     * @param value The value that the named tag is keyed off.
+     * @return New instance of the visitor - call {@link AsnSchemaType#accept} on the AsnSchemaType
+     *     with this return value.
      */
     private static AsnSchemaTypeVisitor getNamedTagVisitor(final String value) {
         return new AsnSchemaTypeVisitor<String>() {

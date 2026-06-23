@@ -14,7 +14,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * Validator for data of type {@link AsnBuiltinType#Iso646String}
+ * Validator for data of type {@link AsnBuiltinType#Iso646String}.
  *
  * @author brightSPARK Labs
  */
@@ -23,7 +23,7 @@ public class Iso646StringValidator extends PrimitiveBuiltinTypeValidator {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** singleton instance */
+    /** Singleton instance. */
     private static Iso646StringValidator instance;
 
     // -------------------------------------------------------------------------
@@ -33,15 +33,11 @@ public class Iso646StringValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Default constructor.
      *
-     * <p>This is private, use {@link #getInstance()} to obtain an instance
+     * <p>This is private, use {@link #getInstance()} to obtain an instance.
      */
     private Iso646StringValidator() {}
 
-    /**
-     * Returns a singleton instance of this class
-     *
-     * @return a singleton instance of this class
-     */
+    /** {@return a singleton instance of this class} */
     public static Iso646StringValidator getInstance() {
         if (instance == null) {
             instance = new Iso646StringValidator();
