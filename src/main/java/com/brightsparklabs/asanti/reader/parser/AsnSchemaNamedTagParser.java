@@ -66,10 +66,10 @@ public class AsnSchemaNamedTagParser {
     /**
      * Parses an ENUMERATED definition.
      *
-     * @param enumeratedOptionsText the enumerated definition text as a string. This is the text
+     * @param enumeratedOptionsText The enumerated definition text as a string. This is the text.
      *     between the curly braces following the word ENUMERATED. E.g. for <code>
      *     ENUMERATED { north(0), south(1) }</code> this is {@code "north(0), south(1)"}.
-     * @return each option found in the ENUMERATED.
+     * @return Each option found in the ENUMERATED.
      * @throws ParseException if any errors occur while parsing the data.
      */
     public static ImmutableList<AsnSchemaNamedTag> parseEnumeratedOptions(
@@ -99,10 +99,10 @@ public class AsnSchemaNamedTagParser {
     /**
      * Parses an INTEGER definition list of distinguished values.
      *
-     * @param distinguishedValuesText the distinguished values text as a string. This is the text
+     * @param distinguishedValuesText The distinguished values text as a string. This is the text.
      *     between the curly braces following the word INTEGER. E.g. for <code>
      *     INTEGER { tomorrow(0), three-day(1) }</code> this is {@code "tomorrow(0), three-day(1)"}.
-     * @return each distinguished value found in the INTEGER distinguished values list.
+     * @return Each distinguished value found in the INTEGER distinguished values list.
      * @throws ParseException if any errors occur while parsing the data.
      */
     public static ImmutableList<AsnSchemaNamedTag> parseIntegerDistinguishedValues(
@@ -128,9 +128,9 @@ public class AsnSchemaNamedTagParser {
     /**
      * Parses a single option from an ENUMERATED definition.
      *
-     * @param optionLine the option text to parse.
-     * @param usedTags the tags (numbers) that are already in use for this type.
-     * @return an {@link AsnSchemaNamedTag} representing the parsed text.
+     * @param optionLine The option text to parse.
+     * @param usedTags The tags (numbers) that are already in use for this type.
+     * @return An {@link AsnSchemaNamedTag} representing the parsed text.
      * @throws ParseException if any errors occur while parsing the data.
      */
     private static AsnSchemaNamedTag parseOption(
@@ -162,8 +162,8 @@ public class AsnSchemaNamedTagParser {
     /**
      * Parses a single distinguished value from an INTEGER definition list of distinguished values.
      *
-     * @param distinguishedValueLine the distinguished value text to parse.
-     * @return an {@link AsnSchemaNamedTag} representing the parsed text.
+     * @param distinguishedValueLine The distinguished value text to parse.
+     * @return An {@link AsnSchemaNamedTag} representing the parsed text.
      * @throws ParseException if any errors occur while parsing the data.
      */
     private static AsnSchemaNamedTag parseDistinguishedValue(final String distinguishedValueLine)
@@ -185,9 +185,9 @@ public class AsnSchemaNamedTagParser {
     /**
      * Provides a tag that is unique (not in the Set of tags provided).
      *
-     * @param usedTags the set of tags that are already in use.
-     * @param tagName the name of the tag, used for logging useful messages.
-     * @return the tag that we should use, which may be what we were provided or will be a newly
+     * @param usedTags The set of tags that are already in use.
+     * @param tagName The name of the tag, used for logging useful messages.
+     * @return The tag that we should use, which may be what we were provided or will be a newly.
      *     generated tag if needed.
      * @throws ParseException if the provided tag is already in use.
      */
@@ -206,9 +206,9 @@ public class AsnSchemaNamedTagParser {
     /**
      * Ensures that the provided tag is not already in use, throws if it is.
      *
-     * @param tag the new tag to test the uniqueness of.
-     * @param usedTags the set of tags that are already in use.
-     * @param tagName the name of the tag, used for logging useful errors.
+     * @param tag The new tag to test the uniqueness of.
+     * @param usedTags The set of tags that are already in use.
+     * @param tagName The name of the tag, used for logging useful errors.
      * @throws ParseException if the provided tag is already in use.
      */
     private static void ensureTagUnique(

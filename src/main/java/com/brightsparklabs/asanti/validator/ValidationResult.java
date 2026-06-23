@@ -20,34 +20,26 @@ public interface ValidationResult {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * Determines whether failures occurred during validation
-     *
-     * @return {@code true} if failures occurred during validation; {@code false} otherwise
-     */
+    /** {@return {@code true} if failures occurred during validation; {@code false} otherwise} */
     boolean hasFailures();
 
     /**
-     * Determines whether failures occurred while validating the specified tag
+     * Determines whether failures occurred while validating the specified tag.
      *
-     * @param tag the tag of interest (e.g. "/Document/header/published/date")
+     * @param tag The tag of interest (e.g. "/Document/header/published/date").
      * @return {@code true} if failures occurred while validating the specified tag; {@code false}
      *     otherwise
      */
-    boolean hasFailures(String tag);
+    boolean hasFailures(final String tag);
 
-    /**
-     * Returns all failures that occurred during validation
-     *
-     * @return all failures that occurred during validation
-     */
+    /** {@return all failures that occurred during validation} */
     ImmutableSet<ValidationFailure> getFailures();
 
     /**
-     * Returns all failures that occurred validating the specified tag
+     * Returns all failures that occurred validating the specified tag.
      *
-     * @param tag the tag of interest (e.g. "/Document/header/published/date")
-     * @return all failures that occurred validating the specified tag
+     * @param tag The tag of interest (e.g. "/Document/header/published/date").
+     * @return All failures that occurred validating the specified tag.
      */
-    ImmutableSet<ValidationFailure> getFailures(String tag);
+    ImmutableSet<ValidationFailure> getFailures(final String tag);
 }

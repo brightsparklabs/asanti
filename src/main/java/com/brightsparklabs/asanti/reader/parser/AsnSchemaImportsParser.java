@@ -44,8 +44,8 @@ public class AsnSchemaImportsParser {
     /**
      * Parses an Imports statement from a module from an ASN.1 schema.
      *
-     * @param imports the imports statement string.
-     * @return an ImmutableMap representing the imports.
+     * @param imports The imports statement string.
+     * @return An ImmutableMap representing the imports.
      * @throws ParseException if any errors occur while parsing the type.
      */
     public static ImmutableMap<String, String> parse(final String imports) throws ParseException {

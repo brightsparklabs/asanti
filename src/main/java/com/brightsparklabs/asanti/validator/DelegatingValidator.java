@@ -27,7 +27,7 @@ public class DelegatingValidator implements ValidationRule {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** validators that we can delegate to */
+    /** Validators that we can delegate to. */
     private final ImmutableList<ValidatorSelector> validators;
 
     // -------------------------------------------------------------------------
@@ -37,7 +37,7 @@ public class DelegatingValidator implements ValidationRule {
     /**
      * Constructor
      *
-     * @param validators the validators to delegate to.
+     * @param validators The validators to delegate to.
      */
     public DelegatingValidator(final Iterable<ValidatorSelector> validators) {
         this.validators = ImmutableList.copyOf(validators);

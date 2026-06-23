@@ -22,7 +22,7 @@ import java.util.Optional;
  * Validates that the value of a given tag is equal to a particular value. Equality is tested via
  * {@link Object#equals(Object)}.
  *
- * @param <T> the expected type of the data as returned by {@link AsnData#getDecodedObject}
+ * @param <T> the expected type of the data as returned by {@link AsnData#getDecodedObject}.
  * @author brightSPARK Labs
  */
 public class IsEqualValidationRule<T> implements ValidationRule {
@@ -30,10 +30,10 @@ public class IsEqualValidationRule<T> implements ValidationRule {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the expected value the tag should have */
+    /** The expected value the tag should have. */
     private final T expectedValue;
 
-    /** adds a bit of type safety */
+    /** Adds a bit of type safety. */
     private final Class<T> classOfT;
 
     // -------------------------------------------------------------------------
@@ -43,11 +43,11 @@ public class IsEqualValidationRule<T> implements ValidationRule {
     /**
      * Default constructor.
      *
-     * @param expectedValue the value to test against
-     * @param classOfT the class of the T the class of the T
-     * @throws NullPointerException if {@code expectedValue} is {@code null}
+     * @param expectedValue The value to test against.
+     * @param classOfT The class of T.
+     * @throws NullPointerException If {@code expectedValue} is {@code null}.
      */
-    public IsEqualValidationRule(T expectedValue, Class<T> classOfT) {
+    public IsEqualValidationRule(final T expectedValue, final Class<T> classOfT) {
         checkNotNull(expectedValue);
         this.expectedValue = expectedValue;
         this.classOfT = classOfT;

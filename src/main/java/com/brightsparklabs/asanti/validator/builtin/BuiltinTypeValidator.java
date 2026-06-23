@@ -82,9 +82,9 @@ public interface BuiltinTypeValidator {
      * Validates the supplied tag in the data based on the kind of ASN.1 Built-in Type represented
      * by this validator.
      *
-     * @param tag the tag to validate.
-     * @param asnData data to retrieve tag from.
-     * @return any failures encountered while validating the tag.
+     * @param tag The tag to validate.
+     * @param asnData Data to retrieve tag from.
+     * @return Any failures encountered while validating the tag.
      */
     ImmutableSet<DecodedTagValidationFailure> validate(
             final String tag, final AsantiAsnData asnData);
@@ -93,10 +93,10 @@ public interface BuiltinTypeValidator {
      * Validates the supplied tag in the data based on the kind of ASN.1 Built-in Type represented
      * by this validator.
      *
-     * @param tag the tag to validate.
-     * @param asnData the data to retrieve tag from.
-     * @param immediateChildren the immediate children of the given tag.
-     * @return any failures encountered while validating the tag.
+     * @param tag The tag to validate.
+     * @param asnData The data to retrieve tag from.
+     * @param immediateChildren The immediate children of the given tag.
+     * @return Any failures encountered while validating the tag.
      */
     ImmutableSet<DecodedTagValidationFailure> validate(
             final String tag, final AsantiAsnData asnData, final Set<String> immediateChildren);
@@ -105,8 +105,8 @@ public interface BuiltinTypeValidator {
      * Validates the supplied bytes based on the kind of ASN.1 Built-in Type represented by this
      * validator.
      *
-     * @param bytes bytes to validate.
-     * @return any failures encountered while validating the bytes.
+     * @param bytes Bytes to validate.
+     * @return Any failures encountered while validating the bytes.
      */
     ImmutableSet<ByteValidationFailure> validate(final byte[] bytes);
 

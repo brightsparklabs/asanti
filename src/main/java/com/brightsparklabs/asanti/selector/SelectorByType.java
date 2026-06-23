@@ -31,7 +31,7 @@ public class SelectorByType extends CachableSelector {
     /**
      * Constructor.
      *
-     * @param type the type to match - this is the selection criteria.
+     * @param type The type to match - this is the selection criteria.
      */
     public SelectorByType(final AsnBuiltinType type) {
         this.type = checkNotNull(type);

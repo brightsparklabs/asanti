@@ -77,8 +77,8 @@ public class AsnSchemaParser {
     /**
      * Parses the supplied ASN.1 schema text.
      *
-     * @param asnSchema all text from the ASN.1 schema.
-     * @return the parsed schema.
+     * @param asnSchema All text from the ASN.1 schema.
+     * @return The parsed schema.
      * @throws ParseException if any errors occur while parsing the schema.
      */
     public static AsnSchema parse(final String asnSchema) throws ParseException {
@@ -168,8 +168,8 @@ public class AsnSchemaParser {
      *   <li>'END' keyword
      * </ul>
      *
-     * @param asnSchema schema to parse.
-     * @return the lines from the schema.
+     * @param asnSchema Schema to parse.
+     * @return The lines from the schema.
      */
     private static Iterator<String> getLines(String asnSchema) {
         // cull comments and collapse whitespace

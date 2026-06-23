@@ -71,7 +71,7 @@ public class PrintableStringValidator extends PrimitiveBuiltinTypeValidator {
      * Returns true if byte is within the range conforming to PrintableString format. The range
      * comprises of: A, B, ..., Z a, b, ..., z 0, 1, ..., 9 (space) ' ( ) + , - . / : = ?
      *
-     * @return true if byte is within the range conforming to PrintableString format
+     * @return {@code true} if byte is within the range conforming to PrintableString format.
      */
     private boolean isPrintableByte(final byte b) {
         if ((b >= 'A') && (b <= 'Z')) {

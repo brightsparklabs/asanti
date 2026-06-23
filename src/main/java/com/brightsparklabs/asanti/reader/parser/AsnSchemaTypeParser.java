@@ -199,10 +199,10 @@ public class AsnSchemaTypeParser {
     /**
      * Parses a type definition from a module from an ASN.1 schema.
      *
-     * @param value the string to parse. This should be either the Type of the defined type (i.e.
+     * @param value The string to parse. This should be either the Type of the defined type (i.e.
      *     the text on the right hand side of the {@code ::=}), or the Type of a Component Type.
-     * @param taggingMode dictates the mode in which to handle/generate tags.
-     * @return an {@link AsnSchemaType} object representing the parsed type.
+     * @param taggingMode Dictates the mode in which to handle/generate tags.
+     * @return An {@link AsnSchemaType} object representing the parsed type.
      * @throws ParseException if either of the parameters are {@code null}/empty or any errors occur
      *     while parsing the type.
      * @throws NullPointerException if taggingMode is {@code null}.
@@ -295,9 +295,9 @@ public class AsnSchemaTypeParser {
     /**
      * Parses a constructed type (eg SEQUENCE).
      *
-     * @param matcher matcher which matched on a corresponding.
-     * @param taggingMode dictates the mode in which to handle/generate tags.
-     * @return an {@link AsnSchemaTypeConstructed} representing the parsed data.
+     * @param matcher Matcher which matched on a corresponding.
+     * @param taggingMode Dictates the mode in which to handle/generate tags.
+     * @return An {@link AsnSchemaTypeConstructed} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaTypeConstructed parseConstructed(
@@ -318,8 +318,8 @@ public class AsnSchemaTypeParser {
     /**
      * Parses an Enumerated type.
      *
-     * @param matcher matcher which matched on eg {@link #PATTERN_TYPE_ENUMERATED}.
-     * @return an {@link AsnSchemaTypeWithNamedTags} representing the parsed data.
+     * @param matcher Matcher which matched on eg {@link #PATTERN_TYPE_ENUMERATED}.
+     * @return An {@link AsnSchemaTypeWithNamedTags} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaTypeWithNamedTags parseEnumerated(final Matcher matcher)
@@ -337,9 +337,9 @@ public class AsnSchemaTypeParser {
     /**
      * Parses a collection type (eg SEQUENCE Of).
      *
-     * @param matcher matcher which matched on a corresponding.
-     * @param taggingMode dictates the mode in which to handle/generate tags.
-     * @return an {@link AsnSchemaTypeCollection} representing the parsed data.
+     * @param matcher Matcher which matched on a corresponding.
+     * @param taggingMode Dictates the mode in which to handle/generate tags.
+     * @return An {@link AsnSchemaTypeCollection} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaTypeCollection parseCollection(
@@ -359,8 +359,8 @@ public class AsnSchemaTypeParser {
     /**
      * Parses a type of the form Typename, eg "^GeneralizedTime$".
      *
-     * @param matcher matcher which matched on a corresponding "generic" matcher.
-     * @return an {@link AbstractAsnSchemaType} representing the parsed data.
+     * @param matcher Matcher which matched on a corresponding "generic" matcher.
+     * @return An {@link AbstractAsnSchemaType} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AbstractAsnSchemaType parseWithoutConstraints(final Matcher matcher)
@@ -373,8 +373,8 @@ public class AsnSchemaTypeParser {
     /**
      * Parses a type of the form Typename Constraint, eg "INTEGER (1..100)".
      *
-     * @param matcher matcher which matched on a corresponding "generic" matcher.
-     * @return an {@link AbstractAsnSchemaType} representing the parsed data.
+     * @param matcher Matcher which matched on a corresponding "generic" matcher.
+     * @return An {@link AbstractAsnSchemaType} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AbstractAsnSchemaType parseWithConstraints(final Matcher matcher)
@@ -396,8 +396,8 @@ public class AsnSchemaTypeParser {
     /**
      * Parses a type that may have both Constraints and Named values.
      *
-     * @param matcher matcher which matched on eg {@link #PATTERN_TYPE_WITH_NAMED_VALUES}.
-     * @return an {@link AsnSchemaTypeWithNamedTags} representing the parsed data.
+     * @param matcher Matcher which matched on eg {@link #PATTERN_TYPE_WITH_NAMED_VALUES}.
+     * @return An {@link AsnSchemaTypeWithNamedTags} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaTypeWithNamedTags parseWithNamedValues(final Matcher matcher)
@@ -416,8 +416,8 @@ public class AsnSchemaTypeParser {
     /**
      * Parses a type that is not a ASN.1 primitive type.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_DEFINED_TYPE}.
-     * @return an {@link AsnSchemaTypePlaceholder} representing the parsed data.
+     * @param matcher Matcher which matched on {@link #PATTERN_DEFINED_TYPE}.
+     * @return An {@link AsnSchemaTypePlaceholder} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaTypePlaceholder parsePlaceHolder(final Matcher matcher)
@@ -444,9 +444,9 @@ public class AsnSchemaTypeParser {
     /**
      * Helper function to extract the AsnPrimitiveType from the matcher.
      *
-     * @param matcher matcher which should have the primitive type as group 1.
+     * @param matcher Matcher which should have the primitive type as group 1.
      * @param sourceTypes Map of ASN.1 primitive types to AsnPrimitiveType.
-     * @return a {@link AsnPrimitiveTypes} as extracted from the matcher.
+     * @return A {@link AsnPrimitiveTypes} as extracted from the matcher.
      * @throws ParseException if the type is not in the sourceTypes.
      */
     private static AsnPrimitiveType getPrimitiveType(

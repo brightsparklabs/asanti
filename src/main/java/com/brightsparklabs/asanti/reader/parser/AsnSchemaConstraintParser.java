@@ -70,8 +70,8 @@ public class AsnSchemaConstraintParser {
     /**
      * Parses the constraint from an {@link AsnSchemaType} or {@link AsnSchemaComponentType}.
      *
-     * @param constraintText the constraint text as a string.
-     * @return an {@link AsnSchemaConstraint} representing the constraint text.
+     * @param constraintText The constraint text as a string.
+     * @return An {@link AsnSchemaConstraint} representing the constraint text.
      * @throws ParseException if any errors occur while parsing the data.
      */
     public static AsnSchemaConstraint parse(String constraintText) throws ParseException {
@@ -126,8 +126,8 @@ public class AsnSchemaConstraintParser {
     /**
      * Parses a SIZE constraint containing an upper and lower bound.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_SIZE_CONSTRAINT}.
-     * @return an {@link AsnSchemaSizeConstraint} representing the parsed data.
+     * @param matcher Matcher which matched on {@link #PATTERN_SIZE_CONSTRAINT}.
+     * @return An {@link AsnSchemaSizeConstraint} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaSizeConstraint parseSizeConstraint(final Matcher matcher)
@@ -148,8 +148,8 @@ public class AsnSchemaConstraintParser {
     /**
      * Parses a SIZE constraint containing an exact size.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_EXACT_SIZE_CONSTRAINT}.
-     * @return an {@link AsnSchemaExactSizeConstraint} representing the parsed data.
+     * @param matcher Matcher which matched on {@link #PATTERN_EXACT_SIZE_CONSTRAINT}.
+     * @return An {@link AsnSchemaExactSizeConstraint} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaExactSizeConstraint parseExactSizeConstraint(final Matcher matcher)
@@ -169,8 +169,8 @@ public class AsnSchemaConstraintParser {
     /**
      * Parses a numeric value constraint containing an upper and lower bound.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_NUMERIC_VALUE_CONSTRAINT}.
-     * @return an {@link AsnSchemaNumericValueConstraint} representing the parsed data.
+     * @param matcher Matcher which matched on {@link #PATTERN_NUMERIC_VALUE_CONSTRAINT}.
+     * @return An {@link AsnSchemaNumericValueConstraint} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaNumericValueConstraint parseNumericValueConstraint(
@@ -191,8 +191,8 @@ public class AsnSchemaConstraintParser {
     /**
      * Parses a numeric value constraint containing an exact value.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT}.
-     * @return an {@link AsnSchemaExactNumericValueConstraint} representing the parsed data.
+     * @param matcher Matcher which matched on {@link #PATTERN_EXACT_NUMERIC_VALUE_CONSTRAINT}.
+     * @return An {@link AsnSchemaExactNumericValueConstraint} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaExactNumericValueConstraint parseExactNumericValueConstraint(
@@ -212,8 +212,8 @@ public class AsnSchemaConstraintParser {
     /**
      * Parses a CONTAINING constraint.
      *
-     * @param matcher matcher which matched on {@link #PATTERN_CONTAINING_CONSTRAINT}.
-     * @return an {@link AsnSchemaContainingConstraint} representing the parsed data.
+     * @param matcher Matcher which matched on {@link #PATTERN_CONTAINING_CONSTRAINT}.
+     * @return An {@link AsnSchemaContainingConstraint} representing the parsed data.
      * @throws ParseException if any errors occur while parsing the type.
      */
     private static AsnSchemaContainingConstraint parseContainingConstraint(final Matcher matcher)

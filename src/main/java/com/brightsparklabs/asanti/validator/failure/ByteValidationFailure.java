@@ -19,7 +19,7 @@ public class ByteValidationFailure extends AbstractValidationFailure {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the index in the array that the validation failure occurred on */
+    /** The index in the array that the validation failure occurred on. */
     private final int failureIndex;
 
     // -------------------------------------------------------------------------
@@ -29,13 +29,14 @@ public class ByteValidationFailure extends AbstractValidationFailure {
     /**
      * Default constructor.
      *
-     * @param failureIndex the index in the array that the validation failure occurred on
-     * @param failureType the type of failure that occurred
-     * @param failureReason the reason for the failure
-     * @throws NullPointerException if parameters are {@code null}
-     * @throws IllegalArgumentException if location or failureReason are empty
+     * @param failureIndex The index in the array that the validation failure occurred on.
+     * @param failureType The type of failure that occurred.
+     * @param failureReason The reason for the failure.
+     * @throws NullPointerException If parameters are {@code null}.
+     * @throws IllegalArgumentException If location or failureReason are empty.
      */
-    public ByteValidationFailure(int failureIndex, FailureType failureType, String failureReason) {
+    public ByteValidationFailure(
+            final int failureIndex, final FailureType failureType, final String failureReason) {
         super(failureType, failureReason);
         this.failureIndex = failureIndex;
     }
@@ -44,11 +45,7 @@ public class ByteValidationFailure extends AbstractValidationFailure {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * Returns the index in the array that the validation failure occurred on
-     *
-     * @return the index in the array that the validation failure occurred on
-     */
+    /** {@return the index in the array that the validation failure occurred on} */
     public int getFailureIndex() {
         return failureIndex;
     }

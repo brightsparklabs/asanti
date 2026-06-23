@@ -23,11 +23,11 @@ public interface Selector {
     /**
      * Determines if the criteria are met for the provided inputs.
      *
-     * @param tag the tag that we are decoding.
-     * @param type the type of the tag according to the schema.
-     * @param asnData the data that will be used to determine if this selector is prepared to
+     * @param tag The tag that we are decoding.
+     * @param type The type of the tag according to the schema.
+     * @param asnData The data that will be used to determine if this selector is prepared to
      *     provide a decoder.
-     * @return true if the criteria are met for the provided inputs.
+     * @return True if the criteria are met for the provided inputs.
      */
     boolean matches(
             final String tag,

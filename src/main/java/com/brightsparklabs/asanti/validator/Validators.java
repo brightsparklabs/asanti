@@ -20,7 +20,7 @@ public class Validators {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the default validator */
+    /** The default validator. */
     private static Validator instance;
 
     // -------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public class Validators {
      * Returns the default validator which validates {@link AsnData} against its corresponding
      * schema.
      *
-     * @return the default validator
+     * @return The default validator.
      */
     public static Validator getDefault() {
         /*
@@ -58,7 +58,7 @@ public class Validators {
      * Returns a builder for creating a Validator which which validates {@link AsnData} against its
      * corresponding schema as well as any custom validation rules.
      *
-     * @return the default validator
+     * @return The default validator.
      */
     public static ValidatorImpl.Builder newCustomValidatorBuilder() {
         return ValidatorImpl.builder();

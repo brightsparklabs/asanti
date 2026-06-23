@@ -25,5 +25,5 @@ public interface Validator {
      * @param asnData The data to validate.
      * @return The results from validating the data.
      */
-    ValidationResult validate(AsnData asnData);
+    ValidationResult validate(final AsnData asnData);
 }

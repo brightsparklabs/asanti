@@ -32,7 +32,7 @@ public class SelectorByRegex extends CachableSelector {
     /**
      * Constructor.
      *
-     * @param tagMatcher the regex pattern to use to match the tag.
+     * @param tagMatcher The regex pattern to use to match the tag.
      */
     public SelectorByRegex(final Pattern tagMatcher) {
         this.tagMatcher = checkNotNull(tagMatcher);

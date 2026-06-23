@@ -23,7 +23,7 @@ public class ValidationResultImpl implements ValidationResult {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** all failures that occurred during validation. Map is of form {tag => failure} */
+    /** All failures that occurred during validation. Map is of form {tag => failure}. */
     private final ImmutableSetMultimap<String, ValidationFailure> tagsToFailures;
 
     // -------------------------------------------------------------------------
@@ -33,9 +33,9 @@ public class ValidationResultImpl implements ValidationResult {
     /**
      * Default constructor. This is private, use {@link #builder()} to create instances.
      *
-     * @param failures failures to include in this result set
+     * @param failures Failures to include in this result set.
      */
-    private ValidationResultImpl(Iterable<ValidationFailure> failures) {
+    private ValidationResultImpl(final Iterable<ValidationFailure> failures) {
         final ImmutableSetMultimap.Builder<String, ValidationFailure> builder =
                 ImmutableSetMultimap.builder();
         for (final ValidationFailure failure : failures) {
@@ -45,11 +45,7 @@ public class ValidationResultImpl implements ValidationResult {
         this.tagsToFailures = builder.build();
     }
 
-    /**
-     * Returns a builder for creating instances of {@link ValidationResultImpl}
-     *
-     * @return a builder for creating instances of {@link ValidationResultImpl}
-     */
+    /** {@return a builder for creating instances of {@link ValidationResultImpl}} */
     public static Builder builder() {
         return new Builder();
     }
@@ -82,13 +78,13 @@ public class ValidationResultImpl implements ValidationResult {
     // INTERNAL CLASS: Builder
     // -------------------------------------------------------------------------
 
-    /** Builder for creating instances of {@link ValidationResultImpl} */
+    /** Builder for creating instances of {@link ValidationResultImpl}. */
     public static class Builder {
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
 
-        /** the results to include in the result set */
+        /** The results to include in the result set. */
         private final ImmutableSet.Builder<ValidationFailure> failuresBuilder =
                 ImmutableSet.builder();
 
@@ -107,35 +103,32 @@ public class ValidationResultImpl implements ValidationResult {
         // ---------------------------------------------------------------------
 
         /**
-         * Adds a failure to the result set
+         * Adds a failure to the result set.
          *
-         * @param failures result to add
-         * @return this builder
+         * @param failures Result to add.
+         * @return This builder.
          */
         @CanIgnoreReturnValue
-        public Builder add(ValidationFailure failures) {
+        public Builder add(final ValidationFailure failures) {
             failuresBuilder.add(failures);
             return this;
         }
 
         /**
-         * Adds a failure to the result set
+         * Adds a failure to the result set.
          *
-         * @param failures failures to add
-         * @return this builder
+         * @param failures Failures to add.
+         * @return This builder.
          */
         @CanIgnoreReturnValue
-        public Builder addAll(Iterable<? extends ValidationFailure> failures) {
+        public Builder addAll(final Iterable<? extends ValidationFailure> failures) {
             failuresBuilder.addAll(failures);
             return this;
         }
 
         /**
-         * Creates a new instance of {@link ValidationResultImpl} containing all the results which
-         * have been added to this builder
-         *
-         * @return a new instance of {@link ValidationResultImpl} containing all the results which
-         *     have been added to this builder
+         * {@return a new instance of {@link ValidationResultImpl} containing all the results which.
+         * have been added to this builder}
          */
         public ValidationResultImpl build() {
             final ImmutableSet<ValidationFailure> failures = failuresBuilder.build();

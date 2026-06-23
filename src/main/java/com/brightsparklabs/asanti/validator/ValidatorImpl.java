@@ -37,19 +37,19 @@ public class ValidatorImpl implements Validator {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger = LoggerFactory.getLogger(ValidatorImpl.class);
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** custom validation rules */
+    /** Custom validation rules. */
     private final ImmutableMap<ValidationRule, Selector> customRules;
 
     /**
-     * visitor to determine which {@link com.brightsparklabs.asanti.validator.ValidationRule} to
-     * apply to a tag
+     * Visitor to determine which {@link com.brightsparklabs.asanti.validator.ValidationRule} to
+     * apply to a tag.
      */
     private final ValidationVisitor validationVisitor = new ValidationVisitor();
 
@@ -60,7 +60,7 @@ public class ValidatorImpl implements Validator {
     /**
      * Private constructor. Use {@link Builder} instead.
      *
-     * @param customRules custom validation rules to apply to various tags
+     * @param customRules Custom validation rules to apply to various tags.
      */
     public ValidatorImpl(Map<ValidationRule, Selector> customRules) {
         this.customRules = ImmutableMap.copyOf(customRules);
@@ -176,13 +176,13 @@ public class ValidatorImpl implements Validator {
     // INTERNAL CLASSES
     // -------------------------------------------------------------------------
 
-    /** Builder for creating instances of this class */
+    /** Builder for creating instances of this class. */
     public static class Builder {
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
 
-        /** custom validation rules */
+        /** Custom validation rules. */
         private final ImmutableMap.Builder<ValidationRule, Selector> customRules =
                 ImmutableMap.builder();
 

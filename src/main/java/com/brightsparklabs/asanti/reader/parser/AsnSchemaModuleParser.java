@@ -76,8 +76,8 @@ public class AsnSchemaModuleParser {
     /**
      * Parses the supplied module from an ASN.1 schema.
      *
-     * @param moduleText all text from module within the ASN.1 schema.
-     * @return an {@link com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder}
+     * @param moduleText All text from module within the ASN.1 schema.
+     * @return An {@link com.brightsparklabs.asanti.model.schema.AsnSchemaModule.Builder}
      *     representing the parsed data.
      * @throws NullPointerException if {@code moduleText} is {@code null}.
      * @throws ParseException if any errors occur while parsing the module.
@@ -108,9 +108,9 @@ public class AsnSchemaModuleParser {
      * keyword. I.e. calling {@code iterator.next()} will return the line following the 'BEGIN'
      * keyword.
      *
-     * @param lineIterator iterator pointing at the first line following the 'BEGIN' keyword.
-     * @param moduleBuilder builder to use to construct module from the parsed information.
-     * @return the AsnModuleTaggingMode as parsed from the header. {@link
+     * @param lineIterator Iterator pointing at the first line following the 'BEGIN' keyword.
+     * @param moduleBuilder Builder to use to construct module from the parsed information.
+     * @return The AsnModuleTaggingMode as parsed from the header. {@link.
      *     AsnModuleTaggingMode#DEFAULT} if not found.
      * @throws ParseException if any errors occur while parsing the schema.
      */
@@ -167,9 +167,9 @@ public class AsnSchemaModuleParser {
      * keyword. I.e. calling {@code iterator.next()} will return the line following the 'END'
      * keyword.
      *
-     * @param lineIterator iterator pointing at the first line following the 'BEGIN' keyword.
-     * @param moduleBuilder builder to use to construct module from the parsed information.
-     * @param taggingMode the Module wide tagging mode, determines whether to automatically generate
+     * @param lineIterator Iterator pointing at the first line following the 'BEGIN' keyword.
+     * @param moduleBuilder Builder to use to construct module from the parsed information.
+     * @param taggingMode The Module wide tagging mode, determines whether to automatically generate
      *     tags.
      * @throws ParseException if any errors occur while parsing the schema.
      */
@@ -198,9 +198,9 @@ public class AsnSchemaModuleParser {
      * imports/exports. I.e. calling {@code iterator.next()} will return the line *following* the
      * first type definition or value assignment.
      *
-     * @param lineIterator iterator pointing at the first line following the 'BEGIN' keyword.
-     * @param moduleBuilder builder to use to construct module from the parsed information.
-     * @return the line following the imports/exports, i.e. the first type definition or value
+     * @param lineIterator Iterator pointing at the first line following the 'BEGIN' keyword.
+     * @param moduleBuilder Builder to use to construct module from the parsed information.
+     * @return The line following the imports/exports, i.e. the first type definition or value
      *     assignment.
      * @throws ParseException if any errors occur while parsing the schema.
      * @throws NoSuchElementException if there is data missing.
@@ -252,12 +252,12 @@ public class AsnSchemaModuleParser {
      * keyword. I.e. calling {@code iterator.next()} will return the line following the 'END'
      * keyword.
      *
-     * @param firstLine the first type definition or value assignment (i.e. the first line following
-     *     all imports/exports).
-     * @param lineIterator iterator pointing at the first line following all imports/exports.
-     * @param moduleBuilder builder to use to construct module from the parsed information.
-     * @param taggingMode the Module wide tagging mode, determines whether to automatically generate
-     *     tags.
+     * @param firstLine The first type definition or value assignment (i.e. the first line
+     *     following. all imports/exports).
+     * @param lineIterator Iterator pointing at the first line following all imports/exports.
+     * @param moduleBuilder Builder to use to construct module from the parsed information.
+     * @param taggingMode The Module wide tagging mode, determines whether to automatically
+     *     generate. tags.
      * @throws ParseException if parsing errors are encountered.
      */
     private static void parseTypeDefinitionsAndValueAssignments(
@@ -323,7 +323,7 @@ public class AsnSchemaModuleParser {
     /**
      * Parses a value assignment.
      *
-     * @param valueAssignmentMatcher the matcher that identified the content as a value assignment
+     * @param valueAssignmentMatcher The matcher that identified the content as a value assignment
      *     (generated from {@link #PATTERN_VALUE_ASSIGNMENT}).
      */
     private static void parseValueAssignment(final Matcher valueAssignmentMatcher) {

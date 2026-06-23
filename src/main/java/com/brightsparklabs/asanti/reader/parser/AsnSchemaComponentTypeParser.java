@@ -61,9 +61,9 @@ public class AsnSchemaComponentTypeParser {
     /**
      * Parses the component types in a construct.
      *
-     * @param componentTypesText all component types contained in the construct as a string.
-     * @param taggingMode dictates the mode in which to handle/generate tags.
-     * @return each component type found in the construct.
+     * @param componentTypesText All component types contained in the construct as a string.
+     * @param taggingMode Dictates the mode in which to handle/generate tags.
+     * @return Each component type found in the construct.
      * @throws NullPointerException if {@code componentTypesText} or {@code taggingMode} is {@code
      *     null}.
      * @throws IllegalArgumentException if {@code componentTypesText} is blank.
@@ -95,8 +95,8 @@ public class AsnSchemaComponentTypeParser {
      * Splits the single block of text containing all component type definitions into a list. Each
      * element of the list represents an individual component type definition.
      *
-     * @param componentTypesText all component types expressed as a single text block.
-     * @return list of each component type found in the text.
+     * @param componentTypesText All component types expressed as a single text block.
+     * @return List of each component type found in the text.
      */
     private static List<String> splitComponentTypesText(final String componentTypesText) {
         final ArrayList<String> items = Lists.newArrayList();
@@ -149,9 +149,9 @@ public class AsnSchemaComponentTypeParser {
     /**
      * Parses a single component type definition from a construct.
      *
-     * @param componentTypeLine the component type definition.
-     * @param taggingMode the tagging mode to use.
-     * @return an {@link AsnSchemaComponentType} representing the parsed text.
+     * @param componentTypeLine The component type definition.
+     * @param taggingMode The tagging mode to use.
+     * @return An {@link AsnSchemaComponentType} representing the parsed text.
      * @throws ParseException if any errors occur while parsing the data.
      */
     private static AsnSchemaComponentType parseComponentType(

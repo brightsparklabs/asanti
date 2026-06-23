@@ -48,12 +48,12 @@ public final class AsnSchemaTypeDefinitionParser {
     /**
      * Parses a type definition from a module from an ASN.1 schema.
      *
-     * @param name the name of the defined type (i.e. the text on the left hand side of the {@code
+     * @param name The name of the defined type (i.e. the text on the left hand side of the {@code
      *     ::=}).
-     * @param value the value of the defined type (i.e. the text on the right hand side of the
+     * @param value The value of the defined type (i.e. the text on the right hand side of the
      *     {@code ::=}).
-     * @param taggingMode dictates the mode in which to handle/generate tags.
-     * @return an {@link AsnSchemaTypeDefinition} object representing the parsed type definition.
+     * @param taggingMode Dictates the mode in which to handle/generate tags.
+     * @return An {@link AsnSchemaTypeDefinition} object representing the parsed type definition.
      * @throws ParseException if either of the parameters are {@code null}/empty or any errors occur
      *     while parsing the type.
      * @throws NullPointerException if taggingMode is {@code null}.

@@ -99,9 +99,9 @@ public class EnumeratedValidator extends PrimitiveBuiltinTypeValidator {
     /**
      * Decoding and validating both require this common code.
      *
-     * @param tag tag to validate
-     * @param asnData data to retrieve tag from
-     * @return the matching tag if successful, otherwise an appropriate DecodedTagValidationFailure
+     * @param tag Tag to validate.
+     * @param asnData Data to retrieve tag from.
+     * @return The matching tag if successful, otherwise an appropriate DecodedTagValidationFailure.
      */
     public OperationResult<String, ImmutableSet<DecodedTagValidationFailure>> validateAndDecode(
             final String tag, final AsantiAsnData asnData) {

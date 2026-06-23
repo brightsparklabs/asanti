@@ -29,9 +29,9 @@ public abstract class CachableSelector implements Selector {
     /**
      * Determines if the criteria are met for the provided inputs.
      *
-     * @param tag the tag that we are decoding.
-     * @param type the type of the tag according to the schema.
-     * @return true if the criteria are met for the provided inputs.
+     * @param tag The tag that we are decoding.
+     * @param type The type of the tag according to the schema.
+     * @return True if the criteria are met for the provided inputs.
      */
     public abstract boolean matches(final String tag, final AsnBuiltinType type);
 

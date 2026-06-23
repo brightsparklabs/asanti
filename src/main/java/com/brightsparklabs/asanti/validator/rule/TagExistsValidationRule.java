@@ -39,7 +39,7 @@ public class TagExistsValidationRule implements ValidationRule {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** the expected value the tag should have */
+    /** The expected value the tag should have. */
     private final String tagToFind;
 
     // -------------------------------------------------------------------------
@@ -49,7 +49,7 @@ public class TagExistsValidationRule implements ValidationRule {
     /**
      * Default constructor.
      *
-     * @param tag the tag to check the existence of
+     * @param tag The tag to check the existence of.
      */
     public TagExistsValidationRule(final String tag) {
         tagToFind = tag;
