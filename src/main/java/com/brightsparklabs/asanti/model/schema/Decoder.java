@@ -194,6 +194,14 @@ public class Decoder {
     // PRIVATE METHODS
     // -------------------------------------------------------------------------
 
+    /**
+     * Decodes raw tags into their schema-defined names using the containing type and session state.
+     *
+     * @param rawTags Iterator of raw tags to decode.
+     * @param containingType The ASN.1 schema type that contains the tags being decoded.
+     * @param decodingSession Session state that tracks ordering and stateful decoding context.
+     * @return A {@link DecodedTagsAndType} containing the decoded tags and the final type.
+     */
     private static DecodedTagsAndType decodeTags(
             final Iterator<String> rawTags,
             final AsnSchemaType containingType,
@@ -401,15 +409,15 @@ public class Decoder {
     // -------------------------------------------------------------------------
 
     /**
-     * Transfer object to support returning a tuple of "Decoded Tags" and "Type"
+     * Transfer object to support returning a tuple of "Decoded Tags" and "Type".
      *
      * @author brightSPARK Labs
      */
     public static class DecodedTagsAndType {
-        /** list of decoded tags */
+        /** List of decoded tags. */
         private final List<String> decodedTags = Lists.newArrayList();
 
-        /** the type of the final tag */
+        /** The type of the final tag. */
         private AsnSchemaType type = null;
     }
 }

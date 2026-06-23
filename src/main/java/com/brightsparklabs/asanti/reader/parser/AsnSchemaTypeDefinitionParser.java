@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Logic for parsing a Type Definition from a module within an ASN.1 schema
+ * Logic for parsing a Type Definition from a module within an ASN.1 schema.
  *
  * @author brightSPARK Labs
  */
@@ -28,7 +28,7 @@ public final class AsnSchemaTypeDefinitionParser {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** class logger */
+    /** Class logger. */
     private static final Logger logger =
             LoggerFactory.getLogger(AsnSchemaTypeDefinitionParser.class.getName());
 
@@ -46,20 +46,21 @@ public final class AsnSchemaTypeDefinitionParser {
     // -------------------------------------------------------------------------
 
     /**
-     * Parses a type definition from a module from an ASN.1 schema
+     * Parses a type definition from a module from an ASN.1 schema.
      *
      * @param name the name of the defined type (i.e. the text on the left hand side of the {@code
-     *     ::=})
+     *     ::=}).
      * @param value the value of the defined type (i.e. the text on the right hand side of the
-     *     {@code ::=})
-     * @param taggingMode dictates the mode in which to handle/generate tags
-     * @return an {@link AsnSchemaTypeDefinition} object representing the parsed type definition
+     *     {@code ::=}).
+     * @param taggingMode dictates the mode in which to handle/generate tags.
+     * @return an {@link AsnSchemaTypeDefinition} object representing the parsed type definition.
      * @throws ParseException if either of the parameters are {@code null}/empty or any errors occur
-     *     while parsing the type
-     * @throws NullPointerException if taggingMode is {@code null}
+     *     while parsing the type.
+     * @throws NullPointerException if taggingMode is {@code null}.
      */
     public static AsnSchemaTypeDefinition parse(
-            String name, String value, AsnModuleTaggingMode taggingMode) throws ParseException {
+            final String name, final String value, final AsnModuleTaggingMode taggingMode)
+            throws ParseException {
         checkNotNull(taggingMode);
         logger.trace("Found type definition: {} = {}", name, value);
         if (name == null || name.trim().isEmpty()) {

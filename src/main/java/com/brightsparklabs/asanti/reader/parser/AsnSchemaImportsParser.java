@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Logic for parsing the {@code IMPORTS} from a module within an ASN.1 schema
+ * Logic for parsing the {@code IMPORTS} from a module within an ASN.1 schema.
  *
  * @author brightSPARK Labs
  */
@@ -26,15 +26,15 @@ public class AsnSchemaImportsParser {
     // CONSTANTS
     // -------------------------------------------------------------------------
 
-    /** pattern to match an import statement pertaining to a single module */
+    /** Pattern to match an import statement pertaining to a single module. */
     private static final Pattern PATTERN_MODULE_IMPORT =
             Pattern.compile("(.+?) FROM (.+?) \\{.+?\\}");
 
-    /** splitter to separate comma delimited strings */
+    /** Splitter to separate comma delimited strings. */
     private static final Splitter COMMA_SPLITTER =
             Splitter.on(',').omitEmptyStrings().trimResults();
 
-    /** error message if imports statement is invalid */
+    /** Error message if imports statement is invalid. */
     private static final String ERROR_INVALID_IMPORTS_STATEMENT = "Imports statement is invalid";
 
     // -------------------------------------------------------------------------
@@ -42,13 +42,13 @@ public class AsnSchemaImportsParser {
     // -------------------------------------------------------------------------
 
     /**
-     * Parses an Imports statement from a module from an ASN.1 schema
+     * Parses an Imports statement from a module from an ASN.1 schema.
      *
-     * @param imports the imports statement string
-     * @return an ImmutableMap representing the imports
-     * @throws ParseException if any errors occur while parsing the type
+     * @param imports the imports statement string.
+     * @return an ImmutableMap representing the imports.
+     * @throws ParseException if any errors occur while parsing the type.
      */
-    public static ImmutableMap<String, String> parse(String imports) throws ParseException {
+    public static ImmutableMap<String, String> parse(final String imports) throws ParseException {
         final Map<String, String> typeToModule = Maps.newHashMap();
         if (Strings.isNullOrEmpty(imports)) {
             return ImmutableMap.copyOf(typeToModule);

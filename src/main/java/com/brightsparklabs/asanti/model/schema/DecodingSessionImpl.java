@@ -12,7 +12,7 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 /**
- * Implementation of DecodingSession
+ * Implementation of DecodingSession.
  *
  * @author brightSPARK Labs
  */
@@ -22,10 +22,10 @@ public class DecodingSessionImpl implements DecodingSession {
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** storage of the for each index for each "context" */
+    /** Storage of the index for each \"context\". */
     private final Map<String, TagToIndex> offsetMap = Maps.newHashMap();
 
-    /** the context is how we provide unique offsets for each level of the hierarchy of data */
+    /** The context is how we provide unique offsets for each level of the hierarchy of data. */
     private String context;
 
     // -------------------------------------------------------------------------
@@ -63,7 +63,7 @@ public class DecodingSessionImpl implements DecodingSession {
     }
 
     @Override
-    public void setIndex(final AsnSchemaTag tag, int index) {
+    public void setIndex(final AsnSchemaTag tag, final int index) {
         final TagToIndex tagToIndex = offsetMap.get(context);
         tagToIndex.tag = tag;
         tagToIndex.index = index;
@@ -74,15 +74,15 @@ public class DecodingSessionImpl implements DecodingSession {
     // -------------------------------------------------------------------------
 
     /**
-     * Transfer object to support tracking a tuple of tag and index
+     * Transfer object to support tracking a tuple of tag and index.
      *
      * @author brightSPARK Labs
      */
     private static class TagToIndex {
-        /** the tag to keep track of */
+        /** The tag to keep track of. */
         AsnSchemaTag tag = null;
 
-        /** the index associated with the tag */
+        /** The index associated with the tag. */
         Integer index = 0;
     }
 }

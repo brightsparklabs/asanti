@@ -30,20 +30,20 @@ public class AsnSchemaModule {
     // CLASS VARIABLES
     // -------------------------------------------------------------------------
 
-    /** null instance */
+    /** Null instance. */
     public static final AsnSchemaModule.Null NULL = new AsnSchemaModule.Null();
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
     // -------------------------------------------------------------------------
 
-    /** name of this module */
+    /** Name of this module. */
     private final String name;
 
-    /** all types defined in this module */
+    /** All types defined in this module. */
     private final ImmutableMap<String, AsnSchemaTypeDefinition> types;
 
-    /** all types imported by this module. Map is of form {typeName =&gt; importedModuleName} */
+    /** All types imported by this module. Map is of form {typeName =&gt; importedModuleName}. */
     private final ImmutableMap<String, String> imports;
 
     // -------------------------------------------------------------------------
@@ -53,15 +53,17 @@ public class AsnSchemaModule {
     /**
      * Private constructor. Use {@link #builder()} to construct an instance.
      *
-     * @param name the name of this module
-     * @param types the type definitions defined in this module
-     * @param imports the imports defined in this module. This identifies the module that an
-     *     imported type comes from. Map is of format {typeName =&gt; moduleName}
-     * @throws NullPointerException if any of the parameters are {@code null}
-     * @throws IllegalArgumentException if the name, types, imports or tag is blank
+     * @param name The name of this module.
+     * @param types The type definitions defined in this module.
+     * @param imports The imports defined in this module. This identifies the module that an
+     *     imported type comes from. Map is of format {typeName =&gt; moduleName}.
+     * @throws NullPointerException if any of the parameters are {@code null}.
+     * @throws IllegalArgumentException if the name, types, imports or tag is blank.
      */
     private AsnSchemaModule(
-            String name, Map<String, AsnSchemaTypeDefinition> types, Map<String, String> imports) {
+            final String name,
+            final Map<String, AsnSchemaTypeDefinition> types,
+            final Map<String, String> imports) {
         checkNotNull(name);
         checkArgument(!name.trim().isEmpty(), "A module from an ASN.1 schema must have a name");
         checkNotNull(types);
@@ -72,11 +74,7 @@ public class AsnSchemaModule {
         this.imports = ImmutableMap.copyOf(imports);
     }
 
-    /**
-     * Returns a builder for constructing instances of {@link AsnSchemaModule}
-     *
-     * @return a builder for constructing instances of {@link AsnSchemaModule}
-     */
+    /** {@return a builder for constructing instances of {@link AsnSchemaModule}} */
     public static Builder builder() {
         return new Builder();
     }
@@ -85,35 +83,31 @@ public class AsnSchemaModule {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    /**
-     * Returns the name of this module
-     *
-     * @return the name of this module
-     */
+    /** {@return the name of this module} */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the type definition associated with the specified type name
+     * Returns the type definition associated with the specified type name.
      *
-     * @param typeName name of the type. E.g. {@code "Document"}
-     * @return the type definition associated with the specified type name or {@link
-     *     AsnSchemaTypeDefinition#NULL} if no type definition is found
+     * @param typeName Name of the type. E.g. {@code "Document"}.
+     * @return The type definition associated with the specified type name or {@link
+     *     AsnSchemaTypeDefinition#NULL} if no type definition is found.
      */
-    public AsnSchemaTypeDefinition getType(String typeName) {
+    public AsnSchemaTypeDefinition getType(final String typeName) {
         final AsnSchemaTypeDefinition type = types.get(typeName);
         return type != null ? type : AsnSchemaTypeDefinition.NULL;
     }
 
     /**
-     * Returns the name of the imported module which contains the specified type name
+     * Returns the name of the imported module which contains the specified type name.
      *
-     * @param typeName the name of the type which has been imported
-     * @return the name of the imported module which contains the specified type or an empty string
-     *     if the type has not been imported
+     * @param typeName The name of the type which has been imported.
+     * @return The name of the imported module which contains the specified type or an empty string
+     *     if the type has not been imported.
      */
-    public String getImportedModuleFor(String typeName) {
+    public String getImportedModuleFor(final String typeName) {
         final String moduleName = imports.get(typeName);
         return Strings.nullToEmpty(moduleName);
     }
@@ -128,26 +122,28 @@ public class AsnSchemaModule {
         // CLASS VARIABLES
         // -------------------------------------------------------------------------
 
-        /** class logger */
+        /** Class logger. */
         private static final Logger logger = LoggerFactory.getLogger(Builder.class);
 
-        /** our mechanism for visiting each AsnSchemaType to apply appropriate tags */
+        /** Our mechanism for visiting each AsnSchemaType to apply appropriate tags. */
         private static final Tagger TAGGER = new Builder.Tagger();
 
-        /** our mechanism for visiting each AsnSchemaType to check for duplicate tags */
+        /** Our mechanism for visiting each AsnSchemaType to check for duplicate tags. */
         private static final DuplicateChecker DUPLICATE_CHECKER = new Builder.DuplicateChecker();
 
         // ---------------------------------------------------------------------
         // INSTANCE VARIABLES
         // ---------------------------------------------------------------------
 
-        /** name of this module */
+        /** Name of this module. */
         private String name = "";
 
-        /** name of the top level type defined in this module */
+        /** Name of the top level type defined in this module. */
         private final Map<String, AsnSchemaTypeDefinition> types = Maps.newHashMap();
 
-        /** all types imported by this module. Map is of form {typeName =&gt; importedModuleName} */
+        /**
+         * All types imported by this module. Map is of form {typeName =&gt; importedModuleName}.
+         */
         // TODO ASN-132 - by storing in a Map we can't have the same typeName come from
         // multiple modules, which should be valid.
         private final Map<String, String> imports = Maps.newHashMap();
@@ -156,7 +152,7 @@ public class AsnSchemaModule {
         // CONSTRUCTION
         // ---------------------------------------------------------------------
 
-        /** Default constructor */
+        /** Default constructor. */
         private Builder() {
             // private constructor
         }
@@ -166,13 +162,13 @@ public class AsnSchemaModule {
         // ---------------------------------------------------------------------
 
         /**
-         * Sets the name of the module
+         * Sets the name of the module.
          *
-         * @param name name of the module
-         * @return this builder
+         * @param name Name of the module.
+         * @return This builder.
          */
         @CanIgnoreReturnValue
-        public Builder setName(String name) {
+        public Builder setName(final String name) {
             this.name = name;
             return this;
         }
@@ -184,46 +180,46 @@ public class AsnSchemaModule {
          * <p>If no top level type is set in this builder, it will default to the first type added
          * using this method.
          *
-         * @param type type definition to add
-         * @return this builder
+         * @param type Type definition to add.
+         * @return This builder.
          */
         @CanIgnoreReturnValue
-        public Builder addType(AsnSchemaTypeDefinition type) {
+        public Builder addType(final AsnSchemaTypeDefinition type) {
             types.put(type.getName(), type);
             return this;
         }
 
         /**
-         * Adds a import statement mapping the specified type name to the supplied module
+         * Adds a import statement mapping the specified type name to the supplied module.
          *
-         * @param typeName name of the type which is imported
-         * @param moduleName name of the module the type is imported from (i.e. module it is defined
-         *     in)
-         * @return this builder
+         * @param typeName Name of the type which is imported.
+         * @param moduleName Name of the module the type is imported from (i.e. module it is defined
+         *     in).
+         * @return This builder.
          */
         @CanIgnoreReturnValue
-        public Builder addImport(String typeName, String moduleName) {
+        public Builder addImport(final String typeName, final String moduleName) {
             imports.put(typeName, moduleName);
             return this;
         }
 
         /**
-         * Adds all the imports from the supplied map
+         * Adds all the imports from the supplied map.
          *
-         * @param imports the imports defined in this module. This identifies the module that an
-         *     imported type comes from. Map is of format {typeName =&gt; moduleName}
-         * @return this builder
+         * @param imports The imports defined in this module. This identifies the module that an
+         *     imported type comes from. Map is of format {typeName =&gt; moduleName}.
+         * @return This builder.
          */
         @CanIgnoreReturnValue
-        public Builder addImports(Map<String, String> imports) {
+        public Builder addImports(final Map<String, String> imports) {
             this.imports.putAll(imports);
             return this;
         }
 
         /**
-         * Creates an instance of {@link AsnSchemaModule} from the information in this builder
+         * Creates an instance of {@link AsnSchemaModule} from the information in this builder.
          *
-         * @return an instance of {@link AsnSchemaModule}
+         * @return An instance of {@link AsnSchemaModule}.
          */
         public AsnSchemaModule build() {
             return new AsnSchemaModule(name, types, imports);
@@ -233,11 +229,11 @@ public class AsnSchemaModule {
          * Resolve all the "placeholder" type definitions such that they point to actual types, even
          * across modules.
          *
-         * @param otherModules the other {@link AsnSchemaModule.Builder} within the schema. They
+         * @param otherModules The other {@link AsnSchemaModule.Builder} within the schema. They
          *     will be used to resolve imports as part of the final build.
-         * @throws ParseException if there are imports that cannot be resolved
+         * @throws ParseException if there are imports that cannot be resolved.
          */
-        public void resolveTypes(Iterable<Builder> otherModules) throws ParseException {
+        public void resolveTypes(final Iterable<Builder> otherModules) throws ParseException {
             // convert to a Map so we can easily key off the name when doing
             // import resolution
             final ImmutableMap.Builder<String, AsnSchemaModule.Builder> builder =
@@ -257,9 +253,9 @@ public class AsnSchemaModule {
         /**
          * Perform any AUTOMATIC tagging as needed, and if there are components with no tags then
          * give them the appropriate UNIVERSAL tag relevant to their respective type. Should not be
-         * called until after {@link AsnSchemaModule.Builder#resolveTypes(Iterable)}
+         * called until after {@link AsnSchemaModule.Builder#resolveTypes(Iterable)}.
          *
-         * @throws ParseException should not throw - needed due to the visitor implementation
+         * @throws ParseException should not throw - needed due to the visitor implementation.
          */
         public void performTagging() throws ParseException {
             for (AsnSchemaTypeDefinition typeDefinition : types.values()) {
@@ -275,9 +271,9 @@ public class AsnSchemaModule {
         /**
          * Checks that the Components of a Constructed type do not have duplicate tags that would
          * cause ambiguous decoding. Should not be called until after {@link
-         * AsnSchemaModule.Builder#performTagging()}
+         * AsnSchemaModule.Builder#performTagging()}.
          *
-         * @throws ParseException if duplicates are found
+         * @throws ParseException if duplicates are found.
          */
         public void checkForDuplicates() throws ParseException {
             for (AsnSchemaTypeDefinition typeDefinition : types.values()) {
@@ -306,7 +302,7 @@ public class AsnSchemaModule {
             // INSTANCE VARIABLES
             // ---------------------------------------------------------------------
 
-            /** the other modules within a schema, needed to resolve imports */
+            /** The other modules within a schema, needed to resolve imports. */
             private final Map<String, AsnSchemaModule.Builder> otherModules;
 
             // ---------------------------------------------------------------------
@@ -314,13 +310,13 @@ public class AsnSchemaModule {
             // ---------------------------------------------------------------------
 
             /**
-             * Default constructor
+             * Default constructor.
              *
-             * @param otherModules the other {@link AsnSchemaModule.Builder
+             * @param otherModules The other {@link AsnSchemaModule.Builder
              *     AsnSchemaModule.Builders} within the schema. They will be used to resolve imports
              *     as part of the final build.
              */
-            private Resolver(Map<String, AsnSchemaModule.Builder> otherModules) {
+            private Resolver(final Map<String, AsnSchemaModule.Builder> otherModules) {
                 this.otherModules = otherModules;
             }
 
@@ -354,7 +350,7 @@ public class AsnSchemaModule {
                 final String typeName = visitable.getType();
 
                 // If there is a module specified then try import from that first.
-                // Otherwise try locally, and if that doesn't find it then try the imports without
+                // Otherwise, try locally, and if that doesn't find it then try the imports without
                 // knowing from which module.
                 final AsnSchemaTypeDefinition newTypeDefinition =
                         Strings.isNullOrEmpty(moduleName)
@@ -396,7 +392,7 @@ public class AsnSchemaModule {
                 final String typeName = visitable.getTypeName();
 
                 // If there is a module specified then try import from that first.
-                // Otherwise try locally, and if that doesn't find it then try the imports without
+                // Otherwise, try locally, and if that doesn't find it then try the imports without
                 // knowing from which module.
                 AsnSchemaTypeDefinition newTypeDefinition =
                         Strings.isNullOrEmpty(moduleName)
@@ -435,18 +431,18 @@ public class AsnSchemaModule {
              * looking up the appropriate module from the Imports.
              *
              * @param moduleName The name of the other Module to import from. May be null/empty.
-             * @param typeName The name of the TypeDefinition to import
-             * @param otherModules The other modules - ie the source of the imports
+             * @param typeName The name of the TypeDefinition to import.
+             * @param otherModules The other modules - ie the source of the imports.
              * @return The AsnSchemaTypeDefinition for the imported type.
-             * @throws ParseException ParseException if there are imports that cannot be resolved
+             * @throws ParseException if there are imports that cannot be resolved.
              */
             private AsnSchemaTypeDefinition getImportedTypeDefinition(
                     String moduleName,
-                    String typeName,
-                    Map<String, AsnSchemaModule.Builder> otherModules)
+                    final String typeName,
+                    final Map<String, AsnSchemaModule.Builder> otherModules)
                     throws ParseException {
 
-                // figure out which module the place holder may have specified it, if not then we
+                // figure out which module the placeholder may have specified it, if not then we
                 // need to look it up
                 if (Strings.isNullOrEmpty(moduleName)) {
                     moduleName = imports.get(typeName);
@@ -552,7 +548,7 @@ public class AsnSchemaModule {
         /**
          * Use a double dispatch to "visit" each type in the hierarchy of types, allowing us to
          * provide functionality that is type specific. We need to visit each AsnSchemaType, in each
-         * Type Definition in a schema. We do this so that we can check for duplicate tags
+         * Type Definition in a schema. We do this so that we can check for duplicate tags.
          */
         private static class DuplicateChecker implements AsnSchemaTypeVisitor<Void> {
             // ---------------------------------------------------------------------
@@ -612,7 +608,7 @@ public class AsnSchemaModule {
     // -------------------------------------------------------------------------
 
     /**
-     * Null instance of {@link AsnSchemaModule}
+     * Null instance of {@link AsnSchemaModule}.
      *
      * @author brightSPARK Labs
      */
