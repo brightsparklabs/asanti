@@ -49,7 +49,7 @@ plugins {
     /* Apply the JReleaser plugin to sign and deploy artifacts.
      * See https://jreleaser.org/guide/latest/tools/jreleaser-gradle.html
      */
-    id 'org.jreleaser' version '1.24.0'
+    id 'org.jreleaser' version '1.25.0'
 }
 
 // -----------------------------------------------------------------------------
