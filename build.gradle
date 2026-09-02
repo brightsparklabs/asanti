@@ -83,7 +83,9 @@ dependencies {
             )
 
     testImplementation(
-            'org.junit.jupiter:junit-jupiter-api:5.13.4',
+            platform('org.junit:junit-bom:5.14.4'),
+
+            "org.junit.jupiter:junit-jupiter-api",
             "org.mockito:mockito-core:5.21.0",
             'org.hamcrest:hamcrest:3.0',
             "org.apache.groovy:groovy-all:4.0.28",
@@ -92,6 +94,9 @@ dependencies {
 
     testRuntimeOnly(
             "cglib:cglib-nodep:3.3.0",
+            "org.junit.jupiter:junit-jupiter-engine",
+            "org.junit.platform:junit-platform-launcher",
+            "org.junit.vintage:junit-vintage-engine"
             )
 
     runtimeOnly(
@@ -130,6 +135,18 @@ project.ext.scm = 'scm:git@github.com:brightsparklabs/asanti.git'
 project.tasks.named("compileJava").configure {
     options.errorprone.disable("MissingSummary")
     options.errorprone.disable("JavaLangClash")
+}
+
+// -----------------------------------------------------------------------------
+// CONFIGURE: Testing
+// -----------------------------------------------------------------------------
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+        }
+    }
 }
 
 // -----------------------------------------------------------------------------
