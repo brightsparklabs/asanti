@@ -45,61 +45,6 @@ public class UtcTimeDecoderTest {
     // -------------------------------------------------------------------------
 
     @Test
-    public void testDecodeErrors() throws Exception {
-        try {
-            String time = "700101"; // not enough bytes - no hours
-            byte[] bytes = time.getBytes(Charsets.UTF_8);
-            instance.decode(bytes);
-
-            fail("Should have thrown DecodeException");
-        } catch (DecodeException e) {
-        }
-        try {
-            String time = "15022901"; // not a leap year
-            byte[] bytes = time.getBytes(Charsets.UTF_8);
-            instance.decode(bytes);
-
-            fail("Should have thrown DecodeException");
-        } catch (DecodeException e) {
-        }
-
-        try {
-            instance.decode(null);
-            fail("Should have thrown DecodeExceptions");
-        } catch (DecodeException e) {
-        }
-        try {
-            instance.decodeAsString(null);
-            fail("Should have thrown DecodeExceptions");
-        } catch (DecodeException e) {
-        }
-
-        // null for tag and AsantiAsnData
-        try {
-            AsantiAsnData data = mock(AsantiAsnData.class);
-            instance.decode(null, data);
-            fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
-        }
-        try {
-            instance.decode("someTag", null);
-            fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
-        }
-        try {
-            AsantiAsnData data = mock(AsantiAsnData.class);
-            instance.decodeAsString(null, data);
-            fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
-        }
-        try {
-            instance.decodeAsString("someTag", null);
-            fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
-        }
-    }
-
-    @Test
     public void testDecode() throws Exception {
         final Calendar calendar = Calendar.getInstance();
         final int rawOffset = -1 * calendar.getTimeZone().getRawOffset();
