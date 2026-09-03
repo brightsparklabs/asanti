@@ -15,23 +15,31 @@ import com.brightsparklabs.asanti.schema.AsnBuiltinType;
 import com.brightsparklabs.asanti.validator.AsnByteValidator;
 import com.brightsparklabs.asanti.validator.FailureType;
 import com.brightsparklabs.asanti.validator.builtin.TimeValidator;
-import com.brightsparklabs.asanti.validator.builtin.UtcTimeValidator;
 import com.brightsparklabs.asanti.validator.failure.ByteValidationFailure;
 import com.google.common.collect.ImmutableSet;
-import java.time.Instant;
+import java.time.DateTimeException;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
-import org.joda.time.format.DateTimeParser;
 
 /**
  * Decoder for data of type {@link AsnBuiltinType#UtcTime}.
  *
+ * <p>An ASN.1 {@code UTCTime} is a specialisation of {@code VisibleString} of the form {@code
+ * YYMMDDHHMM[SS][Z|(+|-)HH[MM]]} (note: no fractional component). The two-digit year is expanded
+ * with a pivot of 2000 (range 1950 to 2049) and the value is then decoded via the shared {@link
+ * AsnTimeParser}. When no offset is supplied the value is interpreted in the system default zone.
+ *
  * @author brightSPARK Labs
  */
 public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
+    // -------------------------------------------------------------------------
+    // CONSTANTS
+    // -------------------------------------------------------------------------
+
+    /** Length of a "minutes" precision core, i.e. {@code YYMMDDHHMM}. */
+    private static final int LENGTH_MINUTES = 10;
+
+    /** Length of a "seconds" precision core, i.e. {@code YYMMDDHHMMSS}. */
+    private static final int LENGTH_SECONDS = 12;
 
     // -------------------------------------------------------------------------
     // INSTANCE VARIABLES
@@ -39,49 +47,6 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
 
     /** Singleton instance. */
     private static UtcTimeDecoder instance;
-
-    /**
-     * Parser for the "core" of what an ASN.1 UTCTime MUST consist of. Pivot year 2000 gives a
-     * supported range of 1950 to 2049.
-     */
-    private static final DateTimeFormatter core =
-            new DateTimeFormatterBuilder()
-                    .appendTwoDigitYear(2000)
-                    .appendMonthOfYear(2)
-                    .appendDayOfMonth(2)
-                    .appendHourOfDay(2)
-                    .appendMinuteOfHour(2)
-                    .toFormatter();
-
-    /** A time zone offset parser, specifying "Z" as no timezone, ie UTC. */
-    private static final DateTimeParser offset =
-            new DateTimeFormatterBuilder().appendTimeZoneOffset("", "Z", false, 1, 2).toParser();
-
-    /**
-     * Parser option for when only up to the Minutes are defined, so optional decimals and offset.
-     */
-    private static final DateTimeFormatter uptoMinutes =
-            new DateTimeFormatterBuilder().append(core).appendOptional(offset).toFormatter();
-
-    /** Parser option for when full hours, minutes and seconds are defined, optional offset. */
-    private static final DateTimeFormatter uptoSeconds =
-            new DateTimeFormatterBuilder()
-                    .append(core)
-                    .appendSecondOfMinute(2)
-                    .appendOptional(offset)
-                    .toFormatter();
-
-    /** The collection of parsers to try - this is essentially how you do an "OR" with Joda. */
-    private static final DateTimeParser[] options = {
-        uptoSeconds.getParser(), uptoMinutes.getParser()
-    };
-
-    /**
-     * The parser to use, it is an OR of the three precisions, each of which has its optional
-     * components.
-     */
-    private static final DateTimeFormatter parser =
-            new DateTimeFormatterBuilder().append(null, options).toFormatter();
 
     // -------------------------------------------------------------------------
     // CONSTRUCTION
@@ -108,30 +73,25 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
 
     @Override
     public OffsetDateTime decode(final byte[] bytes) throws DecodeException {
-        OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result =
+        final OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result =
                 validateAndDecode(bytes);
         if (!result.wasSuccessful()) {
             DecodeExceptions.throwIfHasFailures(
                     result.getFailureReason().orElse(ImmutableSet.of()));
         }
-
         return result.getOutput();
     }
 
     @Override
     public String decodeAsString(final byte[] bytes) throws DecodeException {
-        // UTCTime is considered a "useful" type that is a specialisation of VisibleString
-        // as such we should just return the "raw" string (if it is valid)
-        // This is useful given that the decode to Timestamp discards timezone information.
-
-        OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result =
+        // UTCTime is a "useful" specialisation of VisibleString; once validated we return the raw
+        // string, as the decoded OffsetDateTime discards the original timezone specifier.
+        final OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>> result =
                 validateAndDecode(bytes);
         if (!result.wasSuccessful()) {
             DecodeExceptions.throwIfHasFailures(
                     result.getFailureReason().orElse(ImmutableSet.of()));
         }
-
-        // Now that we know it is valid, return the raw string.
         return AsnByteDecoder.decodeAsVisibleString(bytes);
     }
 
@@ -140,58 +100,25 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
     // -------------------------------------------------------------------------
 
     /**
-     * Validates and decodes the UTCTime bytes. Method was added to avoid calling parseDateTime
-     * multiple times.
+     * Validates and decodes UTCTime bytes.
      *
      * @param bytes bytes to be decoded.
-     * @return OperationResult that will contain a Timestamp if successful, or a
-     *     ByteValidationFailure otherwise.
+     * @return an {@link OffsetDateTime} if successful, or a {@link ByteValidationFailure}
+     *     otherwise.
      */
     public static OperationResult<OffsetDateTime, ImmutableSet<ByteValidationFailure>>
             validateAndDecode(final byte[] bytes) {
-        // UTCTime is considered a "useful" type that is a specialisation of VisibleString
-        // as such we should check it against VisibleString first.
-        final ImmutableSet<ByteValidationFailure> byteValidationFailures =
+        // UTCTime is a specialisation of VisibleString, so check that first.
+        final ImmutableSet<ByteValidationFailure> failures =
                 AsnByteValidator.validateAsVisibleString(bytes);
-
-        if (!byteValidationFailures.isEmpty()) {
-            // there are failures, so bail early.
-            return OperationResult.createUnsuccessfulInstance(null, byteValidationFailures);
+        if (!failures.isEmpty()) {
+            return OperationResult.createUnsuccessfulInstance(null, failures);
         }
 
         try {
-            final String rawDateTime = AsnByteDecoder.decodeAsVisibleString(bytes);
-
-            // There are a few things that Joda-Time is not handling that we need to.
-
-            // Joda doesn't seem to understand that "Z" is not "z" (it seems to be case insensitive)
-            if (rawDateTime.endsWith("z")) {
-                final String error =
-                        UtcTimeValidator.UTCTIME_VALIDATION_ERROR
-                                + "Invalid format: \""
-                                + rawDateTime
-                                + "\" is malformed at \"z\"";
-                return OperationResult.createUnsuccessfulInstance(
-                        null,
-                        ImmutableSet.of(
-                                new ByteValidationFailure(
-                                        bytes.length,
-                                        FailureType.DataIncorrectlyFormatted,
-                                        error)));
-            }
-
-            // use the Joda-Time parser
-            final DateTime dateTime = parser.withOffsetParsed().parseDateTime(rawDateTime);
-
-            final Instant instant = Instant.ofEpochMilli(dateTime.getMillis());
-
-            final OffsetDateTime offsetDateTime =
-                    OffsetDateTime.ofInstant(instant, ZoneId.systemDefault());
-
-            return OperationResult.createSuccessfulInstance(offsetDateTime);
-        } catch (final IllegalArgumentException | DecodeException e) {
-            // In theory we should not get DecodeException because we explicitly validated the
-            // VisibleString above.
+            final String raw = AsnByteDecoder.decodeAsVisibleString(bytes);
+            return OperationResult.createSuccessfulInstance(parse(raw));
+        } catch (final DateTimeException | IllegalArgumentException | DecodeException e) {
             final String error = TimeValidator.UTCTIME_VALIDATION_ERROR + e.getMessage();
             return OperationResult.createUnsuccessfulInstance(
                     null,
@@ -199,5 +126,36 @@ public class UtcTimeDecoder extends AbstractBuiltinTypeDecoder<OffsetDateTime> {
                             new ByteValidationFailure(
                                     bytes.length, FailureType.DataIncorrectlyFormatted, error)));
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // PRIVATE METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Normalises a UTCTime to GeneralizedTime shape (expanding the two-digit year via a 2000 pivot)
+     * and delegates to {@link AsnTimeParser}. UTCTime mandates minutes, forbids a fractional
+     * component, and (like GeneralizedTime) requires an uppercase {@code Z}.
+     *
+     * @param raw the raw (already validated as VisibleString) UTCTime value.
+     * @return the decoded {@link OffsetDateTime}.
+     * @throws DateTimeException if the value is malformed or invalid.
+     */
+    private static OffsetDateTime parse(final String raw) {
+        if (raw.indexOf('.') >= 0 || raw.indexOf(',') >= 0) {
+            throw new DateTimeException(
+                    "Invalid format: \"" + raw + "\" - UTCTime does not allow a fraction");
+        }
+
+        // The core (before any offset) must be YYMMDDHHMM (10) or YYMMDDHHMMSS (12).
+        final int coreLength = raw.length() - AsnTimeParser.offsetLength(raw);
+        if (coreLength != LENGTH_MINUTES && coreLength != LENGTH_SECONDS) {
+            throw new DateTimeException(
+                    "Invalid format: \"" + raw + "\" is not a valid length for a UTCTime");
+        }
+
+        final int yy = (raw.charAt(0) - '0') * 10 + (raw.charAt(1) - '0');
+        final String century = yy >= 50 ? "19" : "20";
+        return AsnTimeParser.parse(century + raw);
     }
 }

@@ -22,28 +22,40 @@ use this section to describe any non-obvious design/behaviour for the byte decod
 The ASN.1 GeneralizedTime type is an extension of VisibleString, the standard says:
 `GeneralizedTime ::= [UNIVERSAL 24] IMPLICIT VisibleString` 
 
-Given that the current version of Asanti are using Java 7 there is no 'good' language
-support for parsing ISO8601 style data/time.  
-Until the Asanti library moves to Java 8 we are using java.sql.Timestamp as the object to store
-decoded ASN.1 GeneralizedTime data.
-We are using [Joda-Time][http://www.joda.org/joda-time/] to do the majority of the grunt work of 
-parsing.  Unfortunately Joda only provides millisecond precision/resolution, where the ASN.1 
-standard defines essentially infinite precision.  The Timestamp object can handle nanosecond, so 
-that is what we should be aiming for.  As a workaround there has been some extra parsing added to 
-extract the sub milliseconds from the raw string.  This only works if the raw string is providing 
-seconds and sub seconds is the decimal point.  That means that data of the form:
-* "2000111213.1111111111111111111111111111111111111111"
-* "200011121314.11111111111111111111111111111111111111"
+The decoder is implemented entirely on top of `java.time` (no third-party date/time libraries) and
+produces a `java.time.OffsetDateTime`. Both `GeneralizedTime` and `UTCTime` share a single parser,
+`AsnTimeParser`, which normalises the value (expanding `UTCTime`'s two-digit year, folding any
+fraction-of-hour/minute and out-of-range offset into the value) and then parses a canonical
+`YYYYMMDDHHMMSS[.fraction]` string with a strict `DateTimeFormatter`. The formatters deliberately
+avoid optional sections (which roughly double parse cost); field ranges - including month lengths and
+leap years - are validated strictly.
 
-will still only have millisecond data.  Note that the above two are legal ASN.1 GeneralizedTime
-values, the first has the decimal places specifying fractions of the hour of the day, the second
-has the decimal places specifying the fractions of the minute of the hour.  In either of these
-cases we truncate down to 18 decimal places, the parsing goes directly to Joda-Time, and we don't 
-"supplement" to nanosecond precision
+An ASN.1 GeneralizedTime has the form:
 
-Given that our end object (ie Timestamp) does not contain timezone information, and that we can
-discard some precision, the decodeAsString function has been overridden and will return the "raw" 
-string that was passed in, as long as it validated.  This allows the client to see the "extra" 
-information that was originally passed in.
+    YYYYMMDDHH[MM[SS]][(.|,)fraction][Z|(+|-)HH[MM]]
+
+The optional fractional component applies to the smallest time unit that is present:
+* fraction of a **second** when seconds are present,
+* otherwise fraction of a **minute**,
+* otherwise fraction of an **hour**.
+
+All three cases are resolved to **nanosecond** precision (Java Limitation). For the fraction-of-second case, digits
+finer than a nanosecond are truncated. This means that data of the form:
+* "2000111213.5" (fraction of the hour of the day)
+* "200011121314.5" (fraction of the minute of the hour)
+
+are now resolved to nanosecond precision, unlike the previous Joda-Time based implementation which
+only ever gave millisecond resolution for those two cases.
+
+Timezone offsets are permitted up to &plusmn;23:59 (the full ASN.1 range, which is wider than
+`java.time.ZoneOffset` can represent), so offsets are applied by computing the resulting `Instant`
+directly. The returned `OffsetDateTime` is always expressed in the system default zone (the
+`Instant` is what is significant); a lowercase `z` is rejected - the standard mandates an uppercase
+`Z`.
+
+Given that the returned `OffsetDateTime` does not preserve the original timezone specifier, and that
+some fractional-second precision may be discarded, the `decodeAsString` function has been overridden
+and will return the "raw" string that was passed in, as long as it validated. This allows the client
+to see the "extra" information that was originally passed in.
 
 [validators]:     validators.md
